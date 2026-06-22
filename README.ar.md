@@ -115,38 +115,38 @@ cargo build --release
 
 ```bash
 # ضغط سجل بناء
-./target/release/tokenslim -i build.log -o output.json --reorder
+tokenslim -i build.log -o output.json --reorder
 
 # تقرير تشخيصي منزوع الضوضاء ملائم للذكاء الاصطناعي
-./target/release/tokenslim decompress -i output.json -o ai_report.txt --ai-export
+tokenslim decompress -i output.json -o ai_report.txt --ai-export
 
 # وضع فقد بإشارة عالية (يحتفظ بنافذة الخطأ + البيانات الوصفية الرئيسية)
-./target/release/tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
+tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
 
 # التحقق من قاعدة ثابتة (ملف واحد)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule/sample_fixture.log \
   --verify-expected tests/fixtures/static_rule/sample_expected.txt
 
 # التحقق من قاعدة ثابتة (دفعة، وضع دليل)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule \
   --verify-expected tests/fixtures/static_rule
 
 # تمهيد المشروع وخطافات الصدفة
-./target/release/tokenslim init
-./target/release/tokenslim workspace
-./target/release/tokenslim --dry-run workspace --inject
-./target/release/tokenslim workspace --inject
-./target/release/tokenslim hooks install
-./target/release/tokenslim hooks status
-./target/release/tokenslim hooks uninstall
+tokenslim init
+tokenslim workspace
+tokenslim --dry-run workspace --inject
+tokenslim workspace --inject
+tokenslim hooks install
+tokenslim hooks status
+tokenslim hooks uninstall
 ```
 
 ### Server (Sidecar)
 
 ```bash
-./target/release/tokenslim-server
+tokenslim-server
 # يستمع على 127.0.0.1:<port>، يعرض /health و/compress و/decompress
 ```
 
@@ -180,8 +180,8 @@ String report = client.decompress(compressed, "ai-export");
 تصفح السجل الكامل في [`config/plugins/`](./config/plugins/)، أو شغّل:
 
 ```bash
-./target/release/tokenslim plugins list
-./target/release/tokenslim explain-plugin --explain-command "cargo build"
+tokenslim plugins list
+tokenslim explain-plugin --explain-command "cargo build"
 ```
 
 ## التكاملات
@@ -218,7 +218,7 @@ String report = client.decompress(compressed, "ai-export");
 cargo test
 
 # التشغيل مع عينة
-./target/release/tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
+tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
 ```
 
 ## الترخيص

@@ -113,38 +113,38 @@ cargo build --release
 
 ```bash
 # 빌드 로그 압축
-./target/release/tokenslim -i build.log -o output.json --reorder
+tokenslim -i build.log -o output.json --reorder
 
 # AI 친화적 노이즈 제거 진단 리포트
-./target/release/tokenslim decompress -i output.json -o ai_report.txt --ai-export
+tokenslim decompress -i output.json -o ai_report.txt --ai-export
 
 # 고신호 손실 모드 (오류 윈도우 + 핵심 메타데이터 보존)
-./target/release/tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
+tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
 
 # 정적 규칙 검증 (단일 파일)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule/sample_fixture.log \
   --verify-expected tests/fixtures/static_rule/sample_expected.txt
 
 # 정적 규칙 검증 (배치, 디렉토리 모드)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule \
   --verify-expected tests/fixtures/static_rule
 
 # 프로젝트 부트스트랩 및 셸 훅
-./target/release/tokenslim init
-./target/release/tokenslim workspace
-./target/release/tokenslim --dry-run workspace --inject
-./target/release/tokenslim workspace --inject
-./target/release/tokenslim hooks install
-./target/release/tokenslim hooks status
-./target/release/tokenslim hooks uninstall
+tokenslim init
+tokenslim workspace
+tokenslim --dry-run workspace --inject
+tokenslim workspace --inject
+tokenslim hooks install
+tokenslim hooks status
+tokenslim hooks uninstall
 ```
 
 ### Server (사이드카)
 
 ```bash
-./target/release/tokenslim-server
+tokenslim-server
 # 127.0.0.1:<port>에서 리슨, /health, /compress, /decompress 제공
 ```
 
@@ -178,8 +178,8 @@ TokenSlim은 실제 LLM 트래픽을 지배하는 입력을 다루는 **60+ 플�
 전체 레지스트리는 [`config/plugins/`](./config/plugins/)에서 확인하거나 다음을 실행하세요:
 
 ```bash
-./target/release/tokenslim plugins list
-./target/release/tokenslim explain-plugin --explain-command "cargo build"
+tokenslim plugins list
+tokenslim explain-plugin --explain-command "cargo build"
 ```
 
 ## 통합
@@ -216,7 +216,7 @@ TokenSlim은 계층화된 파이프라인을 따릅니다:
 cargo test
 
 # 샘플로 실행
-./target/release/tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
+tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
 ```
 
 ## 라이선스

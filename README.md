@@ -127,38 +127,38 @@ Most users only need `RUST_LOG=info` (or `debug` for verbose tracing). The LLM-a
 
 ```bash
 # Compress a build log
-./target/release/tokenslim -i build.log -o output.json --reorder
+tokenslim -i build.log -o output.json --reorder
 
 # AI-friendly denoised diagnostic report
-./target/release/tokenslim decompress -i output.json -o ai_report.txt --ai-export
+tokenslim decompress -i output.json -o ai_report.txt --ai-export
 
 # High-signal lossy mode (keeps error window + key metadata)
-./target/release/tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
+tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
 
 # Static rule validation (single file)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule/sample_fixture.log \
   --verify-expected tests/fixtures/static_rule/sample_expected.txt
 
 # Static rule validation (batch, directory mode)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule \
   --verify-expected tests/fixtures/static_rule
 
 # Project bootstrap & shell hooks
-./target/release/tokenslim init
-./target/release/tokenslim workspace
-./target/release/tokenslim --dry-run workspace --inject
-./target/release/tokenslim workspace --inject
-./target/release/tokenslim hooks install
-./target/release/tokenslim hooks status
-./target/release/tokenslim hooks uninstall
+tokenslim init
+tokenslim workspace
+tokenslim --dry-run workspace --inject
+tokenslim workspace --inject
+tokenslim hooks install
+tokenslim hooks status
+tokenslim hooks uninstall
 ```
 
 ### Server (Sidecar)
 
 ```bash
-./target/release/tokenslim-server
+tokenslim-server
 # Listens on 127.0.0.1:<port>, see /health, /compress, /decompress
 ```
 
@@ -192,8 +192,8 @@ TokenSlim ships with **60+ plugins** covering the inputs that dominate real LLM 
 Browse the full registry at [`config/plugins/`](./config/plugins/), or run:
 
 ```bash
-./target/release/tokenslim plugins list
-./target/release/tokenslim explain-plugin --explain-command "cargo build"
+tokenslim plugins list
+tokenslim explain-plugin --explain-command "cargo build"
 ```
 
 ## Integrations
@@ -230,7 +230,7 @@ Contributions are welcome. Please open an issue first to discuss larger changes;
 cargo test
 
 # Run with a sample
-./target/release/tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
+tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
 ```
 
 ## License

@@ -114,38 +114,38 @@ cargo build --release
 
 ```bash
 # 压缩构建日志
-./target/release/tokenslim -i build.log -o output.json --reorder
+tokenslim -i build.log -o output.json --reorder
 
 # AI 友好的降噪诊断报告
-./target/release/tokenslim decompress -i output.json -o ai_report.txt --ai-export
+tokenslim decompress -i output.json -o ai_report.txt --ai-export
 
 # 高信号有损模式（保留 error 窗口 + 关键元数据）
-./target/release/tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
+tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
 
 # 静态规则校验（单文件）
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule/sample_fixture.log \
   --verify-expected tests/fixtures/static_rule/sample_expected.txt
 
 # 静态规则校验（批量、目录模式）
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule \
   --verify-expected tests/fixtures/static_rule
 
 # 项目引导 & Shell hooks
-./target/release/tokenslim init
-./target/release/tokenslim workspace
-./target/release/tokenslim --dry-run workspace --inject
-./target/release/tokenslim workspace --inject
-./target/release/tokenslim hooks install
-./target/release/tokenslim hooks status
-./target/release/tokenslim hooks uninstall
+tokenslim init
+tokenslim workspace
+tokenslim --dry-run workspace --inject
+tokenslim workspace --inject
+tokenslim hooks install
+tokenslim hooks status
+tokenslim hooks uninstall
 ```
 
 ### Server (Sidecar)
 
 ```bash
-./target/release/tokenslim-server
+tokenslim-server
 # 监听 127.0.0.1:<port>，见 /health, /compress, /decompress
 ```
 
@@ -179,8 +179,8 @@ TokenSlim 自带 **60+ 插件**，覆盖 LLM 真实流量里最常见的输入�
 完整注册表见 [`config/plugins/`](./config/plugins/)，或运行：
 
 ```bash
-./target/release/tokenslim plugins list
-./target/release/tokenslim explain-plugin --explain-command "cargo build"
+tokenslim plugins list
+tokenslim explain-plugin --explain-command "cargo build"
 ```
 
 ## 🔗 集成
@@ -217,7 +217,7 @@ TokenSlim 走分层流水线：
 cargo test
 
 # 用样本运行
-./target/release/tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
+tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
 ```
 
 详细贡献指南见 [CONTRIBUTING.md](./CONTRIBUTING.md)。

@@ -113,38 +113,38 @@ Die meisten Benutzer benötigen nur `RUST_LOG=info` (oder `debug` für ausführl
 
 ```bash
 # Build-Log komprimieren
-./target/release/tokenslim -i build.log -o output.json --reorder
+tokenslim -i build.log -o output.json --reorder
 
 # KI-freundlicher entrauschter Diagnosebericht
-./target/release/tokenslim decompress -i output.json -o ai_report.txt --ai-export
+tokenslim decompress -i output.json -o ai_report.txt --ai-export
 
 # Verlustbehafteter Hochsignal-Modus (behält Fehler-Fenster + Schlüssel-Metadaten)
-./target/release/tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
+tokenslim decompress -i output.json -o ai_signal.txt --ai-signal
 
 # Statische Regelvalidierung (einzelne Datei)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule/sample_fixture.log \
   --verify-expected tests/fixtures/static_rule/sample_expected.txt
 
 # Statische Regelvalidierung (Stapel, Verzeichnismodus)
-./target/release/tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
+tokenslim --verify-rule tests/fixtures/static_rule/sample_rule.toml \
   --verify-fixture tests/fixtures/static_rule \
   --verify-expected tests/fixtures/static_rule
 
 # Projekt-Bootstrap & Shell-Hooks
-./target/release/tokenslim init
-./target/release/tokenslim workspace
-./target/release/tokenslim --dry-run workspace --inject
-./target/release/tokenslim workspace --inject
-./target/release/tokenslim hooks install
-./target/release/tokenslim hooks status
-./target/release/tokenslim hooks uninstall
+tokenslim init
+tokenslim workspace
+tokenslim --dry-run workspace --inject
+tokenslim workspace --inject
+tokenslim hooks install
+tokenslim hooks status
+tokenslim hooks uninstall
 ```
 
 ### Server (Sidecar)
 
 ```bash
-./target/release/tokenslim-server
+tokenslim-server
 # Hört auf 127.0.0.1:<port>, stellt /health, /compress, /decompress bereit
 ```
 
@@ -178,8 +178,8 @@ TokenSlim liefert **60+ Plugins**, die die Eingaben abdecken, die den tatsächli
 Durchsuche das vollständige Verzeichnis unter [`config/plugins/`](./config/plugins/), oder führe aus:
 
 ```bash
-./target/release/tokenslim plugins list
-./target/release/tokenslim explain-plugin --explain-command "cargo build"
+tokenslim plugins list
+tokenslim explain-plugin --explain-command "cargo build"
 ```
 
 ## Integrationen
@@ -216,7 +216,7 @@ Beiträge sind willkommen. Bitte öffne zuerst ein Issue, um größere Änderung
 cargo test
 
 # Mit einer Probe ausführen
-./target/release/tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
+tokenslim -i samples/web_log_plugin/case_001_access.log -o out.json --reorder
 ```
 
 ## Lizenz
