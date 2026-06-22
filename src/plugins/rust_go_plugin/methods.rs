@@ -39,7 +39,7 @@ impl Default for RustGoPlugin {
 
 impl RustGoPlugin {
     /// 应用高级压缩功能（Cargo 输出、测试输出）
-    /// 遵循压缩协议 V1 法则 E（零容忍废话），参见 docs/development/PLUGIN_DEVELOPMENT.md §8
+    /// 遵循压缩协议 V1 法则 E（零容忍废话），参见 docs/development/PLUGIN_DEVELOPMENT.md
     #[tracing::instrument(level = "debug", skip_all)]
     fn apply_advanced_compression(&self, text: &str) -> String {
         let mut result = String::new();

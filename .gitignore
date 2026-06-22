@@ -48,6 +48,8 @@ scratch/
 test_temp*.txt
 check_output.txt
 
+scripts/sync-from-main.ps1
+
 # Drop performance benchmark from publish (kept internally; not part of public release)
 tests/algorithm_comparison.rs
 # Drop sanitization scratch from publish (one-off cleanups)
