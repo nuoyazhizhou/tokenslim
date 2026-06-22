@@ -20,7 +20,7 @@ TokenSlim 提供三套语言 SDK，调用同一个 HTTP API。底层是 Rust 写
 
 ```bash
 # 任选一种
-tokenslim serve --port 10086
+TOKENSLIM_PORT=10086 tokenslim-server
 # 或
 docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim
 ```

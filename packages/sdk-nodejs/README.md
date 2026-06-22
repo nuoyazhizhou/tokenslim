@@ -24,7 +24,7 @@ You also need the TokenSlim server running. Two easy options:
 ```bash
 # Option A — install the Rust CLI globally
 cargo install tokenslim
-tokenslim serve --port 10086
+TOKENSLIM_PORT=10086 tokenslim-server
 
 # Option B — Docker
 docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest

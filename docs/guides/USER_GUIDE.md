@@ -43,7 +43,7 @@ tokenslim run cmake --build build
 ### ② 起服务给 SDK / IDE 扩展用
 
 ```bash
-tokenslim serve --port 10086
+TOKENSLIM_PORT=10086 tokenslim-server
 ```
 
 ### ③ 压缩文件到 JSON
@@ -147,8 +147,8 @@ tokenslim --preset ai --format text -- <cmd> # 输出格式 text / json
 ### 服务
 
 ```bash
-tokenslim serve --port 10086                 # 起 HTTP server
-tokenslim serve --host 0.0.0.0 --port 10086  # 监听所有网卡
+TOKENSLIM_PORT=10086 tokenslim-server                 # 起 HTTP server
+TOKENSLIM_HOST=0.0.0.0 TOKENSLIM_PORT=10086 tokenslim-server  # 监听所有网卡
 ```
 
 ### 文件级

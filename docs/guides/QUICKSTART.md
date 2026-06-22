@@ -77,7 +77,7 @@ git log --oneline -n 200 | tokenslim run
 很多工具（VSCode 扩展、Chrome 扩展、Node.js SDK）需要 HTTP 服务。
 
 ```bash
-tokenslim serve --port 10086
+TOKENSLIM_PORT=10086 tokenslim-server
 ```
 
 输出：
@@ -169,7 +169,7 @@ const back = await slim.decompress(r.compressed, r.dictionary ?? {});
 | 任务 | 命令 |
 |---|---|
 | 包装任何命令并压缩输出 | `tokenslim run <cmd>` |
-| 起 HTTP 服务 | `tokenslim serve --port 10086` |
+| 起 HTTP 服务 | `TOKENSLIM_PORT=10086 tokenslim-server` |
 | 健康检查 | `curl localhost:10086/health` |
 | 看所有插件 | `tokenslim plugins` |
 | 看某个插件怎么压 | `tokenslim explain-plugin vcs_git_plugin` |
