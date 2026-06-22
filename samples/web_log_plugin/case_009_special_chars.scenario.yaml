@@ -1,0 +1,15 @@
+scenario: '一条包含URL编码中文参数（%E4%B8%AD%E6%96%87）的GET请求访问日志，来自curl客户端，状态码200，无异常。'
+target_capability: 'URL编码解码与特殊字符处理'
+expected_keep: '200 1234'
+expected_compress: '%E4%B8%AD%E6%96%87'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'edede134af41539ca8d07869eead614eef5f1bde1efd01e218b3348bf3aeb8ab'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

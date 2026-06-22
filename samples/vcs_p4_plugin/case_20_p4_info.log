@@ -1,0 +1,14 @@
+p4 info
+User name: alice.chen
+Client name: alice-workstation
+Client host: alice-pc.corp.example.com
+Client root: C:\workspace\project
+Current directory: C:\workspace\project\src\plugins\vcs_plugin
+Client address: 192.168.1.100:45678
+Server address: perforce.example.com:1666
+Server root: /p4/root
+Server date: 2026/04/03 14:32:11 +0800 CST
+Server version: P4D/LINUX26X86_64/2024.1/2637890
+Server license: Example Corp, 100 users, expires 2027/01/01
+Case Handling: insensitive
+Unicode enabled: yes

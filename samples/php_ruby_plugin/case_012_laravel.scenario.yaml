@@ -1,0 +1,15 @@
+scenario: 'Laravel 应用抛出异常，日志记录错误消息及完整堆栈跟踪，包含文件路径和调用链。'
+target_capability: 'PHP 错误栈脱水'
+expected_keep: 'Exception(code: 0): Something went wrong at /app/app/Http/Controllers/HomeController.php:42'
+expected_compress: '[stacktrace]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ed9a2994d0435339cb9b5e32d3ea3f4e5ea92f285c710faae515197982341fd7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

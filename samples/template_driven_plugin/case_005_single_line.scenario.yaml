@@ -1,0 +1,15 @@
+scenario: '一个包含模板变量占位符的单行文本，变量名为''name''，模板格式为''Hello, {{ name }}!''。'
+target_capability: '模板变量压缩'
+expected_keep: 'Hello, {{ name }}!'
+expected_compress: '{{ name }}'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '193487ca91af7ec5fdfd1d0850dfae6f0bbe25258cc0378905c24e65099f8cfb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

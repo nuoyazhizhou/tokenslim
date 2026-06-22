@@ -1,0 +1,15 @@
+scenario: '一个包含多个用户信息的XML文件，每个用户有id、姓名、邮箱和角色列表，角色有admin和user两种。'
+target_capability: 'XML标签和文本内容保留'
+expected_keep: "<users>, <user id=\"1\">, <name>John Doe</name>"
+expected_compress: '换行和缩进空白字符'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '03c57ed358cd921c45b87574e97197e83fc9c8dd1a4fd47a99258db3dc44e0ae'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

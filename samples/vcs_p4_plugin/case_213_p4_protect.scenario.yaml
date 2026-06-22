@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 protect` 命令查看 Perforce 仓库的权限保护表，输出包含 write、read 权限条目。'
+target_capability: '权限表保留与路径压缩'
+expected_keep: 'write user * * //...'
+expected_compress: 'p4 protect'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '754dfb877a6b5966f6f2e85a1093b9cb3f2846d04f5cb59157a3eee6ced4a932'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

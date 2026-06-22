@@ -1,0 +1,12 @@
+jenkins build nightly
+[Pipeline] Start of Pipeline
+[Pipeline] { (Test)
++ npm test
+Tests: 480 passed, 2 skipped, 1 flaky
+WARNING: flaky tests were detected
+[Pipeline] }
+[Pipeline] { (Publish)
+Recording test results
+Publishing coverage report
+[Pipeline] }
+Finished: UNSTABLE

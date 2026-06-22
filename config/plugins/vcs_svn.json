@@ -1,0 +1,28 @@
+{
+    "name": "vcs_svn",
+    "description": "SVN 命令输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_SV"
+    },
+    "keep_signals": [
+        "原始命令锚点",
+        "文件变更状态（A/D/M/U/C）",
+        "commit 信息"
+    ],
+    "compress_targets": [
+        "长路径替换为 $SVN 令牌字典",
+        "重复行去重"
+    ],
+    "design_intent": "SVN 命令输出脱水：保留命令锚点和变更状态，压缩路径。"
+}

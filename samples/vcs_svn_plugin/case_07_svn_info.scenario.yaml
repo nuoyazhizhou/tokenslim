@@ -1,0 +1,15 @@
+scenario: '用户执行 `svn info` 命令查看工作副本路径 `src/core/doctor_workspace` 的详细信息，包括 URL、仓库根、UUID、修订号、节点类型、最后修改作者和日期等。'
+target_capability: 'SVN 命令输出脱水'
+expected_keep: 'svn info, Revision: 12345, Last Changed Author: alice.chen'
+expected_compress: "C:\\git_work\\TokenSlim, https://svn.example.com/repos/project/trunk/src/core/doctor_workspace, a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3cb00e9a0ca92b0420c4ad58e338e40064bcd7c591fcdcf6f9178db0de5a2ed6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

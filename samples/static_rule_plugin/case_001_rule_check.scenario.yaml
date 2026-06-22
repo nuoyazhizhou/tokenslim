@@ -1,0 +1,15 @@
+scenario: '静态规则检查工具的输出，包含规则检查开始信息、发现的硬编码密码错误和行长度警告。'
+target_capability: '规则检查结果保留'
+expected_keep: '[INFO] Checking rule: no_hardcoded_passwords'
+expected_compress: '[WARN] Line 100: Line length exceeds 120 chars'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '728824c208834b6702fe3f1e3d5ade1413f491fdc8867dae488cbc7e2d282087'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 git merge --abort 命令，该命令用于中止当前的合并操作，通常没有输出。'
+target_capability: '命令执行与空输出处理'
+expected_keep: '无输出'
+expected_compress: '无输出'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4511030a26303df959b9dbe2e1ed169798587fc75bba487490159271f456c125'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

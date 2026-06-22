@@ -1,0 +1,15 @@
+scenario: '用户同时执行 kubectl get pods 和 docker ps 命令，展示 Kubernetes Pod 列表和 Docker 容器列表的混合输出。'
+target_capability: 'K8S/Docker 混合场景压缩'
+expected_keep: 'kubectl get pods, docker ps, Running'
+expected_compress: 'abc123, nginx:latest, /bin/bash'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b3f8498e9413a1b584dc18189546edfd08283823f3d22e5e870c6ae9b1bd8a78'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

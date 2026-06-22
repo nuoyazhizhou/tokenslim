@@ -1,0 +1,6 @@
+$ kubectl get pods
+NAME    READY   STATUS    RESTARTS   AGE
+nginx   1/1     Running   0          5m
+$ docker ps
+CONTAINER ID   IMAGE          COMMAND       CREATED         STATUS         PORTS     NAMES
+abc123         nginx:latest   "/bin/bash"   2 hours ago     Up 2 hours     80/tcp    web

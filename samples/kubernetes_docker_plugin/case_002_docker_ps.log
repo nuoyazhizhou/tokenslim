@@ -1,0 +1,3 @@
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS     NAMES
+abc123         nginx:latest   "/docker-entrypoint.…"   2 hours ago     Up 2 hours     80/tcp    web
+def456         redis:alpine   "redis-server"           5 minutes ago   Up 5 minutes   6379/tcp  cache

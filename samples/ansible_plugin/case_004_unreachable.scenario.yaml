@@ -1,0 +1,15 @@
+scenario: 'Ansible playbook ping.yml 执行，web1 成功，web2 因 SSH 连接超时标记为 unreachable'
+target_capability: '不可达状态保留'
+expected_keep: 'TASK [Ping hosts], unreachable: [web2], PLAY RECAP'
+expected_compress: 'Failed to connect to the host via ssh: Connection timed out, 空行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a6dd02ee0f71e86d72d4cfa466a5cb8b3c1250d337ea67a7978defb0c881b224'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

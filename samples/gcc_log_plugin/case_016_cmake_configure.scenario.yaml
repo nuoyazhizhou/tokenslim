@@ -1,0 +1,15 @@
+scenario: 'CMake 配置阶段日志，检测 C 和 C++ 编译器为 GNU 13.2.0，完成 ABI 和特性检测，最终生成构建文件到指定目录。'
+target_capability: 'CMake 配置日志脱水'
+expected_keep: 'Configuring done, Generating done, Build files have been written to'
+expected_compress: 'Detecting C compiler ABI info, Detecting C compiler features, Detecting CXX compiler ABI info'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2bd1c7732bd67adbbce8cd5fd047d13e679536c28e0655d2ceaa2b6179fd874a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

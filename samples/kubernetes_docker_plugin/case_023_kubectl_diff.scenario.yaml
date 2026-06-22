@@ -1,0 +1,15 @@
+scenario: '执行 kubectl diff 命令对比当前部署与期望部署的差异，输出显示镜像标签从 old 变更为 new。'
+target_capability: 'Kubectl diff 输出保留与压缩'
+expected_keep: 'kubectl diff -f k8s/deployment.yaml, image: registry.example.com/api:new'
+expected_compress: '/tmp/LIVE-123456/apps.v1.Deployment.prod.api, /tmp/MERGED-654321/apps.v1.Deployment.prod.api'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3e8c3068ad3bff649e08c916c03d8448b597e30f4146bf63bb0cdf3fe122c083'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

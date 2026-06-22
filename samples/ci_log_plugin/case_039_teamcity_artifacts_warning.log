@@ -1,0 +1,9 @@
+##teamcity[blockOpened name='Package']
+Creating release archive
+warning: package contains deprecated manifest field
+##teamcity[message text='Deprecated manifest field' status='WARNING']
+##teamcity[publishArtifacts 'dist/app.tar.gz => release']
+Publishing artifacts to internal storage
+Artifacts uploaded successfully
+##teamcity[blockClosed name='Package']
+##teamcity[buildStatus status='SUCCESS' text='Build finished with warnings']

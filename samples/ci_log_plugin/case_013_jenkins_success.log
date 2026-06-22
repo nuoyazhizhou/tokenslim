@@ -1,0 +1,13 @@
+jenkins build api-main
+[Pipeline] Start of Pipeline
+[Pipeline] node
+[Pipeline] { (Checkout)
+[Pipeline] checkout
+Checking out Revision 4f00ba2
+[Pipeline] }
+[Pipeline] { (Build)
+[Pipeline] sh
++ ./gradlew assemble
+BUILD SUCCESSFUL in 42s
+[Pipeline] }
+Finished: SUCCESS

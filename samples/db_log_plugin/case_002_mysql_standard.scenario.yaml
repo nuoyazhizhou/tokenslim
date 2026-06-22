@@ -1,0 +1,15 @@
+scenario: 'MySQL 标准日志，包含服务就绪通知、InnoDB 缓冲池调整警告和用户访问拒绝错误。'
+target_capability: '数据库日志级别与错误保留'
+expected_keep: 'ready for connections, buffer pool size adjusted, Access denied'
+expected_compress: '2026-05-07T10:33:10.123456Z, 1234 [Note], 1235 [Warning]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1ed13d314bb6ef9dcb55e6159a71aebd61e30993f952c601bc5f93cfef774b7c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

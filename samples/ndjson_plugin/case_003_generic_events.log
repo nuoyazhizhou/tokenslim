@@ -1,0 +1,5 @@
+{"level":"info","service":"api","msg":"request started","trace":"a1"}
+{"level":"info","service":"api","msg":"cache hit","trace":"a1"}
+{"level":"warn","service":"api","msg":"slow upstream","trace":"a1"}
+{"level":"info","service":"worker","msg":"job accepted","job":"j1"}
+{"level":"error","service":"worker","msg":"job failed","job":"j1"}

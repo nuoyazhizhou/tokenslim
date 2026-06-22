@@ -1,0 +1,15 @@
+scenario: 'Go测试失败场景，包含测试运行、通过、失败及错误输出，测试包为github.com/shop/auth，测试用例TestLogin、TestLogout通过，TestInvalidPassword失败并输出错误信息。'
+target_capability: 'NDJSON首尾保留+中间折叠'
+expected_keep: "{\"Action\":\"run\",\"Test\":\"TestLogin\"}, {\"Action\":\"fail\",\"Test\":\"TestInvalidPassword\"}"
+expected_compress: "{\"Action\":\"pass\",\"Test\":\"TestLogout\"}, {\"Action\":\"output\",\"Test\":\"TestInvalidPassword\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6ff721464d807aa819ad473a7e0d5eb7a6bb494376e1835daf0795be1daa613a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户使用 Android Repo 工具初始化一个工作区，指定 manifest 仓库 URL 和分支，repo 输出初始化成功、身份信息、镜像路径和同步开始信息。'
+target_capability: 'repo init 命令锚点保留与进度噪音压缩'
+expected_keep: 'repo init -u https://android.googlesource.com/platform/manifest -b main'
+expected_compress: 'repo: syncing...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f09addd8c025cdac6df9cf71f46a84a7cff88e35389ab90ab7207209df4ef574'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,12 @@
+ctest --output-on-failure
+Test project /home/runner/work/project/build
+    Start 1: core_math
+1/4 Test #1: core_math .......................   Passed    0.02 sec
+    Start 2: api_contract
+2/4 Test #2: api_contract ....................***Failed    1.21 sec
+Expected status 200 but got 500
+    Start 3: cli_smoke
+3/4 Test #3: cli_smoke .......................   Passed    0.04 sec
+The following tests FAILED:
+	  2 - api_contract (Failed)
+Errors while running CTest

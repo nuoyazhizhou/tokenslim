@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：多状态码日志（200/302/404/500），插件应保留错误行，压缩正常行。'
+target_capability: 'HTTP status code handling'
+expected_keep: '404 567, 500 890'
+expected_compress: '200 1234, 302 0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Git log with --stat showing commit details, file paths, and change statistics for two commits.'
+target_capability: 'Git log --stat 压缩'
+expected_keep: 'commit abc1234, src/core/dictionary_manager/mod.rs, 4 files changed'
+expected_compress: 'Author: Developer <dev@example.com>, Date:   Mon Apr 14 15:00:00 2026 +0000, 100 ++++++++++++++++++++++'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'aba4effa6974146613eebba86da7235d064d7068a847a5381cdc551967cf19c3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

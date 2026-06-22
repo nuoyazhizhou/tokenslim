@@ -1,0 +1,11 @@
+darcs log
+darcs changes
+patch 2026-04-06 12:30:00 +0800
+Author: alice.chen
+Date: 2026-04-06 12:30:00 +0800
+    feat(darcs): Support compact log normalization for baseline IR chain
+
+patch 2026-04-05 19:10:00 +0800
+Author: bob.wang
+Date: 2026-04-05 19:10:00 +0800
+    fix(darcs): keep author/date fields when trimming whitespace

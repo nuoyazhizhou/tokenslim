@@ -1,0 +1,15 @@
+scenario: '空日志输入，边界测试：验证 Gradle 插件对空白输入的健壮性，应原样返回空内容'
+target_capability: '空输入边界处理'
+expected_keep: '无内容可保留'
+expected_compress: '无内容可压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

@@ -1,0 +1,15 @@
+scenario: 'TeamCity CI 构建日志，包含 checkout 和单元测试步骤，其中 OrderServiceTest 测试失败，预期状态码 400 但实际返回 200，构建最终标记为 FAILURE。'
+target_capability: 'CI/CD 构建失败信号保留'
+expected_keep: '##teamcity[buildStatus status=''FAILURE'' text=''Build failed'']'
+expected_compress: 'com.example.OrderServiceTest > rejectsInvalidOrder FAILED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'babe758829b218b2282e776556a04532fd525bb1e5f168fe687f89564b8ffd47'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

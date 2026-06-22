@@ -1,0 +1,25 @@
+{
+    "name": "noise_filter",
+    "description": "噪声过滤",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$NOISE_"
+    },
+    "keep_signals": [
+        "纯文本行（非二进制控制字符）"
+    ],
+    "compress_targets": [
+        "二进制数据（替换为 [BINARY_DATA: Size=..., MD5=...] 标记）"
+    ],
+    "design_intent": "噪声过滤：检测并替换二进制数据为简短标记，保留纯文本内容。"
+}

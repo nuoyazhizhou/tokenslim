@@ -1,0 +1,15 @@
+scenario: 'Perforce ''p4 fstat'' 命令输出，展示多个文件的 depot 路径、客户端路径、操作类型、版本号、变更列表编号等元数据。'
+target_capability: 'P4 fstat 输出压缩'
+expected_keep: 'depotFile, headAction, headRev, headChange'
+expected_compress: 'clientFile, headTime, haveRev'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'adeb73e9fa12ea1148abf945f5bc77167c5eebb11365872768184fd005bc074e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

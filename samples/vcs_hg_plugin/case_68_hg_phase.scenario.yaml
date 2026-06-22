@@ -1,0 +1,15 @@
+scenario: '用户执行 ''hg phase'' 命令查看变更集阶段状态，输出包含三个变更集ID及其阶段标签（public/draft）。'
+target_capability: '变更集阶段信息保留'
+expected_keep: 'hg phase, 12345abc (public), 67890def (draft)'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f7382383cd4b6168de03b0a6663bdaf1b23c8305c9a76c221f3bde5f4560f73e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

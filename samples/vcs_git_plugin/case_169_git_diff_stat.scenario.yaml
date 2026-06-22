@@ -1,0 +1,15 @@
+scenario: '用户执行 `git diff --stat` 查看工作区与暂存区文件的变更统计，输出显示三个文件的修改行数及总变更摘要。'
+target_capability: 'Git diff --stat 输出压缩'
+expected_keep: 'src/main.rs, src/utils.rs, src/lib.rs'
+expected_compress: '10 +++++----, 5 ++---, 2 +--'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e0f698e51e70157abb76d999b17d5d97c62a1c4a61be8f5eae8c5e07c5832bf1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

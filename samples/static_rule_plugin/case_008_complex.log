@@ -1,0 +1,13 @@
+[INFO] ========================================
+[INFO] Static Code Analysis Report
+[INFO] ========================================
+[INFO] Files analyzed: 23
+[INFO] Rules applied: 15
+[INFO] ----------------------------------------
+[ERROR] src/main.js:42 - no_hardcoded_passwords
+[ERROR] src/utils.js:10 - no_eval
+[WARN] src/main.js:100 - line_length_exceeded
+[WARN] src/main.js:200 - complex_function
+[INFO] ----------------------------------------
+[INFO] Errors: 2, Warnings: 2
+[INFO] ========================================

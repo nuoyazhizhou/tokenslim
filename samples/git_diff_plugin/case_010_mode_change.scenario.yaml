@@ -1,0 +1,15 @@
+scenario: 'Git diff 显示文件权限从 100644（普通文件）变更为 100755（可执行文件），无内容变更。'
+target_capability: '模式变更保留'
+expected_keep: 'diff --git a/script.sh b/script.sh, old mode 100644, new mode 100755'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '41de1bd3e0e86392200db3cc1cd273f687d79ed12490abb08d0ce2c0904ad671'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

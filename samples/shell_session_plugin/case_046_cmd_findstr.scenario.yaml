@@ -1,0 +1,15 @@
+scenario: '在 Windows CMD 中使用 findstr 命令搜索日志文件中包含 ''error'' 的行，并显示匹配结果。'
+target_capability: '命令输出保留与提示符压缩'
+expected_keep: "findstr /I \"error\" app.log, 2026-06-07 10:00:00 ERROR Connection failed, 2026-06-07 10:05:00 ERROR Timeout occurred"
+expected_compress: "C:\\> "
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ed36a7c49f645dd0ed0df1f675a45dcfb0270dcc54e7816bd4a41693c92e43f9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

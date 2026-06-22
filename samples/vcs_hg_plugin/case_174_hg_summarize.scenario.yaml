@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg summarize` 命令，输出包含父节点、分支、书签、阶段、日期和仓库统计信息。'
+target_capability: 'Hg summarize 命令摘要'
+expected_keep: 'hg summarize, Parent: abc1234 (main), Branch: main'
+expected_compress: 'Bookmark: feature-auth, Phase: draft, Date: 2026-04-08 10:00:00'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '03c03c4b73bb5cb0dae4442ff5b5ab43d3991d87ef7d332a251b6587aa6e6ecb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

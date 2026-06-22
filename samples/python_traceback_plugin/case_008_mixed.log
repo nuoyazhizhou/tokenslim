@@ -1,0 +1,7 @@
+Regular log output
+Another log line
+Traceback (more recent call last):
+  File "app.py", line 10, in <module>
+    raise RuntimeError("Something happened")
+RuntimeError: Something happened
+More regular log output

@@ -1,0 +1,15 @@
+scenario: 'SARIF报告由CodeQL工具分析生成，但results为空，表示没有检测到安全漏洞。工具包含两条规则定义（缓冲区溢出、释放后使用），invocation显示执行成功。'
+target_capability: '空结果保留信号'
+expected_keep: 'CodeQL, cpp/overflow-buffer, cpp/use-after-free'
+expected_compress: "\"results\": []"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5aedc4a4ee92c176f42cb68d6377759f6edd8571083abe40a1be190af65bfc77'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,31 @@
+git show
+commit 18f4bb5007aa6e2c48b21c371cd3d884120e668b
+Author: nuoyazhizhou <nuoyazhizhou@example.com>
+Date:   Tue Mar 31 22:11:16 2026 +0800
+
+    feat: Support doctor workspace auto-detection
+
+diff --git a/src/core/doctor_workspace/methods.rs b/src/core/doctor_workspace/methods.rs
+index 1a2b3c4..5d6e7f8 100644
+--- a/src/core/doctor_workspace/methods.rs
++++ b/src/core/doctor_workspace/methods.rs
+@@ -40,6 +40,11 @@ impl DoctorWorkspace {
+     pub fn analyze(&self) -> Vec<Diagnostic> {
+         let mut results = Vec::new();
++
++        // Auto-detect project type
++        if let Some(project) = self.detect_project_type() {
++            results.push(Diagnostic::ProjectType(project));
++        }
++
+         for file in self.scan_files() {
+             if let Some(diag) = self.analyze_file(&file) {
+                 results.push(diag);
+@@ -100,7 +105,7 @@ impl DoctorWorkspace {
+     }
+
+-    const MAX_DEPTH: usize = 5;
++    const MAX_DEPTH: usize = 10;
+
+     fn detect_project_type(&self) -> Option<String> {
+         let mut signals = HashMap::new();

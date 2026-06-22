@@ -1,0 +1,7 @@
+warn: removing resource com.example.app:string/app_name without default value.
+warn: removing resource com.example.app:string/title_activity_main without default value.
+warn: removing resource com.example.app:string/hello_world without default value.
+warn: removing resource com.example.app:string/menu_settings without default value.
+warn: removing resource com.example.app:string/action_settings without default value.
+warn: removing resource com.example.app:string/app_version without default value.
+warn: removing resource com.example.app:string/copyright without default value.

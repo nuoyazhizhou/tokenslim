@@ -1,0 +1,15 @@
+scenario: 'Bazaar diff 输出，展示文件 methods.rs 的修改内容，包括新增的 VCS 工具分支（Cvs, Bzr, Fossil, Darcs）和上下文行。'
+target_capability: 'diff 输出压缩'
+expected_keep: '=== modified file ''src/plugins/vcs_plugin/methods.rs'''
+expected_compress: '--- src/plugins/vcs_plugin/methods.rs	2026-04-05 09:10:00 +0800'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '59c3ae8cc35784833ae719fdc21136d44248a976d9683ea372f81b76d5dfaa80'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

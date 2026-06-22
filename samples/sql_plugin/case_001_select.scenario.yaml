@@ -1,0 +1,15 @@
+scenario: '一个简单的SELECT查询语句，从users表中按id查询记录，执行耗时12ms。'
+target_capability: 'SQL语句结构保留'
+expected_keep: 'SELECT * FROM users WHERE id = 1;'
+expected_compress: '-- Executed in 12ms'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe9e414db283ee10063191f4a557ca76332518c0109699d125eb27e4e576b90d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

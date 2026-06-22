@@ -1,0 +1,15 @@
+ansible-playbook nginx.yml
+
+PLAY [web] *********************************************************************
+
+TASK [Update config] ***********************************************************
+changed: [web1]
+changed: [web2]
+
+RUNNING HANDLER [Restart nginx] ************************************************
+changed: [web1]
+changed: [web2]
+
+PLAY RECAP *********************************************************************
+web1                       : ok=2    changed=2    unreachable=0    failed=0
+web2                       : ok=2    changed=2    unreachable=0    failed=0

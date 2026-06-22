@@ -1,0 +1,15 @@
+scenario: 'Java StackOverflowError 深层递归堆栈，30 层调用链测试插件对重复堆栈帧的折叠与截断能力。'
+target_capability: '深层堆栈截断与摘要'
+expected_keep: "Exception in thread \"main\" java.lang.StackOverflowError"
+expected_compress: 'at com.example.app.Level30.method30(Level30.java:300)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

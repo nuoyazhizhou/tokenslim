@@ -1,0 +1,6 @@
+gh auth
+gh auth status
+✓ Logged in to github.com as alice (@alice)
+- Node: v20.0.0
+- Manager: gh
+Current account: alice (123456)

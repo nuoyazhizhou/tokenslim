@@ -1,0 +1,15 @@
+scenario: 'Pulumi refresh 操作预览输出，包含两个资源（S3 bucket 和 EC2 instance）的刷新计划，以及资源计数汇总行。'
+target_capability: '资源操作摘要与字典压缩'
+expected_keep: 'Resources: ~ 2 to refresh, 8 unchanged'
+expected_compress: '~   aws:s3/bucket:Bucket         assets     refresh'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '873c4a93664d4199c6027c36ff05acce5788896d111bfebb72016ccd9696265a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

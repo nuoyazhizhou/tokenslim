@@ -1,0 +1,15 @@
+scenario: 'GCP Cloud Audit 日志，包含两条 protoPayload 记录：一条 NOTICE 级别 SetIamPolicy 操作，一条 ERROR 级别 CreateInstance 被拒绝（配额超限）。'
+target_capability: '云日志外壳剥离与压缩'
+expected_keep: 'SetIamPolicy, CreateInstance denied, quota exceeded'
+expected_compress: 'timestamp, logName, resource'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bd1d38e92ed259220fbb32d731ce36b706eaa9ba368570ef494989c491259285'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

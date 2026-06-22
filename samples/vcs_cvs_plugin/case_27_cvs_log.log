@@ -1,0 +1,18 @@
+cvs log
+RCS file: /cvsroot/project/src/plugins/vcs_plugin/parser.rs,v
+head: 1.12
+branch:
+locks: strict
+access list:
+symbolic names:
+keyword substitution: kv
+total revisions: 12; selected revisions: 2
+description:
+----------------------------
+revision 1.12
+date: 2026/04/06 10:00:00;  author: alice.chen;  state: Exp;  lines: +40 -5
+feat(cvs): Add baseline parser route for non-git VCS tools
+----------------------------
+revision 1.11
+date: 2026/04/04 16:20:00;  author: bob.wang;  state: Exp;  lines: +12 -3
+fix(cvs): Keep date/author metadata in compact log output

@@ -1,0 +1,6 @@
+bazel build //platform/...
+INFO: Analyzed 88 targets (33 packages loaded, 900 targets configured).
+INFO: Found 88 targets...
+INFO: 1800 processes: 1200 remote cache hit, 500 remote, 100 linux-sandbox.
+INFO: Elapsed time: 60.000s, Critical Path: 20.000s
+INFO: Build completed successfully, 1800 total actions

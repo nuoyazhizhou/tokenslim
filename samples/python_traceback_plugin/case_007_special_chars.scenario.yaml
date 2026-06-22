@@ -1,0 +1,15 @@
+scenario: 'Python 应用抛出 ValueError 异常，异常消息中包含中文字符（漢字），测试插件对特殊字符（非 ASCII）的处理能力。'
+target_capability: '特殊字符保留'
+expected_keep: 'ValueError: Invalid character: 漢字'
+expected_compress: "File \"app.py\", line 10, in <module>"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e5d09e44593735353cbaf6de9324ab5a94ab20d2cb7fa74a55611e436f59371f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

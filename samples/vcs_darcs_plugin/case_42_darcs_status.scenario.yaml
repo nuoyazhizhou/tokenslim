@@ -1,0 +1,15 @@
+scenario: 'Darcs版本控制仓库中执行status和whatsnew命令，显示新增、修改、删除文件列表。'
+target_capability: '命令锚点与文件变更保留'
+expected_keep: 'darcs status, darcs whatsnew -ls, A src/plugins/vcs_plugin/new_darcs_adapter.rs'
+expected_compress: '（无噪声行或冗余行可压缩）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9e74c3a0d8e18f6ec26212fcd36e66e5846b3fc1790aaa23bc3ac3f001c1dd2b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

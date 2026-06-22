@@ -1,0 +1,15 @@
+scenario: '单行日志包含一个类似哈希的字符串（a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6），该字符串由十六进制字符组成，可能被误判为二进制数据。'
+target_capability: '二进制数据检测与保留纯文本'
+expected_keep: 'Single line with a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6 hash'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '45f2de2ba3b7a0b26ecc46ae8884527807f00cd3227132cb244a088f6bcbfcaa'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:43:25.678814'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

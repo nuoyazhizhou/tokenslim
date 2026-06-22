@@ -1,0 +1,4 @@
+darcs whatsnew -s
+ M ./src/main.rs +5 -2
+ A ./src/auth/login.rs
+ R ./src/lib/old_module.rs

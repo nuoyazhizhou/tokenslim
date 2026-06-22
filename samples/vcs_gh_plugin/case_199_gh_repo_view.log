@@ -1,0 +1,12 @@
+gh repo view owner/my-repo
+owner/my-repo
+  Description: Main repository for the project
+  URL: https://github.com/owner/my-repo
+  Visibility: private
+  Updated: 2026-04-08
+  Default branch: main
+  License: MIT
+  Topics: rust, cli, automation
+  Contributors: 5
+  Forks: 10
+  Stars: 50

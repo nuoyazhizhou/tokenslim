@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash 执行 rsync 命令，将本地 src 目录同步到远程主机，输出传输文件列表和统计信息。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'rsync -avz ./src/ user@remote:/dest/'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b8a1a394cf7de2d131de8372ec9ebce4e3913ed6f4d507ff47dee677f7fce01c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

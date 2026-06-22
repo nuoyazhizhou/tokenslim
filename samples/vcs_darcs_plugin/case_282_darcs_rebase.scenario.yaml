@@ -1,0 +1,15 @@
+scenario: '用户执行 darcs rebase 命令，显示当前有 3 个补丁被挂起，rebase 从 patch-1 到 patch-4 进行中。'
+target_capability: 'darcs rebase 命令锚点与补丁结构保留'
+expected_keep: 'darcs rebase, Rebasing from: patch-1, Rebasing to: patch-4'
+expected_compress: 'Rebase in progress: 3 patches suspended'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bbd469ac03209c7f7140f167e0e8251a14e2724d69ee2167c8ac778536177946'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,12 @@
+jenkins build android-release
+[Pipeline] Start of Pipeline
+[Pipeline] { (Gradle)
+[Pipeline] sh
++ ./gradlew testReleaseUnitTest
+> Task :app:compileReleaseKotlin
+> Task :app:testReleaseUnitTest FAILED
+com.example.UserTest > duplicateEmail FAILED
+    java.lang.AssertionError: expected 409
+ERROR: script returned exit code 1
+[Pipeline] }
+Finished: FAILURE

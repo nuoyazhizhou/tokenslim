@@ -1,0 +1,15 @@
+scenario: 'Git 合并冲突的 diff 输出，显示两个分支对同一函数的不同实现，冲突标记包含 HEAD 和 feature-branch 的版本。'
+target_capability: '合并冲突标记保留'
+expected_keep: 'diff --cc, +++ b/, +<<<<<<< HEAD'
+expected_compress: '上下文行（如 fn main 行）, 文件路径详细内容'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '43b8605adebc4bb40aec03521386c542005cf0af79c5c383dcf94a9952c3aec5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

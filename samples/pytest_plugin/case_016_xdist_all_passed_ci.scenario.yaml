@@ -1,0 +1,15 @@
+scenario: 'CI 中 pytest 使用 xdist 并行运行 512 个测试，全部通过，输出包含 worker 进度和最终摘要。'
+target_capability: '测试结果摘要与路径压缩'
+expected_keep: '512 passed in 62.10s'
+expected_compress: '[gw0] [ 12%] PASSED tests/test_api.py::test_create_order'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2f6a4c2c9bb4aab816ef539960dba579ee2085859d5732210c41f5ca45e5c91b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

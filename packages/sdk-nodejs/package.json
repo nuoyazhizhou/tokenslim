@@ -1,0 +1,62 @@
+{
+    "name": "tokenslim-sdk",
+    "version": "0.2.6",
+    "description": "Node.js / TypeScript SDK for TokenSlim — REST client for compressing LLM inputs (also ships the `tokenslim` / `tokenslim-server` binaries for one-stop install).",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "bin": {
+        "tokenslim": "bin/tokenslim.js",
+        "tokenslim-server": "bin/tokenslim-server.js"
+    },
+    "files": [
+        "dist/",
+        "src/",
+        "bin/",
+        "scripts/",
+        "README.md",
+        "LICENSE"
+    ],
+    "scripts": {
+        "build": "tsc -p tsconfig.json",
+        "clean": "rimraf dist",
+        "prepublishOnly": "npm run clean && npm run build",
+        "postinstall": "node scripts/postinstall.js",
+        "test": "node --test dist/__tests__/*.test.js"
+    },
+    "keywords": [
+        "tokenslim",
+        "llm",
+        "compression",
+        "tokens",
+        "ai-agents",
+        "log-compression",
+        "cli"
+    ],
+    "author": "nuoyazhizhou",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/nuoyazhizhou/tokenslim.git",
+        "directory": "packages/sdk-nodejs"
+    },
+    "bugs": {
+        "url": "https://github.com/nuoyazhizhou/tokenslim/issues"
+    },
+    "homepage": "https://github.com/nuoyazhizhou/tokenslim#readme",
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "optionalDependencies": {
+        "@tokenslim/cli-binary-linux-x64-gnu": "0.2.6",
+        "@tokenslim/cli-binary-linux-arm64-gnu": "0.2.6",
+        "@tokenslim/cli-binary-darwin-x64": "0.2.6",
+        "@tokenslim/cli-binary-darwin-arm64": "0.2.6",
+        "@tokenslim/cli-binary-windows-x64": "0.2.6",
+        "@tokenslim/cli-binary-windows-arm64": "0.2.6"
+    },
+    "devDependencies": {
+        "typescript": "^5.4.0",
+        "@types/node": "^20.0.0",
+        "rimraf": "^5.0.0"
+    }
+}

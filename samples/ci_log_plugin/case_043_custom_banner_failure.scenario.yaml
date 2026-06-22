@@ -1,0 +1,15 @@
+scenario: 'ACME-CI 自定义横幅格式的流水线日志，包含 checkout、build、smoke-test 三个步骤，其中 smoke-test 步骤失败，返回失败状态和退出码 1。'
+target_capability: '自定义横幅失败信号保留'
+expected_keep: '[ACME-CI] STEP checkout; ERROR: smoke test failed after deploy; status=failed exit_code=1'
+expected_compress: 'git fetch origin main; Successfully built sha256:abcdef; HTTP/1.1 503 Service Unavailable'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '86c8be834806c1de9742c0b6f90b8005a02afd89e77788442be0a0ac0b803b66'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

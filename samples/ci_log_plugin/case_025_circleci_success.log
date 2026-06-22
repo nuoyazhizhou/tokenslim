@@ -1,0 +1,12 @@
+circleci local execute
+CircleCI local build
+====>> Checkout code
+Cloning git repository
+====>> Restore cache
+Found a cache from node-v1-main
+====>> Run tests
+npm test
+Tests: 310 passed, 310 total
+====>> Save cache
+Saving cache
+CircleCI received exit code 0

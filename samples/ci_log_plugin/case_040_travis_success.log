@@ -1,0 +1,14 @@
+travis_fold:start:install
+Installing dependencies
+$ bundle install --jobs=3 --retry=3
+Bundle complete! 42 Gemfile dependencies, 128 gems now installed.
+travis_fold:end:install
+travis_fold:start:script
+$ bundle exec rake test
+Run options: --seed 177866
+............
+12 runs, 48 assertions, 0 failures, 0 errors, 0 skips
+travis_fold:end:script
+travis_time:start:0a1b2c3d
+Done. Your build exited with 0.
+Travis job succeeded

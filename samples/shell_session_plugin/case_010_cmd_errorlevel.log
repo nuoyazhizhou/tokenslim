@@ -1,0 +1,7 @@
+C:\Users\user> findstr "foo" not_exist.txt
+FINDSTR: Cannot open not_exist.txt
+
+C:\Users\user> echo %ERRORLEVEL%
+1
+
+C:\Users\user> 

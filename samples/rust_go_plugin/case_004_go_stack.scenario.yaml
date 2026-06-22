@@ -1,0 +1,15 @@
+scenario: 'Go 程序崩溃时的完整堆栈跟踪，包含 goroutine 信息、函数调用链和源码位置。'
+target_capability: 'Go 堆栈保留与路径压缩'
+expected_keep: 'goroutine 10 [running]:'
+expected_compress: '/home/user/go/pkg/process.go:23 +0x45'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '65315816da47bcec0de88583247c7bae695dabb0d02a58829ef32d11c2965e08'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

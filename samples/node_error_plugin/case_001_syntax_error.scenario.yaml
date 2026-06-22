@@ -1,0 +1,15 @@
+scenario: 'Node.js 脚本因缺少闭合括号导致语法错误，输出包含错误位置、SyntaxError 类型及完整堆栈跟踪。'
+target_capability: '错误堆栈脱水'
+expected_keep: 'SyntaxError, missing ) after argument list, Module._compile'
+expected_compress: '/home/user/project/index.js, internal/modules/cjs/loader.js'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bc9178e980e05ab04c9471d4810054e4165fd48faf591ccfc97a0f6f6d0d4a7a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

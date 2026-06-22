@@ -1,0 +1,2 @@
+git bisect bad v1.0.0
+Bisecting: 6 revisions left to test after this (roughly 3 steps)

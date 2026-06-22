@@ -1,0 +1,10 @@
+hg clone https://bitbucket.org/user/myrepo
+cloning from https://bitbucket.org/user/myrepo
+destination directory: /home/user/clone
+requesting all changes
+adding changesets
+adding manifests
+adding file changes
+added 5 changesets
+updating to branch default
+0 files updated

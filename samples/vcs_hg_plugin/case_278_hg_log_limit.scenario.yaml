@@ -1,0 +1,15 @@
+scenario: 'vcs_hg_plugin 测试：hg log -l 10 限制条目数，插件应保留变更集ID和摘要，压缩用户和日期。'
+target_capability: 'hg log 输出压缩'
+expected_keep: 'changeset:   1234:abcdef123456'
+expected_compress: 'user:        developer <dev@example.com>'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

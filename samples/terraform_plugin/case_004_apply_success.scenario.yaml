@@ -1,0 +1,15 @@
+scenario: 'Terraform apply 成功，更新了一个 AWS Lambda 函数的内存大小，输出包含计划摘要、资源变更行和完成信息。'
+target_capability: 'Terraform apply 成功输出压缩'
+expected_keep: "~ resource \"aws_lambda_function\" \"worker\" { ~ memory_size = 512 -> 1024 }"
+expected_compress: 'aws_lambda_function.worker: Modifying... [id=worker-prod]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'efa30e417acf8ff11ee6fdca735412398d643c95e508ee3d83eadc6a651f645c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

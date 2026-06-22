@@ -1,0 +1,15 @@
+scenario: 'Buildkite CI pipeline成功执行的完整日志，包含git checkout、docker build、pytest测试通过和artifact上传等步骤，无错误和警告。'
+target_capability: 'CI/CD步骤起始信号保留'
+expected_keep: '--- :git: Checkout'
+expected_compress: 'docker build -t api:latest .'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9a09c62866201fafa212837f4e93a45b4443d4bf5b404ddf51aa57567d6fc5f3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

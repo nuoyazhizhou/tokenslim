@@ -1,0 +1,8 @@
+cmake --build build
+[0/1] Re-running CMake...
+-- Configuring done
+CMake Error in src/CMakeLists.txt:
+  Target "api" links to target "ZLIB::ZLIB" but the target was not found.
+
+CMake Generate step failed.  Build files cannot be regenerated correctly.
+ninja: error: rebuilding 'build.ninja': subcommand failed

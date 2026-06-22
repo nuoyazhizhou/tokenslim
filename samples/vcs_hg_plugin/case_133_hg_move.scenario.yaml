@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg move` 命令将文件 src/old.txt 移动到 dst/new.txt，输出显示移动操作摘要。'
+target_capability: '文件操作摘要保留'
+expected_keep: 'hg move, moving src/old.txt to dst/new.txt'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c2de413b2f1ad8fbaafc05b532da197d51662de74b95386f340d90f46df3ad92'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'CVS 提交日志，包含两个文件的提交信息，显示文件路径和版本号。'
+target_capability: 'CVS 提交日志压缩'
+expected_keep: 'cvs commit, Checking in src/main.rs;, Checking in config/app.json;'
+expected_compress: '1.2, initial version, 1.3, Add new feature'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0653a96cab43c21f6c1b7bfb28735f7a658b1d08ef8b3c221e4030c0298a66ed'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

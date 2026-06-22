@@ -1,0 +1,15 @@
+scenario: 'AWS CloudFormation 堆栈 ''api'' 创建过程中，IAM 角色和 Lambda 函数资源依次创建完成，最终堆栈创建成功的事件序列。'
+target_capability: 'CloudFormation 事件行脱水与状态折叠'
+expected_keep: 'CREATE_COMPLETE, CREATE_IN_PROGRESS, Resource creation Initiated'
+expected_compress: '重复状态行（如多个 CREATE_IN_PROGRESS 可折叠）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b971009c4194565ac1fb31d9b92ae6c43e7ac6bb7e368ae58c7a9c437a7bb27a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

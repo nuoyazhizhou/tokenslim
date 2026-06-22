@@ -1,0 +1,26 @@
+{
+  "name": "Blade",
+  "slice_type": "BladeTemplate",
+  "priority": 100,
+  "description": "Blade (PHP) 模板语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "{{", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{!!", "end_delimiter": "!!}"},
+        {"pattern_type": "paired_delimiters", "pattern": "@if", "end_delimiter": "@endif"},
+        {"pattern_type": "paired_delimiters", "pattern": "@foreach", "end_delimiter": "@endforeach"},
+        {"pattern_type": "paired_delimiters", "pattern": "@for", "end_delimiter": "@endfor"},
+        {"pattern_type": "paired_delimiters", "pattern": "@while", "end_delimiter": "@endwhile"},
+        {"pattern_type": "paired_delimiters", "pattern": "@switch", "end_delimiter": "@endswitch"},
+        {"pattern_type": "paired_delimiters", "pattern": "@section", "end_delimiter": "@endsection"},
+        {"pattern_type": "contains", "pattern": "@yield"},
+        {"pattern_type": "contains", "pattern": "@include"},
+        {"pattern_type": "contains", "pattern": "@extends"},
+        {"pattern_type": "contains", "pattern": "@php"},
+        {"pattern_type": "contains", "pattern": "@endphp"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+scenario: 'Terraform destroy plan 展示两个资源（aws_instance.old 和 aws_security_group.old）将被销毁，计划摘要为 0 add, 0 change, 2 destroy。'
+target_capability: '资源变更行保留与路径压缩'
+expected_keep: '# aws_instance.old will be destroyed, # aws_security_group.old will be destroyed, Plan: 0 to add, 0 to change, 2 to destroy.'
+expected_compress: "ami = \"ami-11111111111111111\" -> null, instance_type = \"t3.small\" -> null, private_ip = \"10.0.1.42\" -> null"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f987c38029ed972e75a78ea5b241f4150ecf9d2199dce40fc5b5f99b5de76bab'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

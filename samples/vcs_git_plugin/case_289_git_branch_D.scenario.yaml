@@ -1,0 +1,15 @@
+scenario: '用户使用 git branch -D 强制删除本地分支 feature/force-delete，系统确认删除并显示被删除分支的最后提交哈希。'
+target_capability: '分支删除操作保留'
+expected_keep: 'Deleted branch feature/force-delete (was b4c5d6e).'
+expected_compress: 'git branch -D feature/force-delete'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'abbe3336d31c1aaf6466789aa055ba493387c71846ebf912225fa724b067f5bb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

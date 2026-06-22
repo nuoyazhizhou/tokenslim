@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话，包含多种结果（通过、跳过、失败、错误、预期失败），并展示失败和错误的详细信息。'
+target_capability: '测试结果混合场景压缩'
+expected_keep: 'collected 6 items, FAILED tests/test_b.py::test_bad - AssertionError: expected 42, 1 failed, 2 passed, 1 skipped, 1 xfailed, 1 error in 2.40s'
+expected_compress: 'tests/test_a.py::test_ok PASSED, tests/test_b.py::test_bad FAILED, tests/test_c.py::test_fixture ERROR'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a72acc52dbedb33aecca8e4d56ec4c6a151cf8cf8008d65b042994a1283318d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

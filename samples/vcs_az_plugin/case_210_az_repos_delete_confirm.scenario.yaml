@@ -1,0 +1,15 @@
+scenario: '用户通过 Azure DevOps CLI 删除 ID 为 12345 的仓库，确认删除成功，输出包含删除确认行和仓库名称。'
+target_capability: '删除确认行保留'
+expected_keep: 'Repository deleted: legacy-repo'
+expected_compress: 'az repos delete --id 12345 --yes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '33dd1f1a1c12c6e537de9300fe9532154cbad767ce0a7d1c891accaa637d86df'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

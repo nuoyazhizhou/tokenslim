@@ -1,0 +1,15 @@
+scenario: '在Windows CMD中执行where命令查找python.exe，返回两个路径结果。'
+target_capability: '命令输出保留'
+expected_keep: "C:\\Python39\\python.exe, C:\\Users\\user\\AppData\\Local\\Programs\\Python\\Python39\\python.exe"
+expected_compress: "C:\\> where python, C:\\>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0fe0fe79d977f591db2bc58c13d012e57e8f6c13b183e8e0bc64f045299e7ba6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

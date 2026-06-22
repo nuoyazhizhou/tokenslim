@@ -1,0 +1,14 @@
+pulumi up --stack prod
+Updating (prod)
+
+ +   aws:sns/topic:Topic           alerts    create
+ ~   aws:lambda/function:Function  worker    update
+
+Diagnostics:
+  aws:sns/topic:Topic (alerts):
+    error: creating SNS Topic: AuthorizationError: User is not authorized
+
+Resources:
+    + 1 to create
+    ~ 1 to update
+    10 unchanged

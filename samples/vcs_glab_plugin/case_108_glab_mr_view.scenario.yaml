@@ -1,0 +1,15 @@
+scenario: '用户使用 `glab mr view 123` 查看 GitLab 合并请求详情，输出包含 MR 标题、作者、指派人、审查者、标签、状态、创建时间、里程碑、源分支、Web URL 和描述信息。'
+target_capability: 'MR 查看命令输出压缩'
+expected_keep: 'glab mr view 123, !123 feat: Add new feature, Description:'
+expected_compress: 'Web URL:   https://gitlab.com/owner/repo/-/merge_requests/123, ==========================================, Changes:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b85b3067ead6961ba232ed966bea1f306977bb88cfc2b1e1847b37d8bb968ecc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

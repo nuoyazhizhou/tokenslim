@@ -1,0 +1,10 @@
+gh actions view 12345
+Workflow: CI
+Run: #12345
+Status: Success
+Trigger: push
+Created: 2026-04-08 10:00:00
+Jobs:
+  build: ✓ Passed (3m24s)
+  test:  ✓ Passed (5m12s)
+  lint:  ✓ Passed (1m30s)

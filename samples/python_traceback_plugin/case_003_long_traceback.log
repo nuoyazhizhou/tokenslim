@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/app/module1.py", line 10, in func1
+    func2()
+  File "/app/module2.py", line 20, in func2
+    func3()
+  File "/app/module3.py", line 30, in func3
+    func4()
+  File "/app/module4.py", line 40, in func4
+    func5()
+  File "/app/module5.py", line 50, in func5
+    func6()
+  File "/app/module6.py", line 60, in func6
+    raise IndexError("List index out of range")
+IndexError: List index out of range

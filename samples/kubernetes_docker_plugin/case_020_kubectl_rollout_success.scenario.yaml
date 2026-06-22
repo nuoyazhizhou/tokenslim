@@ -1,0 +1,15 @@
+scenario: 'Kubectl rollout status 命令显示部署 ''api'' 在命名空间 ''prod'' 中成功滚动更新，随后列出相关 Pod 状态。'
+target_capability: 'K8S 滚动更新成功信号保留'
+expected_keep: "deployment \"api\" successfully rolled out"
+expected_compress: 'kubectl rollout status deployment/api -n prod'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2753698904d42f86c1f7ca21f428d78d942a614575249f47b224062fbc95f55d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

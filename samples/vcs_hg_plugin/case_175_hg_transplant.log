@@ -1,0 +1,4 @@
+hg transplant abc1234 def5678 ghi9012
+transplanting abc1234:msg1
+transplanting def5678:msg2
+transplanted 3 revisions

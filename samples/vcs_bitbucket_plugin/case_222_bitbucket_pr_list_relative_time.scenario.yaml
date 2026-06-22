@@ -1,0 +1,15 @@
+scenario: '用户使用 Bitbucket CLI 查询所有状态的 PR 列表，输出包含表头、分隔线和相对时间（如 ''2 days ago''）的 PR 数据行。'
+target_capability: 'PR 列表相对时间保留'
+expected_keep: 'OPEN   310     Fix stale cache invalidation        alice       OPEN       2 days ago'
+expected_compress: 'TYPE   ID      TITLE                               AUTHOR      STATE      CREATED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c4aaea15cc14b3f128527fc6d0b82b2dbe8808827f56d77d5a6632c1d1054e74'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

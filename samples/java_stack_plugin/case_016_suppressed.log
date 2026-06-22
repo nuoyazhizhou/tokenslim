@@ -1,0 +1,12 @@
+Exception in thread "main" java.lang.RuntimeException: Primary exception
+    at com.example.app.Main.process(Main.java:45)
+    at com.example.app.Main.main(Main.java:10)
+    Suppressed: java.lang.IOException: Resource cleanup failed
+        at com.example.app.Resource.close(Resource.java:120)
+        at com.example.app.Main.cleanup(Main.java:50)
+    Suppressed: java.lang.IllegalStateException: Invalid state during cleanup
+        at com.example.app.State.validate(State.java:200)
+        at com.example.app.Main.cleanup(Main.java:55)
+    Suppressed: java.lang.NullPointerException: Null reference in cleanup
+        at com.example.app.Cleaner.clean(Cleaner.java:75)
+        at com.example.app.Main.cleanup(Main.java:60)

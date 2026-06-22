@@ -1,0 +1,145 @@
+{
+  "name": "build",
+  "enabled": true,
+  "priority": 40,
+  "skills": [
+    "build",
+    "test",
+    "check",
+    "lint",
+    "run",
+    "bench",
+    "configure"
+  ],
+  "workspace_commands": {
+    "rust": [
+      "cargo build",
+      "cargo test",
+      "cargo check",
+      "cargo clippy",
+      "cargo run",
+      "cargo bench"
+    ],
+    "go": [
+      "go build ./...",
+      "go test ./..."
+    ],
+    "java:maven": [
+      "mvn test",
+      "mvn package"
+    ],
+    "java:gradle": [
+      "gradle test",
+      "gradle build"
+    ],
+    "java:gradlew": [
+      "./gradlew test",
+      "./gradlew build"
+    ],
+    "python:pip": [
+      "pytest"
+    ],
+    "python:uv": [
+      "uv run pytest"
+    ],
+    "python:poetry": [
+      "poetry run pytest"
+    ],
+    "python:conda": [
+      "pytest"
+    ],
+    "cpp:cmake": [
+      "cmake -S . -B build",
+      "cmake --build build",
+      "ctest"
+    ],
+    "cpp:ninja": [
+      "ninja"
+    ],
+    "cpp:make": [
+      "make"
+    ],
+    "docker:compose": [
+      "docker compose up",
+      "docker compose build",
+      "docker compose logs"
+    ],
+    "terraform": [
+      "terraform init",
+      "terraform plan",
+      "terraform apply"
+    ],
+    "ansible": [
+      "ansible-playbook site.yml",
+      "ansible-playbook --check site.yml"
+    ],
+    "helm": [
+      "helm lint .",
+      "helm template .",
+      "helm install"
+    ],
+    "bazel": [
+      "bazel build //...",
+      "bazel test //..."
+    ],
+    "proto": [
+      "buf lint",
+      "buf generate",
+      "protoc --version"
+    ],
+    "python:pytest": [
+      "pytest"
+    ],
+    "db:postgres": [
+      "psql -c '\\l'",
+      "psql -c '\\dt'"
+    ],
+    "db:mongodb": [
+      "mongosh",
+      "mongo"
+    ],
+    "db:redis": [
+      "redis-cli",
+      "redis-server --version"
+    ]
+  },
+  "route": {
+    "command_keywords": [
+      "cargo",
+      "rustc",
+      "go",
+      "make",
+      "cmake",
+      "ctest",
+      "ninja",
+      "docker",
+      "docker-compose",
+      "kubectl",
+      "gradle",
+      "gradlew",
+      "act",
+      "circleci",
+      "buildkite",
+      "buildkite-agent",
+      "jenkins",
+      "terraform",
+      "ansible-playbook",
+      "ansible",
+      "pulumi",
+      "aws",
+      "helm",
+      "bazel",
+      "protoc",
+      "buf",
+      "pytest",
+      "psql",
+      "postgres",
+      "mongod",
+      "mongosh",
+      "mongo",
+      "redis-cli",
+      "redis-server"
+    ],
+    "route_group": "build"
+  }
+}

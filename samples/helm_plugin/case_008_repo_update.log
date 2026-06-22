@@ -1,0 +1,6 @@
+helm repo update
+Hang tight while we grab the latest from your chart repositories...
+...Successfully got an update from the "bitnami" chart repository
+...Successfully got an update from the "prometheus-community" chart repository
+...Successfully got an update from the "grafana" chart repository
+Update Complete. Happy Helming!

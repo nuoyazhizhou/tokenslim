@@ -1,0 +1,13 @@
+Exception in thread "main" java.lang.StackOverflowError
+    at com.example.app.A.methodA(A.java:5)
+    at com.example.app.B.methodB(B.java:10)
+    at com.example.app.C.methodC(C.java:15)
+    at com.example.app.A.methodA(A.java:5)
+    at com.example.app.B.methodB(B.java:10)
+    at com.example.app.C.methodC(C.java:15)
+    at com.example.app.A.methodA(A.java:5)
+    at com.example.app.B.methodB(B.java:10)
+    at com.example.app.C.methodC(C.java:15)
+    at com.example.app.A.methodA(A.java:5)
+    at com.example.app.B.methodB(B.java:10)
+    at com.example.app.C.methodC(C.java:15)

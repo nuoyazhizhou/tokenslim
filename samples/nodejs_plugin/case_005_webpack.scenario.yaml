@@ -1,0 +1,15 @@
+scenario: 'Webpack 5.88.0 打包时产生两个警告，其中一个警告来自 ./src/utils.js 模块，由 some-loader 触发，提示 ''Something went wrong''。'
+target_capability: '警告保留与路径压缩'
+expected_keep: 'WARNING in ./src/utils.js, Module Warning (from ./node_modules/some-loader/index.js):, Something went wrong'
+expected_compress: 'webpack 5.88.0 compiled with 2 warnings in 2345ms'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '172b2c2f217ae21d707ce8f080cabd2633c1ae946adde2b4968cdd6065588763'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

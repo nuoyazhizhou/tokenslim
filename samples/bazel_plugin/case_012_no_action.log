@@ -1,0 +1,7 @@
+bazel build //app:server
+INFO: Analyzed target //app:server (0 packages loaded, 0 targets configured).
+INFO: Found 1 target...
+Target //app:server up-to-date:
+  bazel-bin/app/server
+INFO: Elapsed time: 0.321s, Critical Path: 0.000s
+INFO: Build completed successfully, 0 total actions

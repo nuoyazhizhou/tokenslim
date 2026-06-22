@@ -1,0 +1,15 @@
+scenario: '用户通过管道组合 sed、sort 和 uniq 命令处理文本文件，统计替换后每行出现次数。'
+target_capability: '管道命令链压缩'
+expected_keep: 'cat list.txt | sed ''s/foo/bar/g'' | sort | uniq -c, 2 bar, 1 baz, 3 qux'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1cbfdf281bfb54b87bb99d382a5e833e245bf1d232319a3ef7ca6411160dd0b7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

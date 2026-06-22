@@ -1,0 +1,15 @@
+scenario: 'Azure AppService 日志，包含 worker 启动、数据库连接超时错误和重试信息。'
+target_capability: '云日志外壳剥离与结构化保留'
+expected_keep: 'worker started pid=42, database connection error: timeout after 30s, retrying database connection'
+expected_compress: '2026-05-13T08:13:39.939Z, 2026-05-13T08:13:41.100Z, 2026-05-13T08:13:45.210Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'faa89c9bb38285b6cc3674fed124ef925019a48cdf1b15d456f4bb51cb620d07'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

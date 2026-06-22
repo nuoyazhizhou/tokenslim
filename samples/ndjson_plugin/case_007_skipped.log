@@ -1,0 +1,4 @@
+{"Time":"2024-01-01T12:00:00Z","Action":"run","Package":"github.com/shop/report","Test":"TestDailyReport"}
+{"Time":"2024-01-01T12:00:01Z","Action":"skip","Package":"github.com/shop/report","Test":"TestDailyReport","Elapsed":0.01}
+{"Time":"2024-01-01T12:00:01Z","Action":"run","Package":"github.com/shop/report","Test":"TestWeeklyReport"}
+{"Time":"2024-01-01T12:00:02Z","Action":"pass","Package":"github.com/shop/report","Test":"TestWeeklyReport","Elapsed":0.20}

@@ -1,0 +1,15 @@
+scenario: '静态代码分析工具输出的警告日志，包含4条不同内容的警告信息，每条警告对应不同的代码问题（未使用的导入、变量命名、魔法数字、缺少注释）。'
+target_capability: '警告行保留与去重'
+expected_keep: '[WARN] Line 1: Unused import: lodash'
+expected_compress: '[WARN] Line 5: Variable name ''i'' not descriptive'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0f91c808a85605cb4e297de6dcdd466565a3248739793f9623e1f2392d31acc4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

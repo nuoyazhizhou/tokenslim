@@ -1,0 +1,3 @@
+PHP Warning:  Division by zero in /app/calc.php:15
+Ruby Error: undefined method `foo' for nil:NilClass (NoMethodError)
+        from app.rb:20:in `<main>'

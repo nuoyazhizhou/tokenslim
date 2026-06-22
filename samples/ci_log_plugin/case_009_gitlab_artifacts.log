@@ -1,0 +1,12 @@
+glab ci view --log
+Running with gitlab-runner 16.11.0
+section_start:1778662000:script[collapsed=false]
+$ mvn test
+[INFO] Tests run: 220, Failures: 0, Errors: 0, Skipped: 0
+section_end:1778662050:script
+section_start:1778662051:upload_artifacts_on_success[collapsed=true]
+Uploading artifacts for successful job
+target/surefire-reports: found 24 matching files
+Uploading artifacts as archive to coordinator... 201 Created
+section_end:1778662058:upload_artifacts_on_success
+Job succeeded

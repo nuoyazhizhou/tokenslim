@@ -1,0 +1,15 @@
+scenario: 'SVN diff 输出，展示两个文件的变更：methods.rs 添加了 VCS 配置验证代码并修改了常量，types.rs 扩展了 GIT_COMMANDS 数组。'
+target_capability: 'SVN diff 变更状态保留'
+expected_keep: 'Index: src/core/doctor_workspace/methods.rs, Index: src/plugins/vcs_plugin/types.rs, @@ -1417,6 +1417,12 @@'
+expected_compress: 'src/core/doctor_workspace/methods.rs, src/plugins/vcs_plugin/types.rs, (revision 12345)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2bd062a5d0a5e037951d65a8b2745d498e263d3586517334bcd5c096b9cf0a2a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

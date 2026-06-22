@@ -1,0 +1,11 @@
+repo diff
+repo diff --platform/frameworks/base
+diff --git a/src/Activity.java b/src/Activity.java
+index 1234567..89abcdef 100644
+--- a/src/Activity.java
++++ b/src/Activity.java
+@@ -10,7 +10,7 @@ public class Activity {
+-        Log.d(TAG, "old log");
++        Log.d(TAG, "new log");
+    }
+ }

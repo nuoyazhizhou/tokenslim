@@ -1,0 +1,15 @@
+scenario: 'Xcode 构建日志中连续出现多条 /dev/null 探针命令（clang -x c -c /dev/null -o /dev/null），用于检测编译器可用性，属于构建过程中的噪音行。'
+target_capability: '探针噪音折叠'
+expected_keep: '无（所有行均为探针，应被压缩）'
+expected_compress: '/usr/bin/clang -x c -c /dev/null -o /dev/null'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6de999575891936df5d651cf4196207229c2fc42b4bc0b47bcf2dbdf7ba02a6b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

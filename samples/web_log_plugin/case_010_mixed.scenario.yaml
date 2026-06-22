@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：用户登录和仪表盘访问日志，插件应保留状态码，压缩 IP 和 UA。'
+target_capability: '常规日志压缩与字典化'
+expected_keep: '状态码200, 302'
+expected_compress: 'IP地址, URI路径, User-Agent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

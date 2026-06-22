@@ -1,0 +1,8 @@
+LOG:  checkpoint starting: time
+LOG:  checkpoint complete: wrote 37 buffers (0.2%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.004 s, sync=0.001 s, total=0.006 s
+HINT:  Some hints about configuration
+DETAIL:  More detailed information here
+--------
+2026-05-07 10:33:10.123 UTC [2412] LOG:  database system is ready to accept connections
+--------
+NOTICE:  CREATE TABLE / PRIMARY KEY will create implicit index "users_pkey" for table "users"

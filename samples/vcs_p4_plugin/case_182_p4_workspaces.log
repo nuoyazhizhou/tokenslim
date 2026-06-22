@@ -1,0 +1,4 @@
+p4 workspaces
+alice-ws    alice    /home/alice/workspace
+bob-ws      bob      C:\workspace\bob
+charlie-ws  charlie  /home/charlie/dev

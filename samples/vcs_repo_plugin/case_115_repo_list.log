@@ -1,0 +1,7 @@
+repo list
+repo list -p
+Listing projects ...
+platform/build/make: platform/build/make
+platform/frameworks/base: platform/frameworks/base
+platform/packages/apps/Settings: platform/packages/apps/Settings
+vendor/partner/products/MyApp: vendor/partner/products/MyApp

@@ -1,0 +1,15 @@
+scenario: '在 GitHub Actions CI 中运行 pnpm jest 测试，测试套件 session.test.ts 中一个测试失败，期望 HTTP 状态码 401 但实际得到 200，导致整体退出码为 1。'
+target_capability: '错误保留与堆栈压缩'
+expected_keep: 'FAIL tests/auth/session.test.ts, Expected: 401, Received: 200, Error: Process completed with exit code 1'
+expected_compress: 'GitHub Actions runner version 2.329.0, Run CI=true pnpm jest --runInBand, Time: 19.844 s, Ran all test suites.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '41fbe4da5511f4c982b00d26d0ce5630cce22695ba5e2af8b932bf38a06384d6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一个包含 GBK 编码的中文文本 ''中文'' 的十六进制表示，用于测试编码兜底插件能否正确识别并保留中文内容。'
+target_capability: '编码修复与保留'
+expected_keep: '中文'
+expected_compress: 'D6 D0 CE C4'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

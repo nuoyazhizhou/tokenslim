@@ -1,0 +1,15 @@
+scenario: '在Windows CMD中执行一个不存在的命令''unknown''，系统返回错误信息提示命令未被识别。'
+target_capability: '错误保留'
+expected_keep: '''unknown'' is not recognized as an internal or external command'
+expected_compress: "C:\\>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ed468fb68e574c3206bc35074267c132fad5836442e6edfec021a5fbea7f7859'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

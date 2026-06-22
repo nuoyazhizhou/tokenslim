@@ -1,0 +1,2 @@
+git reset --hard HEAD~1
+HEAD is now at c7d8e9f Release v2.1.0

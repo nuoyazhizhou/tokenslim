@@ -1,0 +1,15 @@
+scenario: 'AWS ALB 访问日志以 JSONL 格式记录，包含健康检查请求（GET /health 返回 200）和上传请求（POST /api/upload 返回 502 错误），日志外层有 timestamp、logGroup、logStream 等元数据字段。'
+target_capability: '云日志外壳剥离与元数据压缩'
+expected_keep: 'GET /health HTTP/1.1 200 OK, POST /api/upload HTTP/1.1 502 Bad Gateway'
+expected_compress: 'timestamp, logGroup, logStream'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '657f69df5da425352f5d436d4be06914012a12477b2fccb6126003ace44c2903'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

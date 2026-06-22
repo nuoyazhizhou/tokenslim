@@ -1,0 +1,3 @@
+git bisect start
+We are now on branch 'main'
+(git bisect run on branch 'main')

@@ -1,0 +1,15 @@
+scenario: '一个单行 JSON 对象，不是 NDJSON 格式，测试插件是否将其视为单行而非多行 NDJSON 进行压缩。'
+target_capability: '单行 JSON 回退处理'
+expected_keep: "{\"level\":\"info\",\"msg\":\"single object should not be treated as ndjson\"}"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6d8d826f40f31dd9efb1fa82bff17e8ca35f4cf4b28450d514e9ec7df431cd16'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

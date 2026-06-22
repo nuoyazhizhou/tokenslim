@@ -1,0 +1,28 @@
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    active: boolean;
+    age: number;
+    address: {
+        street: string;
+        city: string;
+        zip: string;
+        country: string;
+    };
+}
+class UserService {
+    constructor(private db: Database) {}
+    getById(id: number): Promise<User> {
+        return this.db.query(`SELECT * FROM users WHERE id = ?`, [id]);
+    }
+    create(data: Partial<User>): Promise<User> {
+        return this.db.insert('users', data);
+    }
+    update(id: number, data: Partial<User>): Promise<User> {
+        return this.db.update('users', data, { id });
+    }
+    delete(id: number): Promise<void> {
+        return this.db.delete('users', { id });
+    }
+}

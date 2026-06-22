@@ -1,0 +1,15 @@
+scenario: '日志文件中包含文件路径，如 /app/data/input.csv 和 /app/data/output.json，路径周围有噪声文本（如时间戳、日志级别）。'
+target_capability: '路径字典压缩'
+expected_keep: '[INFO] 2024-01-15 10:30:45 Starting process'
+expected_compress: '/app/data/input.csv'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e6c470c1f5a76b9a7f7e7497f8890ed24764a03c5edfe60a66a40242b40395cd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

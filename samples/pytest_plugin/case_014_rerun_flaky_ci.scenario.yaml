@@ -1,0 +1,15 @@
+scenario: 'GitLab CI 中 pytest 执行集成测试，因网关超时导致 flaky 测试重跑后失败，其余测试通过。'
+target_capability: 'pytest 测试结果与重跑压缩'
+expected_keep: 'test session starts, collected 6 items, 1 failed, 5 passed, 2 reruns in 28.52s'
+expected_compress: 'tests/integration/test_gateway.py::test_gateway_timeout RERUN, E   TimeoutError: gateway did not respond within 2.0s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9f19b5702c518862a8dd9fc2aa3038c3e51efd53064b2fcc4b6b2b270884f3f1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

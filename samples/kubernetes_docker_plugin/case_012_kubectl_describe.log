@@ -1,0 +1,17 @@
+Name:         nginx
+Namespace:    default
+Priority:     0
+Node:         node-1/10.0.0.1
+Start Time:   Mon, 15 Jan 2024 10:00:00 +0000
+Labels:       app=nginx
+Status:       Running
+IP:           10.244.0.5
+Containers:
+  nginx:
+    Image:        nginx:latest
+    Port:         80/TCP
+    Host Port:    0/TCP
+    State:        Running
+      Started:    Mon, 15 Jan 2024 10:00:05 +0000
+    Ready:        True
+    Restart Count: 0

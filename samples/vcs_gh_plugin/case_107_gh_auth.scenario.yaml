@@ -1,0 +1,15 @@
+scenario: '用户执行 `gh auth status` 检查 GitHub CLI 认证状态，输出显示已登录为 alice，并包含节点版本和账号信息。'
+target_capability: 'GitHub CLI 认证状态输出压缩'
+expected_keep: 'gh auth status, Logged in to github.com as alice (@alice), Current account: alice (123456)'
+expected_compress: '✓, - Node: v20.0.0, - Manager: gh'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9d1fcd0c9adaf6652273623d91f6c92febb77d50d332485564aaa8010edd8af4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'P4 users 命令输出，列出用户信息（用户名、全名、邮箱、最后访问时间），每行一个用户。'
+target_capability: '用户列表保留'
+expected_keep: 'alice, bob, charlie'
+expected_compress: 'p4 users'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b4da1e33347dcc14744906caa62620610f4b4042abe4450c7d847a5cb5c7725c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

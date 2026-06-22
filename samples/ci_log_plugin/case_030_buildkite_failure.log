@@ -1,0 +1,12 @@
+buildkite-agent pipeline upload
+--- :git: Checkout
+Repository checked out
+--- :package: Build
+npm ci
+added 900 packages
++++ :test_tube: Test
+npm test
+FAIL src/api.test.ts
+Error: expected status 200
+buildkite-agent annotate --style error "Tests failed"
+Command exited with status 1

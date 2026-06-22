@@ -1,0 +1,6 @@
+C:\src> xcopy /s /e /h .\source .\dest
+.\source\file1.txt
+.\source\file2.txt
+.\source\dir1\file3.txt
+3 File(s) copied
+C:\src> 

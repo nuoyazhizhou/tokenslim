@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash 管道组合 grep 和 awk 命令，从 /var/log/auth.log 中提取失败登录的 IP 地址，并显示结果。'
+target_capability: '命令管道与输出保留'
+expected_keep: '192.168.1.10, 10.0.0.5'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3fe2731f6af4e0dfa1299e86e63ef30871a1192049aa5a02aade90f03191f9f9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

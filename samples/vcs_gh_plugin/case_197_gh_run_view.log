@@ -1,0 +1,12 @@
+gh run view 12345
+Workflow: CI
+Run: #12345 - Build and Test
+Status: Success
+Branch: main
+Event: push
+Conclusion: success
+Jobs: 2 jobs
+  ✓ build (3m24s)
+  ✓ test (5m12s)
+  ✓ lint (1m30s)
+Run URL: https://github.com/owner/repo/actions/runs/12345

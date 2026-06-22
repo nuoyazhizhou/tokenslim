@@ -1,0 +1,15 @@
+scenario: 'Go测试日志中，一个包（github.com/shop/search）的测试用例TestIndex通过，但包级别最终状态为fail，可能由于其他测试失败或超时。'
+target_capability: '包级失败保留'
+expected_keep: "{\"Action\":\"fail\",\"Package\":\"github.com/shop/search\"}"
+expected_compress: "{\"Action\":\"run\"},{\"Action\":\"pass\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ceb19df0d979d39d06f615ffeb8323fb2ae17be20a7782464c87a69a450c2dca'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,16 @@
+scenario: '在 GitHub Actions CI 中运行 Android Gradle 单元测试，测试失败导致构建失败；日志包含 Runner 版本、Gradle Task 状态行（多数 UP-TO-DATE/FROM-CACHE）、一个 FAILED 的测试任务（LoginViewModelTest.rejectsExpiredToken 断言失败）以及构建异常和错误报告路径。'
+target_capability: 'Gradle 构建失败关键行保留'
+expected_keep: '> Task :app:testDebugUnitTest FAILED rejectsExpiredToken FAILED'
+expected_compress: 'UP-TO-DATE FROM-CACHE NO-SOURCE'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+expected_dispatch_chain: ['shell_session_plugin', 'android_gradle_plugin']
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '51e052073b9d153f5c8f327cc8cec2e7c9ff083389989deecb0641f21955a5d0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

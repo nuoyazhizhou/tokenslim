@@ -1,0 +1,9 @@
+{
+  "name": "generic_text",
+  "enabled": true,
+  "priority": 0,
+  "is_fallback": true,
+  "route": {
+    "route_group": "generic"
+  }
+}

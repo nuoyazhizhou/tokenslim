@@ -1,0 +1,15 @@
+scenario: '日志中包含多种 ANSI 光标控制序列（移动、清除、保存/恢复）以及进度文本，需要清理控制码并保留有效行。'
+target_capability: 'ANSI 控制码移除'
+expected_keep: 'Processing..., Completed, Saved state'
+expected_compress: "ANSI escape sequences (\\x1b[A, \\x1b[J, \\x1b[K, etc.)"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0a82a4a9f39106c009d9050a95d853bea5be46c43c5a15636177a7c65ca5dbaa'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,4 @@
+hg status -S
+M src/plugins/vcs_plugin/methods.rs
+M src/plugins/vcs_plugin/parser.rs
+? config/vcs_plugin.local.json

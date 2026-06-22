@@ -1,0 +1,3 @@
+hg purge
+removed: build/temp/file.txt
+removed: .cache/data.json

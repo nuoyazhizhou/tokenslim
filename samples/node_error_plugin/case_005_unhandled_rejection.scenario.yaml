@@ -1,0 +1,15 @@
+scenario: 'Node.js 异步函数中未捕获的 Promise 拒绝，产生 UnhandledPromiseRejectionWarning 错误，包含堆栈跟踪和弃用警告。'
+target_capability: '错误堆栈脱水与异常类保留'
+expected_keep: 'UnhandledPromiseRejectionWarning, Error: Promise rejected, asyncFunction'
+expected_compress: '/home/user/project/async.js:10:15, internal/process/next_tick.js:68:7, DeprecationWarning'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9a71f6dfdcd15fc6c381a3767c755c797906604318c119b0c01ce1dfbc982354'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

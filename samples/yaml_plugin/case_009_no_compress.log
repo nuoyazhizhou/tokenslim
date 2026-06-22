@@ -1,0 +1,4 @@
+This is a simple log message without any YAML patterns.
+It should not be compressed by the plugin.
+Just plain text that looks like regular logging output.
+No key: value patterns here.

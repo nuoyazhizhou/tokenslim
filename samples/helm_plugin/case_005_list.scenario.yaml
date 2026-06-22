@@ -1,0 +1,15 @@
+scenario: '执行 helm list --all-namespaces 命令，输出包含三个 Helm release 的列表，包括名称、命名空间、修订版、更新时间、状态、Chart 和 App 版本。'
+target_capability: 'Helm 列表输出压缩'
+expected_keep: 'NAME, NAMESPACE, STATUS'
+expected_compress: 'UPDATED, CHART, APP VERSION'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2546a066af06e16a7c703813de4c53d4fabb63ad7f26f5c51bfa75eaa63c9f30'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

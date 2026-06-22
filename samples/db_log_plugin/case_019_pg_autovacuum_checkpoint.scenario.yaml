@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 数据库日志，包含自动清理（autovacuum）和检查点（checkpoint）事件，以及一个因其他服务器进程崩溃导致的连接终止警告。'
+target_capability: '数据库日志脱水'
+expected_keep: 'automatic vacuum, checkpoint starting, checkpoint complete, terminating connection'
+expected_compress: '2026-05-13 09:03:01.000 UTC, wrote 812 buffers (5.0%), write=4.812 s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'de5d36888e54ae64e4fae5161df31a2e35b95a92ce61842bf8ba4d926923c198'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

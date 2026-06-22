@@ -1,0 +1,11 @@
+buildkite-agent pipeline upload
+--- Package
+mvn package
+[INFO] BUILD SUCCESS
++++ Upload artifacts
+buildkite-agent artifact upload "target/app.jar"
+Uploading artifact target/app.jar
+Artifact uploaded successfully
++++ Upload reports
+buildkite-agent artifact upload "target/surefire-reports/*.xml"
+Artifacts uploaded

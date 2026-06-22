@@ -1,0 +1,15 @@
+scenario: '执行 p4 revert 命令后，输出显示三个文件被还原，并统计总文件数。'
+target_capability: '文件操作保留与统计摘要压缩'
+expected_keep: 'reverted, //depot/main/src/main.rs, 3 files reverted.'
+expected_compress: 'p4 revert'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4be7eea5002b7d230438a6f0138607391fbbb28b5dce46ebef3096cb7c2f96a7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

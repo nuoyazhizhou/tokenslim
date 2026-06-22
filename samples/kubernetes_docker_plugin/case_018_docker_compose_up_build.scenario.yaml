@@ -1,0 +1,15 @@
+scenario: 'Docker Compose 启动并重建 api 和 worker 服务，输出容器状态及服务日志，包含健康检查和任务处理记录。'
+target_capability: 'Docker Compose 输出压缩'
+expected_keep: 'Listening on 0.0.0.0:8080, queue worker started, GET /health 200'
+expected_compress: 'Container tokenslim-db-1  Running, Container tokenslim-redis-1  Running, Container tokenslim-api-1  Recreate'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cf85d9d363457ff1bc25396df0406a621b81783c73235da70080807ff699329e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

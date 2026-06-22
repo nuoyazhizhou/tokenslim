@@ -1,0 +1,15 @@
+scenario: '在 CircleCI 上运行 pytest 测试，启用 coverage 并生成 JUnit XML 报告，输出包含测试会话摘要、测试结果和覆盖率报告。'
+target_capability: 'pytest 测试结果与覆盖率摘要压缩'
+expected_keep: '84 passed in 9.41s, TOTAL 288 10 97%'
+expected_compress: 'tests/test_api.py ................................, src/api.py 120 8 93% 44-48, 91'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ee80ce2aeed0c447c491e04adf93f758da5bf34ae45374246af14dcd6fd9c82b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

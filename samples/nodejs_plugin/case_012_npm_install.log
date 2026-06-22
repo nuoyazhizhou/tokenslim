@@ -1,0 +1,16 @@
+npm WARN deprecated package1@1.0.0: This package is deprecated
+npm WARN deprecated package2@2.0.0: Please use package3 instead
+npm WARN deprecated package3@3.0.0: No longer maintained
+
+> node-gyp@9.3.1 install /home/user/project/node_modules/node-gyp
+> node install.js
+
+> core-js@3.27.2 postinstall /home/user/project/node_modules/core-js
+> node -e "try{require('./postinstall')}catch(e){}"
+
+added 120 packages, and audited 121 packages in 12s
+
+15 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities

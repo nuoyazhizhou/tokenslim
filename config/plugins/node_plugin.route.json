@@ -1,0 +1,53 @@
+{
+  "name": "node",
+  "enabled": true,
+  "priority": 50,
+  "skills": [
+    "install",
+    "test",
+    "build",
+    "bundle",
+    "run"
+  ],
+  "workspace_commands": {
+    "node:npm": [
+      "npm install",
+      "npm test",
+      "npm run build"
+    ],
+    "node:npx": [
+      "npx --version",
+      "npx jest",
+      "npx vite build"
+    ],
+    "node:node": [
+      "node --version",
+      "node server.js"
+    ],
+    "node:yarn": [
+      "yarn install",
+      "yarn test",
+      "yarn build"
+    ],
+    "node:pnpm": [
+      "pnpm install",
+      "pnpm test",
+      "pnpm build"
+    ],
+    "node:bun": [
+      "bun install",
+      "bun test",
+      "bun run build"
+    ]
+  },
+  "route": {
+    "command_keywords": [
+      "npm",
+      "npx",
+      "yarn",
+      "pnpm",
+      "node"
+    ],
+    "route_group": "node"
+  }
+}

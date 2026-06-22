@@ -1,0 +1,4 @@
+hg bookmarks
+* feature/current @ 12345abc
+   bugfix/old
+   release/v1.0

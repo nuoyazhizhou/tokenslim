@@ -1,0 +1,15 @@
+scenario: 'webpack_vite_plugin 边界测试：单行 Webpack 构建成功日志，插件应保留编译结果，压缩资产详情。'
+target_capability: '单行成功构建日志压缩'
+expected_keep: 'compiled successfully'
+expected_compress: 'asset main.js 85 KiB [emitted] [minimized]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'CVS 仓库中执行 `cvs tag v1.0.0` 命令，为两个 Java 源文件打标签，输出显示文件被标记为 T 状态。'
+target_capability: '命令锚点与文件状态保留'
+expected_keep: 'cvs tag v1.0.0, T src/main.java, T src/utils.java'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'aaddf67b535153f7aa288f161a247d475c5c3e2662999b5f8f1d590afc776b8b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'CI/CD流水线中，使用act运行GitHub Actions工作流的build作业，执行pytest测试时断言失败（expected 200），产生错误信号行，最终进程退出码为1，并清理容器。'
+target_capability: '测试失败错误保留'
+expected_keep: '::error file=tests/test_api.py,line=51::expected 200, Process completed with exit code 1'
+expected_compress: '[build/checkout] Start image=node:20, [build/post] Cleaning up container'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b8bf8aef1e72ff9cc146d95b8061b2d10d97851cb8c0da1a5553778c0231e7ce'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

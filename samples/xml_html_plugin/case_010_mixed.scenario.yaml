@@ -1,0 +1,15 @@
+scenario: '日志文件中混合了普通文本行和XML/HTML结构，需要压缩XML/HTML标签间的空白字符，同时保留标签结构和文本内容。'
+target_capability: 'XML/HTML结构压缩'
+expected_keep: '<html><body><h1>Hello</h1></body></html>, <root><item>test</item></root>'
+expected_compress: 'Regular log message, Another regular line, End of log'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd306806605df6cfc077c153551477d97ac3d421ccd547cb5971e4cac9857e7dd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

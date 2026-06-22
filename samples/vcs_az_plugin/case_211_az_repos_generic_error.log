@@ -1,0 +1,4 @@
+az repos policy list --project my-project
+Repository created: temp-repo
+RemoteUrl: https://dev.azure.com/myorg/myproj/_git/temp-repo
+error: unauthorized to read policy

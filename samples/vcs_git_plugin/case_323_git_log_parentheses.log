@@ -1,0 +1,12 @@
+git log -n 2
+commit a5265b0fc18c4ff0d9e7bd460838fb52e8959b54
+Author: nuoyazhizhou <nuoyazhizhou@example.com>
+Date:   Thu Apr 30 10:49:15 2026 +0800
+
+    run 命令插件调度，vcs 插件能力调度均通过plugin_config_loader plugin_dispatcher 实现
+
+commit 7a5775c8348f484bb377e603d82b7dc25998b6b7
+Author: nuoyazhizhou <nuoyazhizhou@example.com>
+Date:   Wed Apr 29 09:28:41 2026 +0800
+
+    优化 Mercurial (Hg) 命令输出压缩率

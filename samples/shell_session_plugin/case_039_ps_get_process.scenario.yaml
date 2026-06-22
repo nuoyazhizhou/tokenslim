@@ -1,0 +1,15 @@
+scenario: 'PowerShell 中执行 Get-Process 命令并通过 Select-Object 限制输出前 3 个进程，展示进程信息表格。'
+target_capability: '命令与输出保留'
+expected_keep: 'Get-Process | Select-Object -First 3, Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName, chrome, explorer, svchost'
+expected_compress: "PS C:\\> (提示符), 空行"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '90344e388821c18d6ec22c4828c9c098a4209f04b5c83dc0562f243603c9d70d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 svn add 添加新文件 newfile.txt，输出显示添加成功状态 ''A''。'
+target_capability: 'SVN 命令锚点与变更状态保留'
+expected_keep: 'svn add newfile.txt, A         newfile.txt'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '54139c1c9ce37136b753e089ee831d0ac5c2bfbe0ee4f141f7e9f664139f9338'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

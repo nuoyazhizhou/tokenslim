@@ -1,0 +1,8 @@
+git diff --name-only
+src/core/tree_restructure/mod.rs
+src/core/tree_restructure/config.rs
+src/core/tree_restructure/trie.rs
+src/core/tree_restructure/render.rs
+src/plugins/vcs_git_plugin/methods.rs
+tests/tree_test.rs
+docs/tree_guide.md

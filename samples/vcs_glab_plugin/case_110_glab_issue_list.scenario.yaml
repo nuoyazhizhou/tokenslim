@@ -1,0 +1,15 @@
+scenario: '用户使用 GitLab CLI 执行 ''glab issue list'' 命令，列出项目中的 issue 列表，包含标题、标签、分配人、作者和状态等字段。'
+target_capability: 'GitLab issue 列表压缩'
+expected_keep: 'glab issue list, Fix login bug, Add new feature'
+expected_compress: '#   Title                          Labels        Assignee    Author    Status, --------------------------------------------------------------------'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e0c95f9414da4cf7de852d025b2c5993fb264d5e96df72b3c32e280cbc23ff32'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+2026-05-13 09:00:01.100 UTC [7311] LOG:  duration: 1842.55 ms  statement: SELECT * FROM orders WHERE tenant_id = 42 AND status = 'pending' FOR UPDATE
+2026-05-13 09:00:02.200 UTC [7312] ERROR:  deadlock detected
+2026-05-13 09:00:02.201 UTC [7312] DETAIL:  Process 7312 waits for ShareLock on transaction 9931; blocked by process 7311.
+2026-05-13 09:00:02.202 UTC [7312] STATEMENT:  UPDATE orders SET status = 'paid' WHERE id = 9001
+2026-05-13 09:00:03.300 UTC [7313] LOG:  duration: 38.10 ms  execute <unnamed>: SELECT pg_advisory_unlock($1)

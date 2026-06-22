@@ -1,0 +1,15 @@
+ansible-playbook site.yml --tags db
+
+PLAY [database] ****************************************************************
+
+TASK [Install postgres] ********************************************************
+ok: [db1]
+ok: [db2]
+
+TASK [Configure replica] *******************************************************
+skipping: [db1]
+changed: [db2]
+
+PLAY RECAP *********************************************************************
+db1                        : ok=1    changed=0    unreachable=0    failed=0    skipped=1
+db2                        : ok=2    changed=1    unreachable=0    failed=0    skipped=0

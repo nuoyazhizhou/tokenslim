@@ -1,0 +1,15 @@
+travis_fold:start:install
+Installing dependencies
+$ npm ci
+added 1204 packages in 18s
+travis_fold:end:install
+travis_fold:start:script
+$ npm test
+FAIL test/api.spec.ts
+  payment API
+    expected 201 to equal 200
+Error: expected response status 200
+The command "npm test" exited with 1.
+travis_fold:end:script
+Done. Your build exited with 1.
+Travis job failed

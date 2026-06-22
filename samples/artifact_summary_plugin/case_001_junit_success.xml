@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="unit.auth.success" tests="8" failures="0" errors="0" skipped="0" time="1.284">
+  <testcase classname="tests.auth.test_login" name="test_login_with_valid_password" time="0.142"/>
+  <testcase classname="tests.auth.test_login" name="test_login_with_valid_totp" time="0.188"/>
+  <testcase classname="tests.auth.test_login" name="test_rejects_disabled_user" time="0.127"/>
+  <testcase classname="tests.auth.test_password_reset" name="test_reset_token_is_single_use" time="0.216"/>
+  <testcase classname="tests.auth.test_password_reset" name="test_reset_token_expiry" time="0.201"/>
+  <testcase classname="tests.auth.test_session" name="test_session_cookie_is_http_only" time="0.121"/>
+  <testcase classname="tests.auth.test_session" name="test_session_rotation_after_login" time="0.149"/>
+  <testcase classname="tests.auth.test_session" name="test_logout_revokes_refresh_token" time="0.140"/>
+  <system-out>pytest finished with all auth tests passing on worker gw0</system-out>
+</testsuite>

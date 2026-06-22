@@ -1,0 +1,15 @@
+scenario: '展示一个绝对路径 /home/user/project/src/main.js 和当前工作目录 /home/user/project，用于测试路径压缩为字典令牌的能力。'
+target_capability: '路径字典压缩'
+expected_keep: 'File path:'
+expected_compress: '/home/user/project/src/main.js'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f17154f80ff8dc195e1a24ef56c0b1d4acde565ab2e444849a4dcaf54d244161'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

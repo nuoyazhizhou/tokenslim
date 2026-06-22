@@ -1,0 +1,15 @@
+scenario: '系统日志中记录了两条由 cron 定时任务触发的备份脚本执行记录，包含时间戳、主机名、进程名、用户和命令信息。'
+target_capability: '系统日志脱水：保留时间戳和消息，压缩主机名和进程名'
+expected_keep: 'May  7 10:00:00, (root) CMD (/usr/bin/backup.sh), May  7 11:00:00'
+expected_compress: 'server1, CRON[5678], CRON[5679]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '580a65371c1e87c9911f76cc6d3a3f24aafb1cc562e8d4d6b32ab13ed8431524'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'yaml_plugin 负样本测试：Dockerfile 非 YAML 格式，插件应保持原样或路由到对应插件。'
+target_capability: '非YAML文本的原始保留'
+expected_keep: "FROM node:18-alpine, WORKDIR /app, CMD [\"node\", \"server.js\"]"
+expected_compress: 'COPY package.json package-lock.json ./, RUN npm ci --only=production, COPY . .'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,10 @@
+cmake -S . -B build -GNinja
+-- The C compiler identification is GNU 13.2.0
+-- The CXX compiler identification is GNU 13.2.0
+-- Detecting C compiler ABI info - done
+-- Detecting CXX compiler ABI info - done
+CMake Error at CMakeLists.txt:18 (find_package):
+  By not providing "FindOpenSSL.cmake" in CMAKE_MODULE_PATH this project has
+  asked CMake to find a package configuration file provided by "OpenSSL".
+
+-- Configuring incomplete, errors occurred!

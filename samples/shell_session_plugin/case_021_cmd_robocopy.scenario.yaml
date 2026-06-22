@@ -1,0 +1,15 @@
+scenario: 'Windows CMD 会话中执行 robocopy /MIR 同步任务，显示文件复制进度、统计摘要和结束时间，最后回到提示符。'
+target_capability: 'robocopy 进度行压缩'
+expected_keep: "robocopy C:\\src C:\\dst /MIR, 100%        New File, Total    Copied   Skipped"
+expected_compress: "C:\\src>, Started : Sunday, June 7, 2026 8:00:00 AM, Speed :"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c24378006608f9845573a58baa907b7637eb95ac28c4f6d9994e8c9e1d2ed340'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

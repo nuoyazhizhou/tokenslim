@@ -1,0 +1,15 @@
+scenario: 'Ninja 构建系统调用 GCC 编译 C++ 项目时，因源文件使用了未定义的成员函数 ''listen_async'' 导致编译失败，构建过程被中断。'
+target_capability: '编译错误保留与构建进度压缩'
+expected_keep: 'error: no member named ''listen_async'' in ''Server'''
+expected_compress: '[1/5] Building CXX object src/CMakeFiles/api.dir/main.cpp.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '85b8b5aeecf6c922d4a6ba8e8fcc4527f3c7a3a3f7beeb06f09a1231a6c1c480'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

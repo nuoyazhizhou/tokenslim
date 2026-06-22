@@ -1,0 +1,15 @@
+scenario: '使用 kubectl apply -f k8s/ 命令批量应用 Kubernetes 资源清单，输出显示 namespace、service、deployment、configmap、secret 和 ingress 资源的创建或配置状态。'
+target_capability: 'Kubernetes apply 输出保留'
+expected_keep: 'kubectl apply -f k8s/, namespace/prod unchanged, service/api configured'
+expected_compress: 'deployment.apps/api configured, configmap/api-config created, secret/api-secret configured'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1b27f70f325d41bb4f0096fa4fcf123cf04d3dbc2eca43118df7e7c9a6296193'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

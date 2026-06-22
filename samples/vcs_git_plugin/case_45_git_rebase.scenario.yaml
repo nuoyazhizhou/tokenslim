@@ -1,0 +1,15 @@
+scenario: '用户执行 git rebase 操作，显示当前分支已是最新，然后回放提交并应用补丁，自动合并 src/main.rs 成功，最终 rebase 完成并更新 refs/heads/main。'
+target_capability: 'rebase 操作核心输出保留'
+expected_keep: 'Successfully rebased and updated refs/heads/main.'
+expected_compress: 'First, rewinding head to replay your work on top of it...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8fb06bc543f56825d998027d9d3ea80455623f957bbebb0cf5768e8bef4f9530'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

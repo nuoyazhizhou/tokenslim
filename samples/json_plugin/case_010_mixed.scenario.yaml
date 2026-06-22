@@ -1,0 +1,15 @@
+scenario: '处理一个包含JSON对象的日志片段，对象中有一个布尔值success和一个数字count，周围有开始和结束标记。'
+target_capability: 'JSON结构保留与紧凑化'
+expected_keep: "{\"result\": {\"success\": true, \"count\": 42}}"
+expected_compress: "Starting JSON processing...\\nJSON processing finished."
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '77d2e075b46e9a3e2d45d75098413ed5572c2949a7b8e80fe156661c9fc5dc82'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

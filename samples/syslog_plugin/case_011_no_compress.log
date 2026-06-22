@@ -1,0 +1,3 @@
+Plain text without syslog timestamp format
+No host or process information
+Should pass through unchanged

@@ -1,0 +1,15 @@
+scenario: 'Git diff 显示新增了一个二进制文件 image.png，内容为空，仅包含文件模式变更和索引信息。'
+target_capability: '二进制文件差异保留'
+expected_keep: 'diff --git a/image.png b/image.png, new file mode 100644, index 0000000..e69de29'
+expected_compress: 'Binary files /dev/null and b/image.png differ'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'babb0cc21fe6b651cb9c7ce80b140a682b3373c75c11fb035f4340474e16fb4d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

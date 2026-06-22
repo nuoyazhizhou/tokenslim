@@ -1,0 +1,15 @@
+scenario: '用户执行 git checkout 命令，切换分支到 main，然后创建并切换到新分支 feature/checkout-test，输出包含分支切换信息和前一个 HEAD 位置。'
+target_capability: '分支切换信息保留'
+expected_keep: 'Switched to branch ''main'', Previous HEAD position was 18f4bb5 feat: Support doctor, Switched to a new branch ''feature/checkout-test'''
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '59ea688a83157cb15dcb6ad1dd457d0a2ca298af2ed31e48e0cd55fee79b2abf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

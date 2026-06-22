@@ -1,0 +1,15 @@
+scenario: 'PHP 和 Ruby 混合错误日志，包含 PHP 除零警告和 Ruby NoMethodError 堆栈跟踪。'
+target_capability: '混合语言错误保留'
+expected_keep: 'PHP Warning: Division by zero, Ruby Error: undefined method `foo'' for nil:NilClass, from app.rb:20'
+expected_compress: '无 HTML 标签可压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5c94a161b65b04acfd101c609cf637a5dfb76cce988be8c4ab4b23ae4433f95a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

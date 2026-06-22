@@ -1,0 +1,15 @@
+scenario: '用户执行 helm uninstall 命令卸载名为 web 的 release，命名空间为 prod，输出显示 release 已卸载。'
+target_capability: '卸载输出保留'
+expected_keep: "release \"web\" uninstalled"
+expected_compress: 'helm uninstall web --namespace prod'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b86819249a05d0ce3979d9b61d64cc9672dc1ca131056c6955814bdc14254aaf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

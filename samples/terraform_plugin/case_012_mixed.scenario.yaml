@@ -1,0 +1,15 @@
+scenario: 'Terraform apply 执行时，计划创建 IAM 角色但遇到 EntityAlreadyExists 错误，输出包含资源变更行、计划摘要和错误信息。'
+target_capability: '错误保留与资源变更行提取'
+expected_keep: 'aws_iam_role.api will be created, Error: creating IAM Role, Plan: 1 to add'
+expected_compress: '(known after apply), Terraform will perform the following actions'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '04d18973a4667a047c126b505cee5efe222f79e8c8755552587ae1c5646442fe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

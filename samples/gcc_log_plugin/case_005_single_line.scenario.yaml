@@ -1,0 +1,15 @@
+scenario: 'GCC 编译警告：main.c 第 42 行未使用变量 ''temp'''
+target_capability: '编译警告保留'
+expected_keep: 'warning: unused variable ''temp'''
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '360ce785fe8a1a842a691d7068512043d59393be98501c5d9a821044957682b8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T23:57:45.510882'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

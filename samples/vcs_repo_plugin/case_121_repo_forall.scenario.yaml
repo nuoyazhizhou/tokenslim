@@ -1,0 +1,15 @@
+scenario: 'Android Repo 仓库中执行 ''repo forall'' 命令，遍历所有项目并执行 git log 命令，输出每个项目的路径和最近一次提交的哈希与描述。'
+target_capability: 'repo forall 命令输出压缩'
+expected_keep: "repo forall -c \"echo $REPO_PROJECT; git log -1 --oneline\""
+expected_compress: 'platform/build/make: abc1234 Initial commit'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '625df13159a01d008473a3f3fb0ca4b1cb0423f8169be362fa239154c9fd8fa5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

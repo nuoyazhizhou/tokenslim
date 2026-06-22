@@ -1,0 +1,15 @@
+scenario: '用户执行 ''hg config'' 命令查看 Mercurial 仓库配置，输出包含用户名、编辑器及默认远程路径。'
+target_capability: '配置命令保留'
+expected_keep: 'hg config, username = alice.chen, default = https://bitbucket.org/user/repo'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fadb1976bc5c2b7bca366e74c5d3ae1fd4b164f5ecdc6460680cb9d013f24f8f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

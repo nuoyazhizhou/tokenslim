@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库的提交日志查询，使用 ''svn log -l 10'' 命令获取最近 10 条提交记录，每条记录包含修订号、作者、日期和单行提交信息。'
+target_capability: 'SVN 日志压缩与保留'
+expected_keep: 'r1234, r1233, r1232'
+expected_compress: '------------------------------------------------------------------------'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '46edaecb703ffe09a70b9639a5cc2d46c3da45fdcd27b15ad23f544eb3d8b650'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

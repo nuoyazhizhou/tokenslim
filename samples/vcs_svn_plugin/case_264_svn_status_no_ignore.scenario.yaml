@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库中执行 ''svn status --no-ignore'' 命令，显示工作副本状态，包括已修改、新增、忽略和未版本控制的文件。'
+target_capability: 'SVN 状态输出压缩与路径字典化'
+expected_keep: 'svn status --no-ignore, M, A, I, ?'
+expected_compress: 'src/core/text_slicer/methods.rs, target/, *.log'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0e7dc37184c67a3daef804dda8c385dcd308d3496cad6c582bf2bcc73d49fbf5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

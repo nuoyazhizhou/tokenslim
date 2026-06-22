@@ -1,0 +1,15 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://json.schemastore.org/sarif-2.1.0.json",
+  "runs": [
+    {
+      "tool": {"driver": {"name": "Semgrep", "semanticVersion": "1.72.0"}},
+      "results": [
+        {"ruleId": "python.flask.security.audit.app-run-param-config.avoid_app_run_with_bad_host", "level": "warning", "message": {"text": "Running Flask on host 0.0.0.0 exposes the development server."}, "locations": [{"physicalLocation": {"artifactLocation": {"uri": "services/api/app.py"}, "region": {"startLine": 42}}}]},
+        {"ruleId": "python.lang.security.audit.subprocess-shell-true.subprocess-shell-true", "level": "warning", "message": {"text": "Found subprocess call with shell=True and user-controlled input."}, "locations": [{"physicalLocation": {"artifactLocation": {"uri": "services/worker/jobs/archive.py"}, "region": {"startLine": 118}}}]},
+        {"ruleId": "generic.secrets.security.detected-aws-access-key-id", "level": "error", "message": {"text": "Possible AWS access key ID committed in fixture file."}, "locations": [{"physicalLocation": {"artifactLocation": {"uri": "tests/fixtures/aws_credentials.txt"}, "region": {"startLine": 3}}}]},
+        {"ruleId": "javascript.express.security.audit.xss.mustache.escape.false", "level": "warning", "message": {"text": "Template renders unescaped HTML from markdown preview."}, "locations": [{"physicalLocation": {"artifactLocation": {"uri": "web/src/routes/preview.ts"}, "region": {"startLine": 65}}}]}
+      ]
+    }
+  ]
+}

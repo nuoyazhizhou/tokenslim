@@ -1,0 +1,15 @@
+scenario: '使用 Android Repo 工具执行 checkout 命令，切换到已存在的分支 ''feature-existing''，并显示切换成功信息。'
+target_capability: '命令锚点保留与项目状态压缩'
+expected_keep: 'repo checkout, Switched to branch ''feature-existing'' in platform/packages/apps/Settings'
+expected_compress: 'repo checkout feature-existing --platform/packages/apps/Settings'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '91faf2ae5b11df055dbde22173600f8213b4781ef40156fcee5d89dc5118970c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

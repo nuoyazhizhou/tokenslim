@@ -1,0 +1,15 @@
+scenario: 'CVS checkout 操作，检出模块到指定目录，包含文件状态更新和文件删除通知。'
+target_capability: '命令锚点保留与噪音压缩'
+expected_keep: 'cvs checkout -d myproject module'
+expected_compress: 'cvs checkout: Updating myproject'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f4cb0f7a1bbe7a6e946aaf9984d3ff04f4fffd60d17c40089d55614743374c6a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

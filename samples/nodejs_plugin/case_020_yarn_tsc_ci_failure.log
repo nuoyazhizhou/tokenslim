@@ -1,0 +1,14 @@
+CircleCI received job node_typecheck
+Run CI=true yarn tsc --noEmit
+src/api/client.ts:27:14 - error TS2322: Type 'string | undefined' is not assignable to type 'string'.
+
+27 const token: string = process.env.API_TOKEN;
+                ~~~~~
+
+src/components/Profile.tsx:88:9 - error TS2552: Cannot find name 'usernmae'. Did you mean 'username'?
+
+88         usernmae={profile.name}
+           ~~~~~~~~
+
+Found 2 errors in 2 files.
+error Command failed with exit code 2.

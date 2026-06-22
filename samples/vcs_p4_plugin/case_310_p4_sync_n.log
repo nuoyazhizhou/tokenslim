@@ -1,0 +1,5 @@
+p4 sync -n
+//depot/main/src/main.rs#5 - updating /home/user/project/src/main.rs
+//depot/main/src/lib/utils.rs#4 - updating /home/user/project/src/lib/utils.rs
+//depot/main/docs/README.md#2 - updating /home/user/project/docs/README.md
+3 files would be updated.

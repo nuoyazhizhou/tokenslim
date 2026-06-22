@@ -1,0 +1,43 @@
+{
+    "name": "cloudformation",
+    "description": "AWS CloudFormation event compaction",
+    "priority": 93,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "cloudformation",
+                    "CREATE_IN_PROGRESS",
+                    "UPDATE_ROLLBACK",
+                    "ROLLBACK_COMPLETE"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.01
+    },
+    "compress": {
+        "token_prefix": "$CFN",
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "decompress": {
+        "token_prefixes": [
+            "$CFN"
+        ]
+    },
+    "keep_signals": [
+        "事件行（状态+资源ID）",
+        "失败/回滚行（FAILED或ROLLBACK状态）",
+        "错误信号行（keep_error_signal保留）"
+    ],
+    "compress_targets": [
+        "空行或全分隔符行",
+        "锚行（首行非空内容）",
+        "重复状态事件行（按状态计数折叠）"
+    ],
+    "design_intent": "CloudFormation事件行脱水：保留失败/回滚事件，折叠重复状态，压缩冗长输出。"
+}

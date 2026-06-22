@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines 构建日志，包含测试阶段（pytest 通过 220 项）和构件发布阶段（上传 drop 和测试结果），最终 Job 成功。'
+target_capability: 'CI/CD 步骤信号保留'
+expected_keep: '##[section]Starting: Test, ##[section]Starting: Publish artifacts, Job succeeded'
+expected_compress: '220 passed in 21.3s, Uploading artifact drop, Uploading test results'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f88c9706775428a014b1288405701ef17eb194468716ea57bbe76af7e1473c11'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

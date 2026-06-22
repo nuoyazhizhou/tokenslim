@@ -1,0 +1,5 @@
+production/auth-service-6f5d4b8c9d-abcde: [INFO] user admin logged in
+production/auth-service-6f5d4b8c9d-abcde: [INFO] session started
+production/payment-gateway-7c9d2f4a3b-xyzab: [ERROR] upstream timeout after 30s
+staging/redis-cache-5d8b7c6a9e-qwert: [WARN] memory usage at 85%
+staging/redis-cache-5d8b7c6a9e-qwert: [INFO] eviction triggered

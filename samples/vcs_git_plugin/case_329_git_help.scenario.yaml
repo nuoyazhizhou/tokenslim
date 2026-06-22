@@ -1,0 +1,15 @@
+scenario: '用户执行 `git` 命令（不带参数），显示 Git 帮助信息，列出常用子命令分类。'
+target_capability: '帮助信息保留'
+expected_keep: 'usage: git, These are common Git commands, clone, init, add, mv, restore, rm, bisect, diff, grep, log, show, status'
+expected_compress: '无（帮助信息通常完整保留）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '19df5d0e2847f0f07e01bfe97ee0f70e8fdc80f1e6d7918cc0abd247c826618d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

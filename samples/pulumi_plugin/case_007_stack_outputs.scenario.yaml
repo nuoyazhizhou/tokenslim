@@ -1,0 +1,15 @@
+scenario: '用户使用 Pulumi 查看名为 dev 的 stack 的输出，显示四个输出值：API URL、存储桶名称、工作队列 URL 和数据库端点。'
+target_capability: 'Pulumi stack output 输出保留'
+expected_keep: 'Current stack outputs (4):'
+expected_compress: 'apiUrl, bucketName, workerQueueUrl, databaseEndpoint'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '467867b9e0e4439b152260752b0fe2b67d79e8c3452f790452a0823ca7f3dfef'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

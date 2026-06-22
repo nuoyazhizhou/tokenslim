@@ -1,0 +1,8 @@
+repo branches
+* master
+  feature-auth
+  feature-ui
+  feature-api
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/feature-auth
+  remotes/origin/feature-ui

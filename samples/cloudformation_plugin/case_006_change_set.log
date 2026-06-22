@@ -1,0 +1,7 @@
+aws cloudformation describe-change-set --stack-name web --change-set-name cs-001
+ChangeSetName: cs-001
+Status: CREATE_COMPLETE
+Changes:
+  ResourceChange: Action=Modify LogicalResourceId=WebService Replacement=False
+  ResourceChange: Action=Add LogicalResourceId=CanaryAlarm Replacement=False
+  ResourceChange: Action=Remove LogicalResourceId=OldDashboard Replacement=False

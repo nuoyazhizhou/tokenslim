@@ -1,0 +1,15 @@
+scenario: 'Jenkins pipeline构建在npm测试中检测到flaky tests，导致最终状态为UNSTABLE。日志包含Pipeline步骤、测试结果统计（480 passed, 2 skipped, 1 flaky）及警告。'
+target_capability: 'Jenkins unstable状态处理'
+expected_keep: 'WARNING: flaky tests were detected; Finished: UNSTABLE'
+expected_compress: 'Recording test results; Publishing coverage report; npm test 详细输出'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd4b8029403732818e194b5720a4604f41b91362a6dfb7e868f99a0d2a244027e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

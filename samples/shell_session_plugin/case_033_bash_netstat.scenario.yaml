@@ -1,0 +1,15 @@
+scenario: '用户使用 netstat -tuln 命令查看系统监听端口，输出显示 TCP 端口 80 和 22 处于 LISTEN 状态。'
+target_capability: '命令输出保留'
+expected_keep: 'tcp        0      0 0.0.0.0:80              0.0.0.0:*               LISTEN'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '81af506b2b3abeebdf0ba630cb215d5679d2ca38b27055263db1c5b217c5d962'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Bazel 远程构建场景，分析 88 个目标，执行 1800 个动作，其中 1200 个远程缓存命中、500 个远程执行、100 个本地沙箱执行，构建成功且耗时 60 秒。'
+target_capability: '远程执行/缓存摘要保留'
+expected_keep: 'INFO: Analyzed 88 targets; INFO: 1800 processes; Build completed successfully'
+expected_compress: 'INFO: Found 88 targets; INFO: Elapsed time'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e4ad5355f981cbed3632d4af2c16f2a4f34b15bdcd9c778383c148af8ec0071e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

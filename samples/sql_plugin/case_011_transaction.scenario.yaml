@@ -1,0 +1,15 @@
+scenario: '数据库事务日志，包含BEGIN TRANSACTION、UPDATE和COMMIT语句，模拟账户转账操作。'
+target_capability: 'SQL语句结构保留'
+expected_keep: 'BEGIN TRANSACTION; UPDATE accounts SET balance = balance - 100 WHERE id = 1; UPDATE accounts SET balance = balance + 100 WHERE id = 2; COMMIT;'
+expected_compress: '-- Transaction complete'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2b90f0f51fc7b5995d410657e83ef8ecd017bc9777b586ba1f98b02ee726fcf8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

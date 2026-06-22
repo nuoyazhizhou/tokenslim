@@ -1,0 +1,15 @@
+scenario: 'Git 仓库的短日志输出，按作者分组显示提交次数和提交信息摘要。'
+target_capability: '提交日志摘要保留'
+expected_keep: 'alice.chen (10):, bob.wang (5):, charlie.li (3):'
+expected_compress: 'Add login feature, Fix bug in auth, Refactor code'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8768817a7f615baafb522b24eda6c4687746c30fef5a1b54081ed2452452a240'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

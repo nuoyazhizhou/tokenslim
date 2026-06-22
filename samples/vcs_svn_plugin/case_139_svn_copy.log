@@ -1,0 +1,2 @@
+svn copy source.txt dest.txt
+A         dest.txt

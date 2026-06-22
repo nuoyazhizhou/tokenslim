@@ -1,0 +1,15 @@
+scenario: '使用 kubectl logs --previous 查看崩溃 Pod 的日志，日志显示应用启动时连接 PostgreSQL 失败导致 panic。'
+target_capability: 'K8s Pod 日志错误保留与令牌化'
+expected_keep: 'panic: failed to connect to postgres'
+expected_compress: 'prod/api-6f5d4b8c9d-z9x8y'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5bec09639747215d3cb4c6aa21c8c2826812a6509d085d75f947a71732d949ec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

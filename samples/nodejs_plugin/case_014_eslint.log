@@ -1,0 +1,61 @@
+/home/user/project/src/foo.js
+  10:5  error    'foo' is not defined  no-undef
+  15:8  warning  'x' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/bar.js
+  20:3  error    'bar' is not defined  no-undef
+  25:5  warning  'y' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/baz.js
+  30:10  error    'baz' is not defined  no-undef
+  35:12  warning  'temp' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/qux.js
+  40:5  error    'qux' is not defined  no-undef
+  45:8  warning  'result' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test1.js
+  50:3  error    'test1' is not defined  no-undef
+  55:5  warning  'data' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test2.js
+  60:10  error    'test2' is not defined  no-undef
+  65:12  warning  'cache' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test3.js
+  70:5  error    'test3' is not defined  no-undef
+  75:8  warning  'buffer' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test4.js
+  80:3  error    'test4' is not defined  no-undef
+  85:5  warning  'config' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test5.js
+  90:10  error    'test5' is not defined  no-undef
+  95:12  warning  'options' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test6.js
+  100:5  error    'test6' is not defined  no-undef
+  105:8  warning  'settings' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test7.js
+  110:3  error    'test7' is not defined  no-undef
+  115:5  warning  'params' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test8.js
+  120:10  error    'test8' is not defined  no-undef
+  125:12  warning  'state' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test9.js
+  130:5  error    'test9' is not defined  no-undef
+  135:8  warning  'props' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test10.js
+  140:3  error    'test10' is not defined  no-undef
+  145:5  warning  'context' is assigned a value but never used  no-unused-vars
+
+/home/user/project/src/test11.js
+  150:10  error    'test11' is not defined  no-undef
+  155:12  warning  'store' is assigned a value but never used  no-unused-vars
+
+✖ 45 problems (20 errors, 25 warnings)

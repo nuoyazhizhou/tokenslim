@@ -1,0 +1,164 @@
+ PASS  tests/foo.test.js
+ PASS  tests/bar.test.js
+ PASS  tests/baz.test.js
+ PASS  tests/qux.test.js
+ PASS  tests/test1.test.js
+ PASS  tests/test2.test.js
+ PASS  tests/test3.test.js
+ PASS  tests/test4.test.js
+ PASS  tests/test5.test.js
+ PASS  tests/test6.test.js
+ PASS  tests/test7.test.js
+ PASS  tests/test8.test.js
+ PASS  tests/test9.test.js
+ PASS  tests/test10.test.js
+ PASS  tests/test11.test.js
+ PASS  tests/test12.test.js
+ PASS  tests/test13.test.js
+ PASS  tests/test14.test.js
+ PASS  tests/test15.test.js
+ PASS  tests/test16.test.js
+ PASS  tests/test17.test.js
+ PASS  tests/test18.test.js
+ PASS  tests/test19.test.js
+ PASS  tests/test20.test.js
+ PASS  tests/test21.test.js
+ PASS  tests/test22.test.js
+ PASS  tests/test23.test.js
+ PASS  tests/test24.test.js
+ PASS  tests/test25.test.js
+ PASS  tests/test26.test.js
+ PASS  tests/test27.test.js
+ PASS  tests/test28.test.js
+ PASS  tests/test29.test.js
+ PASS  tests/test30.test.js
+ PASS  tests/test31.test.js
+ PASS  tests/test32.test.js
+ PASS  tests/test33.test.js
+ PASS  tests/test34.test.js
+ PASS  tests/test35.test.js
+ PASS  tests/test36.test.js
+ PASS  tests/test37.test.js
+ PASS  tests/test38.test.js
+ PASS  tests/test39.test.js
+ PASS  tests/test40.test.js
+ PASS  tests/test41.test.js
+ PASS  tests/test42.test.js
+ PASS  tests/test43.test.js
+ PASS  tests/test44.test.js
+ PASS  tests/test45.test.js
+ PASS  tests/test46.test.js
+ PASS  tests/test47.test.js
+ PASS  tests/test48.test.js
+ PASS  tests/test49.test.js
+ PASS  tests/test50.test.js
+ PASS  tests/test51.test.js
+ PASS  tests/test52.test.js
+ PASS  tests/test53.test.js
+ PASS  tests/test54.test.js
+ PASS  tests/test55.test.js
+ PASS  tests/test56.test.js
+ PASS  tests/test57.test.js
+ PASS  tests/test58.test.js
+ PASS  tests/test59.test.js
+ PASS  tests/test60.test.js
+ PASS  tests/test61.test.js
+ PASS  tests/test62.test.js
+ PASS  tests/test63.test.js
+ PASS  tests/test64.test.js
+ PASS  tests/test65.test.js
+ PASS  tests/test66.test.js
+ PASS  tests/test67.test.js
+ PASS  tests/test68.test.js
+ PASS  tests/test69.test.js
+ PASS  tests/test70.test.js
+ PASS  tests/test71.test.js
+ PASS  tests/test72.test.js
+ PASS  tests/test73.test.js
+ PASS  tests/test74.test.js
+ PASS  tests/test75.test.js
+ PASS  tests/test76.test.js
+ PASS  tests/test77.test.js
+ PASS  tests/test78.test.js
+ PASS  tests/test79.test.js
+ PASS  tests/test80.test.js
+ PASS  tests/test81.test.js
+ PASS  tests/test82.test.js
+ PASS  tests/test83.test.js
+ PASS  tests/test84.test.js
+ PASS  tests/test85.test.js
+ PASS  tests/test86.test.js
+ PASS  tests/test87.test.js
+ PASS  tests/test88.test.js
+ PASS  tests/test89.test.js
+ PASS  tests/test90.test.js
+ PASS  tests/test91.test.js
+ PASS  tests/test92.test.js
+ PASS  tests/test93.test.js
+ PASS  tests/test94.test.js
+ PASS  tests/test95.test.js
+ PASS  tests/test96.test.js
+ PASS  tests/test97.test.js
+ PASS  tests/test98.test.js
+ PASS  tests/test99.test.js
+ PASS  tests/test100.test.js
+ PASS  tests/test101.test.js
+ PASS  tests/test102.test.js
+ PASS  tests/test103.test.js
+ PASS  tests/test104.test.js
+ PASS  tests/test105.test.js
+ PASS  tests/test106.test.js
+ PASS  tests/test107.test.js
+ PASS  tests/test108.test.js
+ PASS  tests/test109.test.js
+ PASS  tests/test110.test.js
+ PASS  tests/test111.test.js
+ PASS  tests/test112.test.js
+ PASS  tests/test113.test.js
+ PASS  tests/test114.test.js
+ PASS  tests/test115.test.js
+ PASS  tests/test116.test.js
+ PASS  tests/test117.test.js
+ FAIL  tests/fail1.test.js
+  ● Test suite failed to run
+
+    Cannot find module 'foo'
+
+      1 | const foo = require('foo');
+        | ^
+
+      at Object.<anonymous> (tests/fail1.test.js:1:17)
+
+ FAIL  tests/fail2.test.js
+  ● divide by zero
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 5
+    Received: Infinity
+
+      10 | test('divide by zero', () => {
+      11 |   expect(divide(10, 0)).toBe(5);
+         |                         ^
+      12 | });
+
+      at Object.<anonymous> (tests/fail2.test.js:11:25)
+
+ FAIL  tests/fail3.test.js
+  ● null pointer
+
+    TypeError: Cannot read properties of null (reading 'value')
+
+      15 | test('null pointer', () => {
+      16 |   const obj = null;
+      17 |   expect(obj.value).toBe(42);
+         |              ^
+      18 | });
+
+      at Object.<anonymous> (tests/fail3.test.js:17:14)
+
+Test Suites: 3 failed, 117 passed, 120 total
+Tests:       5 failed, 2 skipped, 313 passed, 320 total
+Snapshots:   0 total
+Time:        12.345 s
+Ran all test suites.

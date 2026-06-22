@@ -1,0 +1,15 @@
+scenario: 'Cargo 编译 Rust 项目，显示依赖编译进度和最终编译完成信息，包含多个 crate 的编译行和最终完成行。'
+target_capability: '编译进度折叠与保留'
+expected_keep: 'Compiling, Finished'
+expected_compress: '重复的Compiling行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f0a2123ee718d168aa20759262bc1a2a0a48b22bf3128a1b32971747ba5d8069'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

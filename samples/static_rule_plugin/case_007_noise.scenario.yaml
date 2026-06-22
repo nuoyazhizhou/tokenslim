@@ -1,0 +1,15 @@
+scenario: '日志文件中包含无关文本、信息行、规则输出和调试行，测试静态规则插件对噪声行的过滤能力。'
+target_capability: '噪声过滤与规则保留'
+expected_keep: 'Rule output here'
+expected_compress: 'Some unrelated text, [DEBUG] Processing rules'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8fa53900c5df65ecc6bb13e21d37ba8fd022ffd292ef9e93628b5c357669bb73'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

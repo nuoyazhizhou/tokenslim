@@ -1,0 +1,15 @@
+scenario: '用户执行 git rebase --skip 跳过当前补丁，并显示正在应用的补丁信息 ''Update documentation''。'
+target_capability: 'rebase skip 操作保留'
+expected_keep: 'Applying: Update documentation'
+expected_compress: 'git rebase --skip'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1f94d00d5f6c03082d7185eacbb15a294628f0f2202ab2157d8444e87e1f841d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

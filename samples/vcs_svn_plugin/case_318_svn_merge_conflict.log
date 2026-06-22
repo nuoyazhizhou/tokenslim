@@ -1,0 +1,16 @@
+svn merge ^/branches/feature-auth
+--- Merging r123 through r456 into '.':
+U    src/auth/login.py
+U    src/auth/middleware.py
+C    src/auth/config.py
+U    src/user/models.py
+C    src/user/views.py
+U    src/api/endpoints.py
+U    src/api/serializers.py
+U    src/utils/helpers.py
+C    src/utils/validators.py
+U    docs/api.md
+--- Recording mergeinfo for merge of r123 through r456 into '.':
+ U   .
+Summary of conflicts:
+  Text conflicts: 3

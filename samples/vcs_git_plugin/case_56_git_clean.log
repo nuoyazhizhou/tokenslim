@@ -1,0 +1,7 @@
+git clean
+Removing build/temp/main.o
+Removing build/temp/parser.o
+Removing __pycache__
+Would remove .pytest_cache/
+Would remove node_modules/
+Dry run complete - use git clean -f to actually remove

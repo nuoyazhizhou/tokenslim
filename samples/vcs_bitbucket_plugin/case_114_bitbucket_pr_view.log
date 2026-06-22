@@ -1,0 +1,14 @@
+bitbucket pr view 125
+Pull request #125: Refactor codebase
+============================================================
+State:       OPEN
+Author:      alice
+Reviewers:   bob (approved), charlie
+Created:     2026-04-05
+Updated:     2026-04-06
+Source:      feature-refactor -> main
+Description:
+This PR refactors the codebase to improve maintainability.
+
+Participants: alice, bob, charlie
+Comments: 5

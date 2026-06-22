@@ -1,0 +1,15 @@
+scenario: 'GitLab CI 中运行 Gradle 构建 (`./gradlew --stacktrace :app:testReleaseUnitTest`)，测试失败导致构建失败，输出包含任务状态行和测试失败断言错误。'
+target_capability: '保留错误Task和测试失败行'
+expected_keep: '> Task :app:testReleaseUnitTest FAILED org.opentest4j.AssertionFailedError BUILD FAILED'
+expected_compress: ':app:preBuild UP-TO-DATE :app:mergeReleaseResources FROM-CACHE :app:kaptReleaseKotlin UP-TO-DATE'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e91ff1d98b3f11a1d3fdd701d5aff862984a4800b81178c6df23b11db1d4b5cb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

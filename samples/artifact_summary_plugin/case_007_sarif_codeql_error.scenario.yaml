@@ -1,0 +1,15 @@
+scenario: 'CodeQL安全扫描生成的SARIF报告，包含两个SQL注入错误和一个路径注入警告，分别位于src/server/reporting/query_builder.ts、src/server/analytics/segments.ts和src/server/export/export_controller.ts。'
+target_capability: 'SARIF安全扫描结果压缩'
+expected_keep: 'js/sql-injection, error, src/server/reporting/query_builder.ts:184'
+expected_compress: 'json结构, version字段, schema字段'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fc9db98de1765dd845ac4e19de3a2981c573755fdbf5a0336253c1d6e3dc2b36'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

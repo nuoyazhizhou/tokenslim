@@ -1,0 +1,47 @@
+{
+    "name": "ansible",
+    "description": "Ansible play/task output compaction",
+    "priority": 91,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "PLAY [",
+                    "TASK [",
+                    "PLAY RECAP",
+                    "ansible-playbook"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.01
+    },
+    "compress": {
+        "token_prefix": "$ANS",
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "decompress": {
+        "token_prefixes": [
+            "$ANS"
+        ]
+    },
+    "keep_signals": [
+        "TASK [名称] 行（任务标题）",
+        "RUNNING HANDLER [名称] 行（处理程序标题）",
+        "ok/changed/failed/unreachable/skipping: [主机] 行（主机状态）",
+        "PLAY RECAP 行（汇总）",
+        "ERROR! 语法错误行（压缩后的错误信息）"
+    ],
+    "compress_targets": [
+        "重复的任务输出折叠为单行摘要",
+        "主机列表合并为范围格式如 host[1,2]",
+        "详情中的 msg 字段提取并压缩",
+        "语法错误多行压缩为单行",
+        "空行和无关注释行删除"
+    ],
+    "design_intent": "Ansible脱水：保留任务头和主机状态，折叠重复任务细节，压缩语法错误。"
+}

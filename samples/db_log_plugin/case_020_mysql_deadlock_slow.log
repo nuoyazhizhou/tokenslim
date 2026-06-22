@@ -1,0 +1,4 @@
+2026-05-13T09:04:01.111111Z 45 [Note] InnoDB: Transactions deadlock detected, dumping detailed information.
+2026-05-13T09:04:02.222222Z 45 [Warning] InnoDB: Lock wait timeout exceeded; try restarting transaction
+2026-05-13T09:04:03.333333Z 45 [ERROR] Plugin group_replication reported: 'Member was expelled from the group due to network partition'
+2026-05-13T09:04:04.444444Z 46 [Note] Aborted connection 46 to db: 'shop' user: 'app' host: '10.0.0.21' (Got timeout reading communication packets)

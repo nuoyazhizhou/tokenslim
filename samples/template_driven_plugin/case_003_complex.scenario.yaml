@@ -1,0 +1,15 @@
+scenario: '一个包含用户管理界面的HTML模板，使用Jinja2语法，包含条件判断（if user.is_admin, if user.active）和循环（for user in users），展示用户卡片列表。'
+target_capability: '模板结构保留与变量压缩'
+expected_keep: "{% if user.is_admin %}, <div class=\"admin-panel\">, {% for user in users %}"
+expected_compress: '{{ user.name }}, {{ user.email }}, Active'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dc00df58df0ee92cbc9e11302b63fd645e437887a883cfa767924f1f43453def'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

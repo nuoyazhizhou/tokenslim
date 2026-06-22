@@ -1,0 +1,15 @@
+scenario: 'Unreal引擎启动时，日志记录了引擎初始化、资源加载失败（Material和Map文件缺失）以及引用未解析的错误。'
+target_capability: 'Unreal日志标签保留与错误锚点'
+expected_keep: 'LogInit, LogUObjectGlobals, LogLinker, LogUObject'
+expected_compress: 'LogHAL: Verbose, 连续资源加载行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '39021f9dc94b61d174498facffec763378a9653947bc0916eade4da349723789'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

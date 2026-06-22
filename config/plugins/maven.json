@@ -1,0 +1,29 @@
+{
+    "name": "maven",
+    "description": "Maven 构建日志脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$MAVEN"
+    },
+    "keep_signals": [
+        "[ERROR] 行",
+        "[WARNING] 行",
+        "BUILD SUCCESS / BUILD FAILURE",
+        "Tests run: 测试摘要"
+    ],
+    "compress_targets": [
+        "[INFO] 下载进度行折叠",
+        "重复 [INFO] 行去重"
+    ],
+    "design_intent": "Maven 构建日志脱水：保留错误/警告和构建结果，折叠下载进度行。"
+}

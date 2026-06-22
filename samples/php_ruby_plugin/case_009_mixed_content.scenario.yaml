@@ -1,0 +1,15 @@
+scenario: '日志文件混合了 PHP 和 Ruby 的错误信息，包含 PHP Notice 和 Ruby RuntimeError 堆栈，以及时间戳和 INFO/DEBUG/ERROR 级别标记。'
+target_capability: '混合语言错误保留'
+expected_keep: 'PHP Notice: Undefined index, Ruby Error: Something went wrong, from helper.rb:5'
+expected_compress: '2024-01-15 10:30:45 INFO Starting PHP script, 2024-01-15 10:30:46 DEBUG Calling Ruby helper, 2024-01-15 10:30:47 ERROR Job failed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b4ade7811cd5fe8009218a82e608404e090e04c4386fc00b940d01ed179bcd2a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,13 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 1 item
+
+tests/test_db.py::test_query ERROR                                     [100%]
+
+==================================== ERRORS ====================================
+________________________ ERROR at setup of test_query _________________________
+E   FixtureLookupError: ('db_session', <FixtureRequest for <Function test_query>>)
+
+=========================== short test summary info ============================
+ERROR tests/test_db.py::test_query - FixtureLookupError: db_session
+=============================== 1 error in 0.09s ===============================

@@ -1,0 +1,15 @@
+scenario: '一段非 Spring Boot 日志的普通文本，内容为 ''This is not Spring Boot log''、''Just regular text'' 和 ''No compression needed''，用于测试插件在遇到不匹配的输入时是否保持原样不压缩。'
+target_capability: '不匹配输入保持原样'
+expected_keep: 'This is not Spring Boot log, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3011327f4d9e4087bd329c2266402f7622d199d4502fbdf5fc97c32ac4494e44'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

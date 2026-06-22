@@ -1,0 +1,15 @@
+scenario: '用户使用 terraform workspace 命令列出工作区并切换到 prod 工作区，输出包含工作区列表和切换确认信息。'
+target_capability: '工作区命令输出保留'
+expected_keep: "Switched to workspace \"prod\"."
+expected_compress: 'terraform workspace list'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '64cd52f62f630b920f0b0d60112c82e9dbe593a421efd8d803cb1d3179d25753'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

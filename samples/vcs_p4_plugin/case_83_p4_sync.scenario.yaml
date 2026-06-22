@@ -1,0 +1,15 @@
+scenario: 'P4 sync 命令执行后，显示同步完成，并列出三个文件的操作状态（updated/added）。'
+target_capability: '文件操作保留与路径压缩'
+expected_keep: 'Sync completed., src/main.rs - updated, src/utils/helper.rs - updated'
+expected_compress: 'p4 sync'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7e7200976318ba335ce2232de0f01ea018aa2d7a5ca14335baf0698a007963f0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

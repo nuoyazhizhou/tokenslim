@@ -1,0 +1,15 @@
+scenario: '一段纯文本日志，内容为普通英文句子，不包含任何SQL语句或数据库相关模式，测试插件对非SQL内容的处理。'
+target_capability: '非SQL内容保留'
+expected_keep: 'This is not SQL, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2b3e63430caae82905d62df7de00d7a58120010ccb1ed8edba97ed18f7bac1c0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

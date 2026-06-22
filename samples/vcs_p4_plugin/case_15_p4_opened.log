@@ -1,0 +1,8 @@
+p4 opened
+... //depot/main/src/core/doctor_workspace/methods.rs#8 edit default change (text)
+... //depot/main/src/plugins/vcs_plugin/parser.rs#3 add default change (text)
+... //depot/main/src/plugins/vcs_plugin/methods.rs#12 edit default change (text)
+... //depot/main/config/vcs_plugin.json#2 add default change (text)
+... //depot/main/docs/design/vcs_plugin.md#5 edit default change (text)
+... //depot/main/Cargo.toml#15 edit default change (text)
+... //depot/main/Cargo.lock#20 edit default change (text)

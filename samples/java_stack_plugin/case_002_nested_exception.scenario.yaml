@@ -1,0 +1,15 @@
+scenario: 'Java 应用程序抛出 ServiceException，其根本原因是 SQLException 连接失败，堆栈跟踪包含异常链和省略帧。'
+target_capability: '嵌套异常链保留'
+expected_keep: "Exception in thread \"main\" com.example.app.ServiceException: Failed to process request, Caused by: java.sql.SQLException: Connection failed"
+expected_compress: '... 1 more'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c41ed21cafcdb6fd1b03fe0bbd5095173262b5df60ce8ca060b8ea514caeedd7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

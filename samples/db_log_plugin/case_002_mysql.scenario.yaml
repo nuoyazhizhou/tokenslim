@@ -1,0 +1,15 @@
+scenario: 'MySQL 数据库日志中记录了一个因未知原因被中止的连接，连接 ID 为 7，目标数据库为 test，用户为 root。'
+target_capability: '数据库日志错误保留'
+expected_keep: 'Aborted connection 7 to db: ''test'' user: ''root'''
+expected_compress: '2026-05-07T10:31:01.000000Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a135e5a6e633a48f31e0d9c2d1f4d7ba97af3694a028eea46bc405eb7b60e392'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

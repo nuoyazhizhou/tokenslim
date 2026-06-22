@@ -1,0 +1,15 @@
+scenario: 'GCC 编译 foo.c 时产生大量重复的未使用变量警告，警告信息几乎相同，仅行号和变量名略有变化。'
+target_capability: '重复警告压缩'
+expected_keep: 'warning: unused variable ''x'''
+expected_compress: 'foo.c:10:5: warning: unused variable ''x'' [-Wunused-variable]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b5aa98c8b2ef35b0ccff42bf8e53e3a9dd6a159491ac56ad34ec96f631f50108'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

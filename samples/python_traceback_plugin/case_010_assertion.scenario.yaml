@@ -1,0 +1,15 @@
+scenario: 'Python 脚本 test.py 第20行断言失败，触发 AssertionError，异常消息为 ''x must be positive''。'
+target_capability: '断言错误保留与堆栈脱水'
+expected_keep: 'AssertionError: x must be positive'
+expected_compress: "File \"test.py\", line 20, in <module>"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fc5d2dcf3817e9e6f62585bad21a9ea0ccc5e00df6ce0b3e23f784da20a46e96'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

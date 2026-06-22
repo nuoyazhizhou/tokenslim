@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 数据库日志，包含一条慢查询（SELECT ... FOR UPDATE，耗时 1842.55 ms）、一条死锁错误（deadlock detected，涉及事务 9931 和进程 7311/7312）以及一条解锁操作（pg_advisory_unlock）。'
+target_capability: '死锁检测与慢查询压缩'
+expected_keep: 'deadlock detected, duration: 1842.55 ms, pg_advisory_unlock'
+expected_compress: '2026-05-13 09:00:01.100 UTC, SELECT * FROM orders WHERE tenant_id = 42 AND status = ''pending'' FOR UPDATE, UPDATE orders SET status = ''paid'' WHERE id = 9001'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2ec7c6882744f86e1667d20be4c2d63556ed148ab0b861ac3336c50acde07186'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

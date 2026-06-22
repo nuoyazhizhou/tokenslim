@@ -1,0 +1,15 @@
+scenario: '用户执行 git clean 命令进行干运行，显示将被删除的临时文件和缓存目录，并提示使用 -f 实际删除。'
+target_capability: '命令核心输出保留'
+expected_keep: 'Removing, Would remove, Dry run complete'
+expected_compress: 'git clean'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6bb6325b179ca2d475bb61d06ddcbcb6667952d72937118400aa349ca508c789'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,37 @@
+{
+    "name": "yaml",
+    "description": "YAML structure compaction",
+    "priority": 150,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^\\w+:\\s*$"
+            },
+            {
+                "type": "regex",
+                "pattern": "^\\s+-\\s+\\w+:"
+            }
+        ],
+        "min_match_ratio": 0.3
+    },
+    "compress": {
+        "token_prefix": "$YAML",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "有效YAML的映射键值对结构（键被字典化）",
+        "序列的前max_seq_len个元素",
+        "YAML解析失败时的原始文本"
+    ],
+    "compress_targets": [
+        "长序列截断（超过max_seq_len部分替换为$SEQ-$n占位符）",
+        "映射键替换为字典宏",
+        "YAML缩进与空白压缩为紧凑格式",
+        "深度超过max_depth时替换为\"...depth limit...\""
+    ],
+    "design_intent": "YAML脱水：保留键值结构，折叠长序列，压缩键标识符。"
+}

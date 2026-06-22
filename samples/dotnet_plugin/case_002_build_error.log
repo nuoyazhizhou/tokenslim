@@ -1,0 +1,9 @@
+Build started...
+  Determining projects to restore...
+  All projects are up-to-date for restore.
+C:\src\MyApp\Program.cs(15,12): error CS0103: The name 'Console' does not exist in the current context [C:\src\MyApp\MyApp.csproj]
+
+Build FAILED.
+    0 Warning(s)
+    1 Error(s)
+Time Elapsed 00:00:03.45

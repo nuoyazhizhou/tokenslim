@@ -1,0 +1,7 @@
+cvs update
+cvs update: Updating .
+U src/main.rs
+U config/app.json
+A new_file.py
+R old_file.txt
+6 files updated

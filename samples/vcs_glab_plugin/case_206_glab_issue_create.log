@@ -1,0 +1,3 @@
+glab issue create --title "Bug in login" --description "Cannot login with OAuth"
+✓ Created issue !50
+URL: https://gitlab.com/owner/repo/-/issues/50

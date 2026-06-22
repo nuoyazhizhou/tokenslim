@@ -1,0 +1,15 @@
+scenario: 'pytest 参数化测试中一个用例失败，显示断言错误和测试摘要'
+target_capability: '参数化失败保留'
+expected_keep: 'FAILED tests/test_price.py::test_rounding[0.335-0.34] - AssertionError'
+expected_compress: 'tests/test_price.py::test_rounding[10.005-10.01] PASSED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '923a6b81c1236c877754c3475d9b63ec2aeab14172f9c70cf1ae3b79d9a843fd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

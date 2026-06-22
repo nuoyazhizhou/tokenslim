@@ -1,0 +1,3 @@
+hg move
+hg move src/old.txt dst/new.txt
+moving src/old.txt to dst/new.txt

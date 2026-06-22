@@ -1,0 +1,15 @@
+scenario: '打开一个文件路径 /tmp/data.json 的单行日志，路径将被压缩为字典令牌，非路径文本保留。'
+target_capability: '路径字典压缩'
+expected_keep: 'Opening file:'
+expected_compress: '/tmp/data.json'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd6351210a14ea6e64ccdd6cbf673a1f3443adc2c6c45ef1d3f06440650e1151d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

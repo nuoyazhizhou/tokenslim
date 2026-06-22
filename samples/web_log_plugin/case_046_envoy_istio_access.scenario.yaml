@@ -1,0 +1,15 @@
+scenario: 'Envoy/Istio access log 示例，包含健康检查（/health）、静态资源（/static/app.js, /static/app.css）、API 请求（/api/items/10003）以及恶意扫描（/.env, /wp-admin, /config.php 返回 404），展示了正常流量与安全扫描的混合模式。'
+target_capability: '异常/扫描检测与常规折叠'
+expected_keep: '404 NR 行（/.env, /wp-admin, /config.php）'
+expected_compress: '200 行（/health, /static/app.js, /static/app.css）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4541147807be742c793ac533de08d394d3b1f6fdde9747e0320d8660572832c3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

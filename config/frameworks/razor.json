@@ -1,0 +1,25 @@
+{
+  "name": "Razor",
+  "slice_type": "RazorTemplate",
+  "priority": 100,
+  "description": "Razor (C#) 模板语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "@{", "end_delimiter": "}"},
+        {"pattern_type": "paired_delimiters", "pattern": "@(", "end_delimiter": ")"},
+        {"pattern_type": "paired_delimiters", "pattern": "@*", "end_delimiter": "*@"},
+        {"pattern_type": "contains", "pattern": "@model"},
+        {"pattern_type": "contains", "pattern": "@page"},
+        {"pattern_type": "contains", "pattern": "@inject"},
+        {"pattern_type": "contains", "pattern": "@functions"},
+        {"pattern_type": "contains", "pattern": "@code"},
+        {"pattern_type": "contains", "pattern": "@using"},
+        {"pattern_type": "contains", "pattern": "@foreach"},
+        {"pattern_type": "contains", "pattern": "@if"},
+        {"pattern_type": "contains", "pattern": "@else"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+gerrit ls-projects --show-description
+\u001b[31mremote: error: permission denied\u001b[0m
+https://gerrit.example.com/c/team/repo/+/12345

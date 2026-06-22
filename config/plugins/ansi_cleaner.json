@@ -1,0 +1,31 @@
+{
+    "name": "ansi_cleaner",
+    "description": "ANSI escape sequence cleaner",
+    "priority": 250,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "\\x1b\\[[0-9;]*[a-zA-Z]"
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$ANSI",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "非空文本行（保留有效内容）",
+        "进度条最后有效状态（保留最后一次更新）"
+    ],
+    "compress_targets": [
+        "ANSI转义序列（如\\x1b[31m）",
+        "回车符\\r导致的进度条历史记录（仅保留最后一行）",
+        "空白行（剥离后空行丢弃）"
+    ],
+    "design_intent": "ANSI脱水：保留文本内容，移除ANSI控制码，压缩进度条覆盖，丢弃空行。"
+}

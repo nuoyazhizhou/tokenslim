@@ -1,0 +1,15 @@
+scenario: 'Git diff 命令仅输出变更文件列表，无其他信息。'
+target_capability: '文件路径保留'
+expected_keep: 'src/main.rs, src/lib/utils.rs, tests/integration_test.rs, docs/README.md'
+expected_compress: 'git diff --name-only'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '41c47b8d7bf2c4c41e8419692ce9683726ba324e01971d29aeeed386a32a1f7a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

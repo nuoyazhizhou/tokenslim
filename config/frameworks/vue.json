@@ -1,0 +1,51 @@
+{
+  "name": "Vue.js",
+  "slice_type": "VueComponent",
+  "priority": 100,
+  "description": "Vue.js 框架语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "v-if"},
+        {"pattern_type": "contains", "pattern": "v-else"},
+        {"pattern_type": "contains", "pattern": "v-else-if"},
+        {"pattern_type": "contains", "pattern": "v-for"},
+        {"pattern_type": "contains", "pattern": "v-bind"},
+        {"pattern_type": "contains", "pattern": "v-on"},
+        {"pattern_type": "contains", "pattern": "v-model"},
+        {"pattern_type": "contains", "pattern": "v-slot"},
+        {"pattern_type": "contains", "pattern": "v-pre"},
+        {"pattern_type": "contains", "pattern": "v-once"},
+        {"pattern_type": "contains", "pattern": "v-cloak"},
+        {"pattern_type": "contains", "pattern": "v-html"},
+        {"pattern_type": "contains", "pattern": "v-text"},
+        {"pattern_type": "contains", "pattern": "v-show"}
+      ]
+    },
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "prefix_char", "pattern": "@"},
+        {"pattern_type": "prefix_char", "pattern": ":"},
+        {"pattern_type": "prefix_char", "pattern": "#"}
+      ]
+    },
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "{{", "end_delimiter": "}}"}
+      ]
+    },
+    {
+      "type": "combo",
+      "required": [
+        {"pattern_type": "contains", "pattern": "setup"}
+      ],
+      "optional": [
+        {"pattern_type": "contains", "pattern": "<script"},
+        {"pattern_type": "contains", "pattern": "<style"}
+      ]
+    }
+  ]
+}

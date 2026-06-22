@@ -1,0 +1,19 @@
+terraform plan
+
+Terraform will perform the following actions:
+
+  # module.network.module.vpc.aws_route_table.public[0] will be updated in-place
+  ~ resource "aws_route_table" "public" {
+      ~ tags = {
+          ~ "Owner" = "platform" -> "network"
+        }
+    }
+
+  # module.network.module.vpc.aws_route_table.public[1] will be updated in-place
+  ~ resource "aws_route_table" "public" {
+      ~ tags = {
+          ~ "Owner" = "platform" -> "network"
+        }
+    }
+
+Plan: 0 to add, 2 to change, 0 to destroy.

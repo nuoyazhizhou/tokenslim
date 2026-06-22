@@ -1,0 +1,15 @@
+scenario: '日志文件中包含多条不同错误级别的错误信息，每条错误都有不同的错误类型和描述，无重复行。'
+target_capability: '错误保留与折叠'
+expected_keep: '[ERROR] Line 10: Syntax error, unexpected token'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'eb5a220b61ff668451ba2659eae3f90bde3cc07a1b55b04d84670dd8f8f62383'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

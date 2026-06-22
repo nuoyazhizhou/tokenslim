@@ -1,0 +1,6 @@
+git stash
+Saved working directory and index state WIP on main: 18f4bb5 feat: Support doctor
+On branch main
+Changes not staged for commit:
+  modified:   src/plugins/vcs_plugin/methods.rs
+  modified:   src/plugins/vcs_plugin/parser.rs

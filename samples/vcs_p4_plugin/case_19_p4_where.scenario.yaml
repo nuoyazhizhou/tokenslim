@@ -1,0 +1,15 @@
+scenario: "用户执行 p4 where 命令，显示 depot 文件路径到本地工作区路径和客户端路径的映射，共 5 个文件，路径包含公共前缀 //depot/main/ 和 C:\\workspace\\project\\。"
+target_capability: '路径字典压缩'
+expected_keep: '//depot/main/src/core/doctor_workspace/methods.rs'
+expected_compress: "C:\\workspace\\project\\src\\core\\doctor_workspace\\methods.rs"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '45e65e1682af60e24a4b8ae6da1c071c1755085a27b12ed85df08e15ec69a4e7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

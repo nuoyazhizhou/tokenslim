@@ -1,0 +1,15 @@
+scenario: '一段纯文本日志，不包含任何 XML 或 HTML 标签，用于验证插件在无结构化标记时保持原样不压缩。'
+target_capability: '无标签文本保留'
+expected_keep: 'This is a simple log message without any XML or HTML patterns.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '43b049db781b43d065c5174e294f828eb00c931cab63eddd2c8e555160eda798'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

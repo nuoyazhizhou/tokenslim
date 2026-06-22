@@ -1,0 +1,60 @@
+{
+    "name": "ci_log",
+    "description": "CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs",
+    "priority": 174,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "::(group|endgroup|error|warning)::"
+            },
+            {
+                "type": "regex",
+                "pattern": "(section_start:|section_end:|Running with gitlab-runner)"
+            },
+            {
+                "type": "regex",
+                "pattern": "(\\[Pipeline\\]|##\\[(section|error|warning|command)\\]|buildkite-agent|circleci)"
+            },
+            {
+                "type": "regex",
+                "pattern": "(##teamcity\\[|travis_(fold|time):|\\[(ACME-CI|ci)\\]|### Step:)"
+            }
+        ],
+        "min_match_ratio": 0.2
+    },
+    "compress": {
+        "token_prefix": "CI",
+        "semantic_aggregate": {
+            "enabled": true,
+            "dimensions": [
+                "provider",
+                "job",
+                "step",
+                "status",
+                "error",
+                "warning",
+                "cache",
+                "artifact",
+                "retry"
+            ]
+        }
+    },
+    "keep_signals": [
+        "::error 行（错误信号）",
+        "::warning 行（警告信号）",
+        "::group::/section_start: 行（步骤起始）",
+        "::endgroup::/section_end: 行（步骤结束）",
+        "##[error] 行（Azure错误）",
+        "finished: failure 行（Job失败）",
+        "process completed with exit code 行（退出码）"
+    ],
+    "compress_targets": [
+        "步骤内的非关键日志行（折叠为行数统计）",
+        "缓存操作行（压缩为缓存计数）",
+        "重试操作行（压缩为重试计数）",
+        "空行（完全丢弃）"
+    ],
+    "design_intent": "CI/CD日志脱水：保留步骤、错误、警告和状态信号，折叠详细日志行为统计摘要。"
+}

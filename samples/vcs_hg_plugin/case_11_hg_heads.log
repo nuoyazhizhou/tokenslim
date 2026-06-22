@@ -1,0 +1,22 @@
+hg heads
+changeset:   18:eeff3344aa55
+branch:      default
+tag:         tip
+parent:      16:ff11ee22dd33
+user:        alice.chen
+date:        Fri Apr 03 14:32:11 2026 +0800
+summary:     feat(vcs): Add SVN/HG/P4 parser support
+
+changeset:   17:abc123def456
+branch:      feature/auth
+tag:         release-2.0
+user:        bob.wang
+date:        Thu Apr 02 09:15:33 2026 +0800
+summary:     fix: Resolve path dictionary collision
+
+changeset:   16:ff11ee22dd33
+branch:      feature/vcs
+parent:      15:aa99bb88cc77
+user:        charlie.li
+date:        Wed Apr 01 16:45:00 2026 +0800
+summary:     refactor: Extract VcsRuleEngine

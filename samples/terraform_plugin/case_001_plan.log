@@ -1,0 +1,37 @@
+terraform plan
+
+Terraform will perform the following actions:
+
+  # aws_instance.web will be created
+  + resource "aws_instance" "web" {
+      + ami                          = "ami-0c55b159cbfafe1f0"
+      + arn                          = (known after apply)
+      + associate_public_ip_address  = (known after apply)
+      + availability_zone            = (known after apply)
+      + instance_type                = "t3.micro"
+      + private_dns                  = (known after apply)
+      + private_ip                   = (known after apply)
+      + public_dns                   = (known after apply)
+      + public_ip                    = (known after apply)
+      + subnet_id                    = "subnet-1234567890abcdef0"
+      + tags                         = {
+          + "Name" = "web"
+        }
+    }
+
+  # aws_security_group.web will be created
+  + resource "aws_security_group" "web" {
+      + arn         = (known after apply)
+      + description = "managed by terraform"
+      + id          = (known after apply)
+      + name        = "web"
+      + vpc_id      = "vpc-123456"
+    }
+
+  # aws_lb.app will be updated in-place
+  ~ resource "aws_lb" "app" {
+      ~ idle_timeout = 60 -> 120
+        name         = "app-lb"
+    }
+
+Plan: 2 to add, 1 to change, 0 to destroy.

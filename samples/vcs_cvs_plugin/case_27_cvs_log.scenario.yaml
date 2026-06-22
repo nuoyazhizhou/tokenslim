@@ -1,0 +1,15 @@
+scenario: 'CVS 仓库中 parser.rs 文件的日志输出，包含版本 1.12 和 1.11 的提交信息，显示作者、日期、行变更和提交消息。'
+target_capability: 'CVS 日志元数据保留'
+expected_keep: 'revision 1.12, author: alice.chen, lines: +40 -5'
+expected_compress: 'RCS file: /cvsroot/project/src/plugins/vcs_plugin/parser.rs,v, head: 1.12, branch:, locks: strict'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'de2df244c2d4f5a5fb502e278ea322464bf2cd2ef3f18944888bc007a51a26db'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

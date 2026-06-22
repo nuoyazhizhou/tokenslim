@@ -1,0 +1,18 @@
+terraform plan -destroy
+
+Terraform will perform the following actions:
+
+  # aws_instance.old will be destroyed
+  - resource "aws_instance" "old" {
+      - ami           = "ami-11111111111111111" -> null
+      - instance_type = "t3.small" -> null
+      - private_ip    = "10.0.1.42" -> null
+    }
+
+  # aws_security_group.old will be destroyed
+  - resource "aws_security_group" "old" {
+      - id   = "sg-1234567890abcdef0" -> null
+      - name = "old" -> null
+    }
+
+Plan: 0 to add, 0 to change, 2 to destroy.

@@ -1,0 +1,11 @@
+hg shelve --list
+default         (10 files, 2 days ago)
+feature-auth    (5 files, 1 week ago)
+bugfix-123      (3 files, 2 weeks ago)
+refactor-api    (15 files, 3 weeks ago)
+hotfix-456      (2 files, 1 month ago)
+feature-ui      (8 files, 1 month ago)
+cleanup-code    (12 files, 2 months ago)
+experiment-db   (6 files, 2 months ago)
+feature-cache   (4 files, 3 months ago)
+optimize-perf   (20 files, 3 months ago)

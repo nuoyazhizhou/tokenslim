@@ -1,0 +1,402 @@
+# .github/workflows/build-release.yml
+#
+# Cross-platform build + npm publish + GitHub Release.
+#
+# Trigger:
+#   - push of a `v*` tag (recommended: `git tag v0.2.0 && git push --tags`)
+#   - manual `workflow_dispatch` for dry runs
+#
+# What it does, per platform:
+#   1. Build the Rust CLI binaries (`tokenslim`, `tokenslim-server`) on the
+#      matching GitHub-hosted runner.
+#   2. Stage them + `config/plugins/` into packages/cli-binary-<platform>/
+#      via scripts/build-npm-binary-package.mjs.
+#   3. `npm pack` the platform package and `npm publish` it under the
+#      `@tokenslim/cli-binary-*` name with `--provenance --access public`.
+#   4. Collect a SHA-256 manifest of all generated tarballs and upload
+#      it as a workflow artifact.
+#   5. Attach the tarballs to a GitHub Release titled after the tag.
+#
+# Required repository secrets:
+#   - NODE_AUTH_TOKEN    npm automation token (publishes the packages)
+#
+# Required repository variables:
+#   - (none at the moment)
+#
+# Versioning:
+#   The package versions in packages/cli-binary-*/package.json and in
+#   packages/sdk-nodejs/package.json must be updated in lockstep with the
+#   pushed tag.  See `scripts/bump-version.mjs` (planned) or update
+#   them by hand before tagging.
+
+name: build-release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write   # create GitHub Release
+  id-token: write   # npm provenance signing
+  packages: write
+
+jobs:
+  # ---------------------------------------------------------------------
+  # Stage 0: validate that every version-bearing file matches the git
+  # tag.  Runs before `build` so a forgotten `bump-version.mjs` call
+  # fails in seconds instead of wasting 30 minutes on cross-platform
+  # builds that npm would reject anyway with
+  #   ENEEDAUTH / "cannot publish over the previously published versions"
+  # The expected version is derived from the tag (e.g. `v0.2.3` -> `0.2.3`),
+  # so the tag is the single source of truth: bump the files, tag, push.
+  # ---------------------------------------------------------------------
+  validate-versions:
+    name: validate versions == tag
+    runs-on: ubuntu-22.04
+    timeout-minutes: 2
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24
+        # We need Node only to run `bump-version.mjs --check`; a system
+        # Node would also work but pinning the toolchain keeps the gate
+        # green on whatever image GitHub rolls out next.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Derive expected version from tag
+        id: derive
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG="${{ github.ref_name }}"
+          # github.ref_name for a tag push is the bare tag (e.g. "v0.2.3"),
+          # but be defensive and also accept "refs/tags/v0.2.3" in case
+          # the trigger is ever re-wired.
+          VERSION="${TAG#refs/tags/}"
+          VERSION="${VERSION#v}"
+          echo "expected version from tag ${TAG}: ${VERSION}"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Verify all files agree
+        shell: bash
+        # `bump-version.mjs --check` exits 0 when every package.json and
+        # Cargo.toml carries the expected version, 1 otherwise.  Failing
+        # here surfaces the offending file path in the CI log so the
+        # author knows exactly which one to fix.
+        run: |
+          set -euo pipefail
+          node scripts/bump-version.mjs --check "${{ steps.derive.outputs.version }}"
+
+  # ---------------------------------------------------------------------
+  # Stage 1: build the Rust CLI on each platform, in parallel.
+  # ---------------------------------------------------------------------
+  build:
+    name: build ${{ matrix.label }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    needs: validate-versions
+    # NOTE on the build matrix:
+    #
+    #   `darwin-x64` (macos-13 / Intel Mac) is currently disabled.  As
+    #   of 2026-06 the macos-13 runner pool on GitHub Actions is
+    #   severely starved: jobs sit in the queue for hours and we have
+    #   observed runs cancelled by the 6-hour hard timeout.  We keep
+    #   darwin-arm64 (macos-14 / Apple Silicon) enabled because the
+    #   macos-14 pool is healthy.  To re-enable darwin-x64, simply add
+    #   the line back into the matrix:
+    #
+    #     - { os: macos-13, label: darwin-x64, target: x86_64-apple-darwin }
+    #
+    #   and re-push the tag.
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-22.04,    label: linux-x64-gnu,    target: x86_64-unknown-linux-gnu  }
+          - { os: ubuntu-22.04-arm, label: linux-arm64-gnu, target: aarch64-unknown-linux-gnu }
+          # - { os: macos-13,        label: darwin-x64,       target: x86_64-apple-darwin        }  # temporarily disabled, see note above
+          - { os: macos-14,        label: darwin-arm64,     target: aarch64-apple-darwin       }
+          - { os: windows-2022,    label: windows-x64,      target: x86_64-pc-windows-msvc     }
+          - { os: windows-11-arm,  label: windows-arm64,    target: aarch64-pc-windows-msvc    }
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Cache cargo registry & target
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ${{ matrix.target }}
+
+      - name: Build release binaries
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo build --release --bins --target "${{ matrix.target }}"
+          mkdir -p artifacts/bin
+          cp "target/${{ matrix.target }}/release/tokenslim"      "artifacts/bin/tokenslim"
+          cp "target/${{ matrix.target }}/release/tokenslim-server" "artifacts/bin/tokenslim-server"
+          ls -lh artifacts/bin/
+
+      - name: Build platform npm package
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-npm-binary-package.mjs \
+            --platform "${{ matrix.label }}" \
+            --bin-dir artifacts/bin \
+            --config-dir config/plugins \
+            | tee artifacts/tarball_path.txt
+
+      - name: Upload tarball artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pkg-${{ matrix.label }}
+          path: |
+            dist/*.tgz
+            artifacts/tarball_path.txt
+          retention-days: 14
+
+  # ---------------------------------------------------------------------
+  # Stage 2: aggregate SHA-256 manifest + GitHub Release.
+  # Runs once after all build jobs finish.
+  # ---------------------------------------------------------------------
+  release:
+    name: github release
+    needs: build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download all platform tarballs
+        uses: actions/download-artifact@v4
+        with:
+          # The build job uploads its artifact as `dist/*.tgz` (the
+          # script writes the .tgz to <repo>/dist).  Downloading to
+          # `path: dist` would nest it at `dist/dist/*.tgz`; using
+          # `path: .` keeps the original `dist/<name>.tgz` layout so
+          # the `cd dist && sha256sum -b *.tgz` step below finds them.
+          path: .
+          merge-multiple: true
+
+      - name: Generate SHA-256 manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum -b *.tgz | tee SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.tgz
+            dist/SHA256SUMS
+          generate_release_notes: true
+
+  # ---------------------------------------------------------------------
+  # Stage 3: publish the platform packages to npm.
+  # The npm publish step needs the tarballs produced in stage 1, so it
+  # also runs after `build` (in parallel with `release`).
+  #
+  # Each platform job publishes its own tarball to the matching
+  # @tokenslim/cli-binary-* package.  We use `--provenance` for npm's
+  # supply-chain attestation.
+  # ---------------------------------------------------------------------
+  publish-platforms:
+    name: npm publish ${{ matrix.label }}
+    needs: build
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    if: startsWith(github.ref, 'refs/tags/v')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { label: linux-x64-gnu,    name: "@tokenslim/cli-binary-linux-x64-gnu"    }
+          - { label: linux-arm64-gnu,  name: "@tokenslim/cli-binary-linux-arm64-gnu"  }
+          # - { label: darwin-x64,       name: "@tokenslim/cli-binary-darwin-x64"       }  # see note in build job, darwin-x64 build is currently disabled
+          - { label: darwin-arm64,     name: "@tokenslim/cli-binary-darwin-arm64"     }
+          - { label: windows-x64,      name: "@tokenslim/cli-binary-windows-x64"      }
+          - { label: windows-arm64,    name: "@tokenslim/cli-binary-windows-arm64"    }
+
+    steps:
+      # Run `actions/checkout` even though the only input the publish
+      # step needs is the tarball.  `--provenance` requires npm to
+      # verify the source repository by running `git ls-remote`
+      # against `git config --get remote.origin.url`.  Without a
+      # checked-out repo the publish job's CWD is a fresh runner with
+      # no git state, so npm falls back to constructing a URL from
+      # the tarball filename (e.g.
+      # `ssh://git@github.com/dist/<tarball>.git`) which obviously
+      # has no public key configured, producing
+      # `git@github.com: Permission denied (publickey)`.  Checking
+      # out the same tag the build job used gives npm the right
+      # remote to verify provenance against.
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 24 (bundles npm 11.x)
+        # We need npm >=11.5.1 for `npm publish --provenance` to
+        # correctly read the source repo from the tarball's
+        # `package.json#repository` (or from `git config` in the CWD).
+        # Older npm versions have a buggy fallback that builds an
+        # SSH URL from the tarball filename and fails on a CI runner
+        # with no github.com SSH key.  Node 24 bundles npm 11.x,
+        # which is fixed.
+        #
+        # We use `actions/setup-node` rather than
+        # `npm install -g npm@latest` because the system npm lives
+        # under /usr/local and tries to write to
+        # /usr/local/share/man/man7 during the rebuild step; the
+        # runner user does not own that path, so the global install
+        # fails with EACCES.  `setup-node` installs the whole tool-
+        # chain under $RUNNER_TOOLS (user-owned) and is the only
+        # way to get a writable global prefix on a default
+        # ubuntu-22.04 runner.
+        #
+        # NOTE: We intentionally do NOT set `registry-url` here.
+        # When `registry-url` is set, `setup-node` creates a `.npmrc`
+        # that may contain legacy settings (e.g. `always-auth`) which
+        # cause npm to run `git ls-remote` against the package's
+        # repository, even without `--provenance`.  The fallback URL
+        # npm constructs (`ssh://git@github.com/dist/<tarball>.git`)
+        # has no SSH key on the CI runner, so `git ls-remote` fails
+        # with `Permission denied (publickey)`.
+        #
+        # We set the auth token manually in the publish step below.
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Download platform tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: pkg-${{ matrix.label }}
+          # The artifact was uploaded as `dist/<name>.tgz`.  Downloading
+          # to `path: .` preserves that layout, so `ls dist/*.tgz`
+          # below finds the tarball at `./dist/<name>.tgz`.
+          path: .
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          TARBALL=$(ls dist/*.tgz | head -1)
+          echo "--- npm/node versions ---"
+          npm --version
+          node --version
+          echo "--- tarball manifest ---"
+          tar -tzf "$TARBALL" | grep -E '(package.json|package/)' | head -5
+          tar -xzOf "$TARBALL" package/package.json
+          echo "--- git remote npm will verify ---"
+          git config --get remote.origin.url
+          git rev-parse HEAD
+
+          # Extract the tarball and publish from the extracted folder.
+          #
+          # `npm publish <tarball>` in npm 11.x has a bug: it tries to
+          # run `git ls-remote` to verify the source repo, but instead
+          # of reading `repository` from the tarball's package.json or
+          # `git config` from the CWD, it constructs an SSH URL from
+          # the tarball filename itself:
+          #
+          #   ssh://git@github.com/dist/<tarball-name>.git
+          #
+          # The CI runner has no SSH key for github.com, so
+          # `git ls-remote` fails with `Permission denied (publickey)`.
+          #
+          # Publishing from an extracted folder fixes this: npm reads
+          # package.json from the folder, and reads the git context
+          # from the CWD (which is a git repo thanks to
+          # actions/checkout).  The `package/` directory is inside
+          # the git repo, so `git config --get remote.origin.url`
+          # works from there.
+          tar -xzf "$TARBALL"
+          cd package
+          npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
+          echo "Publishing $TARBALL → ${{ matrix.name }}"
+          npm publish \
+            --access public \
+            --tag latest
+
+  # ---------------------------------------------------------------------
+  # Stage 4: publish the JS-only `tokenslim-sdk` package.  It has no
+  # native binaries; npm install pulls the matching @tokenslim/cli-binary-*
+  # optional dep on each platform automatically.
+  # ---------------------------------------------------------------------
+  publish-sdk:
+    name: npm publish tokenslim-sdk
+    needs: publish-platforms
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    if: startsWith(github.ref, 'refs/tags/v')
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node 24 (bundles npm 11.x)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+        # We deliberately do NOT set `registry-url` here.  The
+        # `publish-platforms` job uses this exact pattern (Node 24,
+        # no `registry-url`, manual `npm config set //registry.npmjs.org/:_authToken`)
+        # and works.  When `registry-url` is set, `setup-node` creates
+        # a `.npmrc` and on this workflow the auth-token injection
+        # is silently dropped (we see `NODE_AUTH_TOKEN: <empty>` in
+        # the CI log even though the secret is configured).  Manual
+        # `npm config set` is the path of least surprise.
+
+      - name: Install deps
+        working-directory: packages/sdk-nodejs
+        shell: bash
+        # We use `npm install` rather than `npm ci` because the
+        # optionalDependencies here pin specific @tokenslim/cli-binary-*
+        # versions; those are released in lock-step with the SDK and
+        # `npm ci` rejects the install whenever the version in
+        # package.json is newer than the one in package-lock.json
+        # (which is exactly the case right after a release bump).
+        # `npm install` regenerates the lock and is the right tool
+        # for the pre-publish install.
+        run: |
+          set -euo pipefail
+          echo "--- debug: NODE_AUTH_TOKEN length=${#NODE_AUTH_TOKEN} ---"
+          npm install --no-audit --no-fund
+
+      - name: Publish to npm
+        working-directory: packages/sdk-nodejs
+        shell: bash
+        # `prepublishOnly` in package.json runs `npm run clean && npm run build`
+        # automatically before `npm publish`, so we don't invoke `npm run build`
+        # explicitly here.
+        #
+        # We omit `--provenance` for the SDK for the same reason as
+        # `publish-platforms`: npm 11.x's tarball-publish fallback
+        # still triggers `git ls-remote` under certain paths, and
+        # the SDK is a pure-JS package, so provenance is not a
+        # useful attestation here.
+        run: |
+          set -euo pipefail
+          echo "--- debug: token length=${#NODE_AUTH_TOKEN}, npm=$(npm --version) ---"
+          npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
+          npm publish \
+            --access public \
+            --tag latest

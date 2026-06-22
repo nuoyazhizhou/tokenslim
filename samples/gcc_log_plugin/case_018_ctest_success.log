@@ -1,0 +1,10 @@
+ctest --output-on-failure
+Test project C:/work/build
+    Start 1: core_math
+1/3 Test #1: core_math .......................   Passed    0.02 sec
+    Start 2: api_contract
+2/3 Test #2: api_contract ....................   Passed    0.11 sec
+    Start 3: cli_smoke
+3/3 Test #3: cli_smoke .......................   Passed    0.04 sec
+100% tests passed, 0 tests failed out of 3
+Total Test time (real) =   0.21 sec

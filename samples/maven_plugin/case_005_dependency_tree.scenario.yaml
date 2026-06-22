@@ -1,0 +1,15 @@
+scenario: 'Maven 构建过程中执行 mvn dependency:tree 命令，输出项目依赖树，包含 JUnit 和 Jackson 等依赖，最终构建成功。'
+target_capability: '依赖树输出保留'
+expected_keep: 'BUILD SUCCESS, com.example:myproject:jar:1.0.0, +- org.junit.jupiter:junit-jupiter-api:jar:5.9.1:test'
+expected_compress: '[INFO] Scanning for projects..., [INFO] ------------------< com.example:myproject >-------------------, [INFO] ------------------------------------------------------------------------'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ca7753fc1f28f9dde2c1eb97b9a65b2fa2d4376117039feb5e812817dcc95c87'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

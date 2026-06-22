@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines 构建日志，展示 Lint 步骤产生两个代码警告（console 和 missing return type）以及 Build 步骤成功完成，最终 Job 状态为成功。'
+target_capability: '警告信号保留'
+expected_keep: '##[warning] 行, ##[section]Starting 行, ##[section]Finishing 行'
+expected_compress: 'npm run lint, Lint completed with warnings, Build completed successfully'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '50782a3a66a0491d55b03841e393cf4050991890606d76292ff6e7bb40639079'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

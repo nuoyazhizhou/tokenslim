@@ -1,0 +1,15 @@
+scenario: 'rust_go_plugin 负样本测试：Java 堆栈跟踪输入，验证插件不误判非 Go/Rust 堆栈，应保持原样不压缩。'
+target_capability: '负样本过滤：非 Go/Rust 堆栈'
+expected_keep: "Exception in thread \"main\" java.lang.NullPointerException"
+expected_compress: 'at com.example.service.UserService.createUser(UserService.java:42)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

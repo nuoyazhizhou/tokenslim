@@ -1,0 +1,14 @@
+az pipelines runs show --id 201
+##[section]Starting: Initialize job
+Agent name: hosted-agent-1
+Agent machine name: fv-az123
+##[section]Finishing: Initialize job
+##[section]Starting: Build
+##[command]dotnet build src/App.sln
+Build succeeded.
+0 Warning(s)
+0 Error(s)
+##[section]Finishing: Build
+##[section]Starting: Finalize Job
+Job succeeded
+##[section]Finishing: Finalize Job

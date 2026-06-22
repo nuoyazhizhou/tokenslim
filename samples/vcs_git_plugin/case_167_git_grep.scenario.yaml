@@ -1,0 +1,15 @@
+scenario: '在Git仓库中执行git grep命令搜索TODO注释，输出包含文件路径和行号的结果。'
+target_capability: 'git grep输出保留'
+expected_keep: 'src/main.rs:15: // TODO: implement error handling'
+expected_compress: "git grep \"TODO\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '97d09c0bf2b26e706ea0208d2ca34429c4b13ad1a5ab8c0c865b1dd35ddcc67c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Ansible playbook针对数据库主机执行''Configure replica''任务时，db1主机因条件不满足被跳过，db2主机成功变更，展示了跳过任务的输出格式和主机状态汇总。'
+target_capability: '跳过任务状态保留'
+expected_keep: 'TASK [Configure replica], skipping: [db1], PLAY RECAP'
+expected_compress: 'ok: [db1], ok: [db2], changed: [db2]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e1e5cd5bfeaf8617a299a3ab2192bce77d3721dd410c7dd7bfa9881d1e21386e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

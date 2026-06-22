@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines 构建任务成功日志，包含初始化、构建和最终化的步骤标记，dotnet build 命令成功，零错误零警告。'
+target_capability: 'CI/CD 步骤与状态信号保留'
+expected_keep: '##[section]Starting: Build, Build succeeded., 0 Error(s)'
+expected_compress: 'Agent name: hosted-agent-1, Agent machine name: fv-az123, [command]dotnet build src/App.sln'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ad7ee8b01b3e6329bfc21dc2d33caf29384569a8d198e1248c8669ca308f2425'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

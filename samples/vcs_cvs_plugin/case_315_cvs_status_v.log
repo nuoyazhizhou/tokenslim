@@ -1,0 +1,15 @@
+cvs status -v src/main.rs
+===================================================================
+File: main.rs           Status: Locally Modified
+
+   Working revision:	1.6
+   Repository revision:	1.5	/cvsroot/project/src/main.rs,v
+   Sticky Tag:		(none)
+   Sticky Date:		(none)
+   Sticky Options:	(none)
+
+   Existing Tags:
+	v2_1_0                  	(revision: 1.5)
+	v2_0_0                  	(revision: 1.4)
+	HEAD                    	(branch: 1.5)
+	release-2_0-branch      	(branch: 1.4.2)

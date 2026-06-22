@@ -1,0 +1,6 @@
+aws cloudformation describe-stack-events --stack-name platform
+2026-05-12 15:00:00 platform AWS::CloudFormation::Stack UPDATE_IN_PROGRESS User Initiated
+2026-05-12 15:00:15 NetworkNested AWS::CloudFormation::Stack UPDATE_IN_PROGRESS -
+2026-05-12 15:01:22 NetworkNested AWS::CloudFormation::Stack UPDATE_COMPLETE -
+2026-05-12 15:01:25 AppNested AWS::CloudFormation::Stack UPDATE_IN_PROGRESS -
+2026-05-12 15:03:10 AppNested AWS::CloudFormation::Stack UPDATE_COMPLETE -

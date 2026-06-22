@@ -1,0 +1,15 @@
+scenario: '用户使用 gh pr merge 命令合并 PR #150，并删除源分支，输出包含合并确认和分支删除信息。'
+target_capability: '命令锚点与状态行保留'
+expected_keep: 'gh pr merge 150 --squash --delete-branch, Merged pull request #150, Deleted branch feature-auth'
+expected_compress: '✓, (abc1234 -> def5678)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '47555eee6daa2371f64835fc2042b1c77b6158d1fa2a8d7e0d7ca85a206021f7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

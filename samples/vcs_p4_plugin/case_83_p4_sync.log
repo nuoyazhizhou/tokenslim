@@ -1,0 +1,5 @@
+p4 sync
+Sync completed.
+src/main.rs - updated
+src/utils/helper.rs - updated
+config/app.json - added

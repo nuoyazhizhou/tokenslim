@@ -1,0 +1,15 @@
+scenario: '用户使用 bash 的 rmdir 命令删除两个空目录 old_logs/2024 和 old_logs/2023，然后列出 old_logs/ 目录确认只剩下 2025 和 2026 两个目录，最后执行 echo done 输出 done。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'rmdir old_logs/2024 old_logs/2023, ls old_logs/, echo done'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8c2775e6ec8fa96cd6ecd04227e716a3c02fcf88dc9bf622dcf3fd2bacdd227a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

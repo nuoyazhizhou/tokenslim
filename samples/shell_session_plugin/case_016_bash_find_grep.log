@@ -1,0 +1,5 @@
+user@host:~$ find . -name "*.rs" | xargs grep "TODO"
+./src/main.rs:    // TODO: implement graceful shutdown
+./src/plugins/parser.rs:    // TODO: support multi-line prompts
+./src/utils/logger.rs:    // TODO: add JSON formatter
+user@host:~$ 

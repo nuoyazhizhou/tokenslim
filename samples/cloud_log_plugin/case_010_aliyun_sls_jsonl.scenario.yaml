@@ -1,0 +1,15 @@
+scenario: '阿里云SLS JSONL格式日志，包含INFO和ERROR级别日志，记录worker启动、数据库连接超时错误及重试。'
+target_capability: '云日志外壳剥离与元数据压缩'
+expected_keep: 'content字段内容（如worker started pid=42、database connection error: timeout after 30s、retrying database connection）'
+expected_compress: '__time__字段（时间戳）、__source__字段（来源）、level字段（日志级别）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3fbc26b59a9bbec9f384d154448e963697ba7d17920c9f87e21372c4016614e3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

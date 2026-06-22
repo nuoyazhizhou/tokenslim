@@ -1,0 +1,30 @@
+git diff branch1..branch2
+diff --git a/src/core/text_slicer/methods.rs b/src/core/text_slicer/methods.rs
+index 1234567..7890123 100644
+--- a/src/core/text_slicer/methods.rs
++++ b/src/core/text_slicer/methods.rs
+@@ -1,5 +1,10 @@
+ use std::sync::Arc;
++use std::thread;
++use std::sync::Mutex;
+
+ pub fn slice_by_lines(content: &str, max_lines: usize) -> Vec<String> {
+     content.lines().collect()
+ }
++
++pub fn process_parallel(content: &str) -> Vec<String> {
++    // Parallel processing implementation
++    Vec::new()
++}
+
+diff --git a/src/core/dictionary_manager/mod.rs b/src/core/dictionary_manager/mod.rs
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/core/dictionary_manager/mod.rs
+@@ -0,0 +1,100 @@
++pub mod methods;
++pub use methods::*;
++
++// DictionaryManager module for managing dictionaries
++// with producer-consumer model

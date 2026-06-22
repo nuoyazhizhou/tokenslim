@@ -1,0 +1,38 @@
+svn log
+r12345 | alice.chen | 2026-04-03T14:32:11.123456Z (Fri, 03 Apr 2026) | 3 lines
+
+feat(vcs): Add SVN/HG/P4 parser support
+
+Added parsers for svn blame, svn list, hg heads, p4 fstat,
+and routing logic for 60+ test cases across all VCS tools.
+
+Changed paths:
+   M /trunk/src/plugins/vcs_plugin/parser.rs
+   M /trunk/src/plugins/vcs_plugin/methods.rs
+   A /trunk/src/plugins/vcs_plugin/ir.rs
+   M /trunk/docs/design/vcs_plugin.md
+
+------------------------------------------------------------------------
+r12344 | bob.wang | 2026-04-02T09:15:33.654321Z (Thu, 02 Apr 2026) | 2 lines
+
+fix: Resolve path dictionary collision with email addresses
+
+The GENERIC_PATH_RE was matching email domains as paths.
+
+------------------------------------------------------------------------
+r12343 | alice.chen | 2026-04-01T16:45:00.000000Z (Wed, 01 Apr 2026) | 1 line
+
+refactor: Extract VcsRuleEngine from monolithic compress method
+
+------------------------------------------------------------------------
+r12342 | charlie.li | 2026-03-31T11:20:45.987654Z (Tue, 31 Mar 2026) | 4 lines
+
+feat: Initial VCS plugin skeleton
+
+Added command whitelists, detection signatures, and basic
+status/diff/log parsing for Git, SVN, HG, and Perforce.
+
+------------------------------------------------------------------------
+r12341 | dave.zhang | 2026-03-30T08:00:12.111222Z (Mon, 30 Mar 2026) | 1 line
+
+chore: Setup project structure and CI pipeline

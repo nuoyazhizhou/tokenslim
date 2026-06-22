@@ -1,0 +1,4 @@
+[INFO] Checking rule: no_hardcoded_passwords
+[ERROR] Line 42: Hardcoded password found: "password123"
+[INFO] Checking rule: max_line_length
+[WARN] Line 100: Line length exceeds 120 chars

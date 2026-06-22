@@ -1,0 +1,4 @@
+May  7 10:30:00 server1 kernel: [12345.678901] systemd[1]: Started Network Manager.
+May  7 10:31:00 server1 sshd[1234]: Listening on 0.0.0.0 port 22.
+May  7 10:32:00 server1 CRON[5678]: (root) CMD (/usr/bin/update.sh)
+May  7 10:33:00 server1 auditd[7890]: Audit daemon started

@@ -1,0 +1,14 @@
+cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release
+-- The C compiler identification is Clang 17.0.6
+-- The CXX compiler identification is Clang 17.0.6
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/runner/work/project/build
+cmake --build build --parallel 4
+[1/4] Building CXX object src/CMakeFiles/app.dir/main.cpp.o
+[2/4] Linking CXX executable bin/app
+ctest --test-dir build --output-on-failure
+1/2 Test #1: unit_tests ......................   Passed    0.31 sec
+2/2 Test #2: integration_tests ...............***Failed    2.74 sec
+The following tests FAILED:
+	  2 - integration_tests (Failed)

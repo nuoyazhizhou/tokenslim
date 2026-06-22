@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用运行时抛出 ReferenceError，错误栈显示变量未定义，发生在 /app/index.js 第 3 行。'
+target_capability: '错误栈保留'
+expected_keep: 'ReferenceError: x is not defined'
+expected_compress: 'at Object.<anonymous> (/app/index.js:3:15)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1ea0a5bbf614c5104a60e516d33dd50a17b049a69c4085d9481095e8a5b8b8cc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

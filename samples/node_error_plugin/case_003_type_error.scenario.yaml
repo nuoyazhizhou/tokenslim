@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用在运行时抛出 TypeError，错误信息为 ''Cannot read property ''name'' of undefined''，并附带完整的调用堆栈，包含文件路径和行号。'
+target_capability: '错误堆栈脱水'
+expected_keep: 'TypeError, Cannot read property ''name'' of undefined, <anonymous>'
+expected_compress: '/home/user/project/index.js:3:20, internal/modules/cjs/loader.js:778:30, at Object.<anonymous>'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'de33194382e9cccfacab6cd70701ab6b533f87029dcd539a0c078a1440171a1e'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: true

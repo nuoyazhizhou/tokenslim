@@ -1,0 +1,51 @@
+src/foo.ts:10:5 - error TS2304: Cannot find name 'foo'.
+
+10     foo();
+       ~~~
+
+src/bar.ts:15:8 - error TS2304: Cannot find name 'bar'.
+
+15         bar();
+           ~~~
+
+src/baz.ts:20:3 - warning TS6133: 'x' is declared but its value is never read.
+
+20   const x = 5;
+     ~
+
+src/qux.ts:25:3 - warning TS6133: 'y' is declared but its value is never read.
+
+25   const y = 10;
+     ~
+
+src/test1.ts:30:5 - warning TS6133: 'temp' is declared but its value is never read.
+
+30     const temp = value;
+       ~~~~
+
+src/test2.ts:35:8 - warning TS6133: 'result' is declared but its value is never read.
+
+35         const result = compute();
+           ~~~~~~
+
+src/test3.ts:40:3 - warning TS6133: 'data' is declared but its value is never read.
+
+40   const data = fetch();
+     ~~~~
+
+src/test4.ts:45:5 - warning TS6133: 'cache' is declared but its value is never read.
+
+45     const cache = new Map();
+       ~~~~~
+
+src/test5.ts:50:8 - warning TS6133: 'buffer' is declared but its value is never read.
+
+50         const buffer = [];
+           ~~~~~~
+
+src/test6.ts:55:3 - warning TS6133: 'config' is declared but its value is never read.
+
+55   const config = loadConfig();
+     ~~~~~~
+
+Found 2 errors and 10 warnings.

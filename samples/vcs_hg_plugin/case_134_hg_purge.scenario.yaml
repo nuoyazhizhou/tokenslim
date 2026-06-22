@@ -1,0 +1,15 @@
+scenario: '用户执行 hg purge 命令，输出显示已删除的文件列表，包括 build/temp/file.txt 和 .cache/data.json。'
+target_capability: '文件操作摘要保留'
+expected_keep: 'hg purge, removed: build/temp/file.txt, removed: .cache/data.json'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd31578e8776b19ae03a838cd49a4da336beeb7f87795dec0459bf3ff23966c53'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

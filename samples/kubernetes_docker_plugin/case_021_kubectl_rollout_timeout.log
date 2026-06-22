@@ -1,0 +1,6 @@
+kubectl rollout status deployment/api -n prod --timeout=60s
+Waiting for deployment "api" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "api" rollout to finish: 2 old replicas are pending termination...
+error: deployment "api" exceeded its progress deadline
+kubectl describe pod prod/api-6f5d4b8c9d-z9x8y
+Warning  Failed  kubelet  Error: ImagePullBackOff

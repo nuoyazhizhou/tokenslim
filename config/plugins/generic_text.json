@@ -1,0 +1,29 @@
+{
+    "name": "generic_text",
+    "description": "通用文本脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$GENERI"
+    },
+    "keep_signals": [
+        "非空白行文本内容（保留所有有效行）"
+    ],
+    "compress_targets": [
+        "ANSI 转义序列（移除）",
+        "连续空白行（折叠为单行）",
+        "回车重绘行（只保留最后一段）",
+        "制表符（可选替换为空格）",
+        "行尾空白（可选修剪）"
+    ],
+    "design_intent": "通用文本脱水：保留原始文本内容，折叠连续空白行，压缩 ANSI 控制序列和回车重绘。"
+}

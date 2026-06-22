@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：含 101 WebSocket 和 301 重定向，插件应保留异常状态码，压缩 IP 和 UA。'
+target_capability: '状态码异常保留与路径压缩'
+expected_keep: '101, 301, 200'
+expected_compress: 'IP地址, User-Agent, 时间戳'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "app.py", line 15, in <module>
+    value = data["missing_key"]
+KeyError: 'missing_key'

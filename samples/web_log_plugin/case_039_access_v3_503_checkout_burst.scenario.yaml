@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：多 IP 对 checkout 接口 503 突发，插件应保留错误突发信号，压缩正常请求。'
+target_capability: '错误突发检测与保留'
+expected_keep: '503, /api/v1/checkout, /health'
+expected_compress: '198.51.100.31, Mozilla/5.0, 13/May/2026:10:20:01'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

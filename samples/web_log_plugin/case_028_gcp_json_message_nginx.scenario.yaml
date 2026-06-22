@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：GCP JSON 格式 Nginx 日志全 200，插件应折叠常规记录，保留摘要。'
+target_capability: 'JSON 格式解析与常规记录折叠'
+expected_keep: '健康检查请求（/health）或摘要行'
+expected_compress: 'IP 地址、URI 路径、User-Agent 和时间戳'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

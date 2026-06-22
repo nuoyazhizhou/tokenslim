@@ -1,0 +1,13 @@
+ansible-playbook users.yml
+
+PLAY [app] *********************************************************************
+
+TASK [Create users] ************************************************************
+changed: [app1] => (item=alice)
+changed: [app1] => (item=bob)
+ok: [app2] => (item=alice)
+ok: [app2] => (item=bob)
+
+PLAY RECAP *********************************************************************
+app1                       : ok=1    changed=1    unreachable=0    failed=0
+app2                       : ok=1    changed=0    unreachable=0    failed=0

@@ -1,0 +1,62 @@
+# tokenslim_kb/architecture.yaml
+#
+# 作用：LLM 用来理解 TokenSlim 的整体架构 / 路由原理 / 插件分层。
+# 是 system prompt "全局视野"的第二段（在 project.yaml 之后）。
+#
+# 维护规则：
+# - 路由原理（routing.principle）是 LLM 判断 case 是否被"误路由"的依据
+# - 插件分层（layers）告诉 LLM 哪些插件是入口、哪些是 fallback
+# - decision_fence 是 LLM 区别"这是 TokenSlim 的事"vs"这是更上层 agent 的事"的边界
+
+routing:
+  principle: |
+    TokenSlim uses a two-stage routing: (1) fast path = content-type fingerprint
+    (git/svn/npm/cargo/...) that picks a dedicated plugin, (2) fallback =
+    shell_session_plugin for unstructured mixed terminal output. The boundary
+    between dedicated and shell is enforced by `routing_boundary_dominant`:
+    if a single dedicated family accounts for >= 60% of command tokens, the
+    case is mis-routed and should be moved to that dedicated plugin's samples/.
+  boundary_threshold: 0.6
+  fast_path_families:
+    - vcs_git, vcs_svn, vcs_hg, vcs_p4, vcs_cvs, vcs_bzr, vcs_fossil, vcs_darcs
+    - gh, glab, az, bb, repo, gerrit
+    - cargo, go, mvn, gradle, dotnet, xcodebuild
+    - npm, yarn, pnpm, node, pytest, python
+    - terraform, ansible, pulumi, bazel
+    - docker, docker-compose, kubectl, helm
+
+layers:
+  entry:
+    purpose: "Content-type fingerprint + family classification"
+    plugins: [routing_dispatcher, format_detector]
+  dedicated:
+    purpose: "One plugin per content family — runs the actual compression"
+    examples: [vcs_git_plugin, npm_plugin, cargo_plugin, docker_plugin]
+  shell:
+    purpose: "Fallback for unstructured terminal output (mixed commands, REPL, etc.)"
+    plugin: shell_session_plugin
+  utilities:
+    purpose: "Cross-cutting helpers (mojibake repair, secret redaction, etc.)"
+    examples: [encoding_fallback, explain]
+
+decision_fence: |
+  TokenSlim is a compressor, not a debugger. It must:
+  - Keep the lines that change decisions (errors, exit codes, status, version mismatch)
+  - Drop the lines that are decorative (ASCII art, progress bars, banners)
+  TokenSlim must NOT:
+  - Add commentary or suggestions (that is the explain plugin's job, separate stage)
+  - Modify the meaning of any line (no paraphrasing, no summarization)
+  - Lose error/stack/status lines (false negatives here are catastrophic)
+
+quality_standards:
+  compression_pct: "30%-90% (depending on noise ratio in source)"
+  semantic_fidelity: "100% — all kept lines must match source byte-for-byte"
+  routing_accuracy: "100% — wrong plugin = wrong compression strategy"
+  test_coverage: "every plugin must have showcase.rs + samples/<plugin>/*.log"
+
+how_to_audit_a_case:
+  - "Open samples/<plugin>/<case_id>.log and identify its content type"
+  - "Compare against this plugin's known responsibility (see plugin_capability_index.json)"
+  - "Run deterministic lint (mojibake / secrets / length / anchor)"
+  - "Optionally invoke LLM for realism + fabrication judgment (R1-R7 for shell)"
+  - "Cross-check showcase.rs registration + sidecar scenario consistency"

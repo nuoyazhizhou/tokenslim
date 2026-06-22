@@ -1,0 +1,5 @@
+error[E0425]: cannot find value `undefined_var` in this scope
+ --> src/main.rs:8:15
+  |
+8 |     let x = undefined_var;
+  |               ^^^^^^^^^^^^ not found in this scope

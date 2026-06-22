@@ -1,0 +1,15 @@
+scenario: 'Bazel 测试通过场景，输出显示分析摘要、构建成功和测试通过结果，无错误。'
+target_capability: '测试通过摘要保留'
+expected_keep: 'PASSED, Build completed successfully'
+expected_compress: 'INFO: Elapsed time, INFO: 860 processes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0854fcf0a13ded29d5ceedde1fbc5ac8556d25f248135c55d758f94ad281d3e6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

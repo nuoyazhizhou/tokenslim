@@ -1,0 +1,15 @@
+scenario: 'Gradle 任务 '':app:compileDebugJavaWithJavac'' 执行失败，构建抛出异常并输出错误提示及帮助信息，最终在 47 秒后构建失败。'
+target_capability: '构建失败任务保留'
+expected_keep: 'Task :app:compileDebugJavaWithJavac FAILED'
+expected_compress: 'Run with --stacktrace option to get the stack trace.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '92377b53fdf84c4577a71032d6f18c255ad8d62a89e0306fcb17be3bf8a71320'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

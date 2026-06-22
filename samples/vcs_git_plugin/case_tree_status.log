@@ -1,0 +1,17 @@
+git status
+On branch feature/tree-restructure
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/core/tree_restructure/mod.rs
+	modified:   src/core/tree_restructure/config.rs
+	modified:   src/core/tree_restructure/trie.rs
+	modified:   src/core/tree_restructure/render.rs
+	modified:   src/plugins/vcs_git_plugin/methods.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	tests/tree_test.rs
+	docs/tree_guide.md
+
+no changes added to commit (use "git add" and/or "git commit -a")

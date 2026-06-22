@@ -1,0 +1,15 @@
+scenario: 'SSH 服务器日志记录来自 192.168.1.10 的连接和用户认证成功事件。'
+target_capability: '系统日志脱水：保留时间戳和消息，压缩主机名和进程名'
+expected_keep: 'May  7 10:33:10, Connection from 192.168.1.10 port 2222, User user authenticated'
+expected_compress: 'server1, sshd[1234]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '651d4f2665f554839b4c2ed37701211515238d51eeae6c2c5b4e34d0d8723a49'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

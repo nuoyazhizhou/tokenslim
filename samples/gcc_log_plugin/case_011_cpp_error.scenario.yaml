@@ -1,0 +1,15 @@
+scenario: 'GCC 编译 C++ 源文件时，main.cpp 第 20 行出现模板函数匹配失败的错误，并附带候选函数提示。'
+target_capability: '编译错误保留与压缩'
+expected_keep: 'error: no matching function for call to ''process(std::vector<int>&)'''
+expected_compress: 'g++ -c main.cpp -o main.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '10f2a5534cc777d4a9c2dc66e976d96d60e685dddcece4cf19863d69235a5ebe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,7 @@
+Build settings from command line:
+    ARCHS = arm64
+    BUILD_DIR = /Users/dev/DerivedData/App-abc123/Build/Products
+=======================================
+CompileC /Users/dev/DerivedData/App-abc123/Build/Objects-normal/arm64/ViewController.o /Users/dev/work/app/ViewController.m (in target 'App' from project 'App')
+=======================================
+=== BUILD TARGET App OF PROJECT App WITH CONFIGURATION Debug ===

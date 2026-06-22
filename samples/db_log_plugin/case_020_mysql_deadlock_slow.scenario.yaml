@@ -1,0 +1,15 @@
+scenario: 'MySQL 数据库日志中包含死锁检测、锁等待超时、组复制成员被驱逐以及连接超时断开等典型错误事件，用于测试数据库日志压缩插件对关键错误信息的保留和冗余信息的压缩能力。'
+target_capability: '数据库错误日志压缩'
+expected_keep: 'Transactions deadlock detected, Lock wait timeout exceeded, Aborted connection'
+expected_compress: '2026-05-13T09:04:01.111111Z, 2026-05-13T09:04:02.222222Z, 2026-05-13T09:04:03.333333Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '80b938c91c41e5902381b648e57742b80b27e1e0c1ba0b21f94d436e8c5ef185'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

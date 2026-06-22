@@ -1,0 +1,12 @@
+       Asset       Size  Chunks                    Chunk Names
+    main.js   125.4 KiB       0  [emitted]         main
+   vendor.js   892.3 KiB       1  [emitted]  [big]  vendor
+  styles.css     15.2 KiB       0  [emitted]         main
+   index.html      2.5 KiB          [emitted]         
+   runtime.js     8.7 KiB       2  [emitted]         runtime
+     5 assets
+Entrypoint main = runtime.js vendor.js main.js styles.css
+[0] ./src/main.js 1024 bytes {0} [built]
+[1] ./src/App.jsx 45080 bytes {0} [built]
+[2] ./node_modules/react/index.js 1338 bytes {1} [built]
+[3] ./node_modules/react-dom/client.js 9872 bytes {1} [built]

@@ -1,0 +1,11 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 5 items
+
+tests/test_flags.py::test_enabled PASSED                               [ 20%]
+tests/test_flags.py::test_disabled SKIPPED (feature flag off)          [ 40%]
+tests/test_flags.py::test_legacy XFAIL                                 [ 60%]
+tests/test_flags.py::test_beta PASSED                                  [ 80%]
+tests/test_flags.py::test_future XFAIL                                 [100%]
+
+=================== 2 passed, 1 skipped, 2 xfailed in 0.88s ====================

@@ -1,0 +1,15 @@
+scenario: '用户执行 `git log --oneline -10` 查看最近10条提交记录，输出包含提交哈希和提交信息。'
+target_capability: '提交哈希与提交信息保留'
+expected_keep: 'a1b2c3d feat: Add VCS plugin'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ff8fb38f4e10169eec78eff071d8f6c775721ab8fdd6addef55e57022838f141'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

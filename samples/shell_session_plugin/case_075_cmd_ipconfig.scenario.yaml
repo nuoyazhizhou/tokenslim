@@ -1,0 +1,15 @@
+scenario: '在Windows CMD中执行ipconfig /all命令，显示网络接口的详细配置信息，包括主机名、IP地址、子网掩码、网关和DNS服务器等。'
+target_capability: 'CMD命令输出保留与提示符压缩'
+expected_keep: 'IPv4 Address, Subnet Mask, Default Gateway'
+expected_compress: "C:\\> ipconfig /all, C:\\>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4c834d2110e0b69f15818944bdfd633e56fb123be13196ef4ae4ce8c71c3d18a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

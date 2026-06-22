@@ -1,0 +1,13 @@
+jenkins build package
+[Pipeline] Start of Pipeline
+[Pipeline] { (Package)
++ mvn package
+[INFO] BUILD SUCCESS
+[Pipeline] }
+[Pipeline] { (Archive)
+Archiving artifacts
+Recording test results
+Uploading artifacts to s3://ci-artifacts/api/123
+Artifacts uploaded successfully
+[Pipeline] }
+Finished: SUCCESS

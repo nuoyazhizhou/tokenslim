@@ -1,0 +1,27 @@
+{
+  "name": "@tokenslim/cli-binary-linux-arm64-gnu",
+  "version": "0.2.6",
+  "description": "Prebuilt TokenSlim CLI + server binaries (Linux ARM64, glibc).",
+  "author": "nuoyazhizhou",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuoyazhizhou/tokenslim.git",
+    "directory": "packages/cli-binary-linux-arm64-gnu"
+  },
+  "bugs": {
+    "url": "https://github.com/nuoyazhizhou/tokenslim/issues"
+  },
+  "homepage": "https://github.com/nuoyazhizhou/tokenslim#readme",
+  "os": ["linux"],
+  "cpu": ["arm64"],
+  "libc": ["glibc"],
+  "files": [
+    "bin/",
+    "config/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

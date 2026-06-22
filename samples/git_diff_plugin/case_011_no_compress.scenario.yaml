@@ -1,0 +1,15 @@
+scenario: '一段非git diff格式的普通文本，用于测试插件在遇到不匹配输入时是否保持原样不压缩。'
+target_capability: '不匹配输入保留'
+expected_keep: 'This is not a git diff, It''s just regular text'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b33dee822dacfe27b5826efd00a8b921922899d30b0afa98e9cf60ecf98e7ccf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

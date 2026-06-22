@@ -1,0 +1,15 @@
+scenario: 'vcs_gh_plugin 测试：gh run list 列出 GitHub Actions workflow 运行状态，插件应保留工作流名称和状态，压缩重复元数据。'
+target_capability: 'GitHub CLI 输出结构化数据压缩'
+expected_keep: 'gh run list, WF:ci-build ST:success, WF:ci-test ST:in_progress'
+expected_compress: 'workflow: ci-build, status: success, run: #5678'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

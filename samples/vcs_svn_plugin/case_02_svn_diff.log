@@ -1,0 +1,41 @@
+svn diff
+Index: src/core/doctor_workspace/methods.rs
+===================================================================
+--- src/core/doctor_workspace/methods.rs	(revision 12345)
++++ src/core/doctor_workspace/methods.rs	(working copy)
+@@ -1417,6 +1417,12 @@
+ pub fn analyze_project(root: &Path) -> Vec<Diagnostic> {
+     let mut diagnostics = Vec::new();
++
++    // VCS Plugin Config Guidance
++    if let Some(config) = load_vcs_config(root) {
++        diagnostics.push(config.validate());
++    }
++
+     for file in walk_dir(root) {
+         if let Some(diag) = check_file(&file) {
+             diagnostics.push(diag);
+@@ -1450,7 +1456,7 @@
+     }
+ }
+
+-const MAX_DEPTH: usize = 5;
++const MAX_DEPTH: usize = 10;
+
+ pub fn find_common_prefixes(paths: &[String]) -> Vec<String> {
+     let mut prefixes = Vec::new();
+
+Index: src/plugins/vcs_plugin/types.rs
+===================================================================
+--- src/plugins/vcs_plugin/types.rs	(revision 12344)
++++ src/plugins/vcs_plugin/types.rs	(working copy)
+@@ -47,6 +47,10 @@
+ pub const GIT_COMMANDS: &[&str] = &[
+     "status",
+     "diff",
+     "log",
++    "show",
++    "branch",
++    "merge",
++    "rebase",
+ ];

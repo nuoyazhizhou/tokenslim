@@ -1,0 +1,4 @@
+{"level":"info","msg":"good line","id":1}
+not-json-at-all
+{"level":"warn","msg":"another good line","id":2}
+{"level":"error","msg":"unterminated"

@@ -1,0 +1,15 @@
+scenario: 'protoc 编译 proto 文件时产生警告和错误，包括字段废弃警告和类型未找到错误。'
+target_capability: 'protobuf 诊断信息保留'
+expected_keep: "error: Type \"User\" not found., warning: Field \"email\" is deprecated."
+expected_compress: 'proto/user.proto, proto/order.proto'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b0efc076d434e5bb5da7750c42ca98ee1682a85e7c4972468642de3148357484'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

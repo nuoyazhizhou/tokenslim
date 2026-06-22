@@ -1,0 +1,15 @@
+scenario: 'Webpack 5 构建日志，包含构建时间、资产列表、模块构建信息及子插件输出，无错误或警告行，属于正常构建的噪音日志。'
+target_capability: '噪音行压缩'
+expected_keep: '无错误或警告行可保留'
+expected_compress: 'Hash: abc123def456, Time: 3528ms, Asset       Size  Chunks'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4d90b4877c80c76b4bc4ccbc29915935ccce0e302f877517f28e2ef73f200621'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

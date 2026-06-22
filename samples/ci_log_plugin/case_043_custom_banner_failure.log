@@ -1,0 +1,12 @@
+[ACME-CI] pipeline deploy-api #177866
+[ACME-CI] STEP checkout
+git fetch origin main
+[ACME-CI] STEP build
+docker build -t registry.example.com/api:177866 .
+Successfully built sha256:abcdef
+[ACME-CI] STEP smoke-test
+curl -f https://api.example.com/health
+HTTP/1.1 503 Service Unavailable
+ERROR: smoke test failed after deploy
+[ACME-CI] artifact uploaded: logs/smoke-test.txt
+[ACME-CI] status=failed exit_code=1

@@ -1,0 +1,15 @@
+scenario: 'SVN 用户执行 ''svn mkdir newdir'' 创建新目录，输出显示添加成功，路径为 ''newdir''。'
+target_capability: 'SVN 命令锚点与变更状态保留'
+expected_keep: 'svn mkdir newdir, A         newdir'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '07f2805663aadc8723ec7e9b793e7e44aaeffb0ff1216eea69325a938a0554b7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

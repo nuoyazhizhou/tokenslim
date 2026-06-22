@@ -1,0 +1,3 @@
+{
+  "message": "This is a very long string that contains many characters and will be truncated or dictionaryized by the plugin to save token space when processing JSON data in AI applications."
+}

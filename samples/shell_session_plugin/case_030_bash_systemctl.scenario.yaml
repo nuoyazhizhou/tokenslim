@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash 执行 systemctl status docker 命令查看 Docker 服务状态，输出包含服务加载、启用状态和运行时长等信息。'
+target_capability: '命令与输出保留'
+expected_keep: 'systemctl status docker, ● docker.service, Active: active (running)'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b41b2c24c522ceca77b9eede35967d5a3576e10aedd9d7f544a82b263bc0e40c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Terraform 导入一个 AWS S3 存储桶资源，显示导入成功并更新状态。'
+target_capability: '导入操作输出压缩'
+expected_keep: 'Import successful!'
+expected_compress: "aws_s3_bucket.logs: Importing from ID \"company-prod-logs\"..."
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '53575fc3d897509d735adb482633ef93e24526ebcc32b88320cc42f904a6ce6c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

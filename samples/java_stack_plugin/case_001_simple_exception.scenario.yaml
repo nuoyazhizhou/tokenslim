@@ -1,0 +1,15 @@
+scenario: 'Java 应用抛出 NullPointerException，堆栈跟踪包含三个帧，从 main 到 process 方法。'
+target_capability: '异常堆栈保留与压缩'
+expected_keep: "Exception in thread \"main\" java.lang.NullPointerException"
+expected_compress: 'at com.example.app.Main.process(Main.java:45)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1ab3978ebbb0a023ef938ea3e2a8c0663df92d21995d33d82a1daef51246bcc3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

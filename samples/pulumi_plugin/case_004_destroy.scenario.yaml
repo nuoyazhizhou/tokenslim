@@ -1,0 +1,15 @@
+scenario: 'Pulumi destroy 预览输出，显示两个资源（S3 bucket 和 IAM role）将被删除，以及资源计数摘要。'
+target_capability: '资源操作摘要与计数保留'
+expected_keep: 'Resources: - 2 to delete'
+expected_compress: 'aws:s3/bucket:Bucket         tmp        delete'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bcd4989f1cbb304821ec0a760cfc493543d9a3cfb55f584018d6ed576bd2cc3c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Helm install 命令执行后输出部署摘要，包含资源列表和状态信息。'
+target_capability: 'Helm输出脱水与资源行保留'
+expected_keep: 'NAME: web, STATUS: deployed, deployment/web 1/1 1 1 30s'
+expected_compress: 'NOTES: 行, 1. Get the application URL by running these commands:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e05f773a5da651ed9104aec33f88da346cad2b8e08668618e3da6046272287d4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Buildkite CI 流水线片段，包含步骤标题（--- Package、+++ Upload artifacts、+++ Upload reports）、mvn package 构建成功以及 artifact 上传日志。'
+target_capability: 'Buildkite 步骤锚点保留与日志压缩'
+expected_keep: '--- Package +++ Upload artifacts BUILD SUCCESS'
+expected_compress: 'mvn package Uploading artifact target/app.jar Artifact uploaded successfully'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c41e21e02359412b37195859e29eeeeeea010a3fff47cca495f24815c4a3c376'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

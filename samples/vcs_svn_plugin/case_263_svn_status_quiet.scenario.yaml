@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库中执行 `svn status -q` 命令，输出显示两个文件变更：一个修改（M），一个新增（A），路径较长。'
+target_capability: 'SVN 状态输出压缩与路径字典化'
+expected_keep: 'M       src/core/text_slicer/methods.rs'
+expected_compress: 'src/core/text_slicer/methods.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ae647efcbdb82920496cd3394553513a58114b6f5d50039bf8017064114526d1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

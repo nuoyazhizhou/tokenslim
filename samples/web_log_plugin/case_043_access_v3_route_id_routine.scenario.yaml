@@ -1,0 +1,15 @@
+scenario: 'Nginx access log showing GET and PATCH requests to /api/orders/{id} with 200 status, plus health check probes from kube-probe.'
+target_capability: '路径字典压缩与常规记录折叠'
+expected_keep: 'GET /health HTTP/1.1 200 2'
+expected_compress: "198.51.100.90 - - [13/May/2026:11:00:01 +0000] \"GET /api/orders/10001 HTTP/1.1\" 200 512 \"-\" \"Mozilla/5.0\" 0.081"
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7eba3e20909962f868e2ecffb10da3839ff7653c2089e207d7e09bbaa4e5f913'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

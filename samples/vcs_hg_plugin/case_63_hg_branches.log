@@ -1,0 +1,5 @@
+hg branches
+default
+feature/new-feature
+bugfix/login
+release/v1.0 (inactive)

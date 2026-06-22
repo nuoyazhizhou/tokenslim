@@ -1,0 +1,15 @@
+scenario: 'Webpack 构建过程中出现两个错误：一个 JSX 文件因缺少 JSX 加载器导致模块解析失败，另一个文件因模块导入路径错误导致找不到模块。'
+target_capability: '构建错误保留'
+expected_keep: 'ERROR in ./src/App.jsx 12:15, Module parse failed: Unexpected token (12:15), Cannot find module ''../config'''
+expected_compress: 'File was processed with these loaders:, You may need an additional loader, webpack 5.90.3 compiled with 2 errors'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bea5e340b8c1779d0be844ccc97b0fde47be61521e04d2ae93d9b585aac0f477'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

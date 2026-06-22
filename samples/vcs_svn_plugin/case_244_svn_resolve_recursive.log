@@ -1,0 +1,4 @@
+svn resolve -R src/
+Resolved conflict at src/core/methods.rs
+Resolved conflict at src/core/types.rs
+Resolved: src/core/

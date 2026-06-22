@@ -1,0 +1,4 @@
+p4 triggers
+Triggers:
+    hellochangeChangeUser //depot/... "echo %serverport%"
+    depotsync sync //depot/... "echo syncing %serverport%"

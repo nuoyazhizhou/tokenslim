@@ -1,0 +1,9 @@
+p4 diff2 //depot/main/... //depot/feature/...
+==== //depot/main/src/main.rs#2 - //depat/feature/src/main.rs#1
+1c1
+< fn main() {
+---
+> fn main() { println!("Hello"); }
+
+==== //depot/main/src/lib.rs - //depot/feature/src/lib.rs
+ Files are identical

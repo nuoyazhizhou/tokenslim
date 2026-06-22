@@ -1,0 +1,15 @@
+scenario: 'Windows CMD 中执行 dir 命令，显示磁盘卷标、序列号、目录列表及文件统计信息，最后返回提示符。'
+target_capability: 'CMD 提示符压缩与输出保留'
+expected_keep: "Directory of C:\\Users\\user, 2026/06/07  00:05               102 file.txt, 1 File(s)            102 bytes"
+expected_compress: "C:\\Users\\user> dir, C:\\Users\\user> "
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '40b98505e9fd8901e374fb6a619c16638ba9167f985598fcde614811d8ac74e9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

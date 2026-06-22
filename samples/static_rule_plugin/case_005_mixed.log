@@ -1,0 +1,6 @@
+2024-01-15 10:30:45 INFO Starting static analysis
+[INFO] Rule 1/10: check_var_names
+[WARN] File: src/main.js, Line: 15: Variable 'x' too short
+[INFO] Rule 2/10: check_no_unused_vars
+[ERROR] File: src/main.js, Line: 20: Unused variable 'temp'
+2024-01-15 10:30:46 INFO Analysis complete

@@ -1,0 +1,4 @@
+[WARN] Line 1: Unused import: lodash
+[WARN] Line 5: Variable name 'i' not descriptive
+[WARN] Line 10: Magic number: 42
+[WARN] Line 15: Missing JSDoc comment

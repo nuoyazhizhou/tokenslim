@@ -1,0 +1,15 @@
+scenario: 'Python 应用 app.py 中 main 函数调用 do_something 时抛出多种异常（ValueError、KeyError、TypeError），每个异常都有完整的堆栈跟踪，包含重复的堆栈帧和不同的异常消息。'
+target_capability: '异常类型与堆栈保留'
+expected_keep: 'Traceback (most recent call last):, ValueError: Error 1, KeyError: ''missing_key'''
+expected_compress: "File \"app.py\", line 10, in <module>, File \"app.py\", line 5, in main, File \"app.py\", line 15, in do_something"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '63c78e3b0094c807aeacd4d345bbf02bbd76f72d8ebd9159a518ab2512c29221'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

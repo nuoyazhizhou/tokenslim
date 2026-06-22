@@ -1,0 +1,4 @@
+bzr missing lp:~user/project/branch
+These commits are missing from lp:~user/project/branch:
+  abc1234: Add new feature (alice)
+  def5678: Fix bug (bob)

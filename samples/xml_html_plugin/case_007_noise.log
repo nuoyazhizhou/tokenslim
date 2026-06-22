@@ -1,0 +1,8 @@
+Starting XML parser...
+Parsing file: data.xml
+Line 1: <?xml version="1.0" encoding="UTF-8"?>
+Line 2: <root>
+Line 3:   <element>value</element>
+Line 4: </root>
+Parsing completed successfully.
+Time taken: 12ms

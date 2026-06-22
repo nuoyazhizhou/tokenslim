@@ -1,0 +1,15 @@
+scenario: 'OCI Audit 日志，包含 CreateInstance、UpdateSecurityList 拒绝、DeleteObject 三条 JSONL 记录，测试云日志外壳剥离与结构化字段压缩。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: 'CreateInstance, UpdateSecurityList denied, DeleteObject'
+expected_compress: 'eventTime, source, type'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2f5b046be6890cfa9c4f97240598580ed46c0ad6b7ea3540d94492ed10fe31ec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

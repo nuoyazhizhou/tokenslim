@@ -1,0 +1,15 @@
+scenario: 'Jenkins pipeline 执行 Maven 打包并归档上传制品到 S3，最终构建成功。'
+target_capability: 'CI/CD 流水线步骤与状态保留'
+expected_keep: '[Pipeline] { (Package)}, [Pipeline] { (Archive)}, Finished: SUCCESS'
+expected_compress: '+ mvn package, [INFO] BUILD SUCCESS, Archiving artifacts'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '93197e616903f76fa81855903f64dff0491346f985a95540684cfe0870261a68'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

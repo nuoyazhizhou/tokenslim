@@ -1,0 +1,15 @@
+scenario: 'Java 应用因递归调用导致 StackOverflowError，堆栈跟踪中重复出现 A.methodA、B.methodB、C.methodC 的循环调用序列。'
+target_capability: '重复堆栈折叠与异常保留'
+expected_keep: "Exception in thread \"main\" java.lang.StackOverflowError"
+expected_compress: 'at com.example.app.A.methodA(A.java:5)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7cc9e4b469fde5690169e078b0d545558195a7cde3175d7693f58200f711b3ef'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Gradle daemon 意外消失，导致 test 任务执行失败，构建最终失败，日志包含 daemon 消失信息、任务执行和测试失败报告。'
+target_capability: '错误保留与构建失败关键信息'
+expected_keep: '> Task :test FAILED 行、Gradle build daemon disappeared unexpectedly 行'
+expected_compress: '> Task :compileJava 行、> Task :processResources 行、> Task :classes 行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0b6657702fd2b89fec4a0bc0296a18693a61eb4759925f9d75e3b38870c0ec8c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

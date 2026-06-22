@@ -1,0 +1,42 @@
+{
+    "name": "node_error",
+    "description": "Node.js 错误堆栈脱水",
+    "priority": 170,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "at Object.<anonymous>",
+                    "at Module._compile",
+                    "at require (internal",
+                    "node:internal"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.15
+    },
+    "compress": {
+        "token_prefix": "$NODE",
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "keep_signals": [
+        "Error, SyntaxError 等内置异常类名（白名单保留字面量）",
+        "以 Error 或 Exception 结尾的自定义类名",
+        "异常消息（msg）",
+        "堆栈帧中的函数名（func）",
+        "堆栈帧中的行号（line）",
+        "堆栈帧中的列号（col）",
+        "<anonymous> 文件（保留字面量）"
+    ],
+    "compress_targets": [
+        "非白名单自定义异常类名（字典化）",
+        "堆栈帧中的文件路径（字典化，除 <anonymous>）",
+        "缩进符（转换为数字编码）"
+    ],
+    "design_intent": "Node.js错误脱水：保留异常类名与消息，折叠堆栈帧为紧凑令牌，压缩自定义类名和文件路径。"
+}

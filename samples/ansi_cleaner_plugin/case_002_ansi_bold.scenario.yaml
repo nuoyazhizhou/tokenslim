@@ -1,0 +1,15 @@
+scenario: '包含 ANSI 粗体和彩色转义序列的构建日志，展示编译失败、错误、成功和警告信息。'
+target_capability: 'ANSI 转义序列清除'
+expected_keep: 'BUILD FAILED, compilation failed, tests passed, unused variable'
+expected_compress: "\\x1b[1m, \\x1b[1;31m, \\x1b[0m"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '28498646f57b89b59766915a3b1513263b59737674997ce14086d0939fe75435'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

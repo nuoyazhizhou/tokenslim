@@ -1,0 +1,7 @@
+Exception in thread "main" com.example.app.ServiceException: Failed to process request
+    at com.example.app.Service.process(Service.java:123)
+    at com.example.app.Controller.handle(Controller.java:89)
+Caused by: java.sql.SQLException: Connection failed
+    at com.example.app.DB.connect(DB.java:45)
+    at com.example.app.Service.process(Service.java:110)
+    ... 1 more

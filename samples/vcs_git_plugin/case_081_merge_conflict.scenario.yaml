@@ -1,0 +1,15 @@
+scenario: '执行 git merge 时发生合并冲突，显示冲突文件和自动合并失败信息。'
+target_capability: '合并冲突保留'
+expected_keep: 'CONFLICT (content): Merge conflict in src/main.rs'
+expected_compress: 'Auto-merging src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3494647b60c428a36b3d50bf30de4edbc4b4117460e75018fa0b22598fa0b90c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

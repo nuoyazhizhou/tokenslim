@@ -1,0 +1,15 @@
+scenario: '用户执行p4 info命令，查看Perforce服务器连接信息，包括用户名、客户端、服务器地址、版本和许可证等。'
+target_capability: 'p4 info输出保留与压缩'
+expected_keep: 'User name: alice.chen, Server address: perforce.example.com:1666, Server version: P4D/LINUX26X86_64/2024.1/2637890'
+expected_compress: "Server date: 2026/04/03 14:32:11 +0800 CST, Client address: 192.168.1.100:45678, Client root: C:\\workspace\\project"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '34b0be49cdf735be7a1a6cb2bd7b5080d0f30c32346f05f732448ee0f34a40c1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

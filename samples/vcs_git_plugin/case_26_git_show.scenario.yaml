@@ -1,0 +1,15 @@
+scenario: 'Git show 命令输出，展示一个提交的详细变更，包括提交哈希、作者、日期、提交信息以及 diff 内容，涉及 Rust 源文件的修改。'
+target_capability: '提交信息与 diff 路径保留'
+expected_keep: 'commit 18f4bb5007aa6e2c48b21c371cd3d884120e668b, diff --git a/src/core/doctor_workspace/methods.rs b/src/core/doctor_workspace/methods.rs'
+expected_compress: 'Author: nuoyazhizhou <nuoyazhizhou@example.com>, Date:   Tue Mar 31 22:11:16 2026 +0800, @@ -40,6 +40,11 @@'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '811f32d7b1547dcb156db067d106c6c7f2576ac0628c3e9b3b772b71a5f4a58d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

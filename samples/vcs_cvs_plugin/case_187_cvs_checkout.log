@@ -1,0 +1,4 @@
+cvs checkout -d myproject module
+cvs checkout: Updating myproject
+cvs checkout: myproject/src/main.java is no longer in the repository
+U myproject/README

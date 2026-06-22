@@ -1,0 +1,15 @@
+scenario: '日志包含三种不同颜色的ANSI转义序列（红色[ERROR]、绿色[SUCCESS]、黄色[WARNING]），清洗后需移除ANSI码保留纯文本。'
+target_capability: 'ANSI转义序列清除'
+expected_keep: '[ERROR] Module A: Failed to load, [SUCCESS] Module B: Loaded successfully, [WARNING] Module C: Deprecated API'
+expected_compress: "\\x1b[31;1m, \\x1b[32;1m, \\x1b[33;1m"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd1c3933276afa0588167c6577833f6df1bd683bb556b4a2e6888ca6114abaa82'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

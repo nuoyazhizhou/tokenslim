@@ -1,0 +1,31 @@
+{
+    "name": "php_ruby",
+    "description": "PHP/Ruby 错误栈脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$PHP_RU"
+    },
+    "keep_signals": [
+        "Fatal error: 行（PHP 致命错误）",
+        "PHP Stack trace: 行（PHP 堆栈追踪）",
+        "Uncaught Error: 行（PHP 未捕获错误）",
+        "ActionView::Template::Error（Ruby 模板错误）",
+        ".rb: 行（Ruby 文件引用）",
+        "rake aborted!（Rake 中止）",
+        "HTML 错误页面标题（Whoops! / exception_title）"
+    ],
+    "compress_targets": [
+        "HTML 标签包裹（<html>/<div> 等）"
+    ],
+    "design_intent": "PHP/Ruby 错误栈脱水：保留错误关键行，折叠 HTML 包裹。"
+}

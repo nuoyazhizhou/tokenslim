@@ -1,0 +1,8 @@
+Build started...
+  Determining projects to restore...
+  Restored /src/MyApp/MyApp.csproj (in 2.3 sec).
+  MyApp -> /src/MyApp/bin/Debug/net6.0/MyApp.dll
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+Time Elapsed 00:00:05.23

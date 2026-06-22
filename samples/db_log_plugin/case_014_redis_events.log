@@ -1,0 +1,4 @@
+12345:M 12 May 2026 10:02:03.123 * Ready to accept connections tcp
+12345:M 12 May 2026 10:02:05.456 # Error accepting a client connection: max number of clients reached
+12345:S 12 May 2026 10:02:07.789 * Connecting to MASTER 10.0.0.10:6379
+12345:S 12 May 2026 10:02:09.111 - DB 0: 1200 keys (300 volatile) in 2048 slots HT.

@@ -1,0 +1,8 @@
+user@host:~$ curl -O https://example.com/release.tar.gz && tar -xzf release.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100 10.0M  100 10.0M    0     0  5.0M      0  0:00:02  0:00:02 --:--:--  5.0M
+user@host:~$ cd release/ && ./install.sh
+Installing dependencies...
+Done.
+user@host:~/release$ 

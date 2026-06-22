@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git diff --word-diff 逐词差异，插件应保留文件路径，压缩 diff 内容。'
+target_capability: '文件路径保留与diff内容压缩'
+expected_keep: 'diff --git a/src/core/text_slicer/methods.rs b/src/core/text_slicer/methods.rs'
+expected_compress: '+use std::thread;'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '768f9bb6d73411cdbb4cfe3cde5618996bee622a2acefa29c810be89604f687a'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

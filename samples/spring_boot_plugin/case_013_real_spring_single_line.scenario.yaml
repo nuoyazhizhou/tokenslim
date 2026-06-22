@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用启动时 Tomcat 初始化日志，单行记录端口信息。'
+target_capability: 'Spring Boot 启动日志保留'
+expected_keep: 'Tomcat initialized with port(s): 8080 (http)'
+expected_compress: '2024-01-15 10:30:45.123 INFO 12345 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0ef285069339145446770a6582c6538c31546e708fdbf8bccb394b5488b13622'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

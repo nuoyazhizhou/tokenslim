@@ -1,0 +1,1 @@
+SELECT * FROM users WHERE name LIKE '%漢字%' OR name LIKE '%éçà%';

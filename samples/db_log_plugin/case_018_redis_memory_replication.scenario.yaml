@@ -1,0 +1,15 @@
+scenario: 'Redis 实例日志，包含内存超限拒绝命令、主从复制连接失败、数据库键统计等事件。'
+target_capability: 'Redis 日志压缩'
+expected_keep: 'OOM command not allowed, MASTER aborted replication, DB 0: 990000 keys'
+expected_compress: '13 May 2026 09:02:01.010, 13 May 2026 09:02:02.020, 13 May 2026 09:02:03.030'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fecb001cfb2f1098a4f8a45f6966fcd29ff98f3ad0ebc7f557768c2d85c24de8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+fossil sync
+Sync with http://example.com/repo...
+Pull: 5 commits, 3 files
+Push: 2 commits, 1 file
+Done.

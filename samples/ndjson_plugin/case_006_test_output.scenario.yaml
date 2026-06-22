@@ -1,0 +1,15 @@
+scenario: 'Go测试框架输出的NDJSON日志，包含测试运行、输出和失败事件，模拟支付模块的测试执行过程。'
+target_capability: 'NDJSON首尾保留与中间折叠'
+expected_keep: "{\"Time\":\"2024-01-01T11:00:00Z\",\"Action\":\"run\",\"Package\":\"github.com/shop/payment\",\"Test\":\"TestCharge\"}"
+expected_compress: "{\"Time\":\"2024-01-01T11:00:01Z\",\"Action\":\"output\",\"Package\":\"github.com/shop/payment\",\"Test\":\"TestCharge\",\"Output\":\"=== RUN   TestCharge\\n\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b40d241314b42954e7b4a743a77275fd0f16d50e562f89698a762a251d421220'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

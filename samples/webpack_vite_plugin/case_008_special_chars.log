@@ -1,0 +1,6 @@
+asset main.abc123.js 125 KiB [emitted]
+asset index.html 2.5 KiB [emitted]
+⚠️  warning: ./src/utils/helper.js contains console.log statements
+⚠️  warning: 'process.env.NODE_ENV' is not defined
+⚠️  warning: Using deprecated API: require.ensure
+webpack 5.90.3 compiled with warnings

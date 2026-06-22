@@ -1,0 +1,5 @@
+bitbucket issue list
+ID      TITLE                      STATUS  ASSIGNEE   PRIORITY
+1       Fix login bug              OPEN    alice       High
+2       Add new feature            OPEN    bob         Medium
+3       Update documentation       CLOSED  charlie    Low

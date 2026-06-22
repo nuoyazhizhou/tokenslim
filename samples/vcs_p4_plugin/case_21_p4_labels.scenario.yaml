@@ -1,0 +1,15 @@
+scenario: '用户执行 ''p4 labels'' 命令，列出 Perforce 仓库中的所有标签及其元数据（日期、作者、描述）。'
+target_capability: '标签列表压缩'
+expected_keep: 'Release-2.0, Release-1.5, Release-1.0'
+expected_compress: '2026/04/03 14:30:00, alice.chen, ''Release 2.0 - VCS plugin support'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8f4e2acc339cbaa41cf9a1ca206f740900192a2d9131369b9566ea30721f8b0d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

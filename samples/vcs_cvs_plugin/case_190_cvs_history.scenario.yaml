@@ -1,0 +1,15 @@
+scenario: 'vcs_cvs_plugin 测试：CVS history 命令输出文件变更记录，插件应保留关键变更摘要行，压缩重复时间戳和路径。'
+target_capability: 'CVS 历史记录压缩'
+expected_keep: 'R 2026-04-08 12:00 [alice] src/main.java: Resync point'
+expected_compress: 'M 2026-04-07 10:30 [bob] src/utils.java: Modified'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 `helm template` 命令时，由于 values 文件中缺少 `image.tag` 字段，导致模板渲染失败，返回 nil pointer 错误。'
+target_capability: '错误保留'
+expected_keep: "Error: template: web/templates/deployment.yaml:22:18: executing \"web/templates/deployment.yaml\" at <.Values.image.tag>: nil pointer evaluating interface {}.tag"
+expected_compress: 'Use --debug flag to render out invalid YAML'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a8b34c23f99ceacf55ad170645278371b288c332ee857ef40be879705144ff22'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

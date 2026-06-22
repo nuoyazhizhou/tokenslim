@@ -1,0 +1,15 @@
+scenario: '一个包含大量空行的文本文件，每行有效内容后跟多个空行，用于测试插件折叠连续空白行的能力。'
+target_capability: '连续空白行折叠'
+expected_keep: 'Line 1, Line 2, Line 3, Line 4'
+expected_compress: '空行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5606020a0aae311edba7aae740989cfc284f3224210df19189ebc325c22b482d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

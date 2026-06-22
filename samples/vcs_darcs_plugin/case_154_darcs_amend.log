@@ -1,0 +1,5 @@
+darcs amend -m "Updated message"
+Amending patch for: feature-add-login
+Old message: Add login feature
+New message: Add login with OAuth support
+Modified files: src/auth/oauth.rs

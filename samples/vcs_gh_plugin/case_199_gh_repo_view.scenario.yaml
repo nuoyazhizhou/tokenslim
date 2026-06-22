@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh repo view owner/my-repo` 查看仓库信息，输出包含描述、URL、可见性、更新日期、默认分支、许可证、主题、贡献者、复刻和星标等结构化字段。'
+target_capability: 'GitHub CLI 仓库信息结构化压缩'
+expected_keep: 'gh repo view owner/my-repo, Description: Main repository for the project, Stars: 50'
+expected_compress: 'URL: https://github.com/owner/my-repo, Visibility: private, Updated: 2026-04-08'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5f8b704c934c870f4c050b965c0d4377f03194ae422c7903761acf791bfec3e2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

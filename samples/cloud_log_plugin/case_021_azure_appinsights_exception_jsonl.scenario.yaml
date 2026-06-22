@@ -1,0 +1,15 @@
+scenario: 'Azure Application Insights 异常日志，包含 NullReferenceException 堆栈跟踪和健康检查请求记录，需剥离云外壳并保留异常消息。'
+target_capability: 'Azure 日志外壳剥离与异常保留'
+expected_keep: 'System.NullReferenceException: Object reference not set to an instance of an object.'
+expected_compress: 'resourceId: /subscriptions/000/resourceGroups/rg/providers/Microsoft.Insights/components/backend'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '887d3e34eae9e685632d554bb4f584a943eb7b0f60bc5c1b4bad42f85e6eaac9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

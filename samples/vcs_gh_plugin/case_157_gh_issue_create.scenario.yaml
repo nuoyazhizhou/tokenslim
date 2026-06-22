@@ -1,0 +1,15 @@
+scenario: '使用 gh issue create 命令创建 GitHub Issue，包含标题和正文，输出显示创建成功并自动添加标签。'
+target_capability: 'GitHub CLI 命令输出脱水'
+expected_keep: "gh issue create --title \"Bug: Login fails with OAuth\" --body \"Steps to reproduce...\""
+expected_compress: '✓ Created issue #42'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '138e17bc9985de06769dd5bc99c2921977266ceacdf82808ea58073b80c6274c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,8 @@
+user@host:~$ mount | grep -E "^/dev"
+/dev/sda1 on / type ext4 (rw,relatime,errors=remount-ro)
+/dev/sdb1 on /mnt/data type ext4 (rw,relatime,noexec,nosuid,nodev)
+/dev/sdc1 on /mnt/backup type xfs (rw,relatime,noexec,nosuid,nodev)
+tmpfs on /run type tmpfs (rw,nosuid,nodev,size=812344k,mode=755)
+user@host:~$ mount | wc -l
+8
+user@host:~$

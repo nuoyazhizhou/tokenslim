@@ -1,0 +1,15 @@
+scenario: 'protoc 编译 proto 文件时产生枚举值警告和字段废弃警告，需要压缩诊断信息并保留关键位置与消息。'
+target_capability: 'protoc 诊断压缩'
+expected_keep: "warning: Enum value \"UNKNOWN\" should be zero."
+expected_compress: 'proto/status.proto:12:3:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7b443adeb81fed297ce90a2c7994f5e2084a41f2fa2b0b03729e162b20773c08'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

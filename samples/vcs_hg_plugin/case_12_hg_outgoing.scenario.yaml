@@ -1,0 +1,15 @@
+scenario: '开发者执行 `hg outgoing` 查看尚未推送的变更集，输出包含三个变更集及其元数据（用户、日期、摘要）。'
+target_capability: 'Hg outgoing 命令输出压缩'
+expected_keep: 'changeset:   19:abcdef012345'
+expected_compress: 'comparing with https://hg.example.com/project'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '091d11d3316bfef0c406011a28eddd61d9dc5b9515f31a7b9ba583358f2a2d31'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

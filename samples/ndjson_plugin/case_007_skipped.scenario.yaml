@@ -1,0 +1,15 @@
+scenario: 'Go测试日志NDJSON格式，包含测试跳过事件，用于验证插件对测试跳过的聚合压缩能力。'
+target_capability: '测试跳过聚合'
+expected_keep: "{\"Action\":\"run\"}"
+expected_compress: "{\"Action\":\"skip\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c51d33a6da3a4cf670c98e55b9ed97fa771bdb5af17b97e8ab39f84224555e15'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

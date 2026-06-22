@@ -1,0 +1,8 @@
+2024-01-15 10:30:45 INFO  Starting application...
+/home/user/project/index.js:10
+    throw new Error("Something went wrong");
+          ^
+
+Error: Something went wrong
+    at Object.<anonymous> (/home/user/project/index.js:10:11)
+2024-01-15 10:30:46 ERROR Application crashed

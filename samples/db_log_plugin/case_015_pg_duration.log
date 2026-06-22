@@ -1,0 +1,3 @@
+2026-05-12 10:03:01.123 UTC [5011] LOG:  duration: 421.75 ms  statement: SELECT * FROM orders WHERE status = 'pending' ORDER BY created_at DESC LIMIT 100
+2026-05-12 10:03:02.456 UTC [5011] LOG:  duration: 33.12 ms  execute <unnamed>: UPDATE orders SET locked_at = now() WHERE id = $1
+2026-05-12 10:03:05.789 UTC [5012] ERROR:  deadlock detected

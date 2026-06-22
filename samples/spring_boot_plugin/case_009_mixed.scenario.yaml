@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用日志中包含用户输入和异常堆栈的混合内容，测试插件对非标准日志行的处理能力。'
+target_capability: '混合内容处理'
+expected_keep: 'Starting, Shutting down, ERROR'
+expected_compress: 'User input: hello, java.lang.Exception: Processing failed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e40b856a354136ffb1c52e98cdd2ae9304b7d4e3239e49b95f07681ed25b4d29'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

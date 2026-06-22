@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch Logs 中 filter-log-events 返回的 JSONL 格式日志，包含 ECS 后端服务的健康检查请求记录，每条记录有 timestamp、logStreamName、message 和 ingestionTime 字段。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: "INFO: 10.0.1.94:0 - \"GET /health HTTP/1.1\" 200 OK"
+expected_compress: 'ingestionTime, timestamp 毫秒部分'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f6f3f530399919d7b2f13dfcd24eb190d369512b3094a6134652099bdf790feb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

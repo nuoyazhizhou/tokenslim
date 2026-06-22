@@ -1,0 +1,8 @@
+{"Time":"2024-01-01T10:00:00Z","Action":"run","Package":"github.com/shop/api","Test":"TestCreateUser"}
+{"Time":"2024-01-01T10:00:01Z","Action":"pass","Package":"github.com/shop/api","Test":"TestCreateUser","Elapsed":0.50}
+{"Time":"2024-01-01T10:00:01Z","Action":"run","Package":"github.com/shop/api","Test":"TestDeleteUser"}
+{"Time":"2024-01-01T10:00:02Z","Action":"fail","Package":"github.com/shop/api","Test":"TestDeleteUser","Elapsed":0.30}
+{"Time":"2024-01-01T10:00:02Z","Action":"run","Package":"github.com/shop/db","Test":"TestInsert"}
+{"Time":"2024-01-01T10:00:03Z","Action":"pass","Package":"github.com/shop/db","Test":"TestInsert","Elapsed":0.80}
+{"Time":"2024-01-01T10:00:03Z","Action":"run","Package":"github.com/shop/cache","Test":"TestSet"}
+{"Time":"2024-01-01T10:00:04Z","Action":"pass","Package":"github.com/shop/cache","Test":"TestSet","Elapsed":0.20}

@@ -1,0 +1,15 @@
+scenario: '华为云LTS导出的CSV格式访问日志，包含PostgreSQL查询耗时、MongoDB连接错误、Redis慢命令等后端服务日志，时间戳精确到秒。'
+target_capability: 'CSV日志外壳剥离与字段压缩'
+expected_keep: 'PostgreSQL duration: 8.231 ms statement: SELECT * FROM sessions WHERE id = $1'
+expected_compress: '2026-05-13T08:38:01Z,prod-lts,backend,INFO'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5369630dda047c1d7b8c8786e54fb53cc348aafd9661ada8ea1057dd370553e4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

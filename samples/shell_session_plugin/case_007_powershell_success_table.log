@@ -1,0 +1,9 @@
+PS C:\Users\user> Get-Process | Select-Object -First 3
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    201      15     2104       5304       0.12   4012   1 ApplicationFrameHost
+    132       8     1420       4428       0.05   5220   0 armsvc
+    312      24    22048      33020       3.12   1044   1 audiodg
+
+PS C:\Users\user> 

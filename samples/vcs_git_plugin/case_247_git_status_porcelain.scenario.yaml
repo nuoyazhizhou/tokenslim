@@ -1,0 +1,15 @@
+scenario: '用户执行 `git status --porcelain` 查看工作区变更，输出包含已修改、已暂存和未跟踪的文件路径及状态标记。'
+target_capability: '文件路径与状态标记保留'
+expected_keep: 'M src/core/text_slicer/methods.rs, A  src/core/dictionary_manager/mod.rs, ?? samples/vcs/'
+expected_compress: 'git status --porcelain'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '03adf76ed881d4f14383844c0d40afe901777d8108328f072041321abc402cc9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

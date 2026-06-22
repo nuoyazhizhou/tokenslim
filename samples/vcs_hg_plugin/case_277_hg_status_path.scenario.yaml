@@ -1,0 +1,15 @@
+scenario: 'vcs_hg_plugin 测试：hg status 指定目录路径，插件应保留文件状态标记和路径，压缩命令行。'
+target_capability: '文件状态变更保留'
+expected_keep: 'M src/core/text_slicer/methods.rs, A src/core/dictionary_manager/mod.rs'
+expected_compress: 'hg status src/core/'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6011a3c505e72f84cd27d88646b238768357b838048459d62a38a1eb112c43c1'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

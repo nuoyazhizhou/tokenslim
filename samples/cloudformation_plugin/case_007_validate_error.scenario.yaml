@@ -1,0 +1,15 @@
+scenario: '用户执行 aws cloudformation validate-template 命令验证模板，返回 ValidationError 错误，提示模板中资源依赖 MissingRole 未解析。'
+target_capability: '错误保留与解析'
+expected_keep: 'An error occurred (ValidationError) when calling the ValidateTemplate operation: Template format error: Unresolved resource dependencies [MissingRole] in the Resources block of the template'
+expected_compress: 'aws cloudformation validate-template --template-body file://template.yml'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '87d4ea099017d9857c03cd320d5d5501d829da4da078e3a348c9ba46ac6e593d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

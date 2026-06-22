@@ -1,0 +1,4 @@
+hg push
+pushing to https://bitbucket.org/user/myrepo
+pushing to ssh://hg@bitbucket.org/user/myrepo
+pushed 2 changesets

@@ -1,0 +1,6 @@
+2024-01-15 10:30:45 INFO Starting template engine
+{{ header }}
+Some regular text
+{{ content }}
+More regular text
+2024-01-15 10:30:46 INFO Complete

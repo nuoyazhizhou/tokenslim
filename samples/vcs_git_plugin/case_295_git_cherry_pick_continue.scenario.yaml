@@ -1,0 +1,15 @@
+scenario: '用户执行 git cherry-pick --continue 完成一个提交，输出包含提交哈希、作者、日期和文件变更统计。'
+target_capability: '提交信息保留与统计压缩'
+expected_keep: 'a1b2c3d, Fix authentication timeout, 1 file changed'
+expected_compress: '15 insertions(+), 3 deletions(-)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e9f1449c0f70cf77ef967c8ead19696da4ea7d0866bf9a39033cb025619849c4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

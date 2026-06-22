@@ -1,0 +1,7 @@
+[INFO] 2024-01-15 10:30:45 Starting script
+[DEBUG] 2024-01-15 10:30:46 Processing data
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    raise ValueError("Error")
+ValueError: Error
+[ERROR] 2024-01-15 10:30:47 Script failed

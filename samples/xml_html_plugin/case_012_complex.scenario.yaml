@@ -1,0 +1,15 @@
+scenario: '一个包含DOCTYPE、head、style、body、div、header、nav、main、article、footer等标签的复杂HTML文档，展示了完整的网页结构。'
+target_capability: 'HTML结构压缩与空白折叠'
+expected_keep: "<html> <body> <div class=\"container\">"
+expected_compress: "    <meta charset=\"UTF-8\">     <style>"
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '60a62fbfa45a1798d6e9e16d64d796660d0f8b33e3cf31069ec5d4ba1cfbb7a7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

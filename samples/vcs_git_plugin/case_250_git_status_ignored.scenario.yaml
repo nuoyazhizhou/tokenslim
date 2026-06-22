@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git status --ignored 显示忽略文件，插件应保留文件状态和忽略列表，压缩提示文本。'
+target_capability: 'Git 状态输出压缩'
+expected_keep: 'new file:   src/core/dictionary_manager/mod.rs, modified:   src/core/text_slicer/methods.rs, Ignored files:'
+expected_compress: "use \"git restore --staged <file>...\" to unstage, use \"git add <file>...\" to update what will be committed"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd06a8e8adaf375a0c5f808c6b91f00d29410a5146074ad0dab3c8863eb2f31ca'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

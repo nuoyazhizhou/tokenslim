@@ -1,0 +1,5 @@
+hg merge
+merging with 12345abc
+Auto-merging src/utils.rs
+Merge completed
+3 files merged

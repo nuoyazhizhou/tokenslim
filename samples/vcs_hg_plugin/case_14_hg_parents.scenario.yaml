@@ -1,0 +1,15 @@
+scenario: '用户执行 ''hg parents'' 命令查看当前工作目录的父变更集，输出显示两个变更集及其元数据（变更集ID、用户、日期、摘要）。'
+target_capability: '变更集元数据保留'
+expected_keep: 'changeset:   18:eeff3344aa55, changeset:   16:ff11ee22dd33, summary:'
+expected_compress: 'user:        alice.chen, date:        Fri Apr 03 14:32:11 2026 +0800'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'abaf10c8db7f5bcdd76a1e9b0c6cbcc7a6fe8d747a227dbc75cd6bdbba8a4d6c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

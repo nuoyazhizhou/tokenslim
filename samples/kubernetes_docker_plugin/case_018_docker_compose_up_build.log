@@ -1,0 +1,9 @@
+docker compose up --build api worker
+Container tokenslim-db-1  Running
+Container tokenslim-redis-1  Running
+Container tokenslim-api-1  Recreate
+Container tokenslim-worker-1  Recreate
+api-1     | Listening on 0.0.0.0:8080
+worker-1  | queue worker started
+api-1     | 2026-05-13T08:13:40Z GET /health 200
+worker-1  | processed job 7fdad3f6c3fb4a8db9f0aa6600123456

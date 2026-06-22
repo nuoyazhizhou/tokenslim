@@ -1,0 +1,3 @@
+bazel version
+Build label: 7.1.2
+Build target: @@//src/main/java/com/google/devtools/build/lib/bazel:BazelServer

@@ -1,0 +1,15 @@
+scenario: '纯文本日志，无二进制噪声，无需压缩处理'
+target_capability: '噪声过滤：保留纯文本'
+expected_keep: 'This is clean text, No noise to filter, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ea9171220d1e62121e7212ebf345b878430c96a0939dde1038444b97795c74b2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:43:25.678814'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

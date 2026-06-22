@@ -1,0 +1,15 @@
+scenario: '用户执行 hg clone 命令从 Bitbucket 克隆仓库，输出包含克隆进度、变更集数量和文件更新摘要。'
+target_capability: '克隆操作摘要保留'
+expected_keep: 'hg clone https://bitbucket.org/user/myrepo, added 5 changesets, 0 files updated'
+expected_compress: 'requesting all changes, adding changesets, adding manifests, adding file changes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9245e589870444bc3599e966a7da4f7927177dc94ef7f33ed51ea51344a94c41'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

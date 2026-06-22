@@ -1,0 +1,15 @@
+scenario: 'Apache combined access log showing repeated requests from Googlebot (crawling /robots.txt and /sitemap.xml) and BadBot (probing sensitive paths like /private, /backup.zip, /.env, /.git/config, returning 403/404), mixed with normal user traffic to /products.'
+target_capability: 'Bot traffic pattern detection'
+expected_keep: '403, 404, BadBot'
+expected_compress: '200, Googlebot, Mozilla/5.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '28b6aed7bbe8b9ed5f2f4a5fd5cc1eef6c8f61056adf33791c344b4d900907a2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

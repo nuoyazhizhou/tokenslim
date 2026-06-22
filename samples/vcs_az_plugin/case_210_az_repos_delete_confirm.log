@@ -1,0 +1,2 @@
+az repos delete --id 12345 --yes
+✓ Repository deleted: legacy-repo

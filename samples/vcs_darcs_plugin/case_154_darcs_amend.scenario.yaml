@@ -1,0 +1,15 @@
+scenario: '用户使用 darcs amend 命令修改补丁消息，将旧消息 ''Add login feature'' 更新为 ''Add login with OAuth support''，并显示修改的文件 src/auth/oauth.rs。'
+target_capability: '补丁消息修改保留'
+expected_keep: "darcs amend -m \"Updated message\", Old message: Add login feature, New message: Add login with OAuth support"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cc97d4bede543a92ddfd9ab9ce966135de00c668ccee6584dea90b09af205fe1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

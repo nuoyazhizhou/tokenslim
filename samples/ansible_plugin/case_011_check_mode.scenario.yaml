@@ -1,0 +1,15 @@
+scenario: '使用Ansible的check模式（--check）对deploy.yml进行dry-run执行，输出显示配置模板任务在两个主机上标记为changed，重启服务任务被skipped，最终汇总显示无失败。'
+target_capability: '检查模式dry-run输出保留'
+expected_keep: "TASK [Template config]\\nchanged: [api1]\\nPLAY RECAP"
+expected_compress: "skipping: [api1]\\nskipping: [api2]\\n空行"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '75b0b8979ca2d482b3cdf5579b1c25aa50d6a31c621206d37a3e5833091be6f7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

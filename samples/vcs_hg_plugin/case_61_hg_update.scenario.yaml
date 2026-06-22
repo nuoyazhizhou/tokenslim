@@ -1,0 +1,15 @@
+scenario: '执行 hg update 命令更新工作目录到指定变更集，输出包含变更集 ID、文件更新数量和当前工作目录状态。'
+target_capability: 'Hg命令脱水：保留命令首行、变更集、文件操作摘要'
+expected_keep: 'hg update, 12345abc, 3 files updated'
+expected_compress: 'updating to changeset 12345, working directory now at 12345abc'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a87059700d3fa15ce5f03e3a76693ffcea3dfa6b792c4b046355a1cdd8ba459'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

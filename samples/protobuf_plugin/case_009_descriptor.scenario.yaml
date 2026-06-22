@@ -1,0 +1,15 @@
+scenario: 'protoc 编译多个 .proto 文件生成 descriptor set，输出成功消息和包含文件计数。'
+target_capability: 'protoc 诊断信息保留与路径压缩'
+expected_keep: 'Writing descriptor set api.pb, Included files: 3'
+expected_compress: 'protoc --proto_path=proto --descriptor_set_out=api.pb proto/user.proto proto/order.proto proto/payment.proto'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1a6a84e2dfd9a6cd53d7a5853a6dda813b7f772fcc317962b3ec14300bc78deb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+svn diff --git
+Index: src/core/doctor_workspace/methods.rs
+==================================================================
+--- a/src/core/doctor_workspace/methods.rs
++++ b/src/core/doctor_workspace/methods.rs
+@@ -1417,6 +1417,12 @@
+ pub fn analyze_project(root: &Path) -> Vec<Diagnostic> {
+     let mut diagnostics = Vec::new();
++
++    // VCS Plugin Config Guidance
++    if let Some(config) = load_vcs_config(root) {
++        diagnostics.push(config.validate());
++    }
++
+     for file in walk_dir(root) {

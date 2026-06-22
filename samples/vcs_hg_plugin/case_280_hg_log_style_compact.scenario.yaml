@@ -1,0 +1,15 @@
+scenario: '使用 hg log --style compact 查看 Mercurial 仓库的提交历史，输出包含变更集 ID、作者、日期和描述信息。'
+target_capability: 'hg log 输出压缩'
+expected_keep: '1234[tip] Implement dictionary manager with producer-consumer model (developer, 2026-04-14)'
+expected_compress: '1233 Add parallel processing support to TextSlicer (developer, 2026-04-14)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ae464d6f2a082c30608328baed314b7323da0ec3e4738992cfcd8d550148805e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

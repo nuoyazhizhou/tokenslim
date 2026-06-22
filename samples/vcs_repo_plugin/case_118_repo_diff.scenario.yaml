@@ -1,0 +1,15 @@
+scenario: 'Android Repo 仓库的 diff 命令输出，包含两个 diff 命令（repo diff 和 repo diff --platform/frameworks/base），以及一个文件 Activity.java 的 diff 内容，展示了旧日志行被替换为新日志行的变更。'
+target_capability: 'diff 文件路径压缩与 hunk 头压缩'
+expected_keep: 'repo diff, D:src/Activity.java, @@ -10,7 +10,7 @@'
+expected_compress: 'diff --git a/src/Activity.java b/src/Activity.java, --- a/src/Activity.java, +++ b/src/Activity.java'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '09679fc1038714d4fba7906eed7ff8b38d44e3678d16e3c9227742c9ed3640ae'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

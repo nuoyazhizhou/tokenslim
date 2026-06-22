@@ -1,0 +1,15 @@
+scenario: 'GCP Cloud Run 日志，包含一条 INFO 级启动消息和一条 ERROR 级 Node.js TypeError 堆栈，jsonPayload 格式。'
+target_capability: 'GCP jsonPayload 剥离与错误保留'
+expected_keep: 'TypeError: Cannot read properties of undefined (reading ''id'')'
+expected_compress: 'timestamp, resource, logName'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4231179c2561a98e6eacb5da6b4003e859ad34e8806b7e0bd58f480872d81cd7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

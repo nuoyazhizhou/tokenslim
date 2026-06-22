@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines 中执行 helm upgrade 部署步骤时，用户发起取消请求，作业随后被取消，日志中包含步骤边界、警告和取消信息。'
+target_capability: '取消与警告信号保留'
+expected_keep: '##[section]Starting: Deploy, ##[warning]Cancellation requested by user, ##[section]Finishing: Deploy'
+expected_compress: '##[command]helm upgrade api chart/api --install, Waiting for deployment rollout, The operation was canceled.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '89203cc2ccd5bd3d6d1b7cbbc042ab9755bde1fc979fd6192b0dccc10c4756ac'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

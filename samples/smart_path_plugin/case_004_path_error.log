@@ -1,0 +1,2 @@
+Error: File not found: /home/user/missing/file.txt
+Error: Permission denied: /etc/passwd

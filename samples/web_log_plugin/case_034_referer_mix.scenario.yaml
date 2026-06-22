@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：混合 referer 来源含 500 错误，插件应保留错误行，压缩正常 referer。'
+target_capability: 'Referer mix handling'
+expected_keep: 'POST /checkout HTTP/1.1 500'
+expected_compress: '10.8.0.1, Mozilla/5.0, https://example.com/cart'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

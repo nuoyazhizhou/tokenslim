@@ -1,0 +1,15 @@
+scenario: 'Darcs diff 输出，展示代码变更的上下文行（@@ -340,7 +340,10 @@）和实际增减行，无补丁元数据。'
+target_capability: 'diff 输出压缩'
+expected_keep: 'darcs diff, @@ -340,7 +340,10 @@, +    fn parse'
+expected_compress: '--- old/src/..., +++ new/src/..., 空行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3462881f2ffe5e297d44e950a81c202590976ff09cb018978e5306a14458df7b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

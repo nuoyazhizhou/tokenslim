@@ -1,0 +1,15 @@
+scenario: '日志文件中包含一段JavaScript代码，代码中使用了短标识符（如data, x）和长标识符（如process），以及箭头函数和map方法。'
+target_capability: '代码脱水：保留短标识符，压缩长标识符'
+expected_keep: 'def, data, x, return, map, x * 2'
+expected_compress: 'process'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6307bac3f63478a9ce5df43b59673793e2427c02af9521cd5eb91a72dceee141'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

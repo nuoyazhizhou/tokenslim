@@ -1,0 +1,15 @@
+scenario: 'Bazel 执行测试时测试失败，输出包含错误行和构建摘要，需要保留错误和关键摘要，压缩普通进度日志。'
+target_capability: '错误保留与构建摘要'
+expected_keep: 'ERROR: C:/repo/services/api/BUILD.bazel:18:8: Testing //services/api:api_test failed: Test failed, //services/api:api_test FAILED in 2.3s, INFO: Analyzed target //services/api:api_test (3 packages loaded, 90 targets configured).'
+expected_compress: 'INFO: Elapsed time: 6.000s, Critical Path: 2.900s, INFO: Build did NOT complete successfully'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c16e773b075a46bbed2c75b1b72faafe16770422dcbe317399128b4272d6d598'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

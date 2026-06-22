@@ -1,0 +1,15 @@
+scenario: 'Git 仓库中执行 git status 命令，显示当前分支为 feature/tree-restructure，有多个已修改文件（如 src/core/tree_restructure/mod.rs）和未跟踪文件（如 tests/tree_test.rs），并提示使用 git add 或 git commit -a 提交更改。'
+target_capability: 'Git 状态输出保留与压缩'
+expected_keep: 'modified:   src/core/tree_restructure/mod.rs, Untracked files: tests/tree_test.rs, On branch feature/tree-restructure'
+expected_compress: "use \"git add <file>...\" to update what will be committed, no changes added to commit (use \"git add\" and/or \"git commit -a\")"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c7fefe12cfb43b805395f4dc910c316115485efd1c21fa9d492611d09e78e2ec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

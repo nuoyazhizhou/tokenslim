@@ -1,0 +1,5 @@
+git branch -v
+  feature/login  a1b2c3d Add login authentication
+  feature/signup b4c5d6e [ahead 2] Implement signup flow
+* main           c7d8e9f Release v2.1.0
+  hotfix/bug-123 d8e9f0a Fix null pointer in parser

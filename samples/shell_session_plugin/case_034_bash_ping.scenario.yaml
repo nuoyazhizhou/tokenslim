@@ -1,0 +1,15 @@
+scenario: '用户在 Bash shell 中执行 ping 命令探测网络连通性，显示 ping 统计结果和往返时间。'
+target_capability: '命令输出保留与提示符压缩'
+expected_keep: 'ping statistics, rtt min/avg/max/mdev, 64 bytes from'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c1ae3e2fb468309d6f4f5638efecc977ef43917a9445f490027c014d8a09228c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

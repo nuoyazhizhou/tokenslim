@@ -1,0 +1,15 @@
+scenario: 'Pulumi CLI 版本查询场景，仅输出 ''pulumi version'' 命令及其结果 ''v3.115.2''，无任何资源操作或错误信息。'
+target_capability: '不压缩场景（无压缩目标）'
+expected_keep: 'pulumi version, v3.115.2'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '917c9aba3786b218429f4406d449df4166cc6eaddfdd19ae5e8ba2435f8d0940'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

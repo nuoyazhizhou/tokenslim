@@ -1,0 +1,15 @@
+scenario: '用户执行 ''hg paths'' 命令，显示仓库的远程路径配置，包括 default 和 default-push 两个 URL。'
+target_capability: '命令首行保留与路径字典压缩'
+expected_keep: 'hg paths, default = https://bitbucket.org/user/repo, default-push = https://bitbucket.org/user/repo'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '46396832d6963a849f9a785cb743318876a0bb5d1357e5652eb6d04cd1d6d0e0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

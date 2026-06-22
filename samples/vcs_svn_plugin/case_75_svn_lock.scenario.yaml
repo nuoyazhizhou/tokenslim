@@ -1,0 +1,15 @@
+scenario: 'SVN 用户执行 ''svn lock src/main.rs'' 命令，输出显示文件被用户 ''alice'' 锁定。'
+target_capability: '命令锚点保留与路径压缩'
+expected_keep: 'svn lock src/main.rs, locked by user ''alice'''
+expected_compress: 'src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c8f1a2c31d2f78b013a53ef5b14f0dae0f2f19bdd5865bf3104b60ca27cc6ca7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

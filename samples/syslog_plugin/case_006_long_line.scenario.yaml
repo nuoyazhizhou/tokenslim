@@ -1,0 +1,15 @@
+scenario: '系统日志中一条超长的用户认证审计记录，包含完整的时间戳、主机名、进程名、PID、用户信息和认证结果。'
+target_capability: '超长行处理与字典压缩'
+expected_keep: "May  7 10:33:10, msg='op=PAM:authentication grantors=pam_unix acct=\"user\" exe=\"/usr/bin/sudo\" hostname=? addr=? terminal=/dev/pts/0 res=success'"
+expected_compress: 'server1, auditd[1234]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '996c8835d8092aaf02724f5211bfa6d0f47735d08dd8447dafc5ab24a038169c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

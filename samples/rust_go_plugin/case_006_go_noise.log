@@ -1,0 +1,9 @@
+go: downloading github.com/foo/bar v1.2.3
+go: downloading github.com/baz/qux v0.4.5
+go: extracting github.com/foo/bar v1.2.3
+go: extracting github.com/baz/qux v0.4.5
+panic: something went wrong
+
+goroutine 1 [running]:
+main.main()
+        /home/user/project/main.go:10 +0x15

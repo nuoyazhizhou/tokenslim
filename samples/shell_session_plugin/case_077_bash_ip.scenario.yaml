@@ -1,0 +1,15 @@
+scenario: '用户通过Bash shell执行`ip addr show eth0`和`ip route show`命令，查看网络接口eth0的详细信息（包括MAC地址、IPv4/IPv6地址、路由表等），并显示命令输出。'
+target_capability: '命令与输出保留'
+expected_keep: '2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe84f41ae5bb8a13fd37043417b07e1b5f50f378b88026390c2ef47aa13806ee'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

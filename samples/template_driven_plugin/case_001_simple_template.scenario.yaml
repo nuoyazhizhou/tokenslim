@@ -1,0 +1,15 @@
+scenario: '一个包含两个模板变量的简单模板，变量为 name 和 age，以及一个问候语模板。'
+target_capability: '模板变量压缩'
+expected_keep: '{{ name }}: {{ age }}'
+expected_compress: '{{ name }}: {{ age }} 中的变量部分'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b043f231026adcaf47d589806fec3ddf863df3dd17c9e40a520f7eb378e50fc9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

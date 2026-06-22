@@ -1,0 +1,15 @@
+scenario: 'CVS diff 输出，显示文件 src/plugins/vcs_plugin/parser.rs 的差异，包含 Index 行、revision 信息和代码变更上下文。'
+target_capability: 'diff 文件索引保留'
+expected_keep: 'Index: src/plugins/vcs_plugin/parser.rs'
+expected_compress: '--- src/plugins/vcs_plugin/parser.rs	revision 1.11'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c1c90f3e50a543c5724df607b2b72c6b64a5e9f10ca83d3f636bce820ac28bc6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,10 @@
+pulumi preview --diff --stack dev
+Previewing update (dev)
+
+     Type                          Name      Plan       Info
+ ~   aws:lambda/function:Function  worker    update     [diff: ~memorySize]
+     pulumi:pulumi:Stack           dev
+
+Resources:
+    ~ 1 to update
+    9 unchanged

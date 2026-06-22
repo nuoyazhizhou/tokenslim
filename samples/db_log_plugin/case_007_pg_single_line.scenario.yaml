@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 单行错误日志，记录了一个列不存在的错误，包含时间戳、进程ID和错误详情。'
+target_capability: '数据库错误日志压缩'
+expected_keep: "ERROR, [2412], column \"nonexistent\" does not exist"
+expected_compress: '2026-05-07 10:33:10.123 UTC'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ae5b390cc2354e996f5df7a36253615035477c35873449b06dd5c9bf1b3841d9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

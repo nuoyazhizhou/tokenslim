@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines 上运行多模块 Android Gradle 构建（:api:test、:service:test、:app:assembleDebug），其中 :service:test 任务中 PaymentRetryPolicyTest 测试失败，导致构建失败。'
+target_capability: '构建错误任务保留与无用行压缩'
+expected_keep: '> Task :service:test FAILED; com.acme.service.PaymentRetryPolicyTest > backsOffAfterGatewayTimeout FAILED; FAILURE: Build failed with an exception.'
+expected_compress: '> Task :api:compileTestKotlin UP-TO-DATE; > Task :service:compileTestKotlin FROM-CACHE; 7 actionable tasks: 1 executed, 3 up-to-date, 1 from cache, 1 skipped, 1 no-source'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bf9873a23ac7a0da9a7498d52a3970df3a74e36ffa38289750a3f9f3ef3a2812'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,8 @@
+Testu@66d01df8f117:~$ aws --profile "$AWS_PROFILE" logs tail /ecs/cloud-document/backend --region "$AWS_REGION" --since 20m
+
+2026-05-13T08:13:39.939000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:13:40.150000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:15:11.006000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 ERROR:    10.0.0.231:0 - "POST /api/documents HTTP/1.1" 500 Internal Server Error
+2026-05-13T08:15:13.122000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 WARNING:  10.0.1.94:0 - "GET /api/status HTTP/1.1" 503 Service Unavailable
+2026-05-13T08:15:40.058000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:15:40.237000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK

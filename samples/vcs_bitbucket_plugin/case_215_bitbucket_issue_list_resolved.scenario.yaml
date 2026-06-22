@@ -1,0 +1,15 @@
+scenario: '用户使用 Bitbucket CLI 查询所有状态的 issue，返回两个已解决的 issue（ID 11 和 12），包含标题、状态、负责人和优先级信息。'
+target_capability: 'Issue 列表数据行保留'
+expected_keep: '11     Rotate expired API key        RESOLVED    alice      High'
+expected_compress: 'ID     TITLE                         STATUS      ASSIGNEE   PRIORITY'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0a844cdc2c7842401eeb72e270918b84d72179f80a06cea5eb4d72e40d6cab31'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

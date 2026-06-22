@@ -1,0 +1,15 @@
+az repos list
+[
+  {
+    "id": "abc123-def456-ghi789",
+    "name": "my-repo",
+    "project": {
+      "name": "MyProject",
+      "id": "project-123"
+    },
+    "defaultBranch": "main",
+    "size": 1024,
+    "remoteUrl": "https://dev.azure.com/org/MyProject/_git/my-repo",
+    "webUrl": "https://dev.azure.com/org/MyProject/_git/my-repo"
+  }
+]

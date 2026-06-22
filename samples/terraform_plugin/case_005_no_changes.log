@@ -1,0 +1,9 @@
+terraform plan
+
+aws_vpc.main: Refreshing state... [id=vpc-123456]
+aws_subnet.public[0]: Refreshing state... [id=subnet-111111]
+aws_subnet.public[1]: Refreshing state... [id=subnet-222222]
+
+No changes. Your infrastructure matches the configuration.
+
+Terraform has compared your real infrastructure against your configuration and found no differences.

@@ -1,0 +1,15 @@
+scenario: '用户执行 aws cloudformation list-stacks 命令，列出状态为 CREATE_COMPLETE 的堆栈，输出包含两个堆栈（web 和 api）及其状态。'
+target_capability: '不压缩场景（保留所有行）'
+expected_keep: 'web CREATE_COMPLETE, api CREATE_COMPLETE, aws cloudformation list-stacks --stack-status-filter CREATE_COMPLETE'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7646ae50cb7ff2d5fb5e47d23f45c2128e343d544baca80aadcc8c76c42cea97'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+hg verify
+checking changesets
+checking manifests
+crosschecking files
+verified 456 changesets

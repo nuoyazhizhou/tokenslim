@@ -1,0 +1,15 @@
+scenario: 'Maven 构建日志，包含构建开始、扫描项目和成功结束的信息，无错误或警告。'
+target_capability: '构建结果保留'
+expected_keep: 'BUILD SUCCESS'
+expected_compress: '[INFO] 行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'da3d7c47ff4c598589a9c7c9dce050478f6b4cf42da72dc2cae29e87b40c46ad'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

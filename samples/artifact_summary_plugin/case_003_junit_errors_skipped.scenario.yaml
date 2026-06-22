@@ -1,0 +1,15 @@
+scenario: 'JUnit XML 报告展示集成数据库测试套件，包含 7 个用例，其中 2 个错误（复制延迟超时、无法获取咨询锁）和 2 个跳过（需快照凭证），其余通过。'
+target_capability: '测试错误与跳过保留'
+expected_keep: '<error> and <skipped> testcases with class/name and error/skipped message'
+expected_compress: '<testcase> elements with no failure/error/skipped (passed tests), full Traceback lines'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c6211faf6d584f670ba652201c985e298abf7fc6d412aa4eb2cfef2619b831cc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

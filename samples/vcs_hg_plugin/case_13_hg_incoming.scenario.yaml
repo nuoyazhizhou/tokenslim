@@ -1,0 +1,15 @@
+scenario: '执行 hg incoming 命令，显示来自上游仓库的传入变更集，包含变更集ID、用户、日期和摘要信息。'
+target_capability: '变更集信息保留与日期压缩'
+expected_keep: 'changeset:   22:aabbccddeeff, user:        dave.zhang, summary:     feat: Implement hg incoming parser with changeset tracking'
+expected_compress: 'date:        Mon Apr 06 08:00:00 2026 +0800'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c92ebb72e21ceef159f329b5b90f4e3084667cba4b41fc2279bc9b59106d1f27'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

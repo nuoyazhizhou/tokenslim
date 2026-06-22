@@ -1,0 +1,7 @@
+aws cloudformation describe-stack-events --stack-name api
+2026-05-12 12:00:00 api AWS::CloudFormation::Stack CREATE_IN_PROGRESS User Initiated
+2026-05-12 12:00:05 Role AWS::IAM::Role CREATE_IN_PROGRESS Resource creation Initiated
+2026-05-12 12:00:35 Role AWS::IAM::Role CREATE_COMPLETE -
+2026-05-12 12:00:37 Function AWS::Lambda::Function CREATE_IN_PROGRESS Resource creation Initiated
+2026-05-12 12:01:18 Function AWS::Lambda::Function CREATE_COMPLETE -
+2026-05-12 12:01:21 api AWS::CloudFormation::Stack CREATE_COMPLETE -

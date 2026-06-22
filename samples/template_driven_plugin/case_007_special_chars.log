@@ -1,0 +1,3 @@
+{{ title }}
+{{ 漢字变量 }}
+{{ path_with_spaces }}

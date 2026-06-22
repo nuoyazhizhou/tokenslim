@@ -1,0 +1,15 @@
+scenario: 'Git bisect 过程中，标记一个提交为 good，并显示当前 bisect 进度（剩余 6 个修订，约 3 步）。'
+target_capability: 'bisect 进度行压缩'
+expected_keep: 'git bisect good v2.0.0, bdef123 Commit message in the middle'
+expected_compress: 'Bisecting: 6 revisions left to test after this (roughly 3 steps)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c862e6f8c487f7f626cc171e3e3f54ebab3f324400b0e76b85425c119bbc20ff'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

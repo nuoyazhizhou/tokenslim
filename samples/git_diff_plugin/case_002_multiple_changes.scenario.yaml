@@ -1,0 +1,15 @@
+scenario: 'Git diff 输出显示两个文件（src/main.rs 和 README.md）的变更，包括新增函数和文档标题。'
+target_capability: '多文件 diff 压缩'
+expected_keep: 'diff --git, --- a/, +++ b/, @@ -1 +1,3 @@, @@ -0,0 +1 @@'
+expected_compress: "fn main() { println!(\"Hello, world!\"); }, +fn add(...), +# My Project"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a77db3a579d926313b365954bfc466e0518562bf894dc238892921862336e342'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

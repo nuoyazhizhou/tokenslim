@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 files` 命令列出 Perforce 仓库中 `//depot/main/src/` 路径下的所有文件及其版本信息，输出包含文件路径、修订版本号和操作类型（add/edit）。'
+target_capability: 'P4文件列表压缩与路径精简'
+expected_keep: '//depot/main/src/main.rs#1 - add'
+expected_compress: '//depot/main/src/'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6cfea5e3da924191f05367985e48f7257cd36762ddf5f5f03ba87391fff6f2b3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

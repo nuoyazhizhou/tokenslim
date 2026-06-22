@@ -1,0 +1,31 @@
+{
+  "name": "Shell Script",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Shell 脚本语法检测配置",
+  "file_extensions": [".sh", ".bash", ".zsh", ".fish"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "#!/bin/"},
+        {"pattern_type": "contains", "pattern": "#!/usr/bin/"},
+        {"pattern_type": "contains", "pattern": "echo "},
+        {"pattern_type": "contains", "pattern": "if ["},
+        {"pattern_type": "contains", "pattern": "then"},
+        {"pattern_type": "contains", "pattern": "fi"},
+        {"pattern_type": "contains", "pattern": "for "},
+        {"pattern_type": "contains", "pattern": "do"},
+        {"pattern_type": "contains", "pattern": "done"},
+        {"pattern_type": "contains", "pattern": "while "},
+        {"pattern_type": "contains", "pattern": "case "},
+        {"pattern_type": "contains", "pattern": "esac"},
+        {"pattern_type": "contains", "pattern": "function "},
+        {"pattern_type": "contains", "pattern": "export "},
+        {"pattern_type": "contains", "pattern": "source "},
+        {"pattern_type": "contains", "pattern": "$("},
+        {"pattern_type": "contains", "pattern": "${"}
+      ]
+    }
+  ]
+}

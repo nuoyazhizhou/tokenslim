@@ -1,0 +1,20 @@
+CircleCI received job pytest_coverage
+Run pytest --cov=src --cov-report=term-missing --junitxml=reports/junit.xml
+============================= test session starts =============================
+platform linux -- Python 3.12.4, pytest-8.3.4
+collected 84 items
+
+tests/test_api.py ................................
+tests/test_models.py ............................
+tests/test_tasks.py ........................
+
+---------- coverage: platform linux, python 3.12.4-final-0 -----------
+Name                    Stmts   Miss  Cover   Missing
+-----------------------------------------------------
+src/api.py                120      8    93%   44-48, 91
+src/tasks.py               72      2    97%   50-51
+src/models.py              96      0   100%
+-----------------------------------------------------
+TOTAL                     288     10    97%
+generated xml file: /home/circleci/project/reports/junit.xml
+============================== 84 passed in 9.41s ==============================

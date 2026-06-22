@@ -1,0 +1,15 @@
+scenario: 'Bitbucket CLI 列出 issue 列表，包含 ID、标题、状态、负责人和优先级字段。'
+target_capability: 'Issue 列表数据行保留'
+expected_keep: '1       Fix login bug              OPEN    alice       High'
+expected_compress: 'ID      TITLE                      STATUS  ASSIGNEE   PRIORITY'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0ea138b1ba2dd3be8155720fc7c8f91a87bf4df2432c365c3327e6892d622d5d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

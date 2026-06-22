@@ -1,0 +1,9 @@
+user@host:~$ ls -la /var/log
+total 1024
+drwxr-xr-x 14 root   root     4096 Jun  1 10:00 .
+drwxr-xr-x 14 root   root     4096 Jun  1 10:00 ..
+-rw-r-----  1 syslog adm     15340 Jun  7 08:30 syslog
+-rw-r-----  1 syslog adm    105340 Jun  6 08:30 syslog.1
+drwxr-xr-x  2 root   root     4096 Jun  1 10:00 apt
+-rw-rw-r--  1 root   utmp   292292 Jun  7 08:00 lastlog
+user@host:~$ 

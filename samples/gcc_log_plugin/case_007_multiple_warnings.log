@@ -1,0 +1,6 @@
+gcc -c parser.c -o parser.o
+parser.c: In function 'parse_json':
+parser.c:125:32: warning: comparison between pointer and integer
+gcc -c lexer.c -o lexer.o
+lexer.c: In function 'tokenize':
+lexer.c:88:17: warning: implicit declaration of function 'is_valid_char'

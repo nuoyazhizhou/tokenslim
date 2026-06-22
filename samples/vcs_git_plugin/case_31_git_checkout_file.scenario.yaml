@@ -1,0 +1,15 @@
+scenario: '用户执行 git checkout 恢复两个文件，输出显示更新进度和已恢复文件列表。'
+target_capability: '文件路径保留与进度行压缩'
+expected_keep: 'Restored files:'
+expected_compress: 'Updating files:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '55fd96cb139e7cd222b3781fae71dfa372430e71b82639d7515905cfa016aa31'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

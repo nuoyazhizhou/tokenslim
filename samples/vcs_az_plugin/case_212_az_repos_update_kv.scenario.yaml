@@ -1,0 +1,15 @@
+scenario: '使用 Azure DevOps CLI 的 `az repos update` 命令更新仓库信息，输出包含仓库名称、默认分支、Web URL 和同步状态等关键 K-V 信息。'
+target_capability: 'K-V 保留与 URL 压缩'
+expected_keep: 'az repos update, Name: app-repo, SyncStatus: ahead by 2'
+expected_compress: 'WebUrl: https://dev.azure.com/myorg/app-project/_git/app-repo'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1df198ff4686dbb8a51db882fe7e89daac39ded5d21613b9c94606c54285a307'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

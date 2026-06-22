@@ -1,0 +1,15 @@
+scenario: 'Rust 编译错误，显示类型不匹配（E0308），期望 i32 但得到 String，并给出转换建议。'
+target_capability: '编译错误保留'
+expected_keep: 'error[E0308]: mismatched types'
+expected_compress: 'help: try using a conversion method:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f5ec414e17cb3f3d54d7d0caa529b1c15247f640de029bb3b3d0082cdd9017fc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

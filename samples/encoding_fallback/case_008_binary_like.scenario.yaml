@@ -1,0 +1,15 @@
+scenario: '一个包含 ELF 文件魔数的二进制数据片段，非纯文本，用于测试编码兜底插件对二进制内容的处理。'
+target_capability: '二进制内容保留'
+expected_keep: '7F 45 4C 46 00 01 02 00 03'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

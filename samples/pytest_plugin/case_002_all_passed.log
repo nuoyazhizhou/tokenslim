@@ -1,0 +1,10 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 4 items
+
+tests/test_api.py::test_create PASSED                                  [ 25%]
+tests/test_api.py::test_update PASSED                                  [ 50%]
+tests/test_api.py::test_delete PASSED                                  [ 75%]
+tests/test_api.py::test_list PASSED                                    [100%]
+
+============================== 4 passed in 0.41s ===============================

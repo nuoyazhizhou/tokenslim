@@ -1,0 +1,15 @@
+scenario: '在 Buildkite CI 中执行 Kotlin 编译任务的 Android Gradle 构建失败，包含 Unresolved reference 和 Type mismatch 编译错误以及 FAILED 任务行。'
+target_capability: '错误保留与任务状态折叠'
+expected_keep: '> Task :feature:compileDebugKotlin FAILED, e: file:///... Unresolved reference: sessionToken, e: file:///... Type mismatch'
+expected_compress: '> Task :core:preBuild UP-TO-DATE, > Task :core:compileDebugKotlin UP-TO-DATE, 5 actionable tasks: 1 executed, 4 up-to-date'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '79ee9be39f765a8f6f9d084a2fed831ed7eb9c3cd61cc95710b2fd2175e8d3e3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

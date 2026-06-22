@@ -1,0 +1,3 @@
+hg paths
+default = https://bitbucket.org/user/repo
+default-push = https://bitbucket.org/user/repo

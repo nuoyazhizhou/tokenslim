@@ -1,0 +1,2 @@
+svn propset svn:keywords "Id" src/main.rs
+property 'svn:keywords' set on 'src/main.rs'

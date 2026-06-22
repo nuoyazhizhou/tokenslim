@@ -1,0 +1,15 @@
+scenario: '一个由 pytest 生成的 JUnit XML 文件，包含 6 个测试用例，其中 1 个失败（快照不匹配）和 1 个跳过（ClamAV 服务不可用），其余通过。'
+target_capability: '测试失败/跳过信号保留'
+expected_keep: 'test_openapi_snapshot <failure>, test_upload_scans_virus <skipped>, testsuite summary'
+expected_compress: '通过的测试用例详细行和时间, XML 标签结构'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4a0536a03a7c35200c75289d868b325c0842f4a6e24c97eff3ee0f52183e46d2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

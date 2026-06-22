@@ -1,0 +1,34 @@
+diff --git a/src/lib.rs b/src/lib.rs
+index e69de29..3a57c5d 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -0,0 +1,30 @@
++pub mod utils {
++    pub fn greet() {
++        println!("Hello from utils!");
++    }
++
++    pub fn add(a: i32, b: i32) -> i32 {
++        a + b
++    }
++
++    pub fn subtract(a: i32, b: i32) -> i32 {
++        a - b
++    }
++
++    pub fn multiply(a: i32, b: i32) -> i32 {
++        a * b
++    }
++
++    pub fn divide(a: i32, b: i32) -> i32 {
++        a / b
++    }
++
++    pub fn modu(a: i32, b: i32) -> i32 {
++        a % b
++    }
++
++    pub fn power(a: i32, b: i32) -> i32 {
++        a.pow(b as u32)
++    }
++}

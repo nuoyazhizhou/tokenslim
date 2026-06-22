@@ -1,0 +1,15 @@
+scenario: 'Kubectl 部署应用后输出创建成功信息和 Pod 状态表，展示 deployment 创建和 Pod 就绪状态。'
+target_capability: 'K8S 部署事件保留与状态表压缩'
+expected_keep: 'deployment.apps/myapp created'
+expected_compress: 'NAME    READY   UP-TO-DATE   AVAILABLE   AGE'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7cfdd92173cc1e1476a67d2c7d69727d8ddeaade36a2dfe95bde9b7c28cd9712'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Vite 开发服务器启动后，显示本地地址和网络提示，随后进行模块热更新（HMR），每次更新输出模块数量和构建时间。'
+target_capability: 'HMR 更新日志保留'
+expected_keep: 'hmr update'
+expected_compress: 'ready in 300 ms, ➜  Local, ➜  Network'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '58f28df9e43406560f1e06f1bddeae3f3f7bf5ed0cac4edba89413aa997bfcf7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

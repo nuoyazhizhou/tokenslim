@@ -1,0 +1,15 @@
+cvs diff -u src/plugins/vcs_plugin/parser.rs
+Index: src/plugins/vcs_plugin/parser.rs
+===================================================================
+--- src/plugins/vcs_plugin/parser.rs	(revision 1.11)
++++ src/plugins/vcs_plugin/parser.rs	(working copy)
+@@ -100,6 +100,10 @@
+ impl VcsParser for CvsLogParser {
+     fn parse(&self, raw: &str) -> Option<VcsDocument> {
++        // route cvs log through generic log parser
++        // keep commit/date/author-like fields
++        // and preserve subject lines
++
+         parse_generic_log_for_tool(raw, VcsTool::Cvs, &["cvs log"])
+     }
+ }

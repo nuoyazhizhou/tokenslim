@@ -1,0 +1,15 @@
+scenario: 'Xcode 构建日志中，编译 AppDelegate.m 源文件生成 .o 目标文件的 CompileC 命令及底层 clang 调用。'
+target_capability: '编译命令骨架保留与路径压缩'
+expected_keep: 'CompileC /Users/dev/DerivedData/App-abc123/Build/Objects-normal/arm64/AppDelegate.o /Users/dev/work/app/AppDelegate.m (in target ''App'' from project ''App'')'
+expected_compress: '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -c /Users/dev/work/app/AppDelegate.m -o /Users/dev/DerivedData/App-abc123/Build/Objects-normal/arm64/AppDelegate.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4db981ccb5685e3af11e22e12145d8a398ec7903da2450d9e3bc9fe0dfc1094b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

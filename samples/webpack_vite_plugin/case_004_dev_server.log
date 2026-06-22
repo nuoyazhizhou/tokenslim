@@ -1,0 +1,12 @@
+VITE v6.5.0  ready in 300 ms
+
+  ➜  Local:   http://localhost:5173/
+  ➜  Network: use --host to expose
+  ➜  press h + enter to show help
+
+✓ 3 modules transformed.
+✓ Built in 12ms
+10:30:10 [vite] hmr update /src/App.jsx
+✓ 1 module transformed.
+10:30:15 [vite] hmr update /src/components/Button.jsx
+✓ 1 module transformed.

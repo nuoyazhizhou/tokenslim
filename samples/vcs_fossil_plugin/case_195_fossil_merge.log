@@ -1,0 +1,4 @@
+fossil merge feature-branch
+Pulling from http://example.com/repo...
+Merging abc1234: Add new feature into current branch
+120 files updated, 3 files merged

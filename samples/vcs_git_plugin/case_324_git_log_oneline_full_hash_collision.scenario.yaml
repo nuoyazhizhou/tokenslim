@@ -1,0 +1,15 @@
+scenario: 'Git log 使用 --oneline 格式输出 3 条提交记录，每条包含完整 40 字符哈希和提交信息，其中前两条哈希前缀相同（aaaaaaaaaa），模拟哈希碰撞场景。'
+target_capability: '提交哈希与提交信息保留'
+expected_keep: 'aaaaaaaaaab1111111111111111111111111111111 feat: first collision candidate'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a3c16f552d10db10f9c149c2c4d0251420707db97f25a42a7981e5066140c13'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

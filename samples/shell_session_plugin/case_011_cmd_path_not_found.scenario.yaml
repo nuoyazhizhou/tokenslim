@@ -1,0 +1,15 @@
+scenario: '用户在Windows CMD中尝试切换到不存在的Z盘路径，系统返回路径未找到错误，随后显示新的提示符。'
+target_capability: '错误保留与提示符压缩'
+expected_keep: 'The system cannot find the path specified.'
+expected_compress: "C:\\Users\\user>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2e0513d128df25ea5523a45038ee387d2a8cacd6038c87fc43747c6180dadd31'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,3 @@
+protoc --proto_path=proto --go_out=gen proto/payment.proto
+proto/payment.proto:4:1: error: Import "money.proto" was not found or had errors.
+proto/payment.proto:22:10: error: "Money" is not defined.

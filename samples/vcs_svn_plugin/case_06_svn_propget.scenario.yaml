@@ -1,0 +1,15 @@
+scenario: 'SVN propget 命令输出，展示多个文件/目录的属性，包括 svn:eol-style、svn:keywords、svn:mime-type、custom:review-status 以及 svn:ignore 和 svn:global-ignores 等属性。'
+target_capability: 'SVN 属性列表压缩'
+expected_keep: 'svn propget, Properties on, svn:eol-style, svn:keywords, svn:mime-type, custom:review-status, svn:ignore, svn:global-ignores'
+expected_compress: 'src/core/doctor_workspace/methods.rs, src/plugins/vcs_plugin/parser.rs, target, *.local.json, .env, *.o, *.pyc, __pycache__'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '30839c7fe186c89a8b41493df42475684c01911d9c0af028e87043b9a83978c9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

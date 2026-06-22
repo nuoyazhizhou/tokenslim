@@ -1,0 +1,15 @@
+scenario: 'OCI CLI 执行 logging-search 命令查询日志，返回包含时间戳、来源、级别和日志内容的表格，其中包含 INFO、ERROR 和 WARN 级别的日志条目。'
+target_capability: '云日志表格结构保留与字段压缩'
+expected_keep: "命令提示行 oci logging-search search-logs --search-query \"search \\\"ocid1.compartment.oc1..aaaa\\\"\"，日志内容如 Started backend.service、HikariPool timeout、Redis Connection refused"
+expected_compress: '时间戳 2026-05-13T08:22:00Z 压缩为 2026-05-13 08:22:00，OCID 资源路径 ocid1.instance.oc1.iad.backend1 压缩为 ocid1.instance.oc1...backend1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd7bf58d29d7b732a35056d35a4c93844e54d4897042e37831659b5bda1034cc9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

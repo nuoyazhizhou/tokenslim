@@ -1,0 +1,1 @@
+2026-05-07 10:33:10.123 UTC [2412] LOG:  execution of query: SELECT id, name, email, phone, address, city, state, zip_code, country, created_at, updated_at, last_login, status, role, permissions, preferences FROM users WHERE id IN (1, 2, 3, 4, 5, 6, 7, 8, 9, 10) AND status = 'active' AND created_at >= '2026-01-01' ORDER BY created_at DESC LIMIT 100

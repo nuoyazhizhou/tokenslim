@@ -1,0 +1,15 @@
+scenario: 'syslog_plugin 测试：含特殊字符和 Unicode 的系统日志，插件应保留特殊字符行，压缩 URL 编码。'
+target_capability: '特殊字符保留与压缩'
+expected_keep: '特殊字符行'
+expected_compress: 'URL 编码行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6dffa53ad8de654c0e7a3a79ef8655e333b72a60fe1cb668b17758bf64932950'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

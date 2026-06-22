@@ -1,0 +1,9 @@
+git add
+add 'src/new_file.rs'
+add 'config/new_config.json'
+Adding file: tests/test_new.rs
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+	new file:   src/new_file.rs
+	new file:   config/new_config.json
+	new file:   tests/test_new.rs

@@ -1,0 +1,20 @@
+Azure Pipelines pytest coverage step
+Run pytest --cov=service --cov-fail-under=85 --junitxml=test-results/pytest.xml
+============================= test session starts =============================
+platform linux -- Python 3.11.9, pytest-8.3.4
+collected 47 items
+
+tests/test_billing.py .........................
+tests/test_gateway.py ......................
+
+---------- coverage: platform linux, python 3.11.9-final-0 -----------
+Name                         Stmts   Miss  Cover   Missing
+----------------------------------------------------------
+service/billing.py             120     28    77%   44-62, 88-96
+service/gateway.py              94      5    95%   18, 41-42
+----------------------------------------------------------
+TOTAL                          214     33    84%
+Coverage failure: total of 84 is less than fail-under=85
+generated xml file: /home/vsts/work/1/s/test-results/pytest.xml
+============================== 47 passed in 12.30s ==============================
+ERROR: Coverage failure: total of 84 is less than fail-under=85

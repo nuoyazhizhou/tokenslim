@@ -1,0 +1,28 @@
+{
+    "name": "static_rule",
+    "description": "静态规则脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$STATIC"
+    },
+    "keep_signals": [
+        "enter正则匹配的行（区块开始标记）",
+        "keep正则匹配的行（重要行，检测分数0.45）",
+        "未折叠的独立行（原始内容保留）"
+    ],
+    "compress_targets": [
+        "连续重复的行（合并为带计数的'{行}(x次数)'）",
+        "超过阈值长度的区块（折叠为'$STATIC[...]'占位符）"
+    ],
+    "design_intent": "静态规则脱水：保留进入和保留模式匹配的行，折叠重复行和长块。"
+}

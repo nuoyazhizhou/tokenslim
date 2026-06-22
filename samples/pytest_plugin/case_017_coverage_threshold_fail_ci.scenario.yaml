@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines CI 中运行 pytest 覆盖率检查，设置 --cov-fail-under=85，实际总覆盖率 84%，触发 Coverage failure 错误，测试全部通过但 CI 步骤失败。'
+target_capability: '覆盖率阈值失败错误保留'
+expected_keep: 'Coverage failure: total of 84 is less than fail-under=85'
+expected_compress: 'tests/test_billing.py .........................'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '555ef0019297088d6707eb0aca942a16557ceb7ef8b4237468528d1b56844b78'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

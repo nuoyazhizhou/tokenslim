@@ -1,0 +1,10 @@
+Starting Gradle Daemon...
+> Task :app:preBuild
+> Task :app:compileDebugJavaWithJavac
+warning: [deprecation] getSupportActionBar() is deprecated
+warning: [deprecation] AsyncTask is deprecated
+> Task :app:compileDebugKotlin
+> Task :app:mergeDebugResources
+> Task :app:processDebugManifest
+> Task :app:packageDebug
+BUILD SUCCESSFUL in 1m 23s

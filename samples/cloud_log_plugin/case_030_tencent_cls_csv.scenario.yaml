@@ -1,0 +1,15 @@
+scenario: '腾讯云 CLS 日志以 CSV 格式输出，包含时间戳、日志集、主题、级别和日志内容，其中包含 INFO 和 ERROR 级别的日志，如数据库连接超时错误及恢复信息。'
+target_capability: '云日志 CSV 结构保留与元数据压缩'
+expected_keep: "ERROR,\"database connection error: timeout after 30s\""
+expected_compress: 'timestamp,logsetName,topic,level,logContent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '423e31515e16bad6cd1b56d98c393c880d150e7215cec0f38ee98e24b4d171b2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

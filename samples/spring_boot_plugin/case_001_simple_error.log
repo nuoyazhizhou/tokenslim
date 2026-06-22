@@ -1,0 +1,4 @@
+2024-01-15 10:30:45.123 ERROR 12345 --- [main] com.example.App : Application startup failed
+java.lang.NullPointerException: Cannot invoke "String.trim()" because "name" is null
+    at com.example.UserService.createUser(UserService.java:42)
+    at com.example.App.main(App.java:15)

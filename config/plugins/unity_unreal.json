@@ -1,0 +1,27 @@
+{
+    "name": "unity_unreal",
+    "description": "Unity/Unreal 构建日志脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$UNITY_"
+    },
+    "keep_signals": [
+        "LogUObject、LogHAL、LogLinker、FAndroidApp（Unreal引擎日志标签）",
+        "Unloading、Building AssetBundle、Shader compilation（Unity构建消息）",
+        "Loading .uasset/.prefab/.mat（通用资源加载信息，但可能被聚合）"
+    ],
+    "compress_targets": [
+        "连续的Loading Object行（聚合为一条，计数量）"
+    ],
+    "design_intent": "Unity/Unreal构建日志脱水：保留Unreal和Unity的日志标签，折叠连续的资源加载噪音。"
+}

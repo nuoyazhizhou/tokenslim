@@ -1,0 +1,15 @@
+scenario: 'NPM install 输出，包含弃用警告、安装统计和漏洞报告。'
+target_capability: '错误保留与警告保留'
+expected_keep: 'npm WARN deprecated old-package@1.0.0: This package is deprecated, found 3 vulnerabilities (1 moderate, 2 high)'
+expected_compress: 'added 243 packages in 12s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '61aac24052e90322e8ef2077693d4080fe5ec302407cbada8fda4f0a6d92d209'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

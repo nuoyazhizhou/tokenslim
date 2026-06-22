@@ -1,0 +1,6 @@
+aws cloudformation describe-stack-events --stack-name payments
+2026-05-12 16:00:00 payments AWS::CloudFormation::Stack UPDATE_IN_PROGRESS User Initiated
+2026-05-12 16:00:11 Table AWS::DynamoDB::Table UPDATE_IN_PROGRESS -
+2026-05-12 16:01:00 Table AWS::DynamoDB::Table UPDATE_COMPLETE -
+2026-05-12 16:01:03 Worker AWS::Lambda::Function UPDATE_FAILED Resource handler returned message: Code storage limit exceeded
+2026-05-12 16:01:04 payments AWS::CloudFormation::Stack UPDATE_ROLLBACK_IN_PROGRESS The following resource failed to update: [Worker].

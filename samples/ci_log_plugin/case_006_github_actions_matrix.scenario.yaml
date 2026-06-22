@@ -1,0 +1,15 @@
+scenario: 'GitHub Actions matrix build log with three matrix nodes (node=18 os=ubuntu, node=20 os=ubuntu, node=20 os=windows), each running npm test and all tests passing (142 passed). The log includes ::group:: and ::endgroup:: markers for each matrix cell.'
+target_capability: 'Matrix step retention and test line compression'
+expected_keep: '::group::Matrix, ::endgroup::, Process completed with exit code 0'
+expected_compress: 'Run npm test, Tests: 142 passed, 142 total'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '594b5787a9ec5fc740b16b628a063511a01da82f4e608d2eb8e1af577d625c21'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: "Windows 系统下的绝对路径，包含驱动器号和反斜杠分隔的目录结构，如 C:\\Users\\user\\project\\src\\main.js 和 D:\\Data\\Files\\document.pdf。"
+target_capability: '路径字典压缩'
+expected_keep: '（无非路径文本）'
+expected_compress: "C:\\Users\\user\\project\\src\\main.js, D:\\Data\\Files\\document.pdf"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5f625d1d6edeeb41da1b9cc2f853e7e4434a3c203fc0457991693690f4ee5e61'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

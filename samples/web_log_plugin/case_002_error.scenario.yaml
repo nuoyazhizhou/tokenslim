@@ -1,0 +1,15 @@
+scenario: 'Nginx 错误日志中记录了一条 upstream 超时错误，包含时间戳、进程ID、连接超时信息和上游读取响应头失败详情。'
+target_capability: '错误日志保留与异常信号提取'
+expected_keep: 'upstream timed out, Connection timed out, reading response header from upstream'
+expected_compress: '2026/05/07 10:33:44, 2412#0, *183'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '943a89ca2f9654ac93f2fb3debb0532af1234f7442b5b2533e516393f8743847'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

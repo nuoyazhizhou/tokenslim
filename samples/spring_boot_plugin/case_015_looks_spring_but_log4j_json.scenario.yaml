@@ -1,0 +1,15 @@
+scenario: 'spring_boot_plugin 负样本测试：Log4j JSON 格式日志，非 Spring Boot 标准格式，验证插件不误判，应保持原样或路由到 json_plugin。'
+target_capability: 'JSON日志识别与压缩'
+expected_keep: "{\"timestamp\":\"2024-01-15T10:30:45\",\"level\":\"INFO\",\"thread\":\"main\",\"logger\":\"com.example.App\",\"message\":\"Starting up\"}"
+expected_compress: '无Spring Boot事件可保留，全部压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

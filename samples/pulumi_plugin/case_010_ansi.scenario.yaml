@@ -1,0 +1,15 @@
+scenario: 'Pulumi 预览输出，包含 ANSI 颜色转义序列，显示资源操作摘要（创建 S3 桶、更新 Lambda 函数）及资源计数。'
+target_capability: 'ANSI 净化与资源操作摘要'
+expected_keep: 'Resources: + 1 to create ~ 1 to update'
+expected_compress: 'aws:s3/bucket:Bucket          logs      create'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7872ecced05ba8f347a59669546dd7f9594ccce8ec6fd28cd1640e1a0acc599e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

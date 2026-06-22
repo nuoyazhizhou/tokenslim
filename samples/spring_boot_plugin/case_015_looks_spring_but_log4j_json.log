@@ -1,0 +1,3 @@
+{"timestamp":"2024-01-15T10:30:45","level":"INFO","thread":"main","logger":"com.example.App","message":"Starting up"}
+{"timestamp":"2024-01-15T10:30:46","level":"INFO","thread":"main","logger":"com.example.App","message":"Configuration loaded"}
+{"timestamp":"2024-01-15T10:30:47","level":"ERROR","thread":"worker-1","logger":"com.example.Worker","message":"Job failed"}

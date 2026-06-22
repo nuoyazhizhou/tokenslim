@@ -1,0 +1,10 @@
+fossil status
+repository:   C:/repo/project.fossil
+local-root:   C:/git_work/TokenSlim/
+checkout:     9d41f1ac7a6d7f25d3b7f5b31d2f4f6b6f4f0aa5 2026-04-06 12:20:17 UTC
+tags:         trunk
+comment:      add VCS IR baseline for cvs/bzr/fossil/darcs (user: alice.chen)
+EDITED src/plugins/vcs_plugin/methods.rs
+EDITED src/plugins/vcs_plugin/parser.rs
+ADDED samples/vcs/case_29_fossil_status.log
+ADDED docs/design/vcs_coverage_matrix.md

@@ -1,0 +1,15 @@
+scenario: 'SVN status 命令输出，包含文件变更状态（M、A、D、?、!、~、I）及警告信息，最后显示已检出版本号。'
+target_capability: 'SVN 状态变更保留与路径压缩'
+expected_keep: 'svn status, M       src/core/doctor_workspace/methods.rs, Checked out revision 12345.'
+expected_compress: '?       config/vcs_plugin.local.json, ?       target/debug/build/tokenslim-abc123/build_script_build, svn status: warning: W155010: The node ''/repo/tmp'' was not found.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c1f1d3a47bd967e862caf2f0e87334d7feb2e44663552b3e4a41e46904959d66'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

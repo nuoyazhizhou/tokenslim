@@ -1,0 +1,6 @@
+10.0.1.10 - - [13/May/2026:08:13:39 +0000] "GET /health HTTP/1.1" 200 2 "-" "ELB-HealthChecker/2.0"
+10.0.1.11 - - [13/May/2026:08:13:40 +0000] "GET /health HTTP/1.1" 200 2 "-" "ELB-HealthChecker/2.0"
+10.0.1.10 - - [13/May/2026:08:14:09 +0000] "GET /health HTTP/1.1" 200 2 "-" "ELB-HealthChecker/2.0"
+10.0.1.11 - - [13/May/2026:08:14:10 +0000] "GET /health HTTP/1.1" 200 2 "-" "ELB-HealthChecker/2.0"
+10.0.1.12 - - [13/May/2026:08:14:11 +0000] "GET /api/documents HTTP/1.1" 200 842 "-" "Mozilla/5.0"
+10.0.1.12 - - [13/May/2026:08:14:12 +0000] "POST /api/documents HTTP/1.1" 201 118 "-" "Mozilla/5.0"

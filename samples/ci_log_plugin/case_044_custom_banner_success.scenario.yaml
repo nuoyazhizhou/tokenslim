@@ -1,0 +1,15 @@
+scenario: '自定义banner的CI pipeline成功构建与测试，包含checkout、build、test、package scan和publish artifacts步骤，最终状态success。'
+target_capability: '自定义banner成功场景保留步骤和状态'
+expected_keep: '[ci] step: checkout, [ci] step: build, [ci] step: test, [ci] step: package scan, [ci] step: publish artifacts, status=success'
+expected_compress: 'repository synchronized, fetching origin/main, checking out 3f2a1b0, python -m build, Successfully built..., writing build/..., 128 passed in 31.22s, scanning dist/..., scan passed: no critical vulnerabilities, uploading artifacts..., artifact uploaded: dist/...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

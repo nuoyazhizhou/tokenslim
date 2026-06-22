@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 数据库日志中一条超长 SELECT 查询语句，包含多个字段和 IN 子句，用于测试长行压缩能力。'
+target_capability: '长查询压缩与标签化'
+expected_keep: 'pid=2412, level=LOG, query=SELECT ... FROM users WHERE ...'
+expected_compress: '原始时间戳, 完整字段列表, IN 子句中的具体值'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6cdbf2a09df9986b1d2baf1d237c6321d977054f79f468f24c78b3f8d23d96d6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

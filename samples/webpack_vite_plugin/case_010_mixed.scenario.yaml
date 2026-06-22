@@ -1,0 +1,15 @@
+scenario: '一个混合了 Vite 和 Webpack 构建日志的案例，包含 Vite 启动信息、Webpack 资产列表、普通日志消息以及 Webpack 编译错误和成功信息。'
+target_capability: '混合构建工具日志处理'
+expected_keep: 'ERROR in ./src/App.jsx 12:15, Module parse failed: Unexpected token'
+expected_compress: 'VITE v6.5.0  ready in 300 ms, asset main.js 125 KiB [emitted] [minimized], Some regular log message here'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '79a2aa9371259b19489393370f5f6eef4b17c25dae39ee54b0cb45c183e9a952'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

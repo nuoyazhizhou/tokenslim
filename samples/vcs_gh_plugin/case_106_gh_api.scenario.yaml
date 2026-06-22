@@ -1,0 +1,15 @@
+scenario: '使用 gh api 命令查询 GitHub 仓库信息，返回 JSON 格式的仓库元数据。'
+target_capability: 'JSON 结构化数据保留与键名压缩'
+expected_keep: "gh api repos/owner/repo, \"id\": 123456, \"name\": \"my-repo\""
+expected_compress: "https://api.github.com/repos/owner/my-repo, \"html_url\": \"https://github.com/owner/my-repo\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5363c3c22d817b2a84f96ecd0d6b88b39159d4562486769a68a1fe4f6dd54686'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Buildkite pipeline 中运行前端项目构建和测试，测试步骤失败，输出错误信息和退出码。'
+target_capability: 'CI/CD 测试失败信号保留'
+expected_keep: 'FAIL, Error:, exited with status 1'
+expected_compress: 'added 900 packages, npm ci, npm test'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0a33f1dee5f6cfb39622927fb551cf13fc5f68102b06c86783e800b6ce797ee7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

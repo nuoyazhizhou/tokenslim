@@ -1,0 +1,15 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< com.example:myproject >-------------------
+[INFO] Building myproject 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ myproject ---
+[INFO] Deleting /target
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.345 s
+[INFO] Finished at: 2024-01-15T10:32:00+08:00
+[INFO] ------------------------------------------------------------------------

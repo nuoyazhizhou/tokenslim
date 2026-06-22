@@ -1,0 +1,15 @@
+scenario: '单行 ANSI 着色错误消息，测试清理 ANSI 转义序列后保留纯文本。'
+target_capability: 'ANSI转义序列移除'
+expected_keep: 'Error: Failed to connect to database'
+expected_compress: "\\x1b[31m, \\x1b[0m"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '97704059d264a6e77adc265ecea9adc557752c01e1c8568099161f3b54eccb53'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,7 @@
+git merge feature/new-feature
+Auto-merging src/main.rs
+CONFLICT (content): Merge conflict in src/main.rs
+Auto-merging src/utils.rs
+CONFLICT (content): Merge conflict in src/utils.rs
+Auto-merging tests/test_main.rs
+Automatic merge failed; fix conflicts and then commit the result.

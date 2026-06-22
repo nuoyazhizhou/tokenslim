@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：OCI JSON 格式访问日志含 404 错误，插件应保留错误行，压缩 IP 和 UA。'
+target_capability: 'JSON格式访问日志解析与错误保留'
+expected_keep: '404错误行、健康检查请求行'
+expected_compress: 'IP地址、UUID路径、User-Agent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

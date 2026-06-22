@@ -1,0 +1,15 @@
+scenario: 'unity_unreal_plugin 测试：Unity 构建日志混合初始化信息和 NullReference 错误，插件应保留错误行，压缩普通日志。'
+target_capability: '错误保留与日志标签识别'
+expected_keep: '[ERROR] NullReference in GameManager.cs:25'
+expected_compress: '2024-01-15 10:30:45 INFO Starting game'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

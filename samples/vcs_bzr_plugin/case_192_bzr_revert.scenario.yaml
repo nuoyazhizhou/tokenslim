@@ -1,0 +1,15 @@
+scenario: '执行 bzr revert 命令撤销对 src/main.java 文件的修改，输出显示已撤销该文件。'
+target_capability: 'revert 操作保留'
+expected_keep: 'reverted src/main.java'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd69330f9fb7c7aa4f2ebd22072c42b9bb355d550cf5a9e3ed57d6e4a5451f299'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

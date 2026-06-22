@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    main()
+  File "app.py", line 5, in main
+    do_something()
+  File "app.py", line 15, in do_something
+    raise KeyError('missing_key')
+KeyError: 'missing_key'
+
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    main()
+  File "app.py", line 5, in main
+    do_something()
+  File "app.py", line 15, in do_something
+    raise KeyError('another_missing_key')
+KeyError: 'another_missing_key'
+
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    main()
+  File "app.py", line 5, in main
+    do_something()
+  File "app.py", line 15, in do_something
+    raise KeyError('third_missing_key')
+KeyError: 'third_missing_key'

@@ -1,0 +1,15 @@
+scenario: 'Git diff 输出展示代码变更，包括文件路径、行号、上下文和新增函数，以及 Git 命令列表的扩展。'
+target_capability: 'diff 输出保留与命令列表扩展'
+expected_keep: 'diff --git a/src/core/doctor_workspace/methods.rs b/src/core/doctor_workspace/methods.rs, @@ -40,6 +40,11 @@ impl VcsPlugin {, +    fn detect_tool(&self, text: &str) -> Option<VcsTool>;'
+expected_compress: 'index 1a2b3c4..5d6e7f8 100644, --- a/src/core/doctor_workspace/methods.rs, +++ b/src/core/doctor_workspace/methods.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e1faa961deb1e3d91e45049af53a769be8c0ee72e196869524c7e63e05771570'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

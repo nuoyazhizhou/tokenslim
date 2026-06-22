@@ -1,0 +1,15 @@
+scenario: 'JUnit XML test report for services.checkout.payment with 3 failures: test_declined_card_maps_to_user_error (HTTP 402 vs 500), test_idempotency_key_reuse (duplicate capture), test_invoice_total_includes_tax (decimal mismatch).'
+target_capability: '测试失败信号保留与冗余折叠'
+expected_keep: 'failure message: expected HTTP 402 but got HTTP 500, duplicate capture created, invoice total mismatch'
+expected_compress: 'passed testcases: test_authorize_card_success, test_invoice_pdf_generated'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '23fac3e90e56409c23fa9a65fed2f4a518fb8c449016e2c1644f52fbb2c22887'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

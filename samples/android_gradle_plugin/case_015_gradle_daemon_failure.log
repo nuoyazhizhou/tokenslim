@@ -1,0 +1,13 @@
+Gradle build daemon disappeared unexpectedly (it may have been killed or may have crashed)
+> Task :compileJava
+> Task :processResources
+> Task :classes
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+* What went wrong:
+Execution failed for task ':test'.
+There were failing tests. See the report at: build/reports/tests/test/index.html
+
+BUILD FAILED in 18s
+4 actionable tasks: 4 executed

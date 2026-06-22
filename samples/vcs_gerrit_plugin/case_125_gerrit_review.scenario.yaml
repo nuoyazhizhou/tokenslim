@@ -1,0 +1,15 @@
+scenario: 'Gerrit code review 操作：用户通过 gerrit review 命令为变更 123456 设置 Code-Review+2 和 Verified+1 标签，系统输出标签设置确认信息。'
+target_capability: 'Gerrit review 标签保留'
+expected_keep: "gerrit review 123456,1 --code-review=2 --label \"Verified=1\""
+expected_compress: 'Labels are now set for change 123456:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e779b5225835eb53afb681ec3af3197983f3561a7c0e1bc2e22ebbf3726ed500'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

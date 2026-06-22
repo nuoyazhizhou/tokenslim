@@ -1,0 +1,15 @@
+scenario: '一个简单的SVG图形，包含一个圆形和文本标签，用于测试XML/HTML结构压缩插件对标签、属性和文本内容的保留，以及空白字符的压缩。'
+target_capability: 'XML/HTML结构压缩'
+expected_keep: '<svg>, <circle>, <text>'
+expected_compress: '换行和缩进空白'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '651904673047cc9c5e6d394cf18e07dfa037d147efc86c50a9c09ab3a48ed643'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

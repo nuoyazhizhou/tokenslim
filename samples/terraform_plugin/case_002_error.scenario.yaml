@@ -1,0 +1,15 @@
+scenario: 'Terraform apply 执行时遇到 EC2 实例创建错误，AMI ID 无效导致失败，错误信息包含资源路径和行号。'
+target_capability: '错误保留'
+expected_keep: 'Error: creating EC2 Instance: InvalidAMIID.NotFound: The image id ''[ami-deadbeef]'' does not exist'
+expected_compress: 'terraform apply'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9ad66018ceecff1e28c99060b19173738bdd3878ed1d04103c62de5ce432b8b2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

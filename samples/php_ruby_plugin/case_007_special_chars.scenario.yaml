@@ -1,0 +1,15 @@
+scenario: 'PHP 和 Ruby 脚本因包含特殊字符（如欧元符号 €）导致编码错误，分别抛出警告和异常，并显示文件行号。'
+target_capability: '特殊字符错误保留'
+expected_keep: 'PHP Warning:  Invalid character ''€'' in /app/utf8.php:10, Ruby Error: encoding error (Encoding::CompatibilityError), from app.rb:15:in `<main>'''
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6b366736fc50217ed86efcece241a40757a1796d73e20af47e7ae66b18819b80'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

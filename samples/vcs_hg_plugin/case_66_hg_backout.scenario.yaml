@@ -1,0 +1,15 @@
+scenario: '执行 hg backout 命令撤销变更集，输出包含撤销操作和变更集 ID。'
+target_capability: 'Hg backout 命令处理'
+expected_keep: 'hg backout, backing out changeset 12345abc, backed out changeset 56789def'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fb3c607196e466b8a2976f57f88623a5ff5c8d0dc8dc7bfc4cb8a6f6a8aa7135'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

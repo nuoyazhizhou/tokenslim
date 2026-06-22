@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 数据库的常规运行日志，包含检查点开始/完成、系统就绪通知、配置提示、详细信息和表创建提示等冗余信息。'
+target_capability: '数据库日志冗余折叠与关键字段保留'
+expected_keep: 'LOG, checkpoint, database system is ready'
+expected_compress: 'HINT, DETAIL, NOTICE'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5713e01f03e0c66811c6b72243dde9aa84de01c3f37feea9f590ee73397aaba0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Fossil 版本控制系统的 `timeline` 命令输出，显示提交历史，包含日期、作者、哈希和提交信息。'
+target_capability: '命令锚点保留与元数据压缩'
+expected_keep: 'fossil timeline, 1abc123, Add new feature'
+expected_compress: '2026-04-08, alice, 3ghi789'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e30fa674e4702aec1a0fba25d4b8dcdf1d284873abaf56564a8993d95e883713'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

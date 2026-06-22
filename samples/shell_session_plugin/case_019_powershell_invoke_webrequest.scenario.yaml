@@ -1,0 +1,15 @@
+scenario: 'PowerShell 用户执行 Invoke-WebRequest 命令访问 https://example.com，返回 HTTP 状态码 200 和 HTML 页面内容。'
+target_capability: 'HTTP 响应保留'
+expected_keep: 'StatusCode : 200, StatusDescription : OK, Content : <!doctype html>'
+expected_compress: "PS C:\\workspace>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b4272ec2157cfd17db55797ae21f20221a1247ef03827a15545146c09c69053a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

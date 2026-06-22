@@ -1,0 +1,15 @@
+scenario: '用户使用 AWS CLI 对 CloudFormation 堆栈 ''web'' 执行漂移检测，先发起检测请求，再查询资源漂移状态，结果中一个安全组被标记为 MODIFIED，一个启动模板为 IN_SYNC。'
+target_capability: 'CloudFormation 事件状态保留与折叠'
+expected_keep: 'MODIFIED, IN_SYNC, StackDriftDetectionId'
+expected_compress: 'aws cloudformation detect-stack-drift --stack-name web, aws cloudformation describe-stack-resource-drifts --stack-name web'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2cb205f0d16431d45d3c1ad5be1604418fed73a347c7a45fc398e55910100214'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

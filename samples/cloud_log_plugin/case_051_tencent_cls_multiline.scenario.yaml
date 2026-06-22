@@ -1,0 +1,15 @@
+scenario: '腾讯云CLS多行日志中，一条ERROR日志包含跨行堆栈跟踪（Session expired），前后为DEBUG和INFO单行日志。'
+target_capability: '多行错误日志保留与元数据压缩'
+expected_keep: 'Failed to validate session, Error: Session expired or invalid token, at SessionManager.validate'
+expected_compress: '__SOURCE__, logsetName, topicName, TIMESTAMP'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '49dadbcc60de2510ec638d4b0fe273fc81742f97440c42d7aaf0ccd59d2d09b2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

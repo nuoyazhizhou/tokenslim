@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用运行时出现错误，包含代理创建日志、属性访问警告和堆栈跟踪，需保留错误和警告行。'
+target_capability: '错误保留与堆栈跟踪'
+expected_keep: 'Error: Something went wrong, Warning: Accessing non-existent property ''length'' of undefined'
+expected_compress: '[HPM] Proxy created: /api -> http://localhost:3000'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'af0628442fc641be455cb0f5a19b0313a32a4e4c0de9a556a0bb28a3f6ab74e6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

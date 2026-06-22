@@ -1,0 +1,7 @@
+helm rollback web 2 --namespace prod
+Rollback was a success! Happy Helming!
+NAME: web
+LAST DEPLOYED: Tue May 12 11:00:00 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 4

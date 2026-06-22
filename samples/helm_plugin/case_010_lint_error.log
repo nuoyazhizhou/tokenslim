@@ -1,0 +1,6 @@
+helm lint ./chart
+==> Linting ./chart
+[INFO] Chart.yaml: icon is recommended
+[ERROR] templates/deployment.yaml: unable to parse YAML: error converting YAML to JSON: yaml: line 31: did not find expected key
+
+Error: 1 chart(s) linted, 1 chart(s) failed

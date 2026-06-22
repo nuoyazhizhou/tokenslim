@@ -1,0 +1,15 @@
+scenario: 'Markdown 文档中包含特殊字符（如星号）和转义序列，用于测试插件是否保留转义后的文本并正确识别列表项。'
+target_capability: '特殊字符与转义保留'
+expected_keep: '- Item with *asterisks*'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e03a87cc8efe6bcfec918eab85c2afb86a1e58f51949a5a557ebe809021028d6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

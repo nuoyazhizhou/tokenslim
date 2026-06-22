@@ -1,0 +1,15 @@
+scenario: '非syslog格式的纯文本行，无时间戳、主机名或进程信息，应原样通过不压缩。'
+target_capability: '非syslog格式保留'
+expected_keep: 'Plain text without syslog timestamp format, No host or process information, Should pass through unchanged'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ad57b8c4a44babb80bff8dac8e29e2018923155a1d4b41ddd94cf19fc9692b12'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    main()
+  File "app.py", line 5, in main
+    do_something()
+  File "app.py", line 15, in do_something
+    raise ValueError("Original error")
+ValueError: Original error
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    main()
+  File "app.py", line 5, in main
+    do_something()
+  File "app.py", line 20, in error_handler
+    raise RuntimeError("Error during handling")
+RuntimeError: Error during handling

@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话中一个断言失败，显示测试收集信息、通过/失败结果、失败详情和摘要。'
+target_capability: '测试结果保留与摘要压缩'
+expected_keep: 'collected 3 items, test_login PASSED, 1 failed, 2 passed'
+expected_compress: 'tests/test_auth.py::test_invalid_password FAILED, AssertionError: assert True is False, tests/test_auth.py:42: AssertionError'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '593e7dc915e0df10024dbf198b1d00d229f8c9e6f3f93c108b0bf16d1ecbbf3f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh repo list` 命令列出 GitHub 仓库列表，包含仓库名、描述、可见性和更新日期。'
+target_capability: '表格行保留与表头压缩'
+expected_keep: 'my-repo Main repository private 2026-04-08'
+expected_compress: 'name description visibility updated'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'faa80b93e9c51f78b6178fb81af93fd9c3125f5a99f3001a8245dc87c901b852'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

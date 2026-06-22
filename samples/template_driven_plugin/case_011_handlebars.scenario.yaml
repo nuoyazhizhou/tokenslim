@@ -1,0 +1,15 @@
+scenario: '一个 Handlebars 模板片段，包含变量插值（{{product.name}}、{{product.price}}）和条件块（{{#if product.onSale}}），用于渲染产品信息。'
+target_capability: '模板变量压缩'
+expected_keep: "<div class=\"product\">, <h2>, </h2>, <p class=\"price\">, </p>, <span class=\"sale-badge\">, </span>, </div>"
+expected_compress: '{{product.name}}, {{product.price}}, {{#if product.onSale}}, {{/if}}'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1d826f995a64cbe2cdf014865b7ee05fd1dc1d3596ffab10d04014f71e098e65'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

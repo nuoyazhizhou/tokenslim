@@ -1,0 +1,15 @@
+scenario: 'Maven 构建测试阶段，surefire 插件执行单元测试，其中一个测试失败，导致构建失败。'
+target_capability: '测试失败与构建结果保留'
+expected_keep: 'BUILD FAILURE, Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Failed tests: testSomething(com.example.AppTest): expected:<5> but was:<3>'
+expected_compress: '[INFO] 行（如 Running com.example.AppTest）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '89f7d0070ddf709169e8258f9bba10942a6faac44c3472ce2996a666a9bda6cc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

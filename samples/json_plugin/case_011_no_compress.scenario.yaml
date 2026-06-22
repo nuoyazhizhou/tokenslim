@@ -1,0 +1,15 @@
+scenario: '一段纯文本内容，并非JSON格式，测试插件在遇到非JSON输入时是否保持原样不压缩。'
+target_capability: '非JSON输入保留'
+expected_keep: 'This is not JSON., Just regular text., No compression needed.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f1362401767d139d7a15f35eaebddc7aa39c4a0223c70b970f98aa0f3c9e23fe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

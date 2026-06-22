@@ -1,0 +1,4 @@
+buf generate
+proto/catalog/product.proto:44:3: warning: Field "legacy_sku" is deprecated.
+proto/catalog/product.proto:52:12: error: Type "Money" not found.
+proto/catalog/category.proto:17:1: warning: Import google/protobuf/timestamp.proto is unused.

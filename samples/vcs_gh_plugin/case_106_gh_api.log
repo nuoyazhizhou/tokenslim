@@ -1,0 +1,11 @@
+gh api repos/owner/repo
+{
+  "id": 123456,
+  "name": "my-repo",
+  "full_name": "owner/my-repo",
+  "private": false,
+  "html_url": "https://github.com/owner/my-repo",
+  "description": "A sample repository",
+  "fork": false,
+  "url": "https://api.github.com/repos/owner/my-repo"
+}

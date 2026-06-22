@@ -1,0 +1,15 @@
+scenario: 'Ansible playbook ''users.yml'' 执行，任务 ''Create users'' 循环创建用户 alice 和 bob 到主机 app1 和 app2，输出 changed 和 ok 状态及 PLAY RECAP 汇总。'
+target_capability: '循环任务重复输出压缩'
+expected_keep: 'TASK [Create users], changed: [app1], ok: [app2], PLAY RECAP'
+expected_compress: 'item=alice, item=bob, => (item=...)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8b52d1108fa3a1502cf5dd250fd06be0627a03297af431872be1359b36f1b797'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

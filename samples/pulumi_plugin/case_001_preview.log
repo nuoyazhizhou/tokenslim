@@ -1,0 +1,12 @@
+pulumi up --stack dev
+Previewing update (dev)
+
+     Type                             Name                 Plan
+ +   pulumi:pulumi:Stack              shop-dev             create
+ +   aws:s3/bucket:Bucket             assets               create
+ ~   aws:lambda/function:Function     worker               update
+
+Resources:
+    + 2 to create
+    ~ 1 to update
+    3 changes. 4 unchanged

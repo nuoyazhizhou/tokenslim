@@ -1,0 +1,15 @@
+scenario: '一段与Kubernetes或Docker无关的普通文本，测试插件在遇到非目标内容时是否保持原样不压缩。'
+target_capability: '非目标内容保留'
+expected_keep: 'This is not Kubernetes or Docker output.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '812f7350c3dd47ce6636b2c2410fce794aafdc1d160de1c62c8a0f7fe0a3db1d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

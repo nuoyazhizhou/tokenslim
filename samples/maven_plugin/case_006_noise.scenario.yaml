@@ -1,0 +1,15 @@
+scenario: 'Maven 构建日志，包含非法反射访问警告和构建成功信息，无错误行。'
+target_capability: '警告保留与构建结果保留'
+expected_keep: 'WARNING: An illegal reflective access operation has occurred, [INFO] BUILD SUCCESS'
+expected_compress: '[INFO] Scanning for projects..., [INFO] Building myproject 1.0.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '658b648708b5e1db9e5b5f2ab4fed91259485dd954ebdddaa9a29ebbeffcc4ed'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

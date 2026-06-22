@@ -1,0 +1,15 @@
+scenario: '一个简单的YAML配置文件，包含姓名、年龄、邮箱和活跃状态等基本用户信息。'
+target_capability: 'YAML键值对结构保留与键字典化'
+expected_keep: 'name: John Doe, age: 30, email: john@example.com'
+expected_compress: 'active: true'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bdfffa24d5380320d3e826b49239c0367d69e3f8e311ec977a38dc2fa5902265'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

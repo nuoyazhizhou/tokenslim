@@ -1,0 +1,7 @@
+ctest --output-on-failure -R integration
+Test project /build
+    Start 7: integration_slow_path
+1/1 Test #7: integration_slow_path ...........***Timeout  60.00 sec
+The following tests FAILED:
+	  7 - integration_slow_path (Timeout)
+Errors while running CTest

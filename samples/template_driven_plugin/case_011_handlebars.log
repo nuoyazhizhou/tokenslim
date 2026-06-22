@@ -1,0 +1,7 @@
+<div class="product">
+    <h2>{{product.name}}</h2>
+    <p class="price">${{product.price}}</p>
+    {{#if product.onSale}}
+        <span class="sale-badge">On Sale!</span>
+    {{/if}}
+</div>

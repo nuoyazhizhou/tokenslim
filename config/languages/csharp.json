@@ -1,0 +1,29 @@
+{
+  "name": "C#",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "C# 代码语法检测配置",
+  "file_extensions": [".cs", ".csx"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "using "},
+        {"pattern_type": "contains", "pattern": "namespace "},
+        {"pattern_type": "contains", "pattern": "class "},
+        {"pattern_type": "contains", "pattern": "static void Main"},
+        {"pattern_type": "contains", "pattern": "Console.WriteLine"},
+        {"pattern_type": "contains", "pattern": "public "},
+        {"pattern_type": "contains", "pattern": "private "},
+        {"pattern_type": "contains", "pattern": "protected "},
+        {"pattern_type": "contains", "pattern": "async Task"},
+        {"pattern_type": "contains", "pattern": "await "},
+        {"pattern_type": "contains", "pattern": "LINQ"},
+        {"pattern_type": "contains", "pattern": "var "},
+        {"pattern_type": "contains", "pattern": "=>"},
+        {"pattern_type": "contains", "pattern": "?. "},
+        {"pattern_type": "contains", "pattern": "?? "}
+      ]
+    }
+  ]
+}

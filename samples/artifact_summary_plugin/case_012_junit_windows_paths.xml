@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="C:\agents\_work\1\s\tests\windows" tests="5" failures="1" errors="1" skipped="1" time="17.228">
+  <testcase classname="C:\agents\_work\1\s\tests\windows\test_paths.py" name="test_long_path_enabled" time="2.418"/>
+  <testcase classname="C:\agents\_work\1\s\tests\windows\test_paths.py" name="test_unc_share_copy" time="5.127">
+    <failure message="expected copied file on \\fileserver\builds\release">FileNotFoundError: \\fileserver\builds\release\artifact.zip was not created after robocopy completed with code 1</failure>
+  </testcase>
+  <testcase classname="C:\agents\_work\1\s\tests\windows\test_registry.py" name="test_registry_value_applied" time="4.911">
+    <error message="winreg.PermissionError: access denied">Access denied opening HKLM\Software\Acme\TokenSlim with KEY_SET_VALUE on Windows Server 2022 runner</error>
+  </testcase>
+  <testcase classname="C:\agents\_work\1\s\tests\windows\test_registry.py" name="test_registry_cleanup" time="0.000"><skipped message="requires administrator token"/></testcase>
+  <testcase classname="C:\agents\_work\1\s\tests\windows\test_service.py" name="test_service_restart" time="4.772"/>
+</testsuite>

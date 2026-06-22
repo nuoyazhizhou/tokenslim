@@ -1,0 +1,20 @@
+glab issue view 5
+!5 Important bug fix
+=====================================
+Author:     alice <alice@example.com>
+Assignee:   bob
+Labels:     bug, urgent
+Status:     Open
+Created:    2026-04-05 14:30:00
+Due:        2026-04-10
+Milestone:  v1.0.1
+Web URL:    https://gitlab.com/owner/repo/-/issues/5
+Description:
+This is a critical bug that needs to be fixed urgently.
+
+Steps to reproduce:
+1. Go to login page
+2. Enter credentials
+3. Click login
+Expected: User logged in
+Actual: Error occurs

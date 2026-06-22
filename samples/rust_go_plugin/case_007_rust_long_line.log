@@ -1,0 +1,5 @@
+error[E0277]: the trait bound `std::result::Result<std::collections::HashMap<std::string::String, std::vec::Vec<std::boxed::Box<dyn std::any::Any + std::marker::Send + std::marker::Sync>>, std::io::Error>: std::fmt::Debug` is not satisfied
+ --> src/main.rs:42:10
+  |
+42 |     println!("{:?}", result);
+  |              ^^^^^^^ the trait `std::fmt::Debug` is not implemented for `std::result::Result<std::collections::HashMap<std::string::String, std::vec::Vec<std::boxed::Box<dyn std::any::Any + std::marker::Send + std::marker::Sync>>, std::io::Error>`

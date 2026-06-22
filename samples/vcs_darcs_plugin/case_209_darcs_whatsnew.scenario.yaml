@@ -1,0 +1,15 @@
+scenario: 'Darcs版本库中执行whatsnew命令，显示两个文件的未记录修改：src/main.rs新增一行，src/utils.rs替换两行。'
+target_capability: '命令锚点与补丁结构保留'
+expected_keep: 'darcs whatsnew, hunk ./src/main.rs, hunk ./src/utils.rs'
+expected_compress: '空行, - old code, + new code'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3d1cfbbff43d452e101eec2c54d579bdf76f3bbc27fabfba13153f30b435a2a1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

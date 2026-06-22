@@ -1,0 +1,15 @@
+scenario: 'Terraform plan 输出显示两个 aws_route_table 资源将被原地更新，标签 Owner 从 platform 改为 network，路径为 module.network.module.vpc。'
+target_capability: '模块路径压缩'
+expected_keep: "~ resource \"aws_route_table\" \"public\""
+expected_compress: 'module.network.module.vpc'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0932b3bf5f44078e896b867dd79a2140d7ec474dfff5fb2fec05d9d5ac6fef8b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

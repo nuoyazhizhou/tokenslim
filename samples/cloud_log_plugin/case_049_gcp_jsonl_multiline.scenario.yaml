@@ -1,0 +1,15 @@
+scenario: 'GCP JSONL 格式的日志中包含多行 Python 异常堆栈（Traceback），展示了 cloud_log_plugin 剥离 GCP 日志外壳并保留内部错误信息的能力。'
+target_capability: 'GCP JSONL 日志外壳剥离与多行错误保留'
+expected_keep: "Traceback (most recent call last):\\n  File \"app.py\", line 42, in <module>\\n    main()\\n  File \"app.py\", line 15, in main\\n    raise ValueError(\"Database timeout after 30s\")\\nValueError: Database timeout after 30s"
+expected_compress: 'insertId, logName, receiveTimestamp, resource, timestamp'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f06fc0216f7b816faa515b57bdb77ba0fb126dd986020d3e1911d326b7996001'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

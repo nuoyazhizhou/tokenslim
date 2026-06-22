@@ -1,0 +1,15 @@
+scenario: 'Git stash show 输出，显示 stash 中修改的文件列表及变更统计（3 个文件，16 行插入，7 行删除）。'
+target_capability: 'Git stash show 输出压缩'
+expected_keep: 'src/main.rs, src/lib/utils.rs, tests/integration_test.rs'
+expected_compress: '3 files changed, 16 insertions(+), 7 deletions(-)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0e63efa7287082e5a461c4440ca57d7e5cd9ee81ec7428eaf678a272c94929fd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

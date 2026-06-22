@@ -1,0 +1,15 @@
+scenario: '用户在 Zsh shell 中尝试使用 glob 模式 `*.foo` 列出文件，但该模式不匹配任何文件，触发 Zsh 的 ''no matches found'' 错误；随后使用 `*.txt` 成功列出匹配的文件。'
+target_capability: '错误保留与 glob 匹配失败处理'
+expected_keep: 'zsh: no matches found: *.foo'
+expected_compress: 'user@macbook %'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4ced6cec5ec847cbab0cd680ae128c2988a9c2e092999e57798206f2375d6ebe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

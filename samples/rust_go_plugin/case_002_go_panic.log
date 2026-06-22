@@ -1,0 +1,5 @@
+panic: runtime error: index out of range [10] with length 5
+
+goroutine 1 [running]:
+main.main()
+	/home/user/project/main.go:15 +0x23

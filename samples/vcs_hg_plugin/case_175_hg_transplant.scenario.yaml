@@ -1,0 +1,15 @@
+scenario: '用户执行 hg transplant 命令，移植了三个变更集（abc1234, def5678, ghi9012），每个变更集有对应的提交信息，最终输出移植了3个修订版本。'
+target_capability: 'Hg transplant 命令处理'
+expected_keep: 'hg transplant abc1234 def5678 ghi9012, transplanted 3 revisions'
+expected_compress: 'transplanting abc1234:msg1, transplanting def5678:msg2'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b6730c3307d777435e17e72ddf11d6660f9e7448ef7d6f0194fd017eae7c7b4f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

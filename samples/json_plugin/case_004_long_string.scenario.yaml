@@ -1,0 +1,15 @@
+scenario: '一个包含超长字符串的JSON对象，用于测试插件对长字符串的字典化压缩能力。'
+target_capability: '长字符串字典化'
+expected_keep: "{\"message\":"
+expected_compress: 'This is a very long string that contains many characters and will be truncated or dictionaryized by the plugin to save token space when processing JSON data in AI applications.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ae5cc88dff9c84f77c7d2a7bceb587e23c5b413c0646737be5a062adff6e64f3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

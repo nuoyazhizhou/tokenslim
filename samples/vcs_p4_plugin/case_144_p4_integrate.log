@@ -1,0 +1,3 @@
+p4 integrate //depot/main //depot/feature
+//depot/main/src/main.rs -> //depot/feature/src/main.rs
+//depot/main/src/lib.rs -> //depot/feature/src/lib.rs

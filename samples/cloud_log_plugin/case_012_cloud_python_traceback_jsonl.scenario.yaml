@@ -1,0 +1,15 @@
+scenario: 'GCP Cloud Run 日志中 Python 应用抛出 ValueError 异常，包含完整 Traceback 堆栈信息，日志以 JSONL 格式记录，外层为 GCP 日志结构。'
+target_capability: '云日志外壳剥离与错误保留'
+expected_keep: 'Traceback (most recent call last):, ValueError: invalid document'
+expected_compress: "{\"timestamp\":\"2026-05-13T08:13:41.100Z\",\"severity\":\"ERROR\",\"logName\":\"projects/cloud-document/logs/run.googleapis.com%2Fstderr\",\"textPayload\":"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a8949797a90ad699d1aae529302ad540c2a6698f830385bfaf978670df8e7436'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

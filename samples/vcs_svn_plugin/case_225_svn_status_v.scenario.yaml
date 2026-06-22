@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库状态查询，显示文件变更状态、版本号和作者，包含长路径和重复行。'
+target_capability: 'SVN 状态输出压缩'
+expected_keep: 'M       12345   12345   alice.chen'
+expected_compress: 'src/core/doctor_workspace/methods.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7a51775d53c1f2c070259595e7293332e37f1d7b1db1178e4e67af5f3da01c4a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

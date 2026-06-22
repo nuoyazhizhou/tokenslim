@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash 递归删除目录 tmp_cache，并验证删除成功，最后输出清理完成信息。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'rm -rf ./tmp_cache, ls: cannot access ''tmp_cache/'': No such file or directory, cleanup done'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b8f049532a245555861f76e448a6174290ddf253cd64bad06ffa6697c4ab6095'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

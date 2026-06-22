@@ -1,0 +1,15 @@
+scenario: 'Pulumi preview --diff 输出，显示一个 Lambda 函数资源有 memorySize 变更，资源计数摘要为 1 个更新、9 个不变。'
+target_capability: '资源操作摘要保留与详细行压缩'
+expected_keep: 'Resources: 行, ~ 1 to update, 9 unchanged'
+expected_compress: 'aws:lambda/function:Function  worker  update  [diff: ~memorySize]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1f71ed8a07e90759aad210dae2da05d44e5e29f8d997e4a0ee717e54fa26b86c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

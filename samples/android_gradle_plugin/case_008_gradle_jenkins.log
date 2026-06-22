@@ -1,0 +1,14 @@
+WORKSPACE=/var/jenkins_home/workspace/android-build
+BUILD_NUMBER=123
+JOB_NAME=android-release
+GIT_BRANCH=origin/release/1.0
+ANDROID_HOME=/opt/android-sdk
+JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+GRADLE_HOME=/opt/gradle
+BUILD_URL=http://jenkins.example.com/job/android-release/123/
+BUILD_ID=123
+BUILD_TIMESTAMP=2024-01-15T10:30:00Z
+EXECUTOR_NUMBER=0
+NODE_NAME=android-build-01
+NODE_LABELS=android,linux,amd64
+WORKING_DIR=/var/jenkins_home/workspace/android-build

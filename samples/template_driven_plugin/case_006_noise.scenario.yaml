@@ -1,0 +1,15 @@
+scenario: '日志中包含模板渲染的调试信息，其中模板内容被变量替换，需要保留模板结构并压缩变量部分。'
+target_capability: '模板结构保留与变量压缩'
+expected_keep: '{{ content }}'
+expected_compress: '[INFO] 2024-01-15 10:30:45 Rendering template'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5406d47bb4b2d94f65e73e8b709c8d083c0fa2ac012fca8ff22ccce01f806961'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

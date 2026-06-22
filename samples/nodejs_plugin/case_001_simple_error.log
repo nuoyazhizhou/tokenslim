@@ -1,0 +1,4 @@
+ReferenceError: x is not defined
+    at Object.<anonymous> (/app/index.js:3:15)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)

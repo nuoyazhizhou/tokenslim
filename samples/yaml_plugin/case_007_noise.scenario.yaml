@@ -1,0 +1,15 @@
+scenario: '加载并解析一个包含简单YAML文档的配置文件，文档包含键值对name和value，解析成功后有日志输出。'
+target_capability: 'YAML结构保留与噪声过滤'
+expected_keep: 'name: test, value: 123'
+expected_compress: 'Loading config.yaml..., Parsing YAML content:, Config loaded successfully., Time: 5ms'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0abb241ceb221db1dfd00c08c36604c664d64714674c186a6790e09b1a883b3b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

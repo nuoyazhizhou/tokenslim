@@ -1,0 +1,15 @@
+scenario: '一段包含 JavaScript 类定义和语法错误的代码片段，其中类定义包含自定义标识符（如 constructor、greet），最后一行抛出 SyntaxError 异常。'
+target_capability: '内置异常保留与长标识符压缩'
+expected_keep: 'SyntaxError, class, constructor'
+expected_compress: 'User, console, Hello'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1b0266d1ef6609b69e1572d116e547661d51f32345f2f211573f25945623070d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

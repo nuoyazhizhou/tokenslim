@@ -1,0 +1,15 @@
+scenario: '使用 protoc 编译 gRPC 插件时，protoc-gen-go-grpc 未找到或不可执行，导致插件失败并返回错误状态码 1。'
+target_capability: '错误保留与路径压缩'
+expected_keep: 'Plugin failed with status code 1.'
+expected_compress: 'proto/service.proto'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'aaca7209f552579781182484e3fca0624de8ed44b1ffe81c86630078cffa6e75'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

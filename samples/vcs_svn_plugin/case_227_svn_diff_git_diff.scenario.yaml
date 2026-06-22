@@ -1,0 +1,15 @@
+scenario: 'vcs_svn_plugin 测试：svn diff --git 格式差异，插件应保留 Index 和 hunk 头，压缩长路径和代码行。'
+target_capability: 'SVN diff 路径压缩与变更保留'
+expected_keep: 'svn diff --git, Index: src/core/doctor_workspace/methods.rs, @@ -1417,6 +1417,12 @@'
+expected_compress: 'src/core/doctor_workspace/methods.rs (长路径), +    // VCS Plugin Config Guidance, +    if let Some(config) = load_vcs_config(root) {'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bf377b76c1fcc47cbf480f36e20ca6abb1b5f57a946af3d2b31b77eb423c7bbe'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

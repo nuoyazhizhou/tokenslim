@@ -1,0 +1,15 @@
+scenario: '用户使用 Bash shell 执行 ripgrep 命令搜索源代码中的 TODO 注释，包括版本查询、带行号搜索和计数搜索，展示了 ripgrep 的基本用法和输出。'
+target_capability: '命令与输出保留'
+expected_keep: 'rg --version, ripgrep 14.1.0, src/main.rs:42:    // TODO: handle edge case for empty input'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bed0a8b7d556c2919ce8910939262f235862fb2243f8b6402ee6c7afa6911bec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

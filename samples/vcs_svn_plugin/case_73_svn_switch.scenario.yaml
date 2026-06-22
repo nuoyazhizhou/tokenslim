@@ -1,0 +1,15 @@
+scenario: 'SVN 切换分支操作，用户执行 svn switch 命令从当前分支切换到 feature/new-feature 分支，输出显示切换成功及新 URL。'
+target_capability: '命令锚点保留与路径压缩'
+expected_keep: 'svn switch, Switched to new URL'
+expected_compress: 'https://svn.example.com/repo/branches/feature/new-feature'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4e219e2f1e75b3f859051f03bd47d3cc0de5ff1bfdc4cca34dd070d5e8404e53'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

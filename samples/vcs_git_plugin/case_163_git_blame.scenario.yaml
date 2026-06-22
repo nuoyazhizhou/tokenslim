@@ -1,0 +1,15 @@
+scenario: 'Git blame 输出，显示每行代码的提交哈希、作者、时间戳和行号，内容为 Rust 函数定义。'
+target_capability: 'Git blame 输出保留'
+expected_keep: '提交哈希 (8b3c2d1e, 5f2e9a8b, abc123def), 作者 (alice.chen, bob.wang, charlie.li), 时间戳 (2026-04-03 14:32:11)'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0d66737882b0607c2e74f324adbcb1abbeb3d2f1cab86a75cff011a02a003c3f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

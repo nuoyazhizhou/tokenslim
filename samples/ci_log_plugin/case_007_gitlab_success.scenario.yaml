@@ -1,0 +1,15 @@
+scenario: '使用 glab CLI 查看 GitLab CI 流水线日志，构建成功：Docker 准备环境，执行 cargo test 全部通过（732 passed），最终 Job succeeded。'
+target_capability: 'GitLab CI 成功步骤保留与详细行折叠'
+expected_keep: 'section_start, section_end, Job succeeded'
+expected_compress: 'test result: ok. 732 passed; 0 failed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e0a72fe0f027bb4ab538cd797e0949d65e5dfc5f02f18578f16b5958c3b3dea5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

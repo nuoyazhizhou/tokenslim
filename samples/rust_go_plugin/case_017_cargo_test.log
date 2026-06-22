@@ -1,0 +1,153 @@
+   Compiling my-project v0.1.0 (/home/user/my-project)
+    Finished test [unoptimized + debuginfo] target(s) in 2.34s
+     Running unittests src/lib.rs (target/debug/deps/my_project-abc123)
+
+running 120 tests
+test tests::test_add ... ok
+test tests::test_sub ... ok
+test tests::test_mul ... ok
+test tests::test_div ... ok
+test tests::test_mod ... ok
+test tests::test_pow ... ok
+test tests::test_sqrt ... ok
+test tests::test_abs ... ok
+test tests::test_min ... ok
+test tests::test_max ... ok
+test tests::test_clamp ... ok
+test tests::test_round ... ok
+test tests::test_floor ... ok
+test tests::test_ceil ... ok
+test tests::test_trunc ... ok
+test tests::test_fract ... ok
+test tests::test_signum ... ok
+test tests::test_copysign ... ok
+test tests::test_recip ... ok
+test tests::test_to_degrees ... ok
+test tests::test_to_radians ... ok
+test tests::test_sin ... ok
+test tests::test_cos ... ok
+test tests::test_tan ... ok
+test tests::test_asin ... ok
+test tests::test_acos ... ok
+test tests::test_atan ... ok
+test tests::test_atan2 ... ok
+test tests::test_sinh ... ok
+test tests::test_cosh ... ok
+test tests::test_tanh ... ok
+test tests::test_asinh ... ok
+test tests::test_acosh ... ok
+test tests::test_atanh ... ok
+test tests::test_exp ... ok
+test tests::test_exp2 ... ok
+test tests::test_ln ... ok
+test tests::test_log ... ok
+test tests::test_log2 ... ok
+test tests::test_log10 ... ok
+test tests::test_cbrt ... ok
+test tests::test_hypot ... ok
+test tests::test_is_nan ... ok
+test tests::test_is_infinite ... ok
+test tests::test_is_finite ... ok
+test tests::test_is_normal ... ok
+test tests::test_classify ... ok
+test tests::test_is_sign_positive ... ok
+test tests::test_is_sign_negative ... ok
+test tests::test_mul_add ... ok
+test tests::test_div_euclid ... ok
+test tests::test_rem_euclid ... ok
+test tests::test_powi ... ok
+test tests::test_powf ... ok
+test tests::test_exp_m1 ... ok
+test tests::test_ln_1p ... ok
+test tests::test_to_bits ... ok
+test tests::test_from_bits ... ok
+test tests::test_total_cmp ... ok
+test tests::test_clamp_min ... ok
+test tests::test_clamp_max ... ok
+test tests::test_parse_int ... ok
+test tests::test_parse_float ... ok
+test tests::test_format_int ... ok
+test tests::test_format_float ... ok
+test tests::test_string_concat ... ok
+test tests::test_string_split ... ok
+test tests::test_string_trim ... ok
+test tests::test_string_replace ... ok
+test tests::test_string_contains ... ok
+test tests::test_string_starts_with ... ok
+test tests::test_string_ends_with ... ok
+test tests::test_string_to_uppercase ... ok
+test tests::test_string_to_lowercase ... ok
+test tests::test_vec_push ... ok
+test tests::test_vec_pop ... ok
+test tests::test_vec_insert ... ok
+test tests::test_vec_remove ... ok
+test tests::test_vec_clear ... ok
+test tests::test_vec_len ... ok
+test tests::test_vec_is_empty ... ok
+test tests::test_vec_capacity ... ok
+test tests::test_vec_reserve ... ok
+test tests::test_vec_shrink_to_fit ... ok
+test tests::test_vec_truncate ... ok
+test tests::test_vec_swap_remove ... ok
+test tests::test_vec_drain ... ok
+test tests::test_vec_split_off ... ok
+test tests::test_vec_append ... ok
+test tests::test_vec_extend ... ok
+test tests::test_vec_dedup ... ok
+test tests::test_vec_sort ... ok
+test tests::test_vec_sort_by ... ok
+test tests::test_vec_sort_by_key ... ok
+test tests::test_vec_binary_search ... ok
+test tests::test_vec_contains ... ok
+test tests::test_vec_starts_with ... ok
+test tests::test_vec_ends_with ... ok
+test tests::test_vec_windows ... ok
+test tests::test_vec_chunks ... ok
+test tests::test_vec_split ... ok
+test tests::test_vec_rsplit ... ok
+test tests::test_vec_splitn ... ok
+test tests::test_vec_rsplitn ... ok
+test tests::test_vec_iter ... ok
+test tests::test_vec_iter_mut ... ok
+test tests::test_hashmap_insert ... ok
+test tests::test_hashmap_get ... ok
+test tests::test_hashmap_remove ... ok
+test tests::test_hashmap_contains_key ... ok
+test tests::test_hashmap_len ... ok
+test tests::test_hashmap_is_empty ... ok
+test tests::test_hashmap_clear ... ok
+test tests::test_hashmap_iter ... ok
+test tests::test_hashmap_keys ... ok
+test tests::test_hashmap_values ... ok
+test tests::test_fail_divide_by_zero ... FAILED
+test tests::test_fail_overflow ... FAILED
+test tests::test_fail_underflow ... FAILED
+test tests::test_ignored ... ignored
+
+failures:
+
+---- tests::test_fail_divide_by_zero stdout ----
+thread 'tests::test_fail_divide_by_zero' panicked at 'assertion failed: `(left == right)`
+  left: `Error("division by zero")`,
+ right: `Ok(0)`', src/lib.rs:500:5
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tests::test_fail_overflow stdout ----
+thread 'tests::test_fail_overflow' panicked at 'assertion failed: `(left == right)`
+  left: `Error("overflow")`,
+ right: `Ok(255)`', src/lib.rs:510:5
+
+---- tests::test_fail_underflow stdout ----
+thread 'tests::test_fail_underflow' panicked at 'assertion failed: `(left == right)`
+  left: `Error("underflow")`,
+ right: `Ok(0)`', src/lib.rs:520:5
+
+
+failures:
+    tests::test_fail_divide_by_zero
+    tests::test_fail_overflow
+    tests::test_fail_underflow
+
+test result: FAILED. 117 passed; 3 failed; 1 ignored; 0 measured; 0 filtered out; finished in 1.23s
+
+error: test failed, to rerun pass `--lib`

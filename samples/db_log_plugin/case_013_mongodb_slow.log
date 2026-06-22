@@ -1,0 +1,3 @@
+{"t":{"$date":"2026-05-12T10:00:01.123+00:00"},"s":"I","c":"COMMAND","id":51803,"ctx":"conn42","msg":"Slow query","attr":{"type":"command","ns":"shop.orders","command":{"find":"orders","filter":{"status":"pending"}},"durationMillis":1284}}
+{"t":{"$date":"2026-05-12T10:00:02.456+00:00"},"s":"W","c":"QUERY","id":20500,"ctx":"conn42","msg":"Plan executor error","attr":{"error":"Executor error during find command","code":50,"durationMillis":30000}}
+{"t":{"$date":"2026-05-12T10:00:03.789+00:00"},"s":"I","c":"NETWORK","id":22944,"ctx":"conn43","msg":"Connection ended","attr":{"remote":"10.0.0.12:52144"}}

@@ -1,0 +1,10 @@
+pulumi up --stack prod
+Updating (prod)
+
+Diagnostics:
+  aws:lambda/function:Function (worker):
+    error: 1 error occurred:
+        * updating Lambda Function: ResourceConflictException: The operation cannot be performed at this time
+
+Resources:
+    12 unchanged

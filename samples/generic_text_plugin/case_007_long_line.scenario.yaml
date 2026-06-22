@@ -1,0 +1,15 @@
+scenario: '一个包含大量字符的长文本行，用于测试通用文本插件对长行的保留和行尾空白修剪能力。'
+target_capability: '长文本行保留与行尾空白修剪'
+expected_keep: 'This is a very long line of text that contains a lot of characters and should remain mostly intact except for any trailing whitespace that might be present at the end of this very long line.'
+expected_compress: '行尾空白'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cd8bb4c7677cda9cde8ca963b3bb1737c1cb87320665862692335bf202f55aff'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

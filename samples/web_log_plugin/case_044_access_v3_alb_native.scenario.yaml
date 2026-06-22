@@ -1,0 +1,15 @@
+scenario: 'AWS ALB 原生访问日志，包含健康检查、正常API请求、扫描探测（/.env, /wp-admin）、慢请求（503）和404错误。'
+target_capability: '错误保留与慢请求信号'
+expected_keep: '503 503, 404 404, ELB-HealthChecker/2.0'
+expected_compress: '198.51.100.101, Mozilla/5.0, /api/orders/10001'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bfbaf13b08b67eb94642d8489ee0aeab7210ecd26305d0a02da88b39317da172'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

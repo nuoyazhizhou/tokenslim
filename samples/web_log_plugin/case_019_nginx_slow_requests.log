@@ -1,0 +1,10 @@
+10.0.3.10 - - [13/May/2026:08:17:01 +0000] "GET /api/search?q=invoice HTTP/1.1" 200 2103 "-" "Mozilla/5.0" 2.431 2.390
+10.0.3.11 - - [13/May/2026:08:17:02 +0000] "GET /api/search?q=report HTTP/1.1" 200 1988 "-" "Mozilla/5.0" 1.922 1.901
+10.0.3.12 - - [13/May/2026:08:17:03 +0000] "GET /api/search?q=health HTTP/1.1" 200 2010 "-" "Mozilla/5.0" 0.088 0.080
+10.0.3.13 - - [13/May/2026:08:17:04 +0000] "POST /api/export HTTP/1.1" 504 62 "-" "Mozilla/5.0" 9.872 9.800
+10.0.3.14 - - [13/May/2026:08:17:05 +0000] "GET /api/search?q=invoice2 HTTP/1.1" 200 2110 "-" "Mozilla/5.0" 2.120 2.090
+10.0.3.15 - - [13/May/2026:08:17:06 +0000] "GET /api/search?q=invoice3 HTTP/1.1" 200 2111 "-" "Mozilla/5.0" 2.030 2.000
+10.0.3.16 - - [13/May/2026:08:17:07 +0000] "POST /api/export HTTP/1.1" 504 62 "-" "Mozilla/5.0" 8.431 8.400
+10.0.3.17 - - [13/May/2026:08:17:08 +0000] "GET /api/search?q=invoice4 HTTP/1.1" 200 2101 "-" "Mozilla/5.0" 1.230 1.200
+10.0.3.18 - - [13/May/2026:08:17:09 +0000] "GET /health HTTP/1.1" 200 2 "-" "ELB-HealthChecker/2.0" 0.009 0.008
+10.0.3.19 - - [13/May/2026:08:17:10 +0000] "GET /health HTTP/1.1" 200 2 "-" "ELB-HealthChecker/2.0" 0.009 0.008

@@ -1,0 +1,6 @@
+bazel build //...
+INFO: Analyzed 240 targets (0 packages loaded, 0 targets configured).
+INFO: Found 240 targets...
+INFO: 5432 processes: 5432 remote cache hit.
+INFO: Elapsed time: 9.876s, Critical Path: 0.123s
+INFO: Build completed successfully, 5432 total actions

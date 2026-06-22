@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话执行了 2 个测试用例，全部通过，并输出了代码覆盖率报告，显示 shop/api.py 和 shop/db.py 的覆盖率分别为 95% 和 85%。'
+target_capability: '测试结果与覆盖率摘要保留'
+expected_keep: '2 passed in 0.50s, coverage: platform linux, python 3.11.8-final-0'
+expected_compress: 'tests/test_api.py::test_health PASSED, tests/test_api.py::test_metrics PASSED, shop/api.py 88 4 95%'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bc2d765b320bb6a714b362c47196658442aac67c507f26aa77dbde7c6b153b3e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

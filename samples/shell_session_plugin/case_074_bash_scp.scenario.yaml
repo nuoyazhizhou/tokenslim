@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash 使用 scp 命令远程复制文件（release.tar.gz 和 deploy 目录），包含进度输出和后续 echo 命令。'
+target_capability: 'scp 进度行压缩'
+expected_keep: 'scp -P 22 release.tar.gz admin@backup.example.com:/backups/'
+expected_compress: 'release.tar.gz                                    100%   10MB   5.0MB/s   00:02'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bbf8f939eb9b1cd24f5b0d0e1c39f7c6df98ac473edc3de34378fee80378ecff'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

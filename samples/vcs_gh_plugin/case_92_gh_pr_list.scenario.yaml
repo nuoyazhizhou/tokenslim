@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh pr list` 命令列出 GitHub 仓库的 Pull Request 列表，输出包含 PR 编号、分支、状态、标题、作者和日期。'
+target_capability: '结构化表格行保留'
+expected_keep: '#22   feature/new-ui   [open]   Add dark mode support   alice   2026-04-01'
+expected_compress: 'gh pr list'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '30e71eaab065b118972a32311de14166b9f73ef69ed6f498ee904a791dc59b8f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,11 @@
+ansible-playbook facts.yml -vv
+
+PLAY [web] *********************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web1] => {"ansible_facts": {"ansible_hostname": "web1", "ansible_kernel": "6.8.0", "ansible_distribution": "Ubuntu", "ansible_memtotal_mb": 16384, "ansible_processor_vcpus": 8}, "changed": false}
+ok: [web2] => {"ansible_facts": {"ansible_hostname": "web2", "ansible_kernel": "6.8.0", "ansible_distribution": "Ubuntu", "ansible_memtotal_mb": 16384, "ansible_processor_vcpus": 8}, "changed": false}
+
+PLAY RECAP *********************************************************************
+web1                       : ok=1    changed=0    unreachable=0    failed=0
+web2                       : ok=1    changed=0    unreachable=0    failed=0

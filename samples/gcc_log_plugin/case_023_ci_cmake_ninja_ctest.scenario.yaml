@@ -1,0 +1,15 @@
+scenario: 'CMake 配置与构建后运行 CTest，其中一个测试失败。'
+target_capability: '构建日志脱水'
+expected_keep: 'The following tests FAILED:'
+expected_compress: 'cmake -S . -B build -GNinja -DCMAKE_BUILD_TYPE=Release'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '95bc51e43efec4f8d38a32c2f15a89bd2fa7da068b53ece83fc7a9848b72e230'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T23:57:45.510882'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

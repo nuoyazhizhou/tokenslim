@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中使用 find 和 xargs grep 管道查找包含 TODO 注释的 Rust 源文件，并输出匹配行。'
+target_capability: '管道命令与输出保留'
+expected_keep: "find . -name \"*.rs\" | xargs grep \"TODO\""
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dad6e967ffa6c46780ddaa070ebbc80b9d839b41669d9236f8686bff8a3c803a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,17 @@
+hg outgoing
+comparing with https://hg.example.com/project
+searching for changes
+changeset:   19:abcdef012345
+user:        alice.chen
+date:        Sat Apr 04 10:00:00 2026 +0800
+summary:     feat: Add p4 labels parser support
+
+changeset:   20:fedcba987654
+user:        bob.wang
+date:        Sat Apr 04 11:30:00 2026 +0800
+summary:     fix: Handle email addresses in path dictionary
+
+changeset:   21:112233aabbcc
+user:        charlie.li
+date:        Sun Apr 05 09:00:00 2026 +0800
+summary:     docs: Update VCS plugin documentation matrix

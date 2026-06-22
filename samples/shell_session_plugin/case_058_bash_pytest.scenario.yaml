@@ -1,0 +1,15 @@
+scenario: 'shell_session_plugin 路由分发测试：Bash 中执行 pytest，shell_session_plugin 检测到 pytest 子命令后路由到 pytest_plugin 处理。'
+target_capability: '外部命令路由到 specialist 插件'
+expected_keep: 'pytest 输出行（如 ''1 passed in 0.05s''）'
+expected_compress: 'shell 提示符（如 ''user@linux:~$ ''）'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '33eb73baecfb1d967bfd8d5404434a8e4cdb4a01294388e590911758388845bd'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T13:54:44.661452'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

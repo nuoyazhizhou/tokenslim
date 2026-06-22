@@ -1,0 +1,15 @@
+scenario: 'GitLab CI 流水线中执行 kubectl 部署，包含 apply 和 rollout status 命令，最终 Job 成功'
+target_capability: 'CI/CD 步骤信号保留与内部日志压缩'
+expected_keep: 'section_start:...deploy, section_end:...deploy, Job succeeded'
+expected_compress: 'kubectl apply -f k8s/deployment.yaml 的输出行, kubectl rollout status 的输出行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'db178ae3a8e31c1c23a42439cc4ac1a39a79ce3fc8775b5131df52a04032871e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg status -S` 查看工作目录状态，输出显示两个已修改文件（M）和一个未跟踪文件（?），均为文件路径。'
+target_capability: '文件操作摘要保留'
+expected_keep: 'M src/plugins/vcs_plugin/methods.rs, M src/plugins/vcs_plugin/parser.rs, ? config/vcs_plugin.local.json'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e32432ae467bb51457c9ccb908531bdf6b5558f93b88c43c6aad5905567b309d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '运行 buf lint 检查 protobuf 文件时，输出包含文件路径、警告和错误诊断信息，如 proto/user/v1/user.proto 的包路径警告和 proto/order/v1/order.proto 的字段命名错误。'
+target_capability: 'protobuf 诊断压缩与路径字典化'
+expected_keep: "error: Field name \"UserID\" should be lower_snake_case"
+expected_compress: "proto/user/v1/user.proto:1:1: warning: Files with package \"user.v1\" should be in directory \"user/v1\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '25013bef9cf152d2ae73a46394c4c2e0039c98902f261ae91a215d7aa684ed76'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

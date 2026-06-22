@@ -1,0 +1,15 @@
+scenario: '用户执行 git stash 命令保存当前工作目录和索引状态，随后显示 stash 成功信息及当前分支状态，并列出未暂存的修改文件。'
+target_capability: 'stash 操作与状态保留'
+expected_keep: 'Saved working directory and index state WIP on main: 18f4bb5 feat: Support doctor, modified:   src/plugins/vcs_plugin/methods.rs, modified:   src/plugins/vcs_plugin/parser.rs'
+expected_compress: 'On branch main, Changes not staged for commit:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fde0c3744961e4eca33a3eb2206e4ca8a52ee86e9ceda63e1602bf7b347ffc76'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

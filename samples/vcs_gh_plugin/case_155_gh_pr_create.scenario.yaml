@@ -1,0 +1,15 @@
+scenario: '用户使用 gh pr create 命令创建 PR，输出包含成功创建信息及标签确认。'
+target_capability: '命令锚点与结构化数据保留'
+expected_keep: 'gh pr create, Created pull request, Labeled as enhancement'
+expected_compress: '✓, https://github.com/owner/repo/pull/150'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '24cc4355e70e4dd777b099b61dc0cc3b4d20db6c77f6831c22905e7dfdd35fd4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '开发者使用 git push 命令将本地分支推送到 Gerrit 的 refs/for/main 进行代码审查，推送了 3 个 refs，包括 refs/heads/main、refs/changes/34/1234/5 和 refs/heads/feature-x。'
+target_capability: 'push ref 映射压缩'
+expected_keep: 'git push origin HEAD:refs/for/main, Pushed 3 refs'
+expected_compress: 'refs/heads/main -> refs/heads/main, refs/changes/34/1234/5 -> refs/changes/34/1234/5, refs/heads/feature-x -> refs/heads/main'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'efccd5068f2d09cd9770442e4a8aa64080327a934762aa6b651d6998c382e4bc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,7 @@
+pulumi up --stack dev
+Previewing update (dev)
+
+Resources:
+    16 unchanged
+
+Do you want to perform this update? details

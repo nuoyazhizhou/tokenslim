@@ -1,0 +1,25 @@
+{
+    "name": "template_driven",
+    "description": "模板驱动输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$TEMPLA"
+    },
+    "keep_signals": [
+        "匹配模板模式的行（保留模板固定文本）"
+    ],
+    "compress_targets": [
+        "捕获组中变量部分（压缩为 $TEMPLA 字典令牌）"
+    ],
+    "design_intent": "模板驱动脱水：保留模板结构，压缩可变部分为字典令牌。"
+}

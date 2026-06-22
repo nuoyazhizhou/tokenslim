@@ -1,0 +1,15 @@
+scenario: '包含 BOM (EF BB BF)、NUL (00) 和 CR (0D) 的混合编码文本，测试编码兜底插件能否修复异常并保留文本内容。'
+target_capability: '编码异常修复'
+expected_keep: '61 62'
+expected_compress: 'EF BB BF 00 0D'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

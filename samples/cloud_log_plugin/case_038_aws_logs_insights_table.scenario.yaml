@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch Logs Insights 查询结果，展示 @timestamp、@message、@logStream 三列表格，包含 /health 接口的 GET 请求日志。'
+target_capability: '云日志外壳剥离与表格压缩'
+expected_keep: "INFO:     10.0.1.94:0 - \"GET /health HTTP/1.1\" 200 OK"
+expected_compress: '2026-05-13T08:13:39.939Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b68cd6d3026684725ca61f2c83c88ffa7b3ddd700881367593d984fa26e9c14f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

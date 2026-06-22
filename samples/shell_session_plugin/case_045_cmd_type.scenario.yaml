@@ -1,0 +1,15 @@
+scenario: '在 Windows CMD 中使用 type 命令显示文件内容，包括 config.ini、README.md 和 nul，然后执行 echo done。'
+target_capability: 'CMD 命令输出保留与提示符压缩'
+expected_keep: 'type config.ini, [Settings], enabled=true'
+expected_compress: "C:\\> type config.ini, C:\\> type README.md, C:\\> echo done"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3ad7bee8db5b63c05ad976cf027f325419d7428377caf044230372bb3bd9ab8a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,10 @@
+PS C:\workspace> Invoke-WebRequest -Uri https://example.com
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : <!doctype html>
+                    <html>
+                    <head>
+                        <title>Example Domain</title>
+...
+PS C:\workspace> 

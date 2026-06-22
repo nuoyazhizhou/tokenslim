@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中通过环境变量前缀 FOO=bar 启动 Node.js 服务器，随后检查退出码并输出 0。'
+target_capability: '环境变量赋值行压缩'
+expected_keep: 'node index.js, Running with FOO=bar, Server listening on port 3000'
+expected_compress: 'user@linux:~$, FOO=bar, echo $?'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '203564d53ff8387e3b7b4e43eedac4d65db3869e4f8171e9b003ca1308e603c5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

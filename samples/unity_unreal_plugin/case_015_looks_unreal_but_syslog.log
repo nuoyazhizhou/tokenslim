@@ -1,0 +1,4 @@
+Jan 15 10:30:45 gameserver kernel: [12345.678] CPU temperature warning
+Jan 15 10:30:46 gameserver systemd[1]: Loading configuration
+Jan 15 10:30:47 gameserver sshd[4567]: Accepted password for admin
+Jan 15 10:30:48 gameserver cron[8901]: (root) CMD (check_health.sh)

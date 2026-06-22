@@ -1,0 +1,15 @@
+scenario: '纯文本日志，不含任何 ANSI 转义序列，所有行均为普通文本，无需压缩或丢弃。'
+target_capability: '无ANSI码时的保真度'
+expected_keep: 'Simple text without any ANSI codes, This should remain unchanged, Basic log message'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

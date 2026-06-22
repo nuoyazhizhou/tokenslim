@@ -1,0 +1,15 @@
+scenario: '用户执行 ''p4 depot'' 命令查看 Perforce 仓库列表，输出包含三个仓库的路径、类型和描述。'
+target_capability: '仓库列表压缩与路径精简'
+expected_keep: '//depot/main/, //depot/backup/, //depot/archive/'
+expected_compress: 'Depot depottype description, local, archive'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4ccd69b7deebeec1cf395b7fa3fd83848fd051c77a467ef79e4976e5ce9c05f6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Maven 构建日志，包含 clean、resources、compile、test、jar 阶段，有 3 个警告和测试摘要，最终 BUILD SUCCESS。'
+target_capability: '构建日志脱水'
+expected_keep: '[WARNING] /home/user/project/src/main/java/com/example/Foo.java:[42,10] unchecked conversion, Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, BUILD SUCCESS'
+expected_compress: '[INFO] Scanning for projects..., [INFO] Deleting /home/user/project/target, [INFO] Compiling 50 source files to /home/user/project/target/classes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '24283ef877b3ef03c2fa2ddc777535881f85b2ba8db378ddef4384ae67adb118'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

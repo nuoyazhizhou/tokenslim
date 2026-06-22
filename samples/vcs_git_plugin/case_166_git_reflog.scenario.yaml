@@ -1,0 +1,15 @@
+scenario: 'Git reflog 输出，包含分支切换、合并和提交记录，共5条条目。'
+target_capability: 'reflog条目保留与折叠'
+expected_keep: 'HEAD@{0}: commit (merge): Merge branch ''feature-auth'' into main'
+expected_compress: '无（条目数未超20，无需折叠）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b9ac197eef970bd5d3b124e15861d814508e67f8a22bc95c5362d895a3731ebf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

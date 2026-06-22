@@ -1,0 +1,15 @@
+scenario: 'unity_unreal_plugin 测试：Unity 碰撞检测和物理错误日志，插件应保留 ERROR 行，压缩 INFO 行。'
+target_capability: '错误保留与日志标签识别'
+expected_keep: '[INFO] Collision detected: Player vs Wall, [INFO] Trigger entered: Player entered Powerup, [ERROR] Physics error: Rigidbody has infinite mass'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

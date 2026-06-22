@@ -1,0 +1,15 @@
+scenario: '纯文本内容，不包含任何文件路径，无需压缩。'
+target_capability: '非路径文本保留'
+expected_keep: 'This is not a path, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e030ffcce8356381112ce221943d232d0e8e8646207e2d3888da848b2d056e3e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

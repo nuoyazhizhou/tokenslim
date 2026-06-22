@@ -1,0 +1,13 @@
+terraform apply
+
+Terraform will perform the following actions:
+
+  # aws_iam_role.api will be created
+  + resource "aws_iam_role" "api" {
+      + arn  = (known after apply)
+      + name = "api-role"
+    }
+
+Plan: 1 to add, 0 to change, 0 to destroy.
+
+Error: creating IAM Role (api-role): EntityAlreadyExists: Role with name api-role already exists.

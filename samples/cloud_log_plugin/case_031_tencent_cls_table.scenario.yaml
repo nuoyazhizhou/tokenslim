@@ -1,0 +1,15 @@
+scenario: '腾讯云 CLS 日志表格，包含 INFO、ERROR、WARN 级别的系统日志，涉及 systemd 启动、nginx 超时和 redis 连接拒绝。'
+target_capability: '云日志表格结构剥离与压缩'
+expected_keep: 'systemd[1]: Started backend.service, nginx: upstream timed out, redis-cli: Connection refused'
+expected_compress: '| timestamp | source | level | message |, |-----------|--------|-------|---------|, 2026-05-13T08:36:01Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bb71d9d89b1acdbc6a76be8646d5997d869e1e1110f1f7916314a2a1b5e9b401'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

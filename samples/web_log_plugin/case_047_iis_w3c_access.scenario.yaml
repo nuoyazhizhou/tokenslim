@@ -1,0 +1,15 @@
+scenario: 'IIS W3C access log with health checks, static assets, API calls, and scan attempts (404 on /.env and /wp-admin).'
+target_capability: 'Web access log semantic aggregation'
+expected_keep: '404 162 python-requests/2.31, 500 90 Mozilla/5.0 2100, /health - 200 2 kube-probe/1.29'
+expected_compress: '198.51.100.50, Mozilla/5.0, /static/site.css'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2fb7aebb469c2add6b5c3fbe69da8eae403348640f5ad88c9acb87bba7eee6f5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

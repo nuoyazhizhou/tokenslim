@@ -1,0 +1,1 @@
+error CS0246: The type or namespace name 'NonExistentClass' could not be found (are you missing a using directive or an assembly reference?)

@@ -1,0 +1,15 @@
+scenario: 'CMake 配置阶段失败，因缺少 OpenSSL 依赖包导致 find_package 错误，配置未完成。'
+target_capability: '构建错误保留'
+expected_keep: 'CMake Error at CMakeLists.txt:18 (find_package):'
+expected_compress: '-- The C compiler identification is GNU 13.2.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e43e4b177274d854d8a285abcd070a9f417c0a1f7d0340cd1784087a401ad953'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,14 @@
+app:
+  name: myapp
+  version: 1.0.0
+  debug: false
+logging:
+  level: info
+  format: json
+  outputs:
+    - file
+    - console
+features:
+  auth: true
+  api: true
+  webhook: false

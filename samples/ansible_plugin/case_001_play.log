@@ -1,0 +1,23 @@
+ansible-playbook site.yml
+
+PLAY [webservers] **************************************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [web1]
+ok: [web2]
+ok: [web3]
+
+TASK [Install nginx] ***********************************************************
+changed: [web1]
+changed: [web2]
+changed: [web3]
+
+TASK [Start nginx] *************************************************************
+ok: [web1]
+ok: [web2]
+ok: [web3]
+
+PLAY RECAP *********************************************************************
+web1                       : ok=3    changed=1    unreachable=0    failed=0
+web2                       : ok=3    changed=1    unreachable=0    failed=0
+web3                       : ok=3    changed=1    unreachable=0    failed=0

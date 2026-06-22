@@ -1,0 +1,15 @@
+scenario: '执行 git reset --mixed HEAD~1 后，显示未暂存的变更，包括修改和删除的文件路径及状态标记。'
+target_capability: '文件路径与状态标记保留'
+expected_keep: 'M	src/main.rs, M	src/lib/utils.rs, D	src/lib/old_module.rs'
+expected_compress: 'Unstaged changes after reset:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4659fd98db72ac43d1cbc01785760a6b490947f601513bac3e9dfb9afe8b7cca'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 `bazel sync` 命令，输出为三条 INFO 日志（invocation ID、repository rules 完成、全部外部仓库最新），无错误或关键构建摘要。'
+target_capability: 'INFO日志折叠'
+expected_keep: '无'
+expected_compress: 'INFO: Invocation ID: sync-123, INFO: Repository rules finished., INFO: All external repositories are up to date.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '712e8eafed56927bd2f3c895e3b0e742efdf8274f4be8674d513665466aa97ad'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

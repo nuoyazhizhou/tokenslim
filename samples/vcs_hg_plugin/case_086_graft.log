@@ -1,0 +1,13 @@
+hg graft 123 456 789 101 202
+grafting 123:abc1234 "feat: Add login feature"
+merging src/auth/login.py
+grafting 456:def5678 "fix: Fix authentication bug"
+merging src/auth/middleware.py
+grafting 789:ghi9012 "feat: Add user registration"
+merging src/user/register.py
+merging src/user/models.py
+grafting 101:jkl3456 "fix: Fix validation error"
+merging src/validators/user.py
+grafting 202:mno7890 "feat: Add password reset"
+merging src/auth/password.py
+merging src/email/templates.py

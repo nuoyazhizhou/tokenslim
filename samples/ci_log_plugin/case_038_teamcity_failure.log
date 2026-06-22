@@ -1,0 +1,12 @@
+##teamcity[blockOpened name='Checkout']
+Checking out revision 9f8e7d6 from repository
+Updating sources in C:\BuildAgent\work\project
+##teamcity[blockClosed name='Checkout']
+##teamcity[blockOpened name='Unit tests']
+Running ./gradlew test
+com.example.OrderServiceTest > rejectsInvalidOrder FAILED
+    org.opentest4j.AssertionFailedError: expected: <400> but was: <200>
+##teamcity[message text='Unit test failed in OrderServiceTest' status='ERROR']
+##teamcity[buildProblem description='Gradle test task failed' identity='gradle-test']
+##teamcity[blockClosed name='Unit tests']
+##teamcity[buildStatus status='FAILURE' text='Build failed']

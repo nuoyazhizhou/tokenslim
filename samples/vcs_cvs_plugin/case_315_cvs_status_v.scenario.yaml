@@ -1,0 +1,15 @@
+scenario: 'CVS 仓库中执行 ''cvs status -v'' 查看文件 main.rs 的状态，显示文件被本地修改，工作版本 1.6 高于仓库版本 1.5，并列出所有标签信息。'
+target_capability: 'CVS 状态输出压缩'
+expected_keep: 'cvs status -v src/main.rs, Status: Locally Modified, Existing Tags:'
+expected_compress: '===================================================================, Working revision: 1.6, Repository revision: 1.5'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5b55de4e0e435c45f40f8b2b598675440e18c6dde08816fe952c6f73917fb239'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

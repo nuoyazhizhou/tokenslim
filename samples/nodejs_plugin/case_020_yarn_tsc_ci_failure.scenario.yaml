@@ -1,0 +1,15 @@
+scenario: '在 CircleCI 上运行 `yarn tsc --noEmit` 进行 TypeScript 类型检查，输出包含两个编译错误（TS2322 和 TS2552），最终 yarn 命令以退出码 2 失败。'
+target_capability: 'TypeScript 编译错误保留'
+expected_keep: 'error TS2322, error TS2552, error Command failed with exit code 2'
+expected_compress: 'src/api/client.ts:27:14, src/components/Profile.tsx:88:9, CircleCI received job node_typecheck'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8954062ee33a2f73b6c5999af7c52ae88c7740c815b83c563d76020bdf1c5dcb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

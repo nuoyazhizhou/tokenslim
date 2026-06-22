@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 边界测试：git show 多提交哈希碰撞，前缀相同但完整哈希不同，插件应保留完整哈希和提交信息。'
+target_capability: '提交哈希与提交信息保留'
+expected_keep: 'commit aaaaaaaaaab1111111111111111111111111111111, commit aaaaaaaaaac2222222222222222222222222222222, Author: alice.chen <alice.chen@example.com>'
+expected_compress: 'Date:   Tue Apr 29 09:28:41 2026 +0800, Date:   Tue Apr 29 09:30:12 2026 +0800'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

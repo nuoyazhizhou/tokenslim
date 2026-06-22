@@ -1,0 +1,3 @@
+Plain text without log format
+Not matching combined log format
+Should pass through unchanged

@@ -1,0 +1,15 @@
+scenario: '执行 helm repo update 命令，从多个 chart 仓库（bitnami、prometheus-community、grafana）获取更新，并显示成功消息和完成提示。'
+target_capability: 'Helm 输出脱水：保留关键字段，丢弃非核心行'
+expected_keep: 'Successfully got an update from the'
+expected_compress: 'Hang tight while we grab the latest from your chart repositories...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c389e5d153b421622562fdffc71bfabfb643cca65502720561ebaef5fdf8ded2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

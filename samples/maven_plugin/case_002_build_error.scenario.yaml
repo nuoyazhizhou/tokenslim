@@ -1,0 +1,15 @@
+scenario: 'Maven 构建过程中出现编译错误，App.java 第10行引用了不存在的符号，导致构建失败。'
+target_capability: '构建错误保留'
+expected_keep: '[ERROR] COMPILATION ERROR, BUILD FAILURE, cannot find symbol'
+expected_compress: '[INFO] Scanning for projects..., [INFO] Building myproject 1.0.0, [INFO] --- maven-resources-plugin:3.2.0:resources'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f3a4fb306d6012f97e959a6af272cede899da88477f3a61dee1d4721a4a93bab'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,7 @@
+npm WARN deprecated some-package@1.0.0: This package is deprecated
+npm WARN deprecated another-package@2.0.0: Please upgrade to version 3.x
+/home/user/project/index.js:5
+    console.log(x)
+                ^
+
+ReferenceError: x is not defined

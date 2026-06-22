@@ -1,0 +1,15 @@
+scenario: '构建日志中包含长十六进制哈希值和会话ID，这些是二进制数据或噪声，需要被压缩替换，而纯文本行如''Build completed successfully''应保留。'
+target_capability: '二进制数据压缩'
+expected_keep: 'Build completed successfully'
+expected_compress: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b, 0xdeadbeefcafebabedeadbeefcafebabedeadbeef'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fd405fd017ebe44f1997479dd61b76a2b0ca41146ffb7e804ae4bf32123254bc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:43:25.678814'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

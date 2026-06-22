@@ -1,0 +1,15 @@
+scenario: 'noise_filter_plugin 边界测试：干净日志无噪声，验证插件在无压缩目标时保持原样。'
+target_capability: '无噪声场景保留'
+expected_keep: 'Clean log output, No progress bars, Perfectly readable'
+expected_compress: 'No repetitive lines, No long hex strings'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

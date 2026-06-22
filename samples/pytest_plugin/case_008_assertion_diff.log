@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 1 item
+
+tests/test_payload.py::test_payload FAILED                             [100%]
+
+=================================== FAILURES ===================================
+_______________________________ test_payload _______________________________
+>       assert payload == {"status": "ok", "count": 2}
+E       AssertionError: assert {'status': 'ok', 'count': 1} == {'status': 'ok', 'count': 2}
+E         Differing items:
+E         {'count': 1} != {'count': 2}
+
+=========================== short test summary info ============================
+FAILED tests/test_payload.py::test_payload - AssertionError
+============================== 1 failed in 0.05s ===============================

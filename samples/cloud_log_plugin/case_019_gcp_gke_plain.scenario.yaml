@@ -1,0 +1,15 @@
+scenario: '在GCP Cloud Shell中执行gcloud logging read命令，查询k8s_container类型的日志，返回多条访问日志，包含正常请求和一条500错误。'
+target_capability: 'GCP日志外壳剥离与压缩'
+expected_keep: 'GET /health HTTP/1.1 200 OK, GET /api/orders HTTP/1.1 500 Internal Server Error'
+expected_compress: 'projects/cloud-document/logs/stdout, 2026-05-13T08:26:01.000Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '43bdd10ee9675eb5e66dc33ddc20700371a07b32fec4584af7715bf7ac441d00'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

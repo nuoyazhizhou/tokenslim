@@ -1,0 +1,6 @@
+PHP Fatal error:  Uncaught Exception: Something went wrong in /app/index.php:42
+Stack trace:
+#0 /app/index.php(10): doSomething()
+#1 /app/index.php(15): main()
+#2 {main}
+  thrown in /app/index.php on line 42

@@ -1,0 +1,7 @@
+{"Time":"2024-01-01T10:00:00Z","Action":"run","Package":"github.com/shop/auth","Test":"TestLogin"}
+{"Time":"2024-01-01T10:00:01Z","Action":"pass","Package":"github.com/shop/auth","Test":"TestLogin","Elapsed":0.31}
+{"Time":"2024-01-01T10:00:01Z","Action":"run","Package":"github.com/shop/auth","Test":"TestLogout"}
+{"Time":"2024-01-01T10:00:02Z","Action":"pass","Package":"github.com/shop/auth","Test":"TestLogout","Elapsed":0.12}
+{"Time":"2024-01-01T10:00:02Z","Action":"run","Package":"github.com/shop/auth","Test":"TestInvalidPassword"}
+{"Time":"2024-01-01T10:00:03Z","Action":"output","Package":"github.com/shop/auth","Test":"TestInvalidPassword","Output":"    auth_test.go:67: expected false, got true\n"}
+{"Time":"2024-01-01T10:00:03Z","Action":"fail","Package":"github.com/shop/auth","Test":"TestInvalidPassword","Elapsed":0.22}

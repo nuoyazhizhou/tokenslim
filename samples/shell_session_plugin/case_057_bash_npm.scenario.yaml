@@ -1,0 +1,15 @@
+scenario: 'shell_session_plugin 路由分发测试：Bash 中执行 npm install，shell_session_plugin 检测到 npm 子命令后路由到 nodejs_plugin 处理。'
+target_capability: '外部命令路由到 specialist 插件'
+expected_keep: 'npm install express, added 50 packages, found 0 vulnerabilities'
+expected_compress: 'user@linux:~$, and audited 51 packages in 2s'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '828f8e8b97e4f14519090d8a6be099963c61a3c9ee207fc518c6604488e94da1'
+  final_status: 'routing_boundary_unclear'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一个包含嵌套对象的JSON结构，用户信息中有地址子对象，字段值均为短字符串。'
+target_capability: 'JSON结构保留与短字符串保持'
+expected_keep: "{\"user\": {\"name\": \"Alice\", \"address\": {\"city\": \"Shanghai\", \"street\": \"Main Street\"}}}"
+expected_compress: '无长字符串或冗余空格'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '08f2b93ed49a6b6f8a809b9b88db11b8537df02a3fbe2270090d0340e914d02f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

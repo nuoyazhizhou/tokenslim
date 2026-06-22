@@ -1,0 +1,6 @@
+svn proplist -v src/main.rs
+Properties on 'src/main.rs':
+  svn:keywords
+    Author Date Id Revision
+  svn:eol-style
+    native

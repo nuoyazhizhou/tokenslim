@@ -1,0 +1,22 @@
+{
+  "name": "INI Configuration",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "INI 配置文件语法检测配置",
+  "file_extensions": [".ini", ".cfg", ".conf"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "["},
+        {"pattern_type": "contains", "pattern": "]"},
+        {"pattern_type": "contains", "pattern": "="},
+        {"pattern_type": "contains", "pattern": ";"},
+        {"pattern_type": "contains", "pattern": "#"},
+        {"pattern_type": "paired_delimiters", "pattern": "${", "end_delimiter": "}"},
+        {"pattern_type": "contains", "pattern": "%("},
+        {"pattern_type": "contains", "pattern": ")s"}
+      ]
+    }
+  ]
+}

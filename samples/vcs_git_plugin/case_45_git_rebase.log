@@ -1,0 +1,6 @@
+git rebase
+Current branch my-feature is up to date.
+First, rewinding head to replay your work on top of it...
+Applying: Add new feature
+Auto-merging src/main.rs
+Successfully rebased and updated refs/heads/main.

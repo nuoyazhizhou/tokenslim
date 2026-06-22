@@ -1,0 +1,15 @@
+scenario: '使用 glab CLI 创建合并请求，指定标题、描述、目标分支和源分支，输出创建成功的结果和 URL。'
+target_capability: 'glab 命令创建 MR 结果保留'
+expected_keep: "glab mr create --title \"feat: Add new feature\" --description \"This is a new feature\" --target-branch main --source-branch feature-xyz, Merge request created: !456"
+expected_compress: 'URL: https://gitlab.com/owner/repo/-/merge_requests/456, Creating merge request for feature-xyz -> main'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '88386d7392f7768d2f1e385b8227f19b4e26eb7cf540633cd8696f5841086b85'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

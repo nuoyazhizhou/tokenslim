@@ -1,0 +1,15 @@
+scenario: '系统日志中记录了一个用户会话启动的单行日志条目，包含时间戳、主机名、进程名和消息内容。'
+target_capability: '系统日志脱水：保留时间戳和消息，压缩主机名和进程名'
+expected_keep: 'May  7 10:33:10, Started Session 12345 of user user.'
+expected_compress: 'server1, systemd[1]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2f3ba289a46862ca6f47411c1c791b1dc3cb8bd8684435b3cdf512b347a0c8a9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

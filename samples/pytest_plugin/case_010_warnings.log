@@ -1,0 +1,12 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 2 items
+
+tests/test_deprecated.py::test_old_api PASSED                          [ 50%]
+tests/test_deprecated.py::test_new_api PASSED                          [100%]
+
+=============================== warnings summary ===============================
+tests/test_deprecated.py::test_old_api
+  /repo/shop/api.py:12: DeprecationWarning: old_api is deprecated
+
+======================== 2 passed, 1 warning in 0.33s ==========================

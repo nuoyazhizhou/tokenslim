@@ -1,0 +1,15 @@
+scenario: 'Vite 开发服务器热更新日志，显示多个模块（App.jsx、Button.jsx、styles.css、utils/api.js）被成功热替换，无错误或警告。'
+target_capability: '热更新成功日志压缩'
+expected_keep: '[vite] hmr update'
+expected_compress: '✓ 1 module transformed.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f914f2d3b4c0659f03273c18cc279e83f1c5989699d56a8bbabbb3e97ef508db'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

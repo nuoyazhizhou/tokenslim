@@ -1,0 +1,15 @@
+scenario: 'MySQL 8.0.33 社区版启动时输出版本信息、InnoDB buffer pool 加载完成通知以及 innodb_file_per_table 弃用警告的日志样本。'
+target_capability: '数据库日志压缩：保留级别、PID，压缩时间戳和冗余信息'
+expected_keep: '[Note] InnoDB: Buffer pool(s) load completed'
+expected_compress: 'Version: ''8.0.33''  socket: ''/var/run/mysqld/mysqld.sock''  port: 3306  MySQL Community Server - GPL.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0404363c8a12cbea722a2aba09bd884b231c796d864a046fc8e7fb26fd4c1170'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

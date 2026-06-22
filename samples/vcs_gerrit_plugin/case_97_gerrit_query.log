@@ -1,0 +1,13 @@
+gerrit query
+change Iabc123def456789
+  project: platform/frameworks/base
+  branch: master
+  status: NEW
+  owner: alice@company.com
+  reviewers: bob@company.com, carol@company.com
+
+change Idef789ghi012345
+  project: platform/packages/apps/Camera
+  branch: master
+  status: MERGED
+  owner: bob@company.com

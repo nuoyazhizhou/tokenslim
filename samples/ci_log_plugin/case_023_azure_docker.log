@@ -1,0 +1,11 @@
+az pipelines runs show --id 205
+##[section]Starting: Docker
+##[command]docker build -t api:latest .
+#1 load build definition from Dockerfile
+#2 load metadata for mcr.microsoft.com/dotnet/sdk:8.0
+#3 restore packages
+#4 publish application
+#5 exporting to image
+Successfully tagged api:latest
+##[section]Finishing: Docker
+Job succeeded

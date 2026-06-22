@@ -1,0 +1,15 @@
+scenario: 'Bitbucket CLI 执行 repo sync 操作时出现冲突错误，包含仓库 URL 和错误信息。'
+target_capability: '错误保留与冲突检测'
+expected_keep: 'CONFLICT: failed to update refs'
+expected_compress: 'URL: https://bitbucket.org/team-a/token-slim'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ab77fdc63737174f170c4090bb608b4638767bde9c33cbd33a70d24530341972'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

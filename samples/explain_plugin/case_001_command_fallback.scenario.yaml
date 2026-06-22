@@ -1,0 +1,15 @@
+scenario: '用户执行了一个名为 foo_tool 的命令，输出为 ''do something''，这是一个简单的命令执行场景。'
+target_capability: '通用命令输出保留'
+expected_keep: 'foo_tool do something'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

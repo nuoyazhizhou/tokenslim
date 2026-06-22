@@ -1,0 +1,10 @@
+darcs diff
+--- old/src/plugins/vcs_plugin/parser.rs
++++ new/src/plugins/vcs_plugin/parser.rs
+@@ -340,7 +340,10 @@
+ impl VcsParser for DarcsLogParser {
+-    fn parse(&self, raw: &str) -> Option<VcsDocument> { parse_generic_log_for_tool(raw, VcsTool::Darcs, &["darcs changes"]) }
++    fn parse(&self, raw: &str) -> Option<VcsDocument> {
++        parse_generic_log_for_tool(raw, VcsTool::Darcs, &["darcs changes"])
++    }
+ }

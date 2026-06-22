@@ -1,0 +1,15 @@
+scenario: 'shell_session_plugin 路由分发测试：CI 脚本中 docker build/run 命令，shell_session_plugin 检测到 docker 子命令后路由到 specialist 插件处理。'
+target_capability: 'set -x 输出与 Docker 构建日志压缩'
+expected_keep: 'docker build -t myapp:latest .'
+expected_compress: 'Sending build context to Docker daemon  2.048kB'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c3710ff045bacf6a63bca18b08432480a6783429e14e609e122aafbc3d22e43b'
+  final_status: 'routing_boundary_unclear'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

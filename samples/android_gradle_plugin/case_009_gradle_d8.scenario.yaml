@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 构建过程中 D8 dex 编译阶段出现重复类警告，构建仍成功完成'
+target_capability: 'D8 编译警告保留'
+expected_keep: 'D8: Program type already present, BUILD SUCCESSFUL'
+expected_compress: '> Task :app:compileDebugJavaWithJavac, > Task :app:compileDebugKotlin'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '74a61d8f12e58349f662c847bbbeac5c55afbbb4c32d42f2c540ac9e7757631b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

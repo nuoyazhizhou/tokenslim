@@ -1,0 +1,13 @@
+p4 dirs
+//depot/main/src/
+//depot/main/src/core/
+//depot/main/src/core/doctor_workspace/
+//depot/main/src/plugins/
+//depot/main/src/plugins/vcs_plugin/
+//depot/main/src/plugins/ansi_cleaner_plugin/
+//depot/main/src/plugins/gcc_log_plugin/
+//depot/main/config/
+//depot/main/docs/
+//depot/main/docs/design/
+//depot/main/scripts/
+//depot/main/target/

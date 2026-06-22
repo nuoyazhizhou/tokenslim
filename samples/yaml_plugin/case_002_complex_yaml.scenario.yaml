@@ -1,0 +1,15 @@
+scenario: 'yaml_plugin 测试：含服务器和数据库配置的复杂 YAML，插件应保留键结构，压缩缩进和敏感值。'
+target_capability: 'YAML键值结构保留与键字典化'
+expected_keep: 'server: port: 8080, database: type: postgresql, credentials: username: admin'
+expected_compress: 'password: secret, ssl: cert_path: /etc/ssl/cert.pem, 缩进与空白'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

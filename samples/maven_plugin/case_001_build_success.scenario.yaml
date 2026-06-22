@@ -1,0 +1,15 @@
+scenario: 'Maven 项目构建成功，包含资源复制、编译、测试等阶段，最终输出 BUILD SUCCESS。'
+target_capability: '构建成功摘要保留'
+expected_keep: 'BUILD SUCCESS, Tests run: 3, Failures: 0, Errors: 0, Skipped: 0'
+expected_compress: '[INFO] Scanning for projects..., [INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ myproject ---, [INFO] Using ''UTF-8'' encoding to copy filtered resources.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '792eecd3aeaa7dbb54ea13307bebef4eb280abc128f385b8bc4c580a0d2bc408'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

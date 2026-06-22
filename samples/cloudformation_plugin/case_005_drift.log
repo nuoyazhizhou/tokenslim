@@ -1,0 +1,8 @@
+aws cloudformation detect-stack-drift --stack-name web
+{
+  "StackDriftDetectionId": "12345678-aaaa-bbbb-cccc-123456789012"
+}
+aws cloudformation describe-stack-resource-drifts --stack-name web
+LogicalResourceId PhysicalResourceId ResourceType StackResourceDriftStatus
+WebSecurityGroup sg-123 AWS::EC2::SecurityGroup MODIFIED
+WebLaunchTemplate lt-123 AWS::EC2::LaunchTemplate IN_SYNC

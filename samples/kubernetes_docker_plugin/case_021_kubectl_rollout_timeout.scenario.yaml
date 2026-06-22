@@ -1,0 +1,15 @@
+scenario: '使用 kubectl rollout status 监控部署进度，因超时导致部署失败，随后使用 kubectl describe pod 查看 Pod 状态，显示 ImagePullBackOff 错误。'
+target_capability: 'K8s 部署超时与错误保留'
+expected_keep: "kubectl rollout status deployment/api -n prod --timeout=60s, error: deployment \"api\" exceeded its progress deadline, Warning  Failed  kubelet  Error: ImagePullBackOff"
+expected_compress: "Waiting for deployment \"api\" rollout to finish: 1 out of 3 new replicas have been updated..., Waiting for deployment \"api\" rollout to finish: 2 old replicas are pending termination..., kubectl describe pod prod/api-6f5d4b8c9d-z9x8y"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ee0c0774bdae0efbc8fbfc3046ac078856efe885e1af8701a04a82c0c92429d7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

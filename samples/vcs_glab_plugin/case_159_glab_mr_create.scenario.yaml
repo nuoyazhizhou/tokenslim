@@ -1,0 +1,15 @@
+scenario: '用户使用 glab CLI 创建了一个 GitLab 合并请求，包含标题、描述和目标分支，系统返回创建成功的结果和 URL。'
+target_capability: '创建结果保留与URL压缩'
+expected_keep: "glab mr create --title \"feat: Add caching\" --description \"Adds Redis caching\" --target-branch main, ✓ Created merge request !200"
+expected_compress: 'URL: https://gitlab.com/owner/repo/-/merge_requests/200'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c531af656c00b9b7de8eac455c52fd942a52b0e6f01bfaadb6965e80fe0051b7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

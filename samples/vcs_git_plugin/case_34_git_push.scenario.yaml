@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git push 推送多分支到远程，插件应保留分支更新摘要，压缩进度行。'
+target_capability: '进度行压缩与分支推送保留'
+expected_keep: 'To https://github.com/exampleuser/my-project-repo.git,   a1b2c3d..e5f6g7h  main -> main,   f8g9h0i..j1k2l3m  feature/new-feature -> feature/new-feature'
+expected_compress: 'Enumerating objects: 15, done., Counting objects: 100% (15/15), done., Writing objects: 100% (15/15), done.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'OCI CLI 执行日志查询命令后，输出包含多条健康检查 GET 请求（200 OK）和一条 POST 请求错误（500 Internal Server Error）的访问日志记录。'
+target_capability: '云日志外壳剥离与结构化保留'
+expected_keep: 'GET /health HTTP/1.1 200 OK, POST /api/documents HTTP/1.1 500 Internal Server Error'
+expected_compress: '2026-05-13T08:32:01.000Z, ocid1.loggroup.oc1..backend, INFO:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8bcc23b187dd45b3846d39da21a5baa0f77c9081e58fc22b8232b0087ab503e6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

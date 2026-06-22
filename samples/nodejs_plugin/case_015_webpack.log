@@ -1,0 +1,26 @@
+asset main.js 2.5 MiB [emitted] (name: main)
+asset vendor.js 1.2 MiB [emitted] (name: vendor)
+asset runtime.js 45.3 kB [emitted] (name: runtime)
+asset styles.css 123 kB [emitted] (name: main)
+asset images/logo.png 15.2 kB [emitted] [from: src/images/logo.png]
+asset images/banner.jpg 234 kB [emitted] [from: src/images/banner.jpg]
+asset fonts/roboto.woff2 12.3 kB [emitted] [from: src/fonts/roboto.woff2]
+asset fonts/opensans.woff2 14.5 kB [emitted] [from: src/fonts/opensans.woff2]
+runtime modules 28.3 kB 15 modules
+cacheable modules 3.8 MiB
+  modules by path ./src/ 2.1 MiB
+    modules by path ./src/components/ 850 kB 45 modules
+    modules by path ./src/utils/ 320 kB 18 modules
+    modules by path ./src/services/ 450 kB 22 modules
+    modules by path ./src/pages/ 520 kB 28 modules
+    ./src/index.js 2.3 kB [built] [code generated]
+    ./src/App.js 5.6 kB [built] [code generated]
+    ./src/config.js 1.2 kB [built] [code generated]
+  modules by path ./node_modules/ 1.7 MiB
+    ./node_modules/react/index.js 190 kB [built] [code generated]
+    ./node_modules/react-dom/index.js 280 kB [built] [code generated]
+    ./node_modules/react-router-dom/index.js 120 kB [built] [code generated]
+    ./node_modules/axios/index.js 85 kB [built] [code generated]
+    ./node_modules/lodash/lodash.js 540 kB [built] [code generated]
+    + 95 modules
+webpack 5.75.0 compiled successfully in 12345 ms

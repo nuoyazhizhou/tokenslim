@@ -1,0 +1,4 @@
+bazel sync
+INFO: Invocation ID: sync-123
+INFO: Repository rules finished.
+INFO: All external repositories are up to date.

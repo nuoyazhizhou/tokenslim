@@ -1,0 +1,7 @@
+darcs obliterate --match "author alice"
+About to delete 3 patches:
+  abc1234: Add feature A
+  def5678: Fix bug B
+  ghi9012: Update docs
+Really delete these patches? (yes/no): yes
+Deleted 3 patches

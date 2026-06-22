@@ -1,0 +1,11 @@
+glab ci view --log
+Running with gitlab-runner 16.11.0
+section_start:1778660000:prepare_executor[collapsed=true]
+Preparing the docker executor
+Using Docker image rust:1.78
+section_end:1778660003:prepare_executor
+section_start:1778660004:script[collapsed=false]
+$ cargo test --lib
+test result: ok. 732 passed; 0 failed
+section_end:1778660030:script
+Job succeeded

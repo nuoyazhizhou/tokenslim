@@ -1,0 +1,15 @@
+scenario: 'Apache HTTP服务器生成的Common Log Format访问日志，包含多个客户端IP对/index.html、/products、/missing和/api/status的GET请求，响应状态码包括200、404和500。'
+target_capability: '错误保留与路径字典压缩'
+expected_keep: '404 209, 500 80, SUMMARY'
+expected_compress: '198.51.100.10, /index.html, 200 615'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '66607ee1aa12aeb615b3714ca43bdab765de47c886ea941c2ccee2c82359e516'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

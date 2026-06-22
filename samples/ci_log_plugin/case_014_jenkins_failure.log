@@ -1,0 +1,14 @@
+jenkins build api-main
+[Pipeline] Start of Pipeline
+[Pipeline] node
+[Pipeline] { (Checkout)
+Checking out Revision 4f00ba2
+[Pipeline] }
+[Pipeline] { (Test)
+[Pipeline] sh
++ pytest -q
+tests/test_api.py::test_get_user FAILED
+E   AssertionError: expected status 200
+ERROR: script returned exit code 1
+[Pipeline] }
+Finished: FAILURE

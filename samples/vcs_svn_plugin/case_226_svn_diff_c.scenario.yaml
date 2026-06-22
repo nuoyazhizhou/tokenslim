@@ -1,0 +1,15 @@
+scenario: 'SVN diff 命令输出，展示了一个代码变更：在 methods.rs 文件中添加了 VCS 插件配置引导代码段。'
+target_capability: '变更状态保留与路径压缩'
+expected_keep: 'svn diff -c 12345, Index: src/core/doctor_workspace/methods.rs, +    // VCS Plugin Config Guidance'
+expected_compress: '--- src/core/doctor_workspace/methods.rs	(revision 12344), +++ src/core/doctor_workspace/methods.rs	(working copy), @@ -1417,6 +1417,12 @@'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ec79447f5aba16d87d24c1fdb052bd4903c29ee177bd01ff0de0f9b57e28048f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

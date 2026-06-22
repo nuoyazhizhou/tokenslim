@@ -1,0 +1,15 @@
+scenario: 'SVN 提交操作，显示文件变更和提交成功信息，包含路径和修订号。'
+target_capability: 'SVN 提交日志压缩'
+expected_keep: 'svn commit, Committed revision 12345.'
+expected_compress: 'Sending        config/app.json, Transmitting file data .'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9411328e82a7d58508d39c408abe680eebe226a42d83810f94946f6c9f0c527b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

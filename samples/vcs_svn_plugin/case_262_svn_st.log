@@ -1,0 +1,5 @@
+svn st
+M       src/core/text_slicer/methods.rs
+A       src/core/dictionary_manager/mod.rs
+?       samples/vcs/
+?       .trae/documents/vcs_task_plan.md

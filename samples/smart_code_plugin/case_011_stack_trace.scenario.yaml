@@ -1,0 +1,15 @@
+scenario: 'Python 程序执行时发生除零错误，Traceback 显示调用栈，包含文件名、行号和异常类型。'
+target_capability: '内置异常保留与标识符压缩'
+expected_keep: "ZeroDivisionError, division by zero, File \"app.py\""
+expected_compress: 'def main(), x = 1 / 0, <module>'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd60b58cf286489c5752b1fe5a3bf9f861250bbed47cb06b18c7179b12e1903f6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

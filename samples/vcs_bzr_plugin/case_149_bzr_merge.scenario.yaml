@@ -1,0 +1,15 @@
+scenario: 'Bazaar 合并操作：从 lp:~user/project/feature 合并分支，所有更改成功应用。'
+target_capability: '合并操作锚点保留'
+expected_keep: 'bzr merge, Merging from: lp:~user/project/feature, All changes applied successfully.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5e19e5dc5ea31e77b77a6bd311221f08f9aae1f188e489947f239ec595340b74'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

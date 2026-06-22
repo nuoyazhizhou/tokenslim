@@ -1,0 +1,15 @@
+scenario: '云日志中记录了一个 Java 应用抛出的 NullPointerException 及其根因 IllegalStateException 的堆栈跟踪，日志以 JSONL 格式包含时间戳、日志流和消息字段。'
+target_capability: '云日志外壳剥离与堆栈保留'
+expected_keep: "Exception in thread \"main\" java.lang.NullPointerException: user is null"
+expected_compress: '2026-05-13T08:13:41.100000+00:00'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7f91387518ad76a6ec1260e5ded889ba4c98caff107c879c7918013580e556a7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

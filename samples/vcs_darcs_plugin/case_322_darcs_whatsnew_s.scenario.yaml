@@ -1,0 +1,15 @@
+scenario: '用户执行 `darcs whatsnew -s` 查看工作目录中未记录的更改，输出显示文件修改、新增和删除的摘要。'
+target_capability: 'darcs命令锚点与操作信息保留'
+expected_keep: 'darcs whatsnew -s, M ./src/main.rs +5 -2, A ./src/auth/login.rs'
+expected_compress: '空行, 噪声行, 冗余行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4bb4a8fde1ccd2efdb6ea0cec234477ec8ab10439d4bf4c3a5059157a7c992de'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

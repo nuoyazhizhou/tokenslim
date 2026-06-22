@@ -1,0 +1,11 @@
+bitbucket pr view 221
+Pull request #221: Token cache stabilization
+=========================================================
+State: OPEN
+Author: dev_a
+Reviewers: lead1 (approved), qa2
+Source: feature/token-cache -> main
+Description:
+This change refactors token cache locking.
+It also improves retry backoff visibility.
+Created: 2026-05-12

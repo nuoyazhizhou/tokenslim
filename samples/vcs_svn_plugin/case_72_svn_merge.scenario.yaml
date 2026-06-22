@@ -1,0 +1,15 @@
+scenario: 'SVN 合并操作日志，显示合并两个版本间的变更，包含非冲突文件 src/main.rs。'
+target_capability: 'SVN 命令锚点与变更状态保留'
+expected_keep: 'svn merge, Non-conflicting: src/main.rs'
+expected_compress: 'Merging r12344 through r12345'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '91fe733f26d811504090eb90278988211ba7afc8e94f5dc9e560f2a0b8a2352f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

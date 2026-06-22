@@ -1,0 +1,15 @@
+scenario: 'Bazel构建失败：Go编译时未定义ledgerClient变量，导致services/payment:payment_test测试目标构建失败，日志包含错误行和构建摘要'
+target_capability: '保留错误行和构建摘要'
+expected_keep: 'ERROR: C:/repo/services/payment/BUILD.bazel:42:11: … compilepkg failed'
+expected_compress: 'INFO: Elapsed time: 8.321s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '059fcf3f161f945a3bb730ed41e2529518a005ee5e6f6cc958de6ef11377b63a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

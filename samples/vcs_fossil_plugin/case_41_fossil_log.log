@@ -1,0 +1,6 @@
+fossil timeline
+fossil timeline -n 2
+[9d41f1ac7a] 2026-04-06 12:20:17 [alice.chen] add vcs showcase cases for fossil/darcs
+user: alice.chen
+[48a31bb9e2] 2026-04-05 18:02:09 [bob.wang] normalize generic compact fallback output
+user: bob.wang

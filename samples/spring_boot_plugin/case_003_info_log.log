@@ -1,0 +1,4 @@
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : Starting App v1.0.0
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : No active profile set
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat started on port(s): 8080
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : Started App in 1.234 seconds

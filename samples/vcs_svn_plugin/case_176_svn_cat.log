@@ -1,0 +1,4 @@
+svn cat https://svn.example.com/repo/trunk/src/main.rs
+fn main() {
+    println!("Hello, World!");
+}

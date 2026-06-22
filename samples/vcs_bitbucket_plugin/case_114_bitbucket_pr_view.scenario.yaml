@@ -1,0 +1,15 @@
+scenario: '开发者使用 Bitbucket CLI 查看 PR #125 的详细信息，包括状态、作者、审查者、分支和描述。'
+target_capability: 'PR 视图元数据保留'
+expected_keep: 'State: OPEN, Author: alice, Source: feature-refactor -> main'
+expected_compress: 'Pull request #125: Refactor codebase, ============================================================, Comments: 5'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7ce5123faa672fb4ceb42e31a2f4fd8bcc13db7906765c52694be540d40cc508'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

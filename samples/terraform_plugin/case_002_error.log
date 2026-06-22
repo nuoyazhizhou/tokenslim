@@ -1,0 +1,7 @@
+terraform apply
+
+Error: creating EC2 Instance: InvalidAMIID.NotFound: The image id '[ami-deadbeef]' does not exist
+
+  with aws_instance.web,
+  on modules/web/main.tf line 12, in resource "aws_instance" "web":
+  12: resource "aws_instance" "web" {

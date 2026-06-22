@@ -1,0 +1,15 @@
+scenario: '用户使用 glab CLI 列出 GitLab 上的合并请求列表，输出包含 MR 编号、标题、状态、作者和日期。'
+target_capability: 'MR 列表行保留与表格格式压缩'
+expected_keep: 'glab mr list, !123   Add user authentication flow   [open]   alice   2026-04-01'
+expected_compress: '（无表格标题或分隔符，无需压缩）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3b0f8c45da42a0ee4a1e20099788f3584b20bdd243709b422331c2ebf9179730'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

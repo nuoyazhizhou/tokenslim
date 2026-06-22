@@ -1,0 +1,4 @@
+fossil timeline
+2026-04-08  alice     1abc123  Add new feature
+2026-04-07  bob       2def456  Fix bug in parser
+2026-04-06  alice     3ghi789  Refactor code

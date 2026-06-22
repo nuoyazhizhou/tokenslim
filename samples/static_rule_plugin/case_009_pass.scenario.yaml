@@ -1,0 +1,15 @@
+scenario: '静态规则检查通过，所有规则均未触发违规，输出简洁的通过信息。'
+target_capability: '通过场景保留'
+expected_keep: '[INFO] All rules passed!'
+expected_compress: '[INFO] No violations found'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '186696102ecff2d929fd2899ba905345fa7ffe2cab7df225f2c3c31d7e0d098e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

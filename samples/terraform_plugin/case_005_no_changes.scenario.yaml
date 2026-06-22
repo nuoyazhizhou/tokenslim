@@ -1,0 +1,15 @@
+scenario: 'Terraform plan 输出显示基础设施与配置一致，无变更，所有资源状态已刷新。'
+target_capability: '无变更场景保留'
+expected_keep: 'No changes. Your infrastructure matches the configuration.'
+expected_compress: 'aws_vpc.main: Refreshing state... [id=vpc-123456]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '36cc08d24f70f2c02011f91937c47e23c022148111cd827dceb07b3cbe7e5476'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

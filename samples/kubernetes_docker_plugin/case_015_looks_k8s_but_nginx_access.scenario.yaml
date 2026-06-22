@@ -1,0 +1,15 @@
+scenario: 'Nginx access log lines that resemble Kubernetes pod logs but are actually standard HTTP access logs, testing the plugin''s ability to avoid false positives.'
+target_capability: 'False positive guard for non-K8s logs'
+expected_keep: 'GET /api/users HTTP/1.1, POST /api/login HTTP/1.1, GET /healthz HTTP/1.1'
+expected_compress: '192.168.1.10 - user1, 192.168.1.11 - user2, 192.168.1.12 - -'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '29cb4c47cd82b9c4bcddcc0dc229a97304aedc67fb7d484c5bd1f27234f4376c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

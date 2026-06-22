@@ -1,0 +1,2 @@
+svn delete oldfile.txt
+D         oldfile.txt

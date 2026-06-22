@@ -1,0 +1,10 @@
+bazel build //services/...
+INFO: Invocation ID: 9e26c0fa-1d2a-4b33-b4f2-111111111111
+INFO: Analyzed 120 targets (45 packages loaded, 1234 targets configured).
+INFO: Found 120 targets...
+[0 / 1,234] Checking cached actions
+[241 / 1,234] 120 actions, 100 running
+[1,234 / 1,234] 120 actions, 100 running
+INFO: Elapsed time: 45.678s, Critical Path: 12.345s
+INFO: 1234 processes: 1000 remote cache hit, 234 linux-sandbox.
+INFO: Build completed successfully, 1234 total actions

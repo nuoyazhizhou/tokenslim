@@ -1,0 +1,18 @@
+PS C:\workspace> Get-ChildItem -Recurse
+
+    Directory: C:\workspace\project
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----          6/7/2026   8:00 AM                src
+d-----          6/7/2026   8:00 AM                tests
+-a----          6/7/2026   8:00 AM           1024 Cargo.toml
+-a----          6/7/2026   8:00 AM           5000 Cargo.lock
+
+    Directory: C:\workspace\project\src
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+-a----          6/7/2026   8:00 AM           2048 main.rs
+
+PS C:\workspace> 

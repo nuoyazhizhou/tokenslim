@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 workspaces 命令列出所有 Perforce 工作区，输出包含工作区名称、所有者和根路径。'
+target_capability: 'P4 命令输出压缩'
+expected_keep: 'alice-ws, bob-ws, charlie-ws'
+expected_compress: "/home/alice/workspace, C:\\workspace\\bob, /home/charlie/dev"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7307d53d3efd4f6e79bd959e34334f2b4d036d82e993ecc6dad9115e3da5dcef'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

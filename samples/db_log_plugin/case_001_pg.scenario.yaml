@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 错误日志，查询不存在的表 ''users''，包含错误信息和原始 SQL 语句。'
+target_capability: '数据库错误日志压缩'
+expected_keep: "ERROR, relation \"users\" does not exist, select * from users"
+expected_compress: '2026-05-07 10:30:01.123 UTC, [12345], STATEMENT:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '97b18f3d19dc14d63c7b314a24e9f8ee8bac6f344b60ff698713d6d048882c84'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Gerrit 远程操作时出现权限拒绝错误，并附带一个 Gerrit 变更链接。'
+target_capability: '错误保留与URL压缩'
+expected_keep: 'gerrit ls-projects --show-description, remote: error: permission denied'
+expected_compress: 'https://gerrit.example.com/c/team/repo/+/12345'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'da03d2b43e114159a38b1634fddc1f61171ab3aebb8bbe43c04439624881bbe0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

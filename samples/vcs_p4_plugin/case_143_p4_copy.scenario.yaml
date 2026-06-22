@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 copy 命令将 //depot/main 目录下的文件复制到 //depot/backup，输出显示文件映射关系。'
+target_capability: '文件操作与路径压缩'
+expected_keep: '//depot/main/file1.txt -> //depot/backup/file1.txt'
+expected_compress: 'p4 copy //depot/main //depot/backup'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ee8401b37baa6de7ec66b3c7b9353c2f155a673eb030d513aabe847b289b392e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

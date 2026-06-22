@@ -1,0 +1,15 @@
+scenario: '处理日志文件时，包含进度行、长十六进制哈希值和完成标记，其中哈希值可能被误判为二进制数据。'
+target_capability: '二进制数据检测与替换'
+expected_keep: 'Processing: file 1/100...'
+expected_compress: '0xabcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '02cf18af769c4e75dcd14128431c49a9657ccfbeee7225dd5857b4c9d3912a46'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:43:25.678814'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

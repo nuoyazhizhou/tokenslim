@@ -1,0 +1,15 @@
+scenario: '系统日志中混杂了非标准格式的启动完成提示和状态行，需要保留时间戳和消息内容，压缩主机名和进程名。'
+target_capability: '噪音夹杂处理'
+expected_keep: 'May  7 10:33:10, Accepted publickey for user, System startup completed'
+expected_compress: 'server1, sshd, CRON'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0c3f4246c2975a45b4342c2168ea7039ba0f3c5980029d8fbf6c7656bc02591c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

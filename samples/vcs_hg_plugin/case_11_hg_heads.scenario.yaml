@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg heads` 命令查看所有分支的最新变更集，输出包含多个变更集的详细信息，如变更集ID、分支名、标签、父节点、用户、日期和摘要。'
+target_capability: '变更集信息保留'
+expected_keep: 'hg heads, changeset:   18:eeff3344aa55, branch:      default'
+expected_compress: 'parent:      16:ff11ee22dd33, tag:         tip, date:        Fri Apr 03 14:32:11 2026 +0800'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8bd6565aa98edcebf2c396e3e709fb9580b1bfd53e653d88f0007464259ee4a7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

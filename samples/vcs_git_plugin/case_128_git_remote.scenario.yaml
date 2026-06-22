@@ -1,0 +1,15 @@
+scenario: '用户执行 `git remote -v` 查看远程仓库配置，输出包含 origin 和 upstream 两个远程的 fetch/push URL。'
+target_capability: '远程仓库信息保留'
+expected_keep: 'origin  https://github.com/owner/repo (fetch)'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f73abcb0ddfc8a8a65d01ec214ed0d58f659e22adc582c89bbdfe8115ee52567'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

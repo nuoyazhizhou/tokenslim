@@ -1,0 +1,3 @@
+gerrit ls-projects --show-description
+https://gerrit.example.com/c/team/repo/+/12345
+error: permission denied

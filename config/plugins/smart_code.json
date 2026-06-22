@@ -1,0 +1,32 @@
+{
+    "name": "smart_code",
+    "description": "Smart code detection and compaction",
+    "priority": 100,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^(package|import|from|use |#include|#define)"
+            }
+        ],
+        "min_match_ratio": 0.2
+    },
+    "compress": {
+        "token_prefix": "$SMART",
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "keep_signals": [
+        "SyntaxError（JavaScript / Python 内置异常）",
+        "public（关键字）",
+        "short_id（长度≤8的标识符）"
+    ],
+    "compress_targets": [
+        "长自定义标识符（长度>8且非关键字非保留异常）压缩为$PK令牌",
+        "连续空格压缩为$S|长度标记"
+    ],
+    "design_intent": "代码脱水：保留内置异常和关键字标识符，折叠长自定义标识符为字典令牌，压缩连续空格为长度标记。"
+}

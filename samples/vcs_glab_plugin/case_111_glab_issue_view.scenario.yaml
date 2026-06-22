@@ -1,0 +1,15 @@
+scenario: '开发者使用 `glab issue view 5` 查看 GitLab 上编号为 5 的 Issue，输出包含标题、作者、指派人、标签、状态、创建时间、截止日期、里程碑、Web URL 和详细描述。'
+target_capability: 'Issue 元数据保留与噪声压缩'
+expected_keep: 'glab issue view 5, !5 Important bug fix, Description:'
+expected_compress: 'Web URL:    https://gitlab.com/owner/repo/-/issues/5, Steps to reproduce:, 1. Go to login page'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '22b17cd1b5b6c9f5efe7148fe5aba16d3f651efd20d7dc44823087e91606627d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

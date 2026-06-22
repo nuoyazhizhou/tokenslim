@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：Nginx 慢请求和 504 错误，插件应保留慢请求信号，压缩健康检查。'
+target_capability: '慢请求与错误信号保留'
+expected_keep: 'POST /api/export 504, slow lines with response time >1s, $W|SUMMARY line'
+expected_compress: 'IP addresses, timestamps, User-Agent strings, URI paths'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

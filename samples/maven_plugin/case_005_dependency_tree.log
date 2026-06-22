@@ -1,0 +1,20 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< com.example:myproject >-------------------
+[INFO] Building myproject 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-dependency-plugin:3.3.0:tree (default-cli) @ myproject ---
+[INFO] com.example:myproject:jar:1.0.0
+[INFO] +- org.junit.jupiter:junit-jupiter-api:jar:5.9.1:test
+[INFO] |  \- org.apiguardian:apiguardian-api:jar:1.1.2:test
+[INFO] +- org.junit.jupiter:junit-jupiter-engine:jar:5.9.1:test
+[INFO] |  +- org.junit.platform:junit-platform-engine:jar:1.9.1:test
+[INFO] |  \- org.opentest4j:opentest4j:jar:1.2.0:test
+[INFO] \- com.fasterxml.jackson.core:jackson-databind:jar:2.14.2:compile
+[INFO]    +- com.fasterxml.jackson.core:jackson-annotations:jar:2.14.2:compile
+[INFO]    \- com.fasterxml.jackson.core:jackson-core:jar:2.14.2:compile
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------

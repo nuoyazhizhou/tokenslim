@@ -1,0 +1,15 @@
+scenario: 'protoc 编译 proto 文件时，因缺少 google.api.HttpRule 类型定义导致编译错误，同时包含一个未使用的 import 警告。'
+target_capability: '错误保留与路径压缩'
+expected_keep: "error: Type \"google.api.HttpRule\" not found."
+expected_compress: 'proto/audit/event.proto'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cb99779c0a5c9bf5259721ea8e60e507a83f66001feb5c78efa19e25cbd88bf4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

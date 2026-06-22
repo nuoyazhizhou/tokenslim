@@ -1,0 +1,15 @@
+scenario: '执行 hg rollback 命令并成功完成回滚操作。'
+target_capability: '命令首行保留与回滚确认'
+expected_keep: 'hg rollback, rollback completed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9b07a118e5526c191533df385d71be32836485e81c00bb618982a99e77405cd0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

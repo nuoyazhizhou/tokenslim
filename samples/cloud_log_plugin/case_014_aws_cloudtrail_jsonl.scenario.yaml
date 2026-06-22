@@ -1,0 +1,15 @@
+scenario: 'AWS CloudTrail JSONL 日志，包含用户登录、安全组授权失败、日志流创建等操作，每条日志包含 eventTime、logGroup、logStream、level、message 等字段。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: 'ConsoleLogin user=alice, AuthorizeSecurityGroupIngress user=bob, CreateLogStream user=deploy'
+expected_compress: 'eventTime, logGroup, logStream'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1501df4dc7e474bd3259d02735d32911a925ca4eb6e38e6ff5bbb08518aa15a9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

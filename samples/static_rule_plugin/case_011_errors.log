@@ -1,0 +1,4 @@
+[ERROR] Line 10: Syntax error, unexpected token
+[ERROR] Line 20: Type mismatch: expected string, got number
+[ERROR] Line 30: Missing required field: id
+[ERROR] Line 40: Cyclic dependency detected

@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：Nginx 5xx 错误突发，插件应保留错误信号，压缩健康检查。'
+target_capability: '5xx error spike detection'
+expected_keep: '500, 502, 503, 200'
+expected_compress: '10.0.2.20, Mozilla/5.0, [13/May/2026:08:16:01 +0000]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一条包含超长URL查询参数和完整User-Agent的Nginx访问日志，用于测试长行压缩和字典替换能力。'
+target_capability: '长行压缩与字典替换'
+expected_keep: '200 12345'
+expected_compress: '192.168.1.10, /api/v1/search?q=very%20long%20search%20query..., Mozilla/5.0...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5b4449c0d80459c30e4744b41465a5ad34bf8edb74aa764d5fe1618518fa2995'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

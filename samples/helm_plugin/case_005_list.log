@@ -1,0 +1,5 @@
+helm list --all-namespaces
+NAME        NAMESPACE   REVISION UPDATED                 STATUS   CHART        APP VERSION
+web         prod        3        2026-05-12 10:14:00     deployed web-1.2.3    1.2.3
+api         prod        7        2026-05-12 09:10:00     deployed api-3.4.5    3.4.5
+worker      jobs        2        2026-05-12 08:00:00     failed   worker-0.9.1 0.9.1

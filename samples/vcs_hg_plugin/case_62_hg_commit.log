@@ -1,0 +1,5 @@
+hg commit
+committing files:
+src/main.rs
+config/app.json
+committed changeset 12345

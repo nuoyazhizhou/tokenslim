@@ -1,0 +1,41 @@
+hg log
+changeset:   18:eeff3344aa55
+tag:         tip
+user:        alice.chen
+date:        Fri Apr 03 14:32:11 2026 +0800
+summary:     feat(vcs): Add SVN/HG/P4 parser support
+
+changeset:   17:abc123def456
+user:        bob.wang
+date:        Thu Apr 02 09:15:33 2026 +0800
+summary:     fix: Resolve path dictionary collision with email addresses
+
+changeset:   16:ff11ee22dd33
+user:        charlie.li
+date:        Wed Apr 01 16:45:00 2026 +0800
+summary:     refactor: Extract VcsRuleEngine from monolithic compress method
+
+changeset:   15:aa99bb88cc77
+user:        dave.zhang
+date:        Tue Mar 31 11:20:45 2026 +0800
+summary:     feat: Initial VCS plugin skeleton with command whitelists
+
+changeset:   14:112233445566
+user:        eve.liu
+date:        Mon Mar 30 08:00:12 2026 +0800
+summary:     chore: Setup project structure and CI pipeline
+
+changeset:   13:667788990011
+user:        frank.wu
+date:        Sun Mar 29 17:30:00 2026 +0800
+summary:     docs: Add initial design document for VCS plugin architecture
+
+changeset:   12:223344556677
+user:        alice.chen
+date:        Sat Mar 28 10:15:30 2026 +0800
+summary:     feat: Add dictionary engine for path compression
+
+changeset:   11:889900112233
+user:        bob.wang
+date:        Fri Mar 27 14:00:00 2026 +0800
+summary:     fix: Handle Windows path separators in path compressor

@@ -1,0 +1,4 @@
+Version: '8.0.33'  socket: '/var/run/mysqld/mysqld.sock'  port: 3306  MySQL Community Server - GPL.
+2026-05-07T10:33:10.123456Z 1234 [Note] InnoDB: Buffer pool(s) load completed at 260507 10:33:10
+=====================
+2026-05-07T10:33:15.456789Z 1235 [Warning] InnoDB: Using innodb_file_per_table is deprecated

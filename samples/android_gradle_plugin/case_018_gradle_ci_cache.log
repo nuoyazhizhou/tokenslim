@@ -1,0 +1,16 @@
+GitHub Actions runner version 2.329.0
+Run ./gradlew --build-cache assembleDebug
+Download https://services.gradle.org/distributions/gradle-8.10-bin.zip
+Download https://repo.maven.apache.org/maven2/com/android/tools/build/gradle/8.7.2/gradle-8.7.2.pom
+Download https://repo.maven.apache.org/maven2/org/jetbrains/kotlin/android/org.jetbrains.kotlin.android.gradle.plugin/2.0.21/org.jetbrains.kotlin.android.gradle.plugin-2.0.21.pom
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugResValues FROM-CACHE
+> Task :app:mergeDebugResources FROM-CACHE
+> Task :app:compileDebugKotlin FROM-CACHE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:packageDebug
+
+BUILD SUCCESSFUL in 44s
+8 actionable tasks: 1 executed, 4 up-to-date, 3 from cache

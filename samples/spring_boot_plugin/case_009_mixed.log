@@ -1,0 +1,7 @@
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : Starting
+User input: hello
+2024-01-15 10:30:45.123 DEBUG 12345 --- [main] com.example.Service : Processing user
+2024-01-15 10:30:45.123 ERROR 12345 --- [main] com.example.Service : Failed
+java.lang.Exception: Processing failed
+    at com.example.Service.process(Service.java:50)
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : Shutting down

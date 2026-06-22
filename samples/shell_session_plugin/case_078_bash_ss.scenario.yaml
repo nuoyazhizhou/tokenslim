@@ -1,0 +1,15 @@
+scenario: 'Bash 用户执行 ss -tulpn 查看监听套接字，输出包括 sshd、nginx、mysqld 等进程的监听端口，随后执行 ss -s 查看套接字统计信息。'
+target_capability: '命令输出保留与提示符压缩'
+expected_keep: 'ss -tulpn, ss -s, LISTEN'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1f6b558eeb3470db5e2688b2bed980fff72aeb28064d953c67588bedb2572529'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,14 @@
+   svn list
+   2026-04-03 14:32   alice.chen         1024 src/core/doctor_workspace/methods.rs
+   2026-04-03 14:30   alice.chen         2048 src/core/doctor_workspace/mod.rs
+   2026-04-02 09:15   bob.wang           4096 src/plugins/vcs_plugin/parser.rs
+   2026-04-02 09:10   bob.wang           1536 src/plugins/vcs_plugin/methods.rs
+   2026-04-01 16:45   charlie.li          512 src/plugins/vcs_plugin/types.rs
+   2026-04-01 16:40   charlie.li          256 src/plugins/vcs_plugin/mod.rs
+   2026-03-31 11:20   dave.zhang         8192 docs/design/vcs_plugin.md
+   2026-03-30 08:00   dave.zhang          128 Cargo.toml
+   2026-03-30 08:00   dave.zhang        16384 Cargo.lock
+                     -                  src/generated/
+                     -                  src/generated/proto_bindings.rs
+                     -                  target/
+                     -                  target/debug/

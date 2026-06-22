@@ -1,0 +1,8 @@
+warning: unused variable: `x`
+ --> src/main.rs:5:9
+  |
+5 |     let x = 5;
+  |         ^ help: if this is intentional, prefix it with an underscore: `_x`
+  |
+note: `#[warn(unused_variables)]` on by default
+ --> src/main.rs:5:9

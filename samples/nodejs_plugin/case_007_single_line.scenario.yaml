@@ -1,0 +1,15 @@
+scenario: 'Node.js 插件边界测试：单行错误消息，模拟简单命令行错误输出场景。'
+target_capability: '错误保留'
+expected_keep: 'Error: Simple error message'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,6 @@
+bitbucket pr list
+TYPE   ID      TITLE                         AUTHOR      STATE      CREATED
+-----------------------------------------------------------------------------------------
+OPEN   123     Fix authentication bug        alice       OPEN       2026-04-01
+OPEN   124     Add new dashboard             bob         OPEN       2026-04-02
+MERGED 122     Update dependencies          charlie     MERGED     2026-03-28

@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：ECS 健康检查含 UNMATCHED_DIAGNOSTIC，插件应保留诊断信息，折叠健康检查。'
+target_capability: '常规健康检查日志折叠与诊断保留'
+expected_keep: 'UNMATCHED_DIAGNOSTIC: cache warmup start'
+expected_compress: 'GET /health HTTP/1.1 200 OK'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5aea49f621602465eeb34f5427a51dedbdfbb099d309689b2988fee2c4790526'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

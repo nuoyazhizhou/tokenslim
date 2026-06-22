@@ -1,0 +1,15 @@
+scenario: 'PowerShell 会话中执行 Copy-Item 命令将 src 目录下所有文件递归复制到 backup 目录，然后使用 Get-ChildItem 列出 backup 目录内容，显示复制后的文件列表。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: "Copy-Item -Path .\\src\\* -Destination .\\backup -Recurse -Force"
+expected_compress: "PS C:\\>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ba283dde733051e8800d94f140a3c90f75bc868bee530dfcb92960b9fa007a63'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

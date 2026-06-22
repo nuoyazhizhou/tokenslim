@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：混合 bot UA（Googlebot、python-requests、curl），插件应保留 bot UA 信号，压缩 IP 和路径。'
+target_capability: 'bot/user-agent dictionary compression'
+expected_keep: 'Googlebot/2.1, python-requests/2.31, curl/8.4.0'
+expected_compress: '198.51.100.70, /robots.txt, [13/May/2026:10:40:01 +0000]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

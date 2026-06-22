@@ -1,0 +1,15 @@
+scenario: '一个包含纯文本行的日志文件，没有结构化 JSON 负载，用于测试 NDJSON 插件在非 NDJSON 输入时的回退行为。'
+target_capability: '非 NDJSON 回退处理'
+expected_keep: 'this is a plain log line, another line without json, no structured payload here'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b35177106ec298cbdd9680461564e9d0c845a9e23b75d04be1496c695cef45b6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

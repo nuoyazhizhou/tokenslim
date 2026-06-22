@@ -1,0 +1,27 @@
+# TokenSlim 语义别名配置 (v2.0)
+# 允许将晦涩的 Token (如 $P1) 映射为 AI 易理解的别名 (如 [WS_ROOT])
+
+[[rules]]
+name = "WS_ROOT"
+pattern = "jenkins/workspace|jenkins_home"
+target_types = ["Directory", "Path"]
+
+[[rules]]
+name = "SRC"
+pattern = "src/main/java|src/main/kotlin|src/main/cpp"
+target_types = ["Directory", "Path"]
+
+[[rules]]
+name = "BUILD_OUT"
+pattern = "build/intermediates|derivedData|build/products"
+target_types = ["Directory", "Path"]
+
+[[rules]]
+name = "OPT_LEVEL"
+pattern = "^-O[0-9z]$"
+target_types = ["Flag", "Macro"]
+
+[[rules]]
+name = "DEBUG_SYMBOLS"
+pattern = "^-g$"
+target_types = ["Flag"]

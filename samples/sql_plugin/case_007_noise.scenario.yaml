@@ -1,0 +1,15 @@
+scenario: '数据库访问日志中，一条SELECT查询语句前后夹杂INFO和DEBUG级别的非SQL日志行（如连接信息和返回行数），测试插件能否在噪声中正确识别并保留SQL语句。'
+target_capability: 'SQL语句识别与噪声过滤'
+expected_keep: 'SELECT * FROM products WHERE category = ''electronics'''
+expected_compress: '[INFO] 2024-01-15 10:30:45 Connecting to database'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ae85a46bcc679748e2a4c95e5a14bb53b5f30879448ac8d8dd9a1d02ba1949e7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

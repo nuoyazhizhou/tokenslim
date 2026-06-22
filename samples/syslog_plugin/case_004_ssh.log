@@ -1,0 +1,2 @@
+May  7 10:33:10 server1 sshd[1234]: Connection from 192.168.1.10 port 2222
+May  7 10:33:10 server1 sshd[1234]: User user authenticated

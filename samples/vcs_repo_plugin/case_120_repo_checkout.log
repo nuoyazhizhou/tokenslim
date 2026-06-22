@@ -1,0 +1,3 @@
+repo checkout
+repo checkout feature-existing --platform/packages/apps/Settings
+Switched to branch 'feature-existing' in platform/packages/apps/Settings

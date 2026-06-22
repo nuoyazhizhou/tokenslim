@@ -1,0 +1,10 @@
+circleci local execute
+CircleCI local build
+====>> Checkout code
+Cloning git repository
+====>> Run tests
+pytest -q
+tests/test_api.py::test_delete_user FAILED
+E   AssertionError: expected 204
+Error: Exited with code 1
+CircleCI received exit code 1

@@ -1,0 +1,15 @@
+scenario: 'CircleCI 本地构建全流程成功：检出代码、恢复缓存、运行 npm 测试（310 例全通过）、保存缓存，最终退出码 0。'
+target_capability: 'CI/CD 步骤保留与细节压缩'
+expected_keep: '====>> Checkout code, ====>> Run tests, CircleCI received exit code 0'
+expected_compress: 'Found a cache from node-v1-main, Tests: 310 passed, 310 total'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e55e18a551c0fc1f53648a6743ee5838440e39d7eb0cb402b212cd532ba571fe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,19 @@
+svn info --xml
+<?xml version="1.0" encoding="UTF-8"?>
+<info>
+<entry kind="dir" path="src/core/doctor_workspace" revision="12345" wcroot="C:\git_work\TokenSlim">
+<url>https://svn.example.com/repos/project/trunk/src/core/doctor_workspace</url>
+<repository>
+<root>https://svn.example.com/repos/project</root>
+<uuid>a1b2c3d4-e5f6-7890-abcd-ef1234567890</uuid>
+</repository>
+<wc-info>
+<wcroot>C:\git_work\TokenSlim</wcroot>
+<depth>infinity</depth>
+</wc-info>
+<commit revision="12345">
+<author>alice.chen</author>
+<date>2026-04-03T14:30:00Z</date>
+</commit>
+</entry>
+</info>

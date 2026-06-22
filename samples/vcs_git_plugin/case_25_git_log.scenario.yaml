@@ -1,0 +1,15 @@
+scenario: 'Git log 输出，包含多个提交记录，每个提交有哈希、作者、日期、提交信息及修改的文件列表。'
+target_capability: 'Git log 压缩：保留提交哈希和提交信息，压缩文件路径列表'
+expected_keep: 'commit 18f4bb5007aa6e2c48b21c371cd3d884120e668b, feat: Support doctor workspace auto-detection'
+expected_compress: 'src/core/doctor_workspace/methods.rs, src/core/doctor_workspace/types.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cfc14d8c716032bcd7e2ba44ec18b8887228bf974b8465e6509243fcdec93908'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+hg archive
+hg archive -t zip /tmp/project-backup.zip
+archive created: /tmp/project-backup.zip
+files: 123
+size: 2.3 MB

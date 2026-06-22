@@ -1,0 +1,29 @@
+{
+  "name": "SQL Templates",
+  "slice_type": "SqlBlock",
+  "priority": 100,
+  "description": "MyBatis 等 SQL 模板语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "#{", "end_delimiter": "}"},
+        {"pattern_type": "paired_delimiters", "pattern": "${", "end_delimiter": "}"},
+        {"pattern_type": "contains", "pattern": "<select"},
+        {"pattern_type": "contains", "pattern": "<insert"},
+        {"pattern_type": "contains", "pattern": "<update"},
+        {"pattern_type": "contains", "pattern": "<delete"},
+        {"pattern_type": "contains", "pattern": "<sql"},
+        {"pattern_type": "contains", "pattern": "<include"},
+        {"pattern_type": "contains", "pattern": "<where"},
+        {"pattern_type": "contains", "pattern": "<set"},
+        {"pattern_type": "contains", "pattern": "<foreach"},
+        {"pattern_type": "contains", "pattern": "<if"},
+        {"pattern_type": "contains", "pattern": "<choose"},
+        {"pattern_type": "contains", "pattern": "<when"},
+        {"pattern_type": "contains", "pattern": "<otherwise"},
+        {"pattern_type": "contains", "pattern": "<bind"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,3 @@
+[INFO] 2024-01-15 10:30:45 Connecting to database
+SELECT * FROM products WHERE category = 'electronics'
+[DEBUG] 2024-01-15 10:30:46 Query returned 42 rows

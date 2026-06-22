@@ -1,0 +1,15 @@
+scenario: 'GCC 编译单个 C 源文件，包含长路径和多个编译选项（-I、-D、-Wall 等），路径深度大，选项冗余。'
+target_capability: '长路径压缩与编译选项精简'
+expected_keep: 'gcc -c main.c -o main.o -DDEBUG=1 -Wall -Wextra -O2'
+expected_compress: '/home/user/projects/very/long/path/to/source/code/main.c, /home/user/projects/very/long/path/to/build/objects/main.o, -I/home/user/projects/very/long/path/to/include'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '08186321ec1609307d0e23a9614d4b4909ecfe2dca7ce1a0490890e641fd8142'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

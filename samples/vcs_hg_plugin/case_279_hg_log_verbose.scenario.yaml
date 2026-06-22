@@ -1,0 +1,15 @@
+scenario: '开发者使用 `hg log -v` 查看详细提交历史，输出包含变更集ID、用户、日期、摘要和文件列表。'
+target_capability: '变更集与文件列表保留'
+expected_keep: 'changeset:   1234:abcdef123456, summary:     Implement dictionary manager, files:'
+expected_compress: 'user:        developer <dev@example.com>, date:        Mon Apr 14 15:00:00 2026 +0000'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '94c8efe905b5dcc400050f07fcb7da082c015f6db2a8cbbbb5f14a73c60ecc71'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,200 @@
+{
+  "dictionaryize_paths": true,
+  "compact_leading_ws": true,
+  "collapse_blank_lines": true,
+  "max_blank_lines": 1,
+  "replace_command_whitelists": false,
+  "replace_signatures": false,
+  "command_whitelists": {
+    "git": [
+      "status",
+      "diff",
+      "log",
+      "show",
+      "branch",
+      "checkout",
+      "switch",
+      "merge",
+      "rebase",
+      "reset",
+      "stash",
+      "fetch",
+      "pull",
+      "push",
+      "remote",
+      "tag",
+      "cherry-pick",
+      "revert",
+      "blame",
+      "bisect",
+      "restore",
+      "clean",
+      "submodule",
+      "add",
+      "commit"
+    ],
+    "svn": [
+      "status",
+      "diff",
+      "log",
+      "info",
+      "add",
+      "delete",
+      "move",
+      "copy",
+      "commit",
+      "update",
+      "checkout",
+      "revert",
+      "merge",
+      "switch",
+      "resolve",
+      "cleanup",
+      "blame"
+    ],
+    "hg": [
+      "status",
+      "diff",
+      "log",
+      "summary",
+      "add",
+      "remove",
+      "rename",
+      "commit",
+      "update",
+      "branch",
+      "pull",
+      "push",
+      "annotate",
+      "graft",
+      "rebase",
+      "shelve",
+      "unshelve",
+      "revert"
+    ],
+    "p4": [
+      "opened",
+      "changes",
+      "describe",
+      "diff",
+      "submit",
+      "sync",
+      "edit",
+      "add",
+      "delete",
+      "revert",
+      "integrate",
+      "resolve",
+      "reconcile",
+      "shelve",
+      "unshelve",
+      "files",
+      "client"
+    ],
+    "cvs": [
+      "status",
+      "diff",
+      "log",
+      "add",
+      "remove",
+      "commit",
+      "update",
+      "checkout",
+      "tag",
+      "annotate",
+      "edit",
+      "unedit",
+      "release",
+      "history"
+    ],
+    "bzr": [
+      "status",
+      "diff",
+      "log",
+      "add",
+      "remove",
+      "commit",
+      "update",
+      "branch",
+      "pull",
+      "push",
+      "merge",
+      "resolve",
+      "missing",
+      "revert"
+    ],
+    "fossil": [
+      "status",
+      "diff",
+      "timeline",
+      "changes",
+      "add",
+      "rm",
+      "commit",
+      "update",
+      "sync",
+      "checkout",
+      "merge",
+      "stash",
+      "undo",
+      "tag"
+    ],
+    "darcs": [
+      "whatsnew",
+      "diff",
+      "changes",
+      "record",
+      "pull",
+      "push",
+      "rebase",
+      "add",
+      "remove",
+      "revert",
+      "tag",
+      "amend-record",
+      "obliterate"
+    ]
+  },
+  "signatures": {
+    "git": [
+      "on branch",
+      "not a git repository",
+      "diff --git"
+    ],
+    "svn": [
+      "svn:",
+      "checked out revision",
+      "subversion"
+    ],
+    "hg": [
+      "mercurial",
+      "changeset:",
+      "abort: no repository found"
+    ],
+    "p4": [
+      "perforce",
+      "client error:",
+      "... //"
+    ],
+    "cvs": [
+      "cvs [",
+      "cvs checkout",
+      "cvs update"
+    ],
+    "bzr": [
+      "bzr:",
+      "bazaar",
+      "no working tree"
+    ],
+    "fossil": [
+      "fossil",
+      "project-name:",
+      "checkout:"
+    ],
+    "darcs": [
+      "darcs",
+      "no repository present",
+      "whatsnew"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+docker buildx build --platform linux/amd64,linux/arm64 -t registry.example.com/api:sha --push .
+#1 [internal] booting buildkit
+#2 [linux/amd64 internal] load metadata for docker.io/library/alpine:3.19
+#3 [linux/arm64 internal] load metadata for docker.io/library/alpine:3.19
+#4 exporting to image
+#4 pushing layers
+#4 writing image sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa done
+#4 naming to docker.io/example/api:sha done
+DONE 42.3s

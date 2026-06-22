@@ -1,0 +1,5 @@
+repo forall
+repo forall -c "echo \$REPO_PROJECT; git log -1 --oneline"
+platform/build/make: abc1234 Initial commit
+platform/frameworks/base: def5678 Add core framework
+platform/packages/apps/Settings: ghi9012 Update settings UI

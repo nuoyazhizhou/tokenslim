@@ -1,0 +1,15 @@
+scenario: '执行 svn update 命令，更新了 20 个文件，包括 Python 源码、文档、测试和配置文件，最终显示修订版本号 12345。'
+target_capability: 'SVN 更新输出压缩'
+expected_keep: 'svn update, U    src/auth/login.py, At revision 12345.'
+expected_compress: 'U    src/auth/middleware.py, U    src/user/models.py, Updated 20 files.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b7315145c3ac08a7cfb85fb07e3bf34a28043bf1935d225fda7d51a095110f83'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

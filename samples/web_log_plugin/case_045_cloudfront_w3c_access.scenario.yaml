@@ -1,0 +1,15 @@
+scenario: 'CloudFront W3C access log 示例，包含健康检查、静态资源请求、以及针对 /.env 和 /wp-admin 的 404 扫描攻击，展示了正常流量与恶意探测混合的场景。'
+target_capability: '异常检测与字典压缩'
+expected_keep: '404 错误行、健康检查行、扫描攻击行'
+expected_compress: 'IP 地址、URI 路径、User-Agent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f498cf44f5a3aeef2d501ed3e3827e1e62e3c710ffdc563a0fba4ede5391274f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

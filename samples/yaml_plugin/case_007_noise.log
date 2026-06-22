@@ -1,0 +1,8 @@
+Loading config.yaml...
+Parsing YAML content:
+---
+name: test
+value: 123
+---
+Config loaded successfully.
+Time: 5ms

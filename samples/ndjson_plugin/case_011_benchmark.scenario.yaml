@@ -1,0 +1,15 @@
+scenario: 'Go benchmark test output in NDJSON format, showing a single benchmark run with run, output, and pass actions.'
+target_capability: 'NDJSON首尾保留+中间折叠'
+expected_keep: "{\"Time\":\"2024-01-01T14:00:00Z\",\"Action\":\"run\"}"
+expected_compress: "{\"Time\":\"2024-01-01T14:00:01Z\",\"Action\":\"output\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '575f4d22c9e9b3103a683ec1d4925659980107f2e9d12f0badbe43a0d1c3b9ef'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

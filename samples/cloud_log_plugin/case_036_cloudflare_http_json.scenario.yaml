@@ -1,0 +1,15 @@
+scenario: 'Cloudflare HTTP JSON 日志，包含健康检查和 API 请求，其中一条为 500 错误，需剥离外层 JSON 结构并保留 message 字段内容。'
+target_capability: '云日志 JSON 外壳剥离'
+expected_keep: 'GET /health 200, POST /api/render 500 error=upstream timeout'
+expected_compress: 'timestamp, scriptName, rayID, level'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e33f8bec593152892bec3477fb1787ace0a85de858df51e12ea0dede69d491ca'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

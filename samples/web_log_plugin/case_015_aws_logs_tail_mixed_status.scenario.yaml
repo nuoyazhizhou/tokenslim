@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch Logs tail 命令输出，包含混合状态（200 OK、500 Internal Server Error、503 Service Unavailable）的访问日志。'
+target_capability: '混合状态保留与错误信号提取'
+expected_keep: '500 Internal Server Error, 503 Service Unavailable, 200 OK'
+expected_compress: 'IP地址, 时间戳, URI路径'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '53c0ce606652e4c443530debf8e4d6c76a9149e77e7832cd5cb14301b2d4fa6f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

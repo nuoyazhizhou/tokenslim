@@ -1,0 +1,15 @@
+scenario: 'Git 仓库的提交历史查看，使用 git log --oneline 命令输出简洁的提交记录，每行包含提交哈希和提交信息。'
+target_capability: '提交哈希与提交信息保留'
+expected_keep: 'abc1234 Fix authentication bug'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1c16018b31577e031ef1429bdb29d3237d94f206280ec0a737363876eb8aa7ba'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

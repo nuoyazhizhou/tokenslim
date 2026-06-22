@@ -1,0 +1,15 @@
+scenario: 'AWS VPC Flow Logs 以 JSONL 格式记录网络流量，包含 ACCEPT 和 REJECT 动作，以及源/目标 IP、协议、包数、字节数等字段。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: 'ACCEPT, REJECT, src=, dst=, proto=, packets=, bytes='
+expected_compress: 'timestamp, logGroup, logStream, eni-0123456789abcdef'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a2a855ef1f1e9dfeeab4c7b762a687ec7ce722feabd03a837e8d62ccedc03a7a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

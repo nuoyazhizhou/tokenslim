@@ -1,0 +1,15 @@
+scenario: 'Unity构建过程中出现C#脚本编译错误，错误信息包含文件名、行号和错误代码，构建最终失败。'
+target_capability: '错误保留'
+expected_keep: 'error CS0103: The name ''missingVar'' does not exist in the current context'
+expected_compress: '[INFO] Building project...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4816af8229133324347e6893ffc60f4be39f919b7ff3b62ddec0c5a255c52f7c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

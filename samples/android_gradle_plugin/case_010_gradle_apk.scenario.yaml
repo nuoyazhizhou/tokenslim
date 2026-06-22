@@ -1,0 +1,15 @@
+scenario: '用户执行 Android Gradle 调试构建，所有任务成功完成，最终输出已签名并对齐的 APK 文件。'
+target_capability: '成功构建摘要'
+expected_keep: 'Signed APK: /Users/user/project/app/build/outputs/apk/debug/app-debug.apk'
+expected_compress: '> Task :app:packageDebug 行、Zip aligning 行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '808e966a5fc483789f01c2f2d8c97de3b3ae372fa6018e8f55a9812cd89940de'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

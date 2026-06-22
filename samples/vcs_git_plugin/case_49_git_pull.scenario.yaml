@@ -1,0 +1,15 @@
+scenario: '用户执行 git pull 从远程仓库拉取更新，输出显示快进合并，包含文件变更统计（1 文件修改，10 行增加，4 行删除）。'
+target_capability: '快进合并输出压缩'
+expected_keep: 'src/main.rs | 10 ++++++----'
+expected_compress: 'From https://github.com/user/repo'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f042583392f159f89a0280cc2ecfd0810d4d45066529800e3d16129c107ece47'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

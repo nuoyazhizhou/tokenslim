@@ -1,0 +1,15 @@
+scenario: 'xcode_log_plugin 边界测试：单行 CompileC 编译命令，插件应保留命令骨架，压缩路径。'
+target_capability: '编译命令骨架保留与路径压缩'
+expected_keep: 'CompileC'
+expected_compress: '/Users/dev/DerivedData/App-abc123/Build/Objects-normal/arm64/main.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0f9c37813d7d8f953f9f8a749a7bccd04c08a2c8b052cc45acb809e3ca9f07c9'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

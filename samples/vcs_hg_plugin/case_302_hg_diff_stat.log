@@ -1,0 +1,5 @@
+hg diff --stat
+ src/main.rs              |  5 +++++
+ src/lib/utils.rs         |  2 +-
+ tests/integration_test.rs| 10 ++++++++++
+ 3 files changed, 16 insertions(+), 1 deletions(-)

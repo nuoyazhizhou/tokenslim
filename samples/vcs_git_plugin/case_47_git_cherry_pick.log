@@ -1,0 +1,13 @@
+git cherry-pick
+From https://github.com/user/my-project-repo.git
+   a1b2c3d..e5f6g7h  main       -> origin/main
+   i9j0k1l..m2n3o4p  develop    -> origin/develop
+   q5r6s7t..u8v9w0x  feature/auth -> origin/feature/auth
+   r1s2t3u..v4w5x6y  bugfix/login -> origin/bugfix/login
+   z7a8b9c..d0e1f2g  release/v2.0 -> origin/release/v2.0
+
+Unpacking objects: 100% (25/25), done.
+Enumerating objects: 25, done.
+Counting objects: 100% (25/25), done.
+Compressing objects: 100% (18/18), done.
+Total 25 (delta 8), reused 0 (delta 0)

@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch 日志表格中多个内网 IP 对 /health 端点的 GET 请求，均返回 200 OK，模拟健康检查日志场景。'
+target_capability: '云日志表格结构保留与时间戳压缩'
+expected_keep: 'GET /health HTTP/1.1 200 OK'
+expected_compress: '1778665646875'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

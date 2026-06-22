@@ -1,0 +1,5 @@
+protoc --proto_path=proto --go_out=gen proto/user.proto proto/order.proto
+user.proto:10:5: warning: Field "email" is deprecated.
+user.proto:15:5: warning: Field "phone" is deprecated.
+order.proto:20:10: error: Type "User" not found.
+order.proto:25:10: error: Type "Product" not found.

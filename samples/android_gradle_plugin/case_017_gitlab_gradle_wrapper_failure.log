@@ -1,0 +1,24 @@
+Running with gitlab-runner 18.0.1 (4d7093e1)
+Preparing the "docker" executor
+Using Docker image eclipse-temurin:21-jdk
+$ ./gradlew --stacktrace :app:testReleaseUnitTest
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:mergeReleaseResources FROM-CACHE
+> Task :app:kaptReleaseKotlin UP-TO-DATE
+> Task :app:compileReleaseKotlin UP-TO-DATE
+> Task :app:testReleaseUnitTest FAILED
+
+com.example.checkout.CheckoutCalculatorTest > totalsTaxInclusive FAILED
+    org.opentest4j.AssertionFailedError: expected: <42.30> but was: <41.95>
+        at app//com.example.checkout.CheckoutCalculatorTest.totalsTaxInclusive(CheckoutCalculatorTest.kt:54)
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:testReleaseUnitTest'.
+> There were failing tests. See the report at: file:///builds/acme/mobile/app/build/reports/tests/testReleaseUnitTest/index.html
+
+6 actionable tasks: 1 executed, 3 up-to-date, 1 from cache
+BUILD FAILED in 58s
+ERROR: Job failed: exit code 1

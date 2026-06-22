@@ -1,0 +1,12 @@
+> Task :compileJava
+Download https://repo.maven.apache.org/maven2/org/springframework/boot/spring-boot/3.2.1/spring-boot-3.2.1.pom
+Download https://repo.maven.apache.org/maven2/org/springframework/spring-core/6.1.2/spring-core-6.1.2.pom
+Download https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.16.1/jackson-databind-2.16.1.pom
+Download https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/2.0.9/slf4j-api-2.0.9.pom
+> Task :processResources
+> Task :classes
+> Task :bootJar
+> Task :assemble
+
+BUILD SUCCESSFUL in 34s
+5 actionable tasks: 5 executed

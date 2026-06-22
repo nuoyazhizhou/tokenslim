@@ -1,0 +1,11 @@
+terraform plan
+
+[32mTerraform will perform the following actions:[0m
+
+  # aws_s3_bucket.assets will be created
+  + resource "aws_s3_bucket" "assets" {
+      + bucket = "company-assets-prod"
+      + arn    = (known after apply)
+    }
+
+[32mPlan: 1 to add, 0 to change, 0 to destroy.[0m

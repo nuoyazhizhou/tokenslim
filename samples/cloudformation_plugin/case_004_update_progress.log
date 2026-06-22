@@ -1,0 +1,6 @@
+aws cloudformation describe-stack-events --stack-name web
+2026-05-12 13:00:00 web AWS::CloudFormation::Stack UPDATE_IN_PROGRESS User Initiated
+2026-05-12 13:00:04 LaunchTemplate AWS::EC2::LaunchTemplate UPDATE_IN_PROGRESS Requested update requires new physical resource
+2026-05-12 13:00:45 LaunchTemplate AWS::EC2::LaunchTemplate UPDATE_COMPLETE -
+2026-05-12 13:01:05 AutoScalingGroup AWS::AutoScaling::AutoScalingGroup UPDATE_IN_PROGRESS Rolling update in progress
+2026-05-12 13:04:00 AutoScalingGroup AWS::AutoScaling::AutoScalingGroup UPDATE_COMPLETE -

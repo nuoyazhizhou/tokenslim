@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "app.py", line 10, in <module>
+    main()
+  File "app.py", line 5, in main
+    do_something()
+  File "app.py", line 15, in do_something
+    raise ValueError("Something went wrong") from None
+ValueError: Something went wrong
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "app.py", line 20, in <module>
+    raise RuntimeError("Failed") from e
+RuntimeError: Failed

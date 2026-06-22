@@ -1,0 +1,13 @@
+terraform plan -refresh-only
+
+Terraform will perform the following actions:
+
+  # aws_db_instance.primary will be updated in-place
+  ~ resource "aws_db_instance" "primary" {
+      ~ allocated_storage = 100 -> 120
+      ~ backup_retention_period = 7 -> 14
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+
+Note: Objects have changed outside of Terraform

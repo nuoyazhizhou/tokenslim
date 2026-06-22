@@ -1,0 +1,15 @@
+scenario: 'P4 filelog 命令输出，展示文件 //depot/main/src/main.rs 的变更历史，包含两个 changelist：#2 由 alice 编辑，#1 由 bob 添加。'
+target_capability: 'P4 变更历史压缩'
+expected_keep: 'change 45678, change 12345, edit, add'
+expected_compress: '2026/04/08, 2026/01/01, by alice, by bob'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c98a8e1277aa72af5baa827ea4bbcfea4d3a5dfbfcda83df82d7ba291ac286b8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

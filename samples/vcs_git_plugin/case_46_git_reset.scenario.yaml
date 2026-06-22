@@ -1,0 +1,15 @@
+scenario: '执行 git reset 命令，将当前 HEAD 重置到指定提交，输出简洁的重置确认信息。'
+target_capability: '重置操作确认保留'
+expected_keep: 'git reset, Commit ''abc1234'' reset to HEAD.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3ec8dabc13fda8bb9d9fc337f015e01e6d47467f5b89f5c8711724acc14087ff'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

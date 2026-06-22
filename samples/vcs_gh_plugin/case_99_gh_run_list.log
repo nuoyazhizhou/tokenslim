@@ -1,0 +1,13 @@
+gh run list
+workflow: ci-build
+  status: success
+  run: #5678
+  branch: main
+  commit: abc123def
+  duration: 3m 24s
+
+workflow: ci-test
+  status: in_progress
+  run: #5679
+  branch: feature/new-ui
+  commit: def456abc

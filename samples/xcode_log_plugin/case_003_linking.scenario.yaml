@@ -1,0 +1,15 @@
+scenario: 'Xcode 构建日志中，链接阶段输出 Linking 命令，显示生成 App.app 的目标路径。'
+target_capability: '链接命令骨架保留'
+expected_keep: 'Linking /Users/dev/DerivedData/App-abc123/Build/Products/Debug-iphoneos/App.app'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1954b54754f254bb1dcd2c829c84af0dad79c2afd119fd448ec760529d2f5e46'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

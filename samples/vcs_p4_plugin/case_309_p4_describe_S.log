@@ -1,0 +1,20 @@
+p4 describe -S 12345
+Change 12345 by alice@workspace on 2026/04/15 14:30:00
+
+	Fix authentication timeout
+
+Shelved files ...
+
+... //depot/main/src/auth/login.rs#5 edit
+... //depot/main/src/auth/session.rs#3 add
+... //depot/main/tests/auth_test.rs#2 delete
+
+Differences ...
+
+==== //depot/main/src/auth/login.rs#5 - /tmp/p4-edit ====
+--- /tmp/p4-edit	2026-04-15 14:30:00.000000000 +0800
++++ /tmp/p4-edit	2026-04-15 14:30:00.000000000 +0800
+@@ -10,6 +10,8 @@
+     let timeout = Duration::from_secs(30);
++    let timeout = Duration::from_secs(60);
++    let retry_count = 3;

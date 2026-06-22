@@ -1,0 +1,3 @@
+gh pr create --title "feat: Add user authentication" --body "This PR adds OAuth authentication"
+✓ Created pull request https://github.com/owner/repo/pull/150
+✓ Labeled as enhancement

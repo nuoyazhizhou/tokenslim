@@ -1,0 +1,2 @@
+p4 move source.txt dest.txt
+//depot/main/dest.txt#1 - moved from //depot/main/source.txt

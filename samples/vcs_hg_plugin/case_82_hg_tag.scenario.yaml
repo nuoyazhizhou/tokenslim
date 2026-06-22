@@ -1,0 +1,15 @@
+scenario: '执行 hg tag 命令列出所有标签，输出包含标签名和对应的变更集哈希。'
+target_capability: '标签列表保留'
+expected_keep: 'tag ''v1.0.0'', tag ''v1.1.0'' abc123def'
+expected_compress: 'hg tag'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '93a0d1db56df339e5643df2ea73cc6cec39effc16fb3a00e7ec0f85c030a8042'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

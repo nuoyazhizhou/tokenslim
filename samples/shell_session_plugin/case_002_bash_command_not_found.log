@@ -1,0 +1,5 @@
+user@ubuntu:~$ some_nonexistent_command
+some_nonexistent_command: command not found
+user@ubuntu:~$ echo $?
+127
+user@ubuntu:~$ 

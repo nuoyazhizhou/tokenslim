@@ -1,0 +1,15 @@
+scenario: '用户使用 p4 branch 命令查看名为 feature-auth 的分支信息，输出包含分支名称、日期、描述和视图映射。'
+target_capability: '分支信息保留与路径压缩'
+expected_keep: 'Branch feature-auth, ''Feature branch for auth'', View: //depot/main/... //depot/feature-auth/...'
+expected_compress: '2026/04/01'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'deb5541ef1ff41bf8eb2fd6e2471ac8dc159ab9567d88b3efde4ce9b9e10f5bc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

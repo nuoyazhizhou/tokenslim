@@ -1,0 +1,17 @@
+# Compiled output
+dist/
+
+# Deps
+node_modules/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

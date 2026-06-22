@@ -1,0 +1,5 @@
+az repos show --repository my-project
+\u001b[32mmy-project\u001b[0m
+\u001b[36mDefaultBranch:\u001b[0m main
+\u001b[36mRemoteUrl:\u001b[0m https://dev.azure.com/myorg/my-project
+error: failed to query repo policy

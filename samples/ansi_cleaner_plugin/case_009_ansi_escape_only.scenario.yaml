@@ -1,0 +1,15 @@
+scenario: '一个仅包含 ANSI 转义序列（如颜色、粗体、反转等控制码）的文件，无任何可读文本内容，用于测试插件完全清理 ANSI 序列后是否输出空结果。'
+target_capability: '纯 ANSI 序列压缩丢弃'
+expected_keep: '无保留内容'
+expected_compress: '所有 ANSI 转义序列行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

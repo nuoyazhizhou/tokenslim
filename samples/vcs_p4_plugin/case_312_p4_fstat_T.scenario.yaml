@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 fstat 命令查询 //depot/main/src/main.rs 文件的 depotFile、headType 和 headRev 属性，返回一行结果包含 depot 路径、文件类型 text 和版本号 5。'
+target_capability: 'P4 fstat 输出保留'
+expected_keep: 'depotFile //depot/main/src/main.rs headType text headRev 5'
+expected_compress: 'p4 fstat -T depotFile,headType,headRev //depot/main/src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b733c648c5bab93bb2dd73a683edbf7719759397f537999479f1d52a2a7dc393'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

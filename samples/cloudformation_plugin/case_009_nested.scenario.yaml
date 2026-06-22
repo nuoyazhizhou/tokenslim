@@ -1,0 +1,15 @@
+scenario: 'AWS CloudFormation 嵌套栈事件日志，展示父栈 platform 更新过程中，子栈 NetworkNested 和 AppNested 依次进入 UPDATE_IN_PROGRESS 并完成 UPDATE_COMPLETE 的状态变化。'
+target_capability: '嵌套栈事件折叠'
+expected_keep: 'UPDATE_IN_PROGRESS, UPDATE_COMPLETE, 资源ID'
+expected_compress: '时间戳, 重复状态行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '73bcd0b08775548f693bbb0fa469d540f68962a6d7ee296538da07a8857e439f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

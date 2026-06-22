@@ -1,0 +1,15 @@
+scenario: '静态规则插件处理包含性能警告的日志，其中有多行警告和建议，无重复行，所有行均为独立重要行。'
+target_capability: '静态规则保留与折叠'
+expected_keep: '[WARN] Line 10: O(n^2) complexity detected, [WARN] Line 20: Potential memory leak: event listener not removed, [WARN] Line 30: Expensive regex: nested quantifiers'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b0182fe6790735859c264da0ab5625940b09afaaf70268e02ab1339307113143'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

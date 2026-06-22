@@ -1,0 +1,15 @@
+scenario: 'Docker BuildKit 构建过程中，npm test 阶段失败，输出错误信息及退出码。'
+target_capability: '错误保留与结构压缩'
+expected_keep: "ERROR: process \"/bin/sh -c npm test\" did not complete successfully: exit code: 1"
+expected_compress: 'docker build --progress=plain -t registry.example.com/api:sha .'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7da8dc293ce342f3667c43dbbc7cd394da1eba6b3e6e025db919944aa45a997e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

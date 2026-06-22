@@ -1,0 +1,10 @@
+glab ci view --log
+Running with gitlab-runner 16.11.0
+section_start:1778665000:script[collapsed=false]
+$ npm test
+tests/flaky.spec.ts failed on attempt 1
+Retrying failed tests
+tests/flaky.spec.ts passed on attempt 2
+section_end:1778665070:script
+Saving cache for successful job
+Job succeeded

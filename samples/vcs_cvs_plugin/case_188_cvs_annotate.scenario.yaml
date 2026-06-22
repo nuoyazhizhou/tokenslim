@@ -1,0 +1,15 @@
+scenario: 'CVS annotate 命令输出，显示文件 src/main.java 每行代码的版本号、作者和日期。'
+target_capability: 'CVS annotate 输出保留'
+expected_keep: 'cvs annotate src/main.java, *** 1.1 (alice: 01-Apr-06):'
+expected_compress: '空行, 等号分隔线, 重复命令锚点'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9e70e7abdab3e6fe44522dd778beccc07da07e46d15edcba7b7a0f7ad89ab4da'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

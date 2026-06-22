@@ -1,0 +1,5 @@
+git merge
+Merge made by the 'ort' strategy.
+Auto-merging src/main.rs
+CONFLICT (content): Merge conflict in src/main.rs
+Automatic merge failed; fix conflicts and then commit the result.

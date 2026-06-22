@@ -1,0 +1,15 @@
+scenario: 'Pulumi preview 输出，包含资源创建和更新计划，有资源计数汇总行。'
+target_capability: '资源操作摘要与URN字典化'
+expected_keep: 'Resources: 行, + 2 to create, ~ 1 to update'
+expected_compress: 'pulumi:pulumi:Stack shop-dev create, aws:s3/bucket:Bucket assets create, aws:lambda/function:Function worker update'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '633ca8e25b7aa9488a8b67e9af6cb6c6b086795098bfb8cd5327deb20b13bd50'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

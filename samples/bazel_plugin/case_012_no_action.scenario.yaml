@@ -1,0 +1,15 @@
+scenario: 'Bazel构建过程，构建命令为`bazel build //app:server`，输出显示构建成功，但没有任何实质编译动作（0 total actions），仅有分析摘要和时间信息。'
+target_capability: '无动作构建的摘要保留'
+expected_keep: 'INFO: Analyzed target //app:server, Build completed successfully, 0 total actions'
+expected_compress: 'INFO: Found 1 target..., INFO: Elapsed time: 0.321s, Critical Path: 0.000s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '039375c0686b14db070d6b0ae73e1c9ca4ba898703f039cad855d4eac66686fc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

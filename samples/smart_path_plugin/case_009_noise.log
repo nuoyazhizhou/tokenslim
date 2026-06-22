@@ -1,0 +1,5 @@
+[INFO] 2024-01-15 10:30:45 Starting process
+Reading file: /app/data/input.csv
+[DEBUG] Processing data
+Writing output: /app/data/output.json
+[INFO] 2024-01-15 10:30:46 Complete

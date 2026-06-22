@@ -1,0 +1,3 @@
+p4 add
+//depot/main/src/new_file.rs - added for add
+//depot/main/config/new_config.json - added for add

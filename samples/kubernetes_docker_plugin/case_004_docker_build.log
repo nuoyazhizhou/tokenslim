@@ -1,0 +1,17 @@
+Sending build context to Docker daemon  12.34MB
+Step 1/5 : FROM node:18
+ ---> abc123
+Step 2/5 : WORKDIR /app
+ ---> Using cache
+ ---> def456
+Step 3/5 : COPY package*.json ./
+ ---> 7890ab
+Step 4/5 : RUN npm install
+ ---> Running in 123456
+npm WARN deprecated some-package@1.0.0
+added 200 packages in 10s
+ ---> 7890ab
+Step 5/5 : CMD ["node", "index.js"]
+ ---> ef1234
+Successfully built ef1234
+Successfully tagged myapp:latest

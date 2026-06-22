@@ -1,0 +1,15 @@
+scenario: '用户执行 git rebase --abort 命令，取消正在进行的变基操作，该命令通常无输出或仅返回提示信息。'
+target_capability: '命令执行与错误保留'
+expected_keep: 'git rebase --abort'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '30a5ca850a0e530ddf6038352d90e127de5f32c6c1c172863e52117c7abfe96b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

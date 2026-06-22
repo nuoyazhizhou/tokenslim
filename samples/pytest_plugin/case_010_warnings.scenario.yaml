@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话结束时的警告摘要，包含一个 DeprecationWarning 和测试通过结果。'
+target_capability: '警告摘要保留与压缩'
+expected_keep: 'warnings summary, DeprecationWarning, 2 passed'
+expected_compress: 'tests/test_deprecated.py::test_old_api, /repo/shop/api.py:12, 0.33s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '81b3b9bc7251c1e8f6ce9e0d372998ec56d41caca29517dad26a83eebf12a954'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

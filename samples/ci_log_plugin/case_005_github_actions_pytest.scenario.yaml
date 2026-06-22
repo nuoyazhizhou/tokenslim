@@ -1,0 +1,15 @@
+scenario: '在 GitHub Actions 中运行 pytest 测试，输出包含测试进度和结果，其中一个测试用例失败并触发 ::error 信号，最终以 exit code 1 结束。'
+target_capability: '错误信号保留与步骤标记'
+expected_keep: '::group::Python tests, ::error file=tests/test_users.py,line=88::duplicate email should return 409, Process completed with exit code 1'
+expected_compress: 'tests/test_health.py ................................, FAILED tests/test_users.py::test_duplicate_email, ================== 1 failed, 127 passed in 18.22s =================='
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a9a0c563c72990d48a2586b43b8b3024872226a4a0f26a1c5afdd9b69b3703d7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

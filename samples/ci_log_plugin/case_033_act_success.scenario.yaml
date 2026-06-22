@@ -1,0 +1,15 @@
+scenario: 'GitHub Actions 使用 act 本地模拟 build 工作流，所有步骤（checkout、npm ci、npm test、docker build）均成功完成，输出成功状态码。'
+target_capability: '成功构建步骤保留'
+expected_keep: '[build/checkout] Start, Process completed with exit code 0, [build/package] Successfully built'
+expected_compress: 'added 900 packages, Tests: 310 passed, 310 total'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5957d5e2144cca8b3fa985b5c065785ce077ba3d95d974e990e1297b524ab105'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

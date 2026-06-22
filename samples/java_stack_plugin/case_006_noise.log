@@ -1,0 +1,6 @@
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.example.app.Reflector (file:/app/lib/reflection.jar) to field java.lang.String.value
+WARNING: Please consider reporting this to the maintainers of com.example.app.Reflector
+Exception in thread "main" java.lang.UnsupportedOperationException
+    at com.example.app.OldAPI.call(OldAPI.java:78)
+    at com.example.app.Main.main(Main.java:15)

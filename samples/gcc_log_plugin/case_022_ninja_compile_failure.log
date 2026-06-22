@@ -1,0 +1,9 @@
+ninja -C build
+ninja: Entering directory `build'
+[1/5] Building CXX object src/CMakeFiles/api.dir/main.cpp.o
+[2/5] Building CXX object src/CMakeFiles/api.dir/server.cpp.o
+../src/server.cpp:44:17: error: no member named 'listen_async' in 'Server'
+   44 |     server.listen_async();
+      |     ~~~~~~ ^
+[3/5] Building C object src/CMakeFiles/compat.dir/compat.c.o
+ninja: build stopped: subcommand failed.

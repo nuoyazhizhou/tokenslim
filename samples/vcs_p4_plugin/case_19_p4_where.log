@@ -1,0 +1,6 @@
+p4 where
+//depot/main/src/core/doctor_workspace/methods.rs C:\workspace\project\src\core\doctor_workspace\methods.rs //alice-workstation/main/src/core/doctor_workspace/methods.rs
+//depot/main/src/plugins/vcs_plugin/parser.rs C:\workspace\project\src\plugins\vcs_plugin\parser.rs //alice-workstation/main/src/plugins/vcs_plugin/parser.rs
+//depot/main/src/plugins/vcs_plugin/methods.rs C:\workspace\project\src\plugins\vcs_plugin\methods.rs //alice-workstation/main/src/plugins/vcs_plugin/methods.rs
+//depot/main/config/vcs_plugin.json C:\workspace\project\config\vcs_plugin.json //alice-workstation/main/config/vcs_plugin.json
+//depot/main/docs/design/vcs_plugin.md C:\workspace\project\docs\design\vcs_plugin.md //alice-workstation/main/docs/design/vcs_plugin.md

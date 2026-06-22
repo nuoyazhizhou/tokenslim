@@ -1,0 +1,42 @@
+{
+  "name": "Groovy",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Groovy 代码语法检测配置（支持 Gradle 和 Jenkins Pipeline）",
+  "file_extensions": [".groovy", ".gradle", ".jenkinsfile", "Jenkinsfile"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "def "},
+        {"pattern_type": "contains", "pattern": "class "},
+        {"pattern_type": "contains", "pattern": "interface "},
+        {"pattern_type": "contains", "pattern": "println "},
+        {"pattern_type": "contains", "pattern": "pipeline {"},
+        {"pattern_type": "contains", "pattern": "agent "},
+        {"pattern_type": "contains", "pattern": "stage("},
+        {"pattern_type": "contains", "pattern": "steps {"},
+        {"pattern_type": "contains", "pattern": "post {"},
+        {"pattern_type": "contains", "pattern": "environment {"},
+        {"pattern_type": "contains", "pattern": "tools {"},
+        {"pattern_type": "contains", "pattern": "parameters {"},
+        {"pattern_type": "contains", "pattern": "triggers {"},
+        {"pattern_type": "contains", "pattern": "options {"},
+        {"pattern_type": "contains", "pattern": "when {"},
+        {"pattern_type": "contains", "pattern": "input "},
+        {"pattern_type": "contains", "pattern": "sh '"},
+        {"pattern_type": "contains", "pattern": "bat '"},
+        {"pattern_type": "contains", "pattern": "git "},
+        {"pattern_type": "contains", "pattern": "checkout "},
+        {"pattern_type": "contains", "pattern": "withCredentials"},
+        {"pattern_type": "contains", "pattern": "archiveArtifacts"},
+        {"pattern_type": "contains", "pattern": "junit "},
+        {"pattern_type": "contains", "pattern": "echo "},
+        {"pattern_type": "contains", "pattern": "error "},
+        {"pattern_type": "contains", "pattern": "try {"},
+        {"pattern_type": "contains", "pattern": "catch {"},
+        {"pattern_type": "contains", "pattern": "finally {"}
+      ]
+    }
+  ]
+}

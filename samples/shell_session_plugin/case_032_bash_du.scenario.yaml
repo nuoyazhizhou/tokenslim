@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash shell 执行 du 命令查看 /var/log 目录下各子目录的大小，输出显示 journal 和 syslog 的大小。'
+target_capability: '命令与输出保留'
+expected_keep: 'du -sh /var/log/*, 1.2G    /var/log/journal, 500M    /var/log/syslog'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '09dd3cc679841356a8a27cea5ba68e72027e958c64ef4a3ebdef8ab5e2f508cf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一段纯文本，不含任何 Markdown 语法元素，测试插件在无压缩目标时的行为。'
+target_capability: '非 Markdown 文本的保留'
+expected_keep: 'This is not markdown., Just regular text., No compression needed.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '45dd943510ededa3c3bf16cba86b15e305f21402dd9dcde3136f30e043fdf032'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

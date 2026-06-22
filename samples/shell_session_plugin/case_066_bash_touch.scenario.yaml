@@ -1,0 +1,15 @@
+scenario: '用户使用 touch 创建两个空文件 notes.md 和 checklist.txt，然后通过 ls -la 和 stat 命令验证文件属性，显示文件大小为 0 且为空文件。'
+target_capability: '命令与输出保留'
+expected_keep: 'touch notes.md checklist.txt && ls -la notes.md, -rw-r--r-- 1 user user 0 Oct 10 10:00 notes.md, stat notes.md'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '95b5e991d6b5f0c6635fcf8a594d790c86a849cd67f2d93154dd62dd1bc5b42c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

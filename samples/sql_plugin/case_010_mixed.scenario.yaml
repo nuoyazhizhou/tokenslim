@@ -1,0 +1,15 @@
+scenario: '数据库作业日志，包含一条UPDATE语句及其影响行数，以及作业开始和完成的时间戳信息。'
+target_capability: 'SQL语句结构保留'
+expected_keep: 'UPDATE products SET price = price * 1.1 WHERE category = ''books'''
+expected_compress: '2024-01-15 10:30:45 INFO Starting database job'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5e83a6029b28e983b1109c1c35549fd895e4f9ff2ec29226a1f88b5513d51cb5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

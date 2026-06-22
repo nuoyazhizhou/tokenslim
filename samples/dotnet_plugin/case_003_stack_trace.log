@@ -1,0 +1,6 @@
+Unhandled exception. System.NullReferenceException: Object reference not set to an instance of an object.
+   at MyApp.Services.UserService.GetUser(Int32 id) in C:\src\MyApp\Services\UserService.cs:line 42
+   at MyApp.Controllers.UserController.Get(Int32 id) in C:\src\MyApp\Controllers\UserController.cs:line 28
+   at lambda_method1(Closure , Object , Object[] )
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.SyncActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Logged|12_1(ControllerActionInvoker invoker)

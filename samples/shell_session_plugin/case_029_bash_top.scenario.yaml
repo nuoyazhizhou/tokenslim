@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中执行 top -b -n 1 | head -n 5 命令，查看系统进程快照的前5行，输出包含系统运行时间、任务状态、CPU 和内存使用情况。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'top - 12:00:00 up 10 days,  4:30,  1 user,  load average: 0.10, 0.15, 0.20'
+expected_compress: 'user@linux:~$ '
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ac26f485376b8705583364ee6b679486c839464226668a5bbc3f10c19404a8ae'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

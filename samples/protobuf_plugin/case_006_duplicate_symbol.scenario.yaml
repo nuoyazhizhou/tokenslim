@@ -1,0 +1,15 @@
+scenario: 'protoc 编译 proto 文件时，在 proto/b.proto 中发现重复符号 ''example.User''（已在 proto/a.proto 中定义），并提示字段 ''nickname'' 已弃用。'
+target_capability: '重复符号检测与诊断保留'
+expected_keep: "error: \"example.User\" is already defined, warning: Field \"nickname\" is deprecated"
+expected_compress: 'proto/a.proto, proto/b.proto, protoc --proto_path=proto --go_out=gen'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3de86cfeef66bfa7c9b6192d8bce7108c564a3fdc954f85c253ba8aa83c86618'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

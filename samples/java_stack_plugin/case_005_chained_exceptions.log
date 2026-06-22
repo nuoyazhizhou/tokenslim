@@ -1,0 +1,9 @@
+Exception in thread "main" java.io.IOException: Failed to read file
+    at com.example.app.FileUtil.read(FileUtil.java:23)
+    at com.example.app.App.load(App.java:45)
+Caused by: java.io.FileNotFoundException: /path/to/missing.txt (No such file or directory)
+    at java.io.FileInputStream.open0(Native Method)
+    at java.io.FileInputStream.open(FileInputStream.java:195)
+    at java.io.FileInputStream.<init>(FileInputStream.java:138)
+    at com.example.app.FileUtil.read(FileUtil.java:18)
+    ... 1 more

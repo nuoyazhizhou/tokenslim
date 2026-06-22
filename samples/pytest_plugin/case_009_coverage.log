@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+plugins: cov-5.0.0
+collected 2 items
+
+tests/test_api.py::test_health PASSED                                  [ 50%]
+tests/test_api.py::test_metrics PASSED                                 [100%]
+
+---------- coverage: platform linux, python 3.11.8-final-0 -----------
+Name                    Stmts   Miss  Cover
+-------------------------------------------
+shop/api.py                88      4    95%
+shop/db.py                120     18    85%
+-------------------------------------------
+TOTAL                     208     22    89%
+
+============================== 2 passed in 0.50s ===============================

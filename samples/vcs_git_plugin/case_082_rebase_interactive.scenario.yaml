@@ -1,0 +1,15 @@
+scenario: 'Git rebase 交互模式下的命令列表，包含 pick 操作和提交信息，以及注释说明。'
+target_capability: '保留提交哈希与提交信息'
+expected_keep: 'pick abc1234 feat: Add login feature'
+expected_compress: '# Rebase abc1234..def5678 onto xyz9012 (10 commands)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f921e290b732baa32b1504e44d763aef1c4af0f9a794e8c6db12d8a69522bc57'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

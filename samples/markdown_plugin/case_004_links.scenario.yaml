@@ -1,0 +1,15 @@
+scenario: 'Markdown 文档中包含三种链接形式：带文本的链接、图片链接、带标题的链接。'
+target_capability: '链接结构保留'
+expected_keep: "[Google](https://www.google.com), ![Image](https://example.com/image.png), [Link with title](https://example.com \"Title\")"
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9b027b4e1420feea12b1946789f89b88d0be0cd6c6527e54ff6d00e4b0bba1b1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

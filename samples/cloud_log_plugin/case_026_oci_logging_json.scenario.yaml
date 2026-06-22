@@ -1,0 +1,15 @@
+scenario: 'OCI 计算实例后端日志，包含健康检查请求（200 OK）和 API 状态请求（500 错误），日志以 JSON 格式记录，外层为 OCI 标准结构，内层 message 为 HTTP 访问日志。'
+target_capability: '云日志外壳剥离与内层还原'
+expected_keep: 'GET /health HTTP/1.1 200 OK, GET /api/status HTTP/1.1 500 Internal Server Error'
+expected_compress: 'ocid1.instance.oc1..backend, com.oraclecloud.compute.instance.console, 2026-05-13T08:31:01Z'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3f82619218977b31862883d319da18f88e143e1c0b8aff8ee75173ac590b2fff'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

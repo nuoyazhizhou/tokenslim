@@ -1,0 +1,8 @@
+svn list --depth infinity
+src/core/doctor_workspace/
+src/core/doctor_workspace/methods.rs
+src/core/doctor_workspace/types.rs
+src/plugins/vcs_plugin/
+src/plugins/vcs_plugin/parser.rs
+src/plugins/vcs_plugin/methods.rs
+src/plugins/vcs_plugin/types.rs

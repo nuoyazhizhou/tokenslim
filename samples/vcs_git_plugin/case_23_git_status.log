@@ -1,0 +1,47 @@
+git status
+On branch feature/vcs-plugin
+Your branch is ahead of 'origin/master' by 3 commits.
+  (use "git push" to publish your local commits)
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/core/doctor_workspace/methods.rs
+	modified:   src/core/doctor_workspace/types.rs
+	modified:   src/plugins/vcs_plugin/parser.rs
+	modified:   src/plugins/vcs_plugin/methods.rs
+	modified:   src/plugins/vcs_plugin/types.rs
+	modified:   src/plugins/vcs_plugin/test.rs
+	modified:   src/plugins/vcs_plugin/ir.rs
+	modified:   src/plugins/vcs_plugin/rule_engine.rs
+	modified:   docs/design/vcs_plugin.md
+	modified:   Cargo.toml
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	config/vcs_plugin.example.json
+	samples/vcs/case_01_svn_status.log
+	samples/vcs/case_02_svn_diff.log
+	samples/vcs/case_03_svn_log.log
+	samples/vcs/case_04_svn_blame.log
+	samples/vcs/case_05_svn_list.log
+	samples/vcs/case_06_svn_propget.log
+	samples/vcs/case_07_svn_info.log
+	samples/vcs/case_08_hg_status.log
+	samples/vcs/case_09_hg_diff.log
+	samples/vcs/case_10_hg_log.log
+	samples/vcs/case_11_hg_heads.log
+	samples/vcs/case_12_hg_outgoing.log
+	samples/vcs/case_13_hg_incoming.log
+	samples/vcs/case_14_hg_parents.log
+	samples/vcs/case_15_p4_opened.log
+	samples/vcs/case_16_p4_describe.log
+	samples/vcs/case_17_p4_changes.log
+	samples/vcs/case_18_p4_fstat.log
+	samples/vcs/case_19_p4_where.log
+	samples/vcs/case_20_p4_info.log
+	samples/vcs/case_21_p4_labels.log
+	samples/vcs/case_22_p4_dirs.log
+	target/vcs_compact_showcase_report.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")

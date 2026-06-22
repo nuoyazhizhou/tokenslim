@@ -1,0 +1,3 @@
+glab mr create --title "feat: Add caching" --description "Adds Redis caching" --target-branch main
+✓ Created merge request !200
+URL: https://gitlab.com/owner/repo/-/merge_requests/200

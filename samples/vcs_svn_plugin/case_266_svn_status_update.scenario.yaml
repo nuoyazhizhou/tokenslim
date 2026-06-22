@@ -1,0 +1,15 @@
+scenario: 'vcs_svn_plugin 测试：svn status -u 显示远程更新状态，插件应保留状态标记和版本号，压缩路径。'
+target_capability: 'SVN 状态命令输出压缩'
+expected_keep: 'svn status -u, M, A, Status against revision: 1234'
+expected_compress: 'src/core/text_slicer/methods.rs, src/core/dictionary_manager/mod.rs, samples/vcs/'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '141816aa9ecf9447d99d888133790b143ed88bf94dba2013c9e5492df200a09a'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

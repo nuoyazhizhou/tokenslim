@@ -1,0 +1,15 @@
+scenario: 'Unity/Unreal引擎构建或运行时日志，包含FPS性能警告、内存使用量、Draw calls和三角形数量等性能指标。'
+target_capability: '性能指标保留'
+expected_keep: 'FPS dropped below 30, Memory usage, Draw calls'
+expected_compress: 'Triangles: 1,234,567'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'acaec4868518f643f0d9c43acf44b27dd81c94e7c8215661293aa86b42a904e5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

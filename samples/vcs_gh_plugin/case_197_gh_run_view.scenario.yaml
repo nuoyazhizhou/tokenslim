@@ -1,0 +1,15 @@
+scenario: '查看 GitHub Actions 运行详情，显示工作流名称、运行状态、分支、事件、结论、作业列表及运行 URL。'
+target_capability: 'GitHub CLI 运行视图结构化数据压缩'
+expected_keep: 'gh run view 12345, Workflow: CI, Status: Success'
+expected_compress: '✓ build (3m24s), ✓ test (5m12s), ✓ lint (1m30s), Run URL: https://github.com/owner/repo/actions/runs/12345'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '515b8ffc26a6d70e49a2c3b9976857086b5ebfb72b62dac9d91fc2994b2d1124'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

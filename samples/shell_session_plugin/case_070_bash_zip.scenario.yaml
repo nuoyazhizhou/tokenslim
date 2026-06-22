@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中使用 zip 命令创建 archive.zip 压缩包，包含 project 目录及其子文件，并随后用 ls 查看生成的压缩包信息。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'zip -r archive.zip project/, adding: project/main.py (deflated 45%), ls -la archive.zip'
+expected_compress: 'user@host:~$ , -rw-r--r-- 1 user user 8192 Oct 10 10:00 archive.zip'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3c6875b98e82bd30ac12f9d1075257e1a68dca679f4bf88ed07ce84b374e7573'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

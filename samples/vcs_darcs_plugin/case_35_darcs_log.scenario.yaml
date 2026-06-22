@@ -1,0 +1,15 @@
+scenario: 'Darcs版本库的变更日志输出，包含两条补丁记录，每条有作者、日期和摘要信息。'
+target_capability: '补丁结构保留'
+expected_keep: 'darcs log, patch 2026-04-06, Author: alice.chen'
+expected_compress: '空行, 冗余行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3c96bba3c9bd487e7993f31c6b1d72b69831c995ca6932a725e707e926c9e414'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

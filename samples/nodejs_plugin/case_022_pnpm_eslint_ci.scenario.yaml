@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines CI 中运行 pnpm eslint 检查 TypeScript 源文件，输出包含文件路径、行号、错误/警告类型及规则名，最终因错误数超过阈值（max-warnings=0）导致命令失败。'
+target_capability: '错误保留与路径压缩'
+expected_keep: 'error, warning, error Command failed with exit code 1.'
+expected_compress: 'Azure Pipelines task NodeTool completed, /home/vsts/work/1/s/src/'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b00b92b218d088b440f0acf9cb28853895d3ea6458d0b1d315eca07818375b3e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+git remote -v
+origin  https://github.com/owner/repo (fetch)
+origin  https://github.com/owner/repo (push)
+upstream        https://github.com/original/repo (fetch)
+upstream        https://github.com/original/repo (push)

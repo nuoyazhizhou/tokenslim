@@ -1,0 +1,15 @@
+scenario: 'Bazaar版本控制仓库中执行`bzr status`命令，显示工作树状态：包含已修改、新增、删除和未知文件。'
+target_capability: '文件状态行保留与路径压缩'
+expected_keep: 'bzr status, modified: src/plugins/vcs_plugin/methods.rs, added: samples/vcs/case_33_bzr_status.log'
+expected_compress: 'removed: src/legacy/old_bzr_adapter.rs, unknown: tmp/bzr-note.txt'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1390423e20b8cd60af833f2eeb1c243ce7999601df949376e124f0b04884d458'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

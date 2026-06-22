@@ -1,0 +1,15 @@
+scenario: 'TypeScript 接口和类定义，包含长标识符如 UserService、Database、Partial 等，以及短标识符如 id、name、email。'
+target_capability: '长自定义标识符压缩为字典令牌'
+expected_keep: 'interface, class, constructor, private, Promise, void, number, string, boolean'
+expected_compress: 'UserService, Database, Partial, getById, create, update, delete'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '02108b8e38870500623674319bbc1087b750af80b7202ce0b0b11673a4a71157'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

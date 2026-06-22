@@ -1,0 +1,5 @@
+__time__,__source__,level,content
+1778661001,backend-7f9d,INFO,"10.0.0.1 - - [13/May/2026:08:30:01 +0000] ""GET /health HTTP/1.1"" 200 12"
+1778661031,backend-7f9d,INFO,"10.0.0.2 - - [13/May/2026:08:30:31 +0000] ""GET /health HTTP/1.1"" 200 12"
+1778661041,backend-7f9d,INFO,"10.0.0.4 - - [13/May/2026:08:30:41 +0000] ""GET /health HTTP/1.1"" 200 12"
+1778661045,backend-7f9d,ERROR,"10.0.0.3 - - [13/May/2026:08:30:45 +0000] ""POST /api/upload HTTP/1.1"" 500 42"

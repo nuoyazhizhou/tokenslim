@@ -1,0 +1,14 @@
+Microsoft (R) Build Engine version 17.4.0+18d5aef85 for .NET
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+  Restoring packages for C:\src\MyApp\MyApp.csproj...
+  Generating MSBuild file C:\src\MyApp\obj\MyApp.csproj.nuget.g.props.
+  Generating MSBuild file C:\src\MyApp\obj\MyApp.csproj.nuget.g.targets.
+  Restore completed in 2.12 sec for C:\src\MyApp\MyApp.csproj.
+  MyApp -> C:\src\MyApp\bin\Debug\net6.0\MyApp.dll
+Build succeeded.
+    0 Warning(s)
+    0 Error(s)
+
+Build started 12/15/2023 10:30:00 AM
+Build ended 12/15/2023 10:30:05 AM

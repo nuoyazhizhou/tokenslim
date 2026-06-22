@@ -1,0 +1,5 @@
+ansible-playbook secrets.yml --ask-vault-pass
+
+PLAY [all] *********************************************************************
+
+ERROR! Decryption failed (no vault secrets were found that could decrypt) on /repo/group_vars/prod/vault.yml

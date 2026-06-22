@@ -1,0 +1,7 @@
+user@ubuntu:~$ echo "Hello World"
+Hello World
+user@ubuntu:~$ 
+user@ubuntu:~$ ls -l
+total 4
+-rw-r--r-- 1 user user 12 Oct 10 10:00 file.txt
+user@ubuntu:~$ 

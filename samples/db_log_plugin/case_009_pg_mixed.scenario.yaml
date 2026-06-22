@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 数据库日志，包含连接建立和唯一键冲突错误，展示了连接授权和重复键错误的典型场景。'
+target_capability: '数据库日志压缩，保留进程ID、日志级别和错误详情'
+expected_keep: 'ERROR, duplicate key value violates unique constraint, connection authorized'
+expected_compress: '2026-05-07 10:33:10.123 UTC, 192.168.1.10 port=54320, test@example.com'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '573f12f32d11c3e75fda65175524dbb04ae64c550d1b33cd7645c25e9cbc73aa'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

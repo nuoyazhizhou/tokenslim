@@ -1,0 +1,15 @@
+scenario: '日志文件中包含 ANSI 颜色代码（红、绿、黄、蓝、紫）标记的错误、成功、警告等信息行，需要清理这些颜色代码以获取纯文本。'
+target_capability: 'ANSI转义码移除'
+expected_keep: 'Error: Something failed, Success: Operation completed, Warning: Low memory'
+expected_compress: "\\x1b[31m, \\x1b[32m, \\x1b[33m"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '21cc1d514d35060ab33d370fbd41d24339dd932a2ecfdb1dc783ce975212b69d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

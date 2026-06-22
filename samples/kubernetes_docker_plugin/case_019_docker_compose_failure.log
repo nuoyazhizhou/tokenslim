@@ -1,0 +1,7 @@
+docker-compose up --build
+Building api
+Step 8/10 : RUN cargo test --lib
+ ---> Running in 0f1e2d3c4b5a67890123456789abcdef
+test plugins::api::tests::health_check ... FAILED
+ERROR: Service 'api' failed to build: The command '/bin/sh -c cargo test --lib' returned a non-zero code: 101
+ERROR: Encountered errors while bringing up the project.

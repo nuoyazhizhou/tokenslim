@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 项目成功构建（耗时1分23秒），包含两个弃用警告（getSupportActionBar和AsyncTask），无构建失败任务'
+target_capability: '构建日志脱水：保留警告、折叠成功Task'
+expected_keep: 'warning: [deprecation] getSupportActionBar() is deprecated'
+expected_compress: '> Task :app:preBuild'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '88fc3d0d89bf8deb32a46c9ae5ac33ebedf09d7d21dee7261b01650e91466afb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

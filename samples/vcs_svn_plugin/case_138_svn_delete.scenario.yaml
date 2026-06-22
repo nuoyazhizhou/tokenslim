@@ -1,0 +1,15 @@
+scenario: '用户执行 svn delete 命令删除 oldfile.txt，输出显示删除状态 D 和文件名。'
+target_capability: 'SVN 命令锚点与变更状态保留'
+expected_keep: 'svn delete oldfile.txt, D         oldfile.txt'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f32a38e25ce2fb38bf77d5a388f01c1a368908be3c2699d86cf3449ac7fcbea0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

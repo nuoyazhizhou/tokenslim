@@ -1,0 +1,15 @@
+scenario: 'SVN 移动操作：将 oldname.txt 重命名为 newname.txt，输出显示添加 newname.txt 和删除 oldname.txt。'
+target_capability: '文件变更状态保留'
+expected_keep: 'svn move oldname.txt newname.txt, A         newname.txt, D         oldname.txt'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1c5fde5895092d646713e43c8b588df6f50a410beb44a0daa47aaab03523d6de'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

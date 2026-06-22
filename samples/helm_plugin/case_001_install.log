@@ -1,0 +1,12 @@
+helm install web ./chart --namespace prod
+NAME: web
+LAST DEPLOYED: Tue May 12 10:12:00 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+deployment/web 1/1 1 1 30s
+service/web ClusterIP 10.0.0.12 <none> 80/TCP 30s
+configmap/web-config 1 30s
+secret/web-token Opaque 2 30s

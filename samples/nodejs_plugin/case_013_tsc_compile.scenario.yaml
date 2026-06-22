@@ -1,0 +1,15 @@
+scenario: 'TypeScript 编译输出，包含多个文件的错误和警告，如 TS2304 和 TS6133，以及总结行。'
+target_capability: '错误和警告保留'
+expected_keep: 'error TS2304, warning TS6133, Found 2 errors and 10 warnings'
+expected_compress: 'src/foo.ts:10:5, src/bar.ts:15:8, src/baz.ts:20:3'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ef72b3c59f175390a938d302a0c59023e1bcf86c646c3878e309d2afa709ab70'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

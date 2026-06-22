@@ -1,0 +1,4 @@
+[INFO] 2024-01-15 10:30:45 Starting Unity Editor
+[INFO] Initializing Unity 2022.3.15f1
+[ERROR] MissingReferenceException: Object reference not set to an instance of an object
+    at PlayerController.Update() (Assets/Scripts/PlayerController.cs:42)

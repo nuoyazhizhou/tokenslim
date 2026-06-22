@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用在 2024-01-15 10:30:45 发生请求处理失败，根因是 IllegalArgumentException: Invalid user ID，堆栈跟踪显示异常发生在 UserController.getUser 方法的第 25 行。'
+target_capability: '错误堆栈保留与包名压缩'
+expected_keep: 'IllegalArgumentException: Invalid user ID'
+expected_compress: 'at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '140367b8f820344ebc3e424ffe074b328503eb5e3680c713785bde08c1c8ad68'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,12 @@
+buildkite-agent pipeline upload
+--- :git: Checkout
+buildkite-agent bootstrap
+Repository checked out
+--- :package: Build
+docker build -t api:latest .
+Successfully built 7ab12cd34ef5
++++ :test_tube: Test
+pytest -q
+220 passed in 21.3s
+buildkite-agent artifact upload "target/*.zip"
+Artifacts uploaded

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="monorepo" tests="10" failures="2" errors="1" skipped="1" time="21.701">
+  <testsuite name="packages/api" tests="4" failures="1" errors="0" skipped="0" time="6.221">
+    <testcase classname="packages.api.users.test_profile" name="test_update_profile" time="0.842"/>
+    <testcase classname="packages.api.users.test_profile" name="test_update_profile_rejects_bad_locale" time="1.297">
+      <failure message="expected validation code invalid_locale">received code=unknown_error body={&quot;detail&quot;:&quot;locale es_419 is not enabled for tenant acme&quot;}</failure>
+    </testcase>
+    <testcase classname="packages.api.billing.test_plan" name="test_plan_upgrade" time="2.128"/>
+    <testcase classname="packages.api.billing.test_plan" name="test_plan_downgrade" time="1.954"/>
+  </testsuite>
+  <testsuite name="packages/worker" tests="3" failures="0" errors="1" skipped="0" time="9.840">
+    <testcase classname="packages.worker.jobs.test_export" name="test_export_large_customer" time="7.231">
+      <error message="RuntimeError: export worker exited with code 137">container killed while writing /mnt/build/artifacts/customer-export/acme-20260513.csv.gz</error>
+    </testcase>
+    <testcase classname="packages.worker.jobs.test_export" name="test_export_small_customer" time="1.011"/>
+    <testcase classname="packages.worker.jobs.test_cleanup" name="test_cleanup_orphaned_files" time="1.598"/>
+  </testsuite>
+  <testsuite name="packages/frontend" tests="3" failures="1" errors="0" skipped="1" time="5.640">
+    <testcase classname="packages.frontend.checkout.spec" name="renders_payment_error_banner" time="2.821">
+      <failure message="locator text not found">expected banner text Payment could not be authorized after API returned payment_declined</failure>
+    </testcase>
+    <testcase classname="packages.frontend.checkout.spec" name="mobile_wallet_flow" time="0.000"><skipped message="webkit wallet mock unavailable"/></testcase>
+    <testcase classname="packages.frontend.checkout.spec" name="renders_tax_breakdown" time="2.819"/>
+  </testsuite>
+</testsuites>

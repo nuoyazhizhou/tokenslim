@@ -1,0 +1,15 @@
+scenario: '用户执行 hg commit --amend 修改最新提交，Mercurial 显示变更集 ID 并保存备份包。'
+target_capability: '变更集ID保留与备份信息压缩'
+expected_keep: 'hg commit --amend, amending changeset 42:a1b2c3d4e5f6'
+expected_compress: 'saved backup bundle to /home/user/project/.hg/strip-backup/a1b2c3d-amend.hg'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dc053fd749a1b9f3df8feb5cfcaa2170870501bd3874a74c44f0c55cdb5c69ae'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

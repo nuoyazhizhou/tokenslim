@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：/api/orders/{id} 路由 ID 归一化，插件应保留 404 错误行，压缩重复路径。'
+target_capability: 'Route ID normalization'
+expected_keep: '404 error line'
+expected_compress: '/api/orders/10001, /api/orders/10002, /api/orders/10003'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

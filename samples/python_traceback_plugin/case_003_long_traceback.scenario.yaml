@@ -1,0 +1,15 @@
+scenario: 'Python 程序抛出 IndexError 异常，堆栈深度为 6 层，涉及多个模块文件，异常消息为 ''List index out of range''。'
+target_capability: '堆栈深度压缩与异常保留'
+expected_keep: 'IndexError: List index out of range'
+expected_compress: "File \"/app/module1.py\", line 10, in func1"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'feff2b6b9b2b80fd4eef097faf446acf839a9232c5c2fefadd5c0995f46a0c0f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

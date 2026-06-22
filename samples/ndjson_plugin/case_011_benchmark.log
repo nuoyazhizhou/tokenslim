@@ -1,0 +1,3 @@
+{"Time":"2024-01-01T14:00:00Z","Action":"run","Package":"github.com/shop/hash","Test":"BenchmarkHash"}
+{"Time":"2024-01-01T14:00:01Z","Action":"output","Package":"github.com/shop/hash","Test":"BenchmarkHash","Output":"BenchmarkHash-8        1000000      1220 ns/op\n"}
+{"Time":"2024-01-01T14:00:02Z","Action":"pass","Package":"github.com/shop/hash","Test":"BenchmarkHash","Elapsed":1.22}

@@ -1,0 +1,2 @@
+p4 fstat -T depotFile,headType,headRev //depot/main/src/main.rs
+//depot/main/src/main.rs ... depotFile //depot/main/src/main.rs headType text headRev 5

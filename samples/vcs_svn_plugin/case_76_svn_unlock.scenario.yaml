@@ -1,0 +1,15 @@
+scenario: 'SVN unlock 操作成功解锁文件 src/main.rs，输出简洁确认信息。'
+target_capability: '命令锚点保留与路径压缩'
+expected_keep: 'svn unlock, unlocked'
+expected_compress: 'src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '74e96e9aafbbddc23f9bf8830449aeaf2031c9c9ab67b94f49f0341b845f05b0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

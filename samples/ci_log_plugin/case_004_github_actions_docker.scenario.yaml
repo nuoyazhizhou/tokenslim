@@ -1,0 +1,15 @@
+scenario: 'GitHub Actions中执行Docker构建，输出逐步构建过程，包括加载元数据、复制文件、运行npm ci、导出镜像，最终成功并输出镜像ID和退出码0。'
+target_capability: 'CI日志步骤分组与退出码保留'
+expected_keep: '::group::Docker build, Successfully built, exit code 0'
+expected_compress: '#1 [internal] load build definition, #2 [internal] load metadata, Run docker build -t'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bb801957289c6f0efe5bac4e01fc76447c860c5c2ee55c41fb4a696f3aec7654'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

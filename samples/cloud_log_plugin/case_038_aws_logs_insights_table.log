@@ -1,0 +1,7 @@
+aws logs start-query --log-group-name /ecs/backend --query-string "fields @timestamp, @message, @logStream"
+| @timestamp | @message | @logStream |
+|------------|----------|------------|
+| 2026-05-13T08:13:39.939Z | INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK | ecs/backend/f6bf6a1 |
+| 2026-05-13T08:13:40.150Z | INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK | ecs/backend/f6bf6a1 |
+| 2026-05-13T08:14:09.969Z | INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK | ecs/backend/f6bf6a1 |
+| 2026-05-13T08:14:10.158Z | INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK | ecs/backend/f6bf6a1 |

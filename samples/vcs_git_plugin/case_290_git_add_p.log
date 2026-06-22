@@ -1,0 +1,16 @@
+git add -p
+diff --git a/src/main.rs b/src/main.rs
+index a1b2c3d..e4f5g6h 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -10,6 +10,10 @@ fn main() {
+     let config = load_config();
+     println!("Config loaded");
++
++    // New feature initialization
++    let feature = Feature::new("auth");
++    feature.initialize();
++
+     run_server(config);
+ }
+Stage this hunk [y,n,q,a,d,s,e,?]? y

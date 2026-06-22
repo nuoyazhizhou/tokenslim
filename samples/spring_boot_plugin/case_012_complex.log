@@ -1,0 +1,8 @@
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : Starting App v2.3.4
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.s.b.f.xml.XmlBeanDefinitionReader : Loading XML bean definitions
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.s.c.s.PostProcessorRegistrationDelegate : Loaded 5 bean definitions
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat initialized with port(s): 8080
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.apache.catalina.core.StandardService : Starting service [Tomcat]
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.apache.catalina.core.StandardEngine : Starting Servlet engine: [Apache Tomcat/9.0.85]
+2024-01-15 10:30:45.123  INFO 12345 --- [main] o.a.c.c.C.[.[.[/].[dispatcherServlet] : Initializing Spring DispatcherServlet
+2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App : Started App in 2.345 seconds

@@ -1,0 +1,15 @@
+scenario: 'PowerShell 用户使用 Where-Object 过滤 Get-Service 的输出，仅保留状态为 Running 的服务，并限制显示前两条结果。'
+target_capability: 'PowerShell 管道过滤与输出保留'
+expected_keep: 'Get-Service | Where-Object {$_.Status -eq ''Running''} | Select-Object -First 2'
+expected_compress: "PS C:\\>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e2eb37e67f68a9310ace5182db84829eeb19508c76345aeecf3e3d370595a2b6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

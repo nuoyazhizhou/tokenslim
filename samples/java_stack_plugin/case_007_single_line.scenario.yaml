@@ -1,0 +1,15 @@
+scenario: 'Java 应用运行时抛出单行异常，包含异常线程、异常类型和错误消息。'
+target_capability: '单行异常保留'
+expected_keep: "Exception in thread \"main\" java.lang.RuntimeException: Something went wrong"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c1eaefd224a22dbdc87430478d4d938a7007606f0d9fba0f51f60c243fb45df7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

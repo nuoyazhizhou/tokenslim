@@ -1,0 +1,15 @@
+scenario: 'API 和 worker 服务的通用事件日志，包含 info、warn、error 级别，记录请求开始、缓存命中、上游慢、任务接受和失败。'
+target_capability: 'NDJSON 首尾保留与中间折叠'
+expected_keep: "{\"level\":\"info\",\"service\":\"api\",\"msg\":\"request started\",\"trace\":\"a1\"}, {\"level\":\"error\",\"service\":\"worker\",\"msg\":\"job failed\",\"job\":\"j1\"}"
+expected_compress: "{\"level\":\"info\",\"service\":\"api\",\"msg\":\"cache hit\",\"trace\":\"a1\"}, {\"level\":\"warn\",\"service\":\"api\",\"msg\":\"slow upstream\",\"trace\":\"a1\"}, {\"level\":\"info\",\"service\":\"worker\",\"msg\":\"job accepted\",\"job\":\"j1\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7c880bf81309eb009df64a91da253ca8e06d0cde9260ee845c976e6a58d2f865'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

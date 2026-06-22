@@ -1,0 +1,9 @@
+git pull
+From https://github.com/user/repo
+   abc1234..def5678  main       -> origin/main
+Updating abc1234..def5678
+Fast-forward
+ src/main.rs | 10 ++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+Updating abc1234..def5678.

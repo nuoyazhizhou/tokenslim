@@ -1,0 +1,11 @@
+git branch
+git branch -a
+* master
+  feature-auth
+  feature-ui
+  develop
+  remotes/origin/HEAD -> origin/master
+  remotes/origin/master
+  remotes/origin/feature-auth
+  remotes/origin/feature-ui
+  remotes/upstream/master

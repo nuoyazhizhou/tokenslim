@@ -1,0 +1,15 @@
+scenario: 'Bazel构建输出中包含ANSI颜色码，测试插件能否正确去除颜色转义序列并保留关键构建信息（分析摘要和构建成功行）。'
+target_capability: 'ANSI转义序列移除'
+expected_keep: 'INFO: Analyzed target //app:server, INFO: Build completed successfully, 210 total actions'
+expected_compress: 'ANSI颜色码（如[32m）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a59a53ec75580c4f7aaa4dc8caea268a9477db1d1a31e34bb421cebeed3bc7c7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

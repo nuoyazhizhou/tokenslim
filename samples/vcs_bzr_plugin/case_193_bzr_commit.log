@@ -1,0 +1,5 @@
+bzr commit -m "Add new feature"
+Committing to: lp:~user/project/branch/
+modified src/main.java
+modified src/utils.java
+Committed revision 123.

@@ -1,0 +1,15 @@
+scenario: '用户执行 git restore 命令恢复工作区文件，输出包含已恢复的路径和丢弃的更改。'
+target_capability: '文件路径保留'
+expected_keep: 'Restored path: src/main.rs, Restored path: config/app.json, Discarded changes in src/utils/helper.rs'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '05653578e0c9b50992b922b424b925c5c4b4f5457d2151127d34ea115b7cf9c9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

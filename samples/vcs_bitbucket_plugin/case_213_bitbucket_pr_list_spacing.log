@@ -1,0 +1,5 @@
+bitbucket pr list --state OPEN
+TYPE   ID      TITLE                                       AUTHOR      STATE      CREATED
+-----------------------------------------------------------------------------------------------
+OPEN   221     Fix token cache race condition              dev_a       OPEN       2026-05-12
+DECLINED 220   Remove legacy endpoint                      dev_b       DECLINED   2026-05-10

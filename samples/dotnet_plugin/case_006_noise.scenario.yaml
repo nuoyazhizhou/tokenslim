@@ -1,0 +1,15 @@
+scenario: '一个 .NET 项目的构建日志，包含 NuGet 包还原、编译输出和构建结果，无错误或警告，但包含时间戳等噪音信息。'
+target_capability: '噪音过滤与构建结果保留'
+expected_keep: 'Build succeeded., 0 Warning(s), 0 Error(s)'
+expected_compress: 'Build started, Build ended, Restoring packages'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '581544671d3c0df179aaa3a107708d4ed23645d475278cfd2215dd6ff3ac5196'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+[INFO] Starting script
+PHP Notice:  Undefined variable: x in /app/index.php:10
+[DEBUG] Processing data
+PHP Fatal error:  Uncaught Exception in /app/index.php:42
+[ERROR] Script failed

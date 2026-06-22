@@ -1,0 +1,15 @@
+scenario: 'Unreal引擎日志，包含一条启动信息、一条弃用API警告和一条Actor未找到错误。'
+target_capability: 'Unreal日志标签保留与错误保留'
+expected_keep: 'LogTemp: Display: Starting game, LogTemp: Warning: Deprecated API used, LogTemp: Error: Actor not found'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9394cdc7fd84e006c34f92f18e8ba6c572965fa910e093b92c0c37bd6148e71a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

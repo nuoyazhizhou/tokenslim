@@ -1,0 +1,15 @@
+scenario: 'SVN status 命令输出，显示工作副本中修改、新增和未跟踪的文件状态。'
+target_capability: 'SVN 状态输出压缩'
+expected_keep: 'M, A, ?'
+expected_compress: 'src/core/text_slicer/methods.rs, src/core/dictionary_manager/mod.rs, samples/vcs/'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe1295f4aca66306d824f85ed9fbc7a4598a7533a2d7a8a9f541a5e6f18d04d2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

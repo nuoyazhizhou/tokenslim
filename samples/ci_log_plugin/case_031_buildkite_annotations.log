@@ -1,0 +1,10 @@
+buildkite-agent pipeline upload
+--- Lint
+npm run lint
+src/app.ts warning no-console
+buildkite-agent annotate --style warning "lint warnings found"
++++ Typecheck
+npm run typecheck
+src/api.ts error TS2322: Type string is not assignable to number
+buildkite-agent annotate --style error "typecheck failed"
+Command exited with status 1

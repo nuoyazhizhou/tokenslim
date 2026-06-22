@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_____________________ ERROR collecting tests/test_worker.py _____________________
+ImportError while importing test module '/repo/shop/tests/test_worker.py'.
+Traceback:
+tests/test_worker.py:3: in <module>
+    import missing_worker
+E   ModuleNotFoundError: No module named 'missing_worker'
+
+=========================== short test summary info ============================
+ERROR tests/test_worker.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.12s ===============================

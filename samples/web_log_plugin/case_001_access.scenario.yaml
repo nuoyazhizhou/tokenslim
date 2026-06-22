@@ -1,0 +1,15 @@
+scenario: 'Nginx access log entry showing a successful GET request to /api/v1/users with 200 status code, 512 bytes, and curl user agent.'
+target_capability: '常规记录压缩与字典替换'
+expected_keep: '200 512'
+expected_compress: '192.168.1.10, /api/v1/users, curl/8.7.1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bb4b8ee492ea4fea387bb2079c823a28e374278611a4baffd6aebf753b179286'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

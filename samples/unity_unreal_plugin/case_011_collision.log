@@ -1,0 +1,3 @@
+[INFO] Collision detected: Player vs Wall
+[INFO] Trigger entered: Player entered Powerup
+[ERROR] Physics error: Rigidbody has infinite mass

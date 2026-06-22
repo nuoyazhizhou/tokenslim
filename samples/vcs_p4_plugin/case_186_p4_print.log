@@ -1,0 +1,7 @@
+p4 print //depot/main/src/main.rs
+//depot/main/src/main.rs
+... #2 - edit 2026/04/08 14:30:21 by alice
+
+fn main() {
+    println!("Hello, World!");
+}

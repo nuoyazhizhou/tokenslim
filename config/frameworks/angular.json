@@ -1,0 +1,31 @@
+{
+  "name": "Angular",
+  "slice_type": "AngularComponent",
+  "priority": 100,
+  "description": "Angular 框架语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "*ngIf"},
+        {"pattern_type": "contains", "pattern": "*ngFor"},
+        {"pattern_type": "contains", "pattern": "*ngSwitch"},
+        {"pattern_type": "contains", "pattern": "*ngCase"},
+        {"pattern_type": "contains", "pattern": "*ngDefault"},
+        {"pattern_type": "contains", "pattern": "[ngClass]"},
+        {"pattern_type": "contains", "pattern": "[ngStyle]"},
+        {"pattern_type": "contains", "pattern": "[ngModel]"},
+        {"pattern_type": "contains", "pattern": "[(ngModel)]"},
+        {"pattern_type": "contains", "pattern": "ng-container"},
+        {"pattern_type": "contains", "pattern": "ng-template"},
+        {"pattern_type": "contains", "pattern": "ng-content"}
+      ]
+    },
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "[(", "end_delimiter": ")]"}
+      ]
+    }
+  ]
+}

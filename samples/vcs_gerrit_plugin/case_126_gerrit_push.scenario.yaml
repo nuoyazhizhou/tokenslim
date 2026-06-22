@@ -1,0 +1,15 @@
+scenario: 'Gerrit push 操作，推送三个 refs（master、feature-xyz 和 changes/123/456/1）到远程仓库。'
+target_capability: 'push ref 映射压缩'
+expected_keep: 'refs/heads/master -> refs/heads/master'
+expected_compress: 'Push to ssh://review.example.com:29418/platform/frameworks/base'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c636542db11d5f8f75fcc6a0c101ec86f2505ec49eb7c7f94b992c74549863e7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

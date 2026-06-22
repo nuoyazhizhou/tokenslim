@@ -1,0 +1,10 @@
+pulumi destroy --stack old
+Previewing destroy (old)
+
+     Type                         Name       Plan
+ -   aws:s3/bucket:Bucket         tmp        delete
+ -   aws:iam/role:Role            tmp-role   delete
+
+Resources:
+    - 2 to delete
+    2 changes

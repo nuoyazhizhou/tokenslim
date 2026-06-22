@@ -1,0 +1,15 @@
+scenario: '混合主机（server1、server2）的系统日志，包含sshd认证、nginx访问和CRON任务，时间戳和消息内容需保留，主机名和进程名需压缩。'
+target_capability: '主机名/进程名字典压缩'
+expected_keep: "May  7 10:33:10, Accepted publickey for user, 192.168.1.10 - - [07/May/2026:10:33:10] \"GET / HTTP/1.1\" 200 1234"
+expected_compress: 'server1, server2, sshd, nginx, CRON'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5b3c5350b1cd7b36c443cedce956af15fc0cbfe7fd824238cf669d49e58606e2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,14 @@
+gh run view 104 --log
+::group::Docker build
+Run docker build -t example/api:sha .
+#1 [internal] load build definition from Dockerfile
+#2 [internal] load metadata for docker.io/library/node:20
+#3 [1/5] FROM docker.io/library/node:20
+#4 [2/5] WORKDIR /app
+#5 [3/5] COPY package*.json ./
+#6 [4/5] RUN npm ci
+#7 [5/5] COPY . .
+#8 exporting to image
+Successfully built 7ab12cd34ef5
+Process completed with exit code 0
+::endgroup::

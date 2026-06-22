@@ -1,0 +1,4 @@
+svn status -v
+M       12345   12345   alice.chen src/core/doctor_workspace/methods.rs
+        12344   12344   bob.wang  src/plugins/vcs_plugin/parser.rs
+        12343   12343   charlie.li src/plugins/vcs_plugin/types.rs

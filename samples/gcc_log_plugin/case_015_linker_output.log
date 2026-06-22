@@ -1,0 +1,10 @@
+gcc -o /home/user/projects/myproject/build/myapp /home/user/projects/myproject/build/main.o /home/user/projects/myproject/build/utils.o /home/user/projects/myproject/build/network.o /home/user/projects/myproject/build/database.o -lm -lpthread -lssl -lcrypto
+/usr/bin/ld: /home/user/projects/myproject/build/main.o: in function `main':
+/home/user/projects/myproject/src/main.c:(.text+0x1a): undefined reference to `init_database'
+/usr/bin/ld: /home/user/projects/myproject/src/main.c:(.text+0x2f): undefined reference to `connect_network'
+/usr/bin/ld: /home/user/projects/myproject/build/utils.o: in function `log_message':
+/home/user/projects/myproject/src/utils.c:(.text+0x45): undefined reference to `get_timestamp'
+/usr/bin/ld: /home/user/projects/myproject/build/network.o: in function `send_data':
+/home/user/projects/myproject/src/network.c:(.text+0x67): undefined reference to `encrypt_data'
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:20: /home/user/projects/myproject/build/myapp] Error 1

@@ -1,0 +1,15 @@
+scenario: '一段纯文本，非代码，无需压缩。'
+target_capability: '非代码文本保留'
+expected_keep: 'This is not code, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '64ea6533853cb4f69f73e17e304fa394fdbfdf64269211cc86fc0d982f07157f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

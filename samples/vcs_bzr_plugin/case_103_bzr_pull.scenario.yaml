@@ -1,0 +1,15 @@
+scenario: '用户执行 bzr pull 命令，拉取了 3 个修订版本，分支总修订数为 8。'
+target_capability: 'bzr pull 命令锚点保留'
+expected_keep: 'bzr pull'
+expected_compress: 'Pulled 3 revisions.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a646aa42ca6f1300c32ba9ab8b9f46e5c2de27095c3949919f8e9b614b184cfd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

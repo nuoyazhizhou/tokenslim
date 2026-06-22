@@ -1,0 +1,15 @@
+scenario: 'Go 程序运行时发生索引越界 panic，堆栈跟踪显示 goroutine 1 在 main.main 中触发错误，包含文件路径和行号。'
+target_capability: 'Go panic 堆栈保留'
+expected_keep: 'panic: runtime error: index out of range [10] with length 5, goroutine 1 [running]:, main.main()'
+expected_compress: '/home/user/project/main.go:15 +0x23'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a138f1f1c8ee332ef75d3cafb0044ca35b3cf6aaec20d49777938e026ee44a21'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

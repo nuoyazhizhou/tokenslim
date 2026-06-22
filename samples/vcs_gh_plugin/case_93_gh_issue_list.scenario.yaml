@@ -1,0 +1,15 @@
+scenario: 'GitHub CLI 列出 issue 列表，包含序号、标题、状态、作者和日期，用于展示 issue 概览。'
+target_capability: 'Issue 列表结构化行保留'
+expected_keep: '#45   Performance optimization for large datasets   [open]   alice   2026-04-05'
+expected_compress: 'gh issue list'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '34c09fc85306949b3b5f5aac7b64082b00aae8bf4aa2dd6091d394be63fdd48b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

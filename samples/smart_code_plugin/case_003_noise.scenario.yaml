@@ -1,0 +1,15 @@
+scenario: '代码文件中混有日志噪声，需要去除日志行并保留核心代码。'
+target_capability: '日志噪声过滤'
+expected_keep: 'function foo() { return 42; }'
+expected_compress: '[INFO] 2024-01-15 10:30:45 Loading code'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1015a422d37be88d7639684913386406ce7256ba9c12fbab429f15a03bc5cb24'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

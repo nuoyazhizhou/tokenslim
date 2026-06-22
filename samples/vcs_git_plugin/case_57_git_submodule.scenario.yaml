@@ -1,0 +1,15 @@
+scenario: '用户执行 git submodule 命令，查看仓库的子模块列表及其状态，输出包含子模块路径、检出哈希和远程 URL。'
+target_capability: '子模块信息保留'
+expected_keep: 'Submodule path, checked out, Submodule ''libs/external-lib'', Submodule ''libs/utils'''
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b89df62fec57ece816970813db02959e5a9012f43b51d6f916901a90bc1ae5f1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

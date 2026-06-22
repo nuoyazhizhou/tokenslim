@@ -1,0 +1,11 @@
+PS C:\> Copy-Item -Path .\src\* -Destination .\backup -Recurse -Force
+PS C:\> Get-ChildItem .\backup
+
+    Directory: C:\backup
+
+Mode                 LastWriteTime         Length Name
+----                 -----------         ------ ----
+-a----        6/9/2026  10:00 AM           2048 app.js
+-a----        6/9/2026  10:00 AM            512 config.json
+
+PS C:\>

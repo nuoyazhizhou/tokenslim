@@ -1,0 +1,15 @@
+scenario: 'HTML片段中包含HTML实体（&amp;、&lt;、&gt;、&quot;、&apos;）和Unicode字符（&#x4E2D;&#x6587;），测试特殊字符的保留与压缩。'
+target_capability: '特殊字符保留'
+expected_keep: '&amp; &lt; &gt; &quot; &apos; &#x4E2D;&#x6587;'
+expected_compress: '换行和缩进空白'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '67f5074047ddcde6cf122ae204bbcd4ab16ffafe41d1550840738b401095fea6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一个成功的POST请求，客户端IP为192.168.1.10，请求/api/v1/users，返回201状态码，引用来源为注册页面，User-Agent为Windows Chrome浏览器。'
+target_capability: 'POST请求保留与字典压缩'
+expected_keep: "POST /api/v1/users HTTP/1.1\" 201 256"
+expected_compress: '192.168.1.10, Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b938a0130bebcdb498d2a74b7009043c64415cd1d8a1b6a4d7414729891f9ca4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

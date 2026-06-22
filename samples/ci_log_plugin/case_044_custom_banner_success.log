@@ -1,0 +1,18 @@
+[ci] pipeline nightly-data
+[ci] step: checkout
+repository synchronized
+fetching origin/main
+checking out 3f2a1b0
+[ci] step: build
+python -m build
+Successfully built token_slim-1.0.0-py3-none-any.whl
+[ci] step: test
+pytest -q
+128 passed in 31.22s
+[ci] step: package scan
+scanning dist/token_slim-1.0.0-py3-none-any.whl
+scan passed: no critical vulnerabilities
+[ci] step: publish artifacts
+uploading artifacts dist/*.whl
+artifact uploaded: dist/token_slim-1.0.0-py3-none-any.whl
+[ci] status=success

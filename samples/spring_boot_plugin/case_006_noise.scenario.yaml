@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用日志中包含一条错误堆栈和一条 INFO 日志，但无 Maven 下载或 Spring 启动标识，测试插件对非关键噪声（如 DEBUG 行、错误堆栈）的压缩能力。'
+target_capability: '非关键日志压缩'
+expected_keep: 'Shutting down'
+expected_compress: 'DEBUG Initializing context, java.lang.RuntimeException'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '25e715b469fb44eba7bbc25d8ac29e293d92e52f050da8759cd6996dc5114eac'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

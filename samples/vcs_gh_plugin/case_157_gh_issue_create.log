@@ -1,0 +1,3 @@
+gh issue create --title "Bug: Login fails with OAuth" --body "Steps to reproduce..."
+✓ Created issue #42
+✓ Labeled as bug

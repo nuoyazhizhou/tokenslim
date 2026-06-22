@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash shell 执行 `ps aux | grep nginx` 命令，查看系统中 nginx 进程的运行状态，输出包含 nginx 主进程和工作进程的详细信息。'
+target_capability: '命令与输出保留'
+expected_keep: 'ps aux | grep nginx, root 1234 nginx: master process, www-data 1235 nginx: worker process'
+expected_compress: 'user@linux:~$ '
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cc9b5bfafbc81415dffe719825eb1af206a1a3915d6706e48dbcf12c8628287d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

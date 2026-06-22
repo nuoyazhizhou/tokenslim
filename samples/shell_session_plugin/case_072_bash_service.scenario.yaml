@@ -1,0 +1,15 @@
+scenario: '用户通过Bash shell检查nginx服务状态、重启postgresql服务，并列出所有服务状态，输出包含systemd服务详细信息。'
+target_capability: '命令与输出保留'
+expected_keep: '● nginx.service - A high performance web server and a reverse proxy server, Active: active (running) since Mon 2026-10-10 10:00:00 UTC; 2 days ago, [ + ]  nginx'
+expected_compress: 'user@host:~$ , user@host:~$ service --status-all'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1821cab50c37f37d176c86b6a2aab120c1b8eceb4654c3cd6252543d5adb1c71'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

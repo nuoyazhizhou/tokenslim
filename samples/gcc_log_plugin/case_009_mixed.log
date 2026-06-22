@@ -1,0 +1,12 @@
+[2026-05-07 10:30:45] Starting build...
+make[1]: Entering directory '/home/user/project/src'
+gcc -c main.c -o main.o
+main.c: In function 'main':
+main.c:15:5: warning: unused variable 'count'
+gcc -c utils.c -o utils.o
+utils.c: In function 'calculate':
+utils.c:42:12: error: division by zero
+make[1]: *** [utils.o] Error 1
+make[1]: Leaving directory '/home/user/project/src'
+make: *** [all] Error 2
+[2026-05-07 10:30:47] Build failed!

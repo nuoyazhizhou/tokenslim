@@ -1,0 +1,15 @@
+scenario: '日志文件中包含一行JSON数据，前后有INFO和DEBUG级别的日志行，测试插件在噪声日志中提取并压缩JSON结构的能力。'
+target_capability: 'JSON结构压缩与噪声过滤'
+expected_keep: "{\"status\": \"success\", \"data\": {\"id\": 1, \"name\": \"test\"}}"
+expected_compress: '[INFO] 2024-01-15 10:30:45 Processing JSON... [DEBUG] Processing completed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a173b6178f77b2860c733a9eeb2c462f01e3213dd29b5b7ca64e3b1827be56e0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

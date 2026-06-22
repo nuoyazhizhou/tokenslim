@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg shelve --list` 查看所有已保存的 shelve 列表，输出包含 shelve 名称、文件数和时间信息。'
+target_capability: 'shelve 列表条目保留'
+expected_keep: 'default         (10 files, 2 days ago)'
+expected_compress: '空行或注释行（无）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5b144afbcfbb9920d6d5311b2ee499d7acd86252ca55151b470776d4250f7b99'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

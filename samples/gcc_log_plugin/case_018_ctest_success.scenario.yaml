@@ -1,0 +1,15 @@
+scenario: '使用 ctest 运行 3 个单元测试（core_math、api_contract、cli_smoke），全部通过，无失败。'
+target_capability: '测试成功摘要保留'
+expected_keep: '100% tests passed, 0 tests failed out of 3'
+expected_compress: 'Start 1: core_math, Start 2: api_contract, Start 3: cli_smoke'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ebf1d2dbff25689f543ce3980a633746997b057ac7fa2f4b563b10a9319a175a'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T17:50:50.677345'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

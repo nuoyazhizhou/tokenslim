@@ -1,0 +1,25 @@
+hg log -l 10
+changeset:   1234:abcdef123456
+user:        developer <dev@example.com>
+date:        Mon Apr 14 15:00:00 2026 +0000
+summary:     Implement dictionary manager with producer-consumer model
+
+changeset:   1233:ghijkl678901
+user:        developer <dev@example.com>
+date:        Mon Apr 14 14:00:00 2026 +0000
+summary:     Add parallel processing support to TextSlicer
+
+changeset:   1232:mnopqr234567
+user:        developer <dev@example.com>
+date:        Mon Apr 14 13:00:00 2026 +0000
+summary:     Optimize StreamReader with system information
+
+changeset:   1231:stuvwx345678
+user:        developer <dev@example.com>
+date:        Mon Apr 14 12:00:00 2026 +0000
+summary:     Add slice_flags functionality to TextSlicer
+
+changeset:   1230:yzabcd456789
+user:        developer <dev@example.com>
+date:        Mon Apr 14 11:00:00 2026 +0000
+summary:     Add smart_path_plugin for path handling

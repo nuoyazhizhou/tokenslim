@@ -1,0 +1,15 @@
+scenario: 'Maven 构建日志中 JUnit 测试执行结果，包含测试总数、失败、错误、跳过统计，以及具体失败测试的堆栈跟踪和断言错误。'
+target_capability: '测试失败信息保留'
+expected_keep: '[ERROR] Tests run: 120, Failures: 3, Errors: 0, Skipped: 2'
+expected_compress: '[INFO] Running com.example.FooTest'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3383f6eb4f08fa2b29de3d2297ce100400e9e807a6890bac073b65f371b53017'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

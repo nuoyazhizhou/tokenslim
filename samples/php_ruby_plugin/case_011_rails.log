@@ -1,0 +1,5 @@
+Started GET "/users/1" for 127.0.0.1 at 2024-01-15 10:30:45
+Processing by UsersController#show as HTML
+Completed 500 Internal Server Error in 23ms
+ActiveRecord::RecordNotFound (Couldn't find User with 'id'=1):
+  app/controllers/users_controller.rb:10:in `show'

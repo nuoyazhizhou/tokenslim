@@ -1,0 +1,15 @@
+scenario: 'CircleCI 本地构建缓存与工作区操作的成功流程：展示步骤附着、缓存恢复、构建完成与工作区持久化的完整日志'
+target_capability: 'CI步骤保留与缓存行压缩'
+expected_keep: '====>> Attach workspace, Cache restored, Build completed successfully'
+expected_compress: 'Restoring cache from v3-deps-main, Uploading workspace, Downloading workspace layers'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'baff2f6d998e1b0decda691adaf5f44bf7c6e96317cfbd5b75b2c2693ad8a467'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

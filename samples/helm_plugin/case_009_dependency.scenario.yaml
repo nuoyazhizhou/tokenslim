@@ -1,0 +1,15 @@
+scenario: '执行 ''helm dependency build'' 命令，从 Bitnami 仓库下载 redis、postgresql 和 common 三个依赖图表，并删除过时图表。'
+target_capability: '依赖构建输出压缩'
+expected_keep: 'Downloading redis from repo https://charts.bitnami.com/bitnami'
+expected_compress: 'Hang tight while we grab the latest from your chart repositories...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b7cf5b532e9337e5a4c6fe1b0a34e55e7a5bc19897ec96e9a0c33a4d85aceb0e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

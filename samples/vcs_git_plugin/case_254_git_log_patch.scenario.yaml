@@ -1,0 +1,15 @@
+scenario: 'Git log with --patch showing two commits: one adding a dictionary manager module with producer-consumer model, another adding parallel processing support to TextSlicer.'
+target_capability: 'Git log patch mode compression'
+expected_keep: 'commit abc1234, commit def4567, diff --git a/src/core/dictionary_manager/mod.rs'
+expected_compress: 'new file mode 100644, index 0000000..1234567, @@ -0,0 +1,100 @@'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ac13b2fd34130dd6b3202a13e5749c099e90a51fcbb3fab4bbe822fae3e8be9a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'SVN 日志输出，显示对 src/core/text_slicer/ 目录的两次提交，包含修订号、作者、日期和提交信息。'
+target_capability: '路径字典压缩'
+expected_keep: 'r1233, r1231, Add parallel processing support to TextSlicer, Add slice_flags functionality to TextSlicer'
+expected_compress: 'src/core/text_slicer/, developer, 2026-04-14 14:00:00 +0000 (Mon, 14 Apr 2026)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7325f3d7e955a1c66e91de992aab0649386081067b170923258d213af5bb535a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

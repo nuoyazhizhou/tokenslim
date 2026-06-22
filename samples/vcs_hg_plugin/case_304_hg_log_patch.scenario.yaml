@@ -1,0 +1,15 @@
+scenario: '执行 hg log --patch -l 2 命令，显示两个变更集的详细日志，包括变更集ID、用户、日期、摘要以及 diff 输出，展示了代码修改的上下文。'
+target_capability: '变更集与补丁摘要保留'
+expected_keep: 'hg log --patch -l 2, changeset:   42:a1b2c3d4e5f6, diff -r'
+expected_compress: '--- a/src/main.rs, +    let auth = Auth::new();, @@ -10,6 +10,8 @@'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '713af719eb67b1a90023d1a7f7b34e1dafb9030127ccd534aec298148c4b1ef9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+[2024.01.15-10.30.45:456][  0]LogInit: Display: Starting Game Engine
+[2024.01.15-10.30.45:500][  1]LogUObjectGlobals: Warning: Failed to find object 'Material /Game/Materials/M_Stone'
+[2024.01.15-10.30.45:520][  2]LogHAL: Verbose: Using HAL platform Windows
+[2024.01.15-10.30.45:600][  3]LogLinker: Warning: Can't find file '/Game/Maps/TestMap.umap'
+[2024.01.15-10.30.45:650][  4]LogUObject: Error: Unresolved reference to /Game/BP_Player

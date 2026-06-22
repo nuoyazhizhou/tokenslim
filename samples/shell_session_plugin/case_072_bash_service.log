@@ -1,0 +1,20 @@
+user@host:~$ service nginx status
+● nginx.service - A high performance web server and a reverse proxy server
+   Loaded: loaded (/lib/systemd/system/nginx.service; enabled; vendor preset: enabled)
+   Active: active (running) since Mon 2026-10-10 10:00:00 UTC; 2 days ago
+     Docs: man:nginx(8)
+  Process: 1234 ExecStartPre=/usr/sbin/nginx -t -q -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+  Process: 5678 ExecStart=/usr/sbin/nginx -g daemon on; master_process on; (code=exited, status=0/SUCCESS)
+ Main PID: 9012 (nginx)
+    Tasks: 5 (limit: 4915)
+   Memory: 14.6M
+   CGroup: /system.slice/nginx.service
+           ├─9012 nginx: master process /usr/sbin/nginx -g daemon on; master_process on;
+           └─9013 nginx: worker process
+user@host:~$ service postgresql restart
+user@host:~$ service --status-all
+ [ + ]  cron
+ [ + ]  nginx
+ [ + ]  postgresql
+ [ - ]  redis-server
+user@host:~$

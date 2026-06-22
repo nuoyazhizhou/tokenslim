@@ -1,0 +1,23 @@
+p4 diff
+==== //depot/main/src/main.rs#5 - /home/user/project/src/main.rs ====
+--- /home/user/project/src/main.rs	2026-04-11 14:30:00.000000000 +0800
++++ /home/user/project/src/main.rs	2026-04-15 10:00:00.000000000 +0800
+@@ -10,6 +10,10 @@
+     let config = load_config();
+     println!("Config loaded");
++
++    let auth = Auth::new();
++    auth.initialize();
++
+     run_server(config);
+ }
+
+==== //depot/main/src/lib/utils.rs#3 - /home/user/project/src/lib/utils.rs ====
+--- /home/user/project/src/lib/utils.rs	2026-04-10 09:15:00.000000000 +0800
++++ /home/user/project/src/lib/utils.rs	2026-04-15 10:00:00.000000000 +0800
+@@ -1,4 +1,5 @@
+ pub fn helper() -> i32 {
+-    42
++    43
+ }
++

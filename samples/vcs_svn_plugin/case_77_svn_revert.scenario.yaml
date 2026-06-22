@@ -1,0 +1,15 @@
+scenario: 'SVN revert 操作，撤销对 src/main.rs 和 config/app.json 的修改，输出显示每个文件已恢复。'
+target_capability: 'SVN revert 命令输出压缩'
+expected_keep: 'Reverted src/main.rs'
+expected_compress: 'src/main.rs, config/app.json'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '287e275b8ff461556debf2aa94f6c7235866d59da58015322a5749a2d6ee4d2a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

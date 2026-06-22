@@ -1,0 +1,52 @@
+{
+    "name": "android_gradle",
+    "description": "Android Gradle 构建日志脱水",
+    "priority": 190,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "Task :",
+                    "Gradle",
+                    "BUILD SUCCESSFUL",
+                    "BUILD FAILED",
+                    "warning: removing resource",
+                    "D8:",
+                    "R8:"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.1
+    },
+    "compress": {
+        "token_prefix": "$GRADLE",
+        "path_patterns": [
+            "/app/build/",
+            "/app/src/",
+            "/gradle/"
+        ],
+        "gradle_task_patterns": [
+            ":[\\w:]+"
+        ],
+        "resource_patterns": [
+            "com\\.[a-z]+\\.[a-z]+:string/[\\w_]+"
+        ],
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "keep_signals": [
+        "> Task ... FAILED 行（构建失败的任务）",
+        "warn: removing resource 行（资源删除警告）",
+        "WORKSPACE 等环境变量行（Jenkins关键变量）"
+    ],
+    "compress_targets": [
+        "非FAILED的Task行（UP-TO-DATE等）折叠为计数",
+        "连续5个以上相同包名的资源警告合并",
+        "构建路径替换为$GRADLE令牌字典"
+    ],
+    "design_intent": "Android/Gradle日志脱水：保留错误Task和资源警告，折叠重复Task状态行，压缩构建路径和环境变量。"
+}

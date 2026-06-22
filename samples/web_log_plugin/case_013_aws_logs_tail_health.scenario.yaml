@@ -1,0 +1,15 @@
+scenario: 'AWS ECS backend 服务的健康检查日志，每 30 秒左右两个 IP 交替请求 /health 端点，全部返回 200 OK，无异常。'
+target_capability: '健康检查日志折叠与摘要'
+expected_keep: '200 OK'
+expected_compress: 'GET /health HTTP/1.1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c3b5b82190e454fa612c6ab49bfc569d2b7c0c7956655e491c5cc2a6be867af5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

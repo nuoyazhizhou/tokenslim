@@ -1,0 +1,4 @@
+2024-01-15 10:30:45.123 ERROR 12345 --- [http-nio-8080-exec-1] o.h.engine.jdbc.spi.SqlExceptionHelper : Table 'db.users' doesn't exist
+java.sql.SQLSyntaxErrorException: Table 'db.users' doesn't exist
+    at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+    at org.hibernate.query.procedure.internal.ProcedureCallImpl.getOutputParameterValue(ProcedureCallImpl.java:130)

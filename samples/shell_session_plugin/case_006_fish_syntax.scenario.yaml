@@ -1,0 +1,15 @@
+scenario: '用户在 Fish shell 中输入不完整的 for 循环，缺少 end 关键字，Fish 报错 ''Expected END, but found end of line''。'
+target_capability: '错误保留'
+expected_keep: 'for i in 1 2 3, fish: Expected END, but found end of line'
+expected_compress: 'user@macbook ~>'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '00df06f0ce09191c87e3658ecd91748c1f74cfe781e7dd03e3275d6c7f4350a6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

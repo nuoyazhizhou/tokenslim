@@ -1,0 +1,15 @@
+scenario: '用户执行 protoc --version 命令，输出 protobuf 编译器版本信息，无任何诊断或错误内容。'
+target_capability: '不压缩场景（无诊断信息）'
+expected_keep: 'libprotoc 25.3'
+expected_compress: 'protoc --version'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '977ebfb4054332b955d69ba87cc0b9f28195f094007cb32bcb262bb066bc0f20'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,24 @@
+{
+  "name": "Handlebars/Mustache",
+  "slice_type": "HandlebarsTemplate",
+  "priority": 100,
+  "description": "Handlebars/Mustache 模板语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "{{", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{{", "end_delimiter": "}}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{#", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{/", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{>", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{!", "end_delimiter": "}}"},
+        {"pattern_type": "contains", "pattern": "{{each"},
+        {"pattern_type": "contains", "pattern": "{{if"},
+        {"pattern_type": "contains", "pattern": "{{unless"},
+        {"pattern_type": "contains", "pattern": "{{with"},
+        {"pattern_type": "contains", "pattern": "{{log"}
+      ]
+    }
+  ]
+}

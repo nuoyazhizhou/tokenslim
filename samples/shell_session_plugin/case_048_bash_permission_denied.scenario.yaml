@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中尝试读取 /etc/shadow 文件，因权限不足被拒绝，并显示退出码 1。'
+target_capability: '错误保留'
+expected_keep: 'cat: /etc/shadow: Permission denied'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5f5369d2afd2fb81cce337f2a4a48ea31652035def80f0584f5568101fbfadd2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

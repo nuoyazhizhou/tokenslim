@@ -1,0 +1,15 @@
+scenario: 'Nginx access log showing repeated ELB health check requests to /health endpoint (200 OK) and a few normal user requests to /api/documents.'
+target_capability: '健康检查聚合与常规请求保留'
+expected_keep: 'GET /api/documents HTTP/1.1 200 842, POST /api/documents HTTP/1.1 201 118'
+expected_compress: 'ELB-HealthChecker/2.0, /health, 10.0.1.10'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '46547195151b82b128b6fc303701324e053531d0f5a8febb5b86a5c659e71aec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

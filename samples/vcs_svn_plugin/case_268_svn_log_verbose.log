@@ -1,0 +1,15 @@
+svn log -v
+------------------------------------------------------------------------
+r1234 | developer | 2026-04-14 15:00:00 +0000 (Mon, 14 Apr 2026) | 1 line
+Changed paths:
+   A /src/core/dictionary_manager/mod.rs
+   A /src/core/dictionary_manager/methods.rs
+
+    Implement dictionary manager with producer-consumer model
+------------------------------------------------------------------------
+r1233 | developer | 2026-04-14 14:00:00 +0000 (Mon, 14 Apr 2026) | 1 line
+Changed paths:
+   M /src/core/text_slicer/methods.rs
+   M /src/core/text_slicer/types.rs
+
+    Add parallel processing support to TextSlicer

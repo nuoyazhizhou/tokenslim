@@ -1,0 +1,8 @@
+git blame
+8b3c2d1e (alice.chen 2026-04-03 14:32:11 1) fn main() {
+5f2e9a8b (bob.wang 2026-04-02 09:15:22 2)     println!("Hello");
+5f2e9a8b (bob.wang 2026-04-02 09:15:22 3) }
+abc123def (charlie.li 2026-04-01 16:45:00 4) 
+abc123def (charlie.li 2026-04-01 16:45:00 5) fn add(a: i32, b: i32) -> i32 {
+abc123def (charlie.li 2026-04-01 16:45:00 6)     a + b
+abc123def (charlie.li 2026-04-01 16:45:00 7) }

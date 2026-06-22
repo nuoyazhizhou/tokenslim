@@ -1,0 +1,15 @@
+scenario: '一个包含5个水果名称的数组和计数字段的JSON对象，用于测试数组和短字符串的保留与紧凑化。'
+target_capability: '数组结构保留与短字符串处理'
+expected_keep: "[\"apple\", \"banana\", \"orange\", \"grape\", \"mango\"]"
+expected_compress: '无长字符串或冗余空格'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a4c5b7aa85549dc92043d7aa408c7a3967c30d2ebb56677b558f005b6ff761c4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,29 @@
+{
+    "name": "minify_code",
+    "description": "Deprecated config-only entry; smart_code_plugin owns code compaction",
+    "priority": 50,
+    "enabled": false,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^(function|const|let|var|class|import|export|def |fn |pub )"
+            }
+        ],
+        "min_match_ratio": 0.3
+    },
+    "compress": {
+        "token_prefix": "$CODE",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "代码结构"
+    ],
+    "compress_targets": [
+        "空白/注释移除",
+        "长标识符替换"
+    ],
+    "design_intent": "代码压缩：移除空白和注释，压缩标识符。"
+}

@@ -1,0 +1,6 @@
+gerrit push
+Push to ssh://review.example.com:29418/platform/frameworks/base
+  refs/heads/master -> refs/heads/master
+  refs/heads/feature-xyz -> refs/heads/feature-xyz
+  refs/changes/123/456/1 -> refs/changes/123/456/1
+Pushed 3 refs

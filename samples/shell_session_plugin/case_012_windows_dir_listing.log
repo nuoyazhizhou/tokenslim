@@ -1,0 +1,13 @@
+C:\Users\user> dir
+ Volume in drive C has no label.
+ Volume Serial Number is 1234-5678
+
+ Directory of C:\Users\user
+
+2026/06/07  00:10    <DIR>          .
+2026/06/07  00:10    <DIR>          ..
+2026/06/07  00:05               102 file.txt
+               1 File(s)            102 bytes
+               2 Dir(s)  100,000,000,000 bytes free
+
+C:\Users\user> 

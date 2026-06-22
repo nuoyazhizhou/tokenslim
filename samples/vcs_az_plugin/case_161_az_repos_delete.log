@@ -1,0 +1,2 @@
+az repos delete my-repo --project MyProject --yes
+✓ Repository deleted: my-repo

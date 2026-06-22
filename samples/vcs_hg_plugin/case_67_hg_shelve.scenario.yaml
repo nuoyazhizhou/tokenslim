@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg shelve` 命令，将工作目录的修改保存为名为 ''my-changes'' 的补丁，并列出被搁置的文件（src/main.rs 和 src/utils/helper.rs）。'
+target_capability: 'shelve 命令处理与文件列表保留'
+expected_keep: 'hg shelve, my-changes, src/main.rs'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ed34c0a3881a9104a23d0cb21e2d31718666a04c04522f4f429b73faa4d128d9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

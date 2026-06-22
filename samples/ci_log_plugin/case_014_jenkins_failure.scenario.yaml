@@ -1,0 +1,15 @@
+scenario: 'Jenkins pipeline 中执行 pytest 测试，测试失败返回 exit code 1，pipeline 最终状态为 FAILURE'
+target_capability: 'CI/CD 日志脱水：保留错误和状态信号'
+expected_keep: 'ERROR: script returned exit code 1, Finished: FAILURE, tests/test_api.py::test_get_user FAILED'
+expected_compress: 'Checking out Revision 4f00ba2, [Pipeline] node, [Pipeline] sh'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8004df9242bc6e4ca44618770d87b88ac022b208ce421765413c92b767b5c36a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

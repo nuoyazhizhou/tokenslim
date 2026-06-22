@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 构建执行 connectedDebugAndroidTest 任务，测试失败（1/6 失败），构建最终失败，日志包含 FAILED 任务行和测试错误详情。'
+target_capability: '测试失败保留与错误详情脱水'
+expected_keep: '> Task :app:connectedDebugAndroidTest FAILED; java.lang.AssertionError: View with id <profile_name> not found; FAILURE: Build failed with an exception'
+expected_compress: '> Task :app:preBuild UP-TO-DATE; > Task :app:preDebugBuild UP-TO-DATE; 6 actionable tasks: 1 executed, 5 up-to-date'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '03d9be836190a9c746ccf016bdf0fc3e22660e3707c7bc036e6ada19dd23028c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

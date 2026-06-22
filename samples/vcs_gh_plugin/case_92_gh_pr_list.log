@@ -1,0 +1,4 @@
+gh pr list
+#22   feature/new-ui   [open]   Add dark mode support   alice   2026-04-01
+#21   bugfix/login     [merged] Fix login redirect issue   bob     2026-03-28
+#20   hotfix/cache    [closed] Clear cache on logout      alice   2026-03-25

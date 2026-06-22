@@ -1,0 +1,12 @@
+svn status
+M       src/core/doctor_workspace/methods.rs
+A       src/plugins/vcs_plugin/parser.rs
+D       src/legacy/old_module.rs
+?       config/vcs_plugin.local.json
+?       target/debug/build/tokenslim-abc123/build_script_build
+!       docs/design/architecture.md
+~       Cargo.lock
+I       src/generated/proto_bindings.rs
+
+svn status: warning: W155010: The node '/repo/tmp' was not found.
+Checked out revision 12345.

@@ -1,0 +1,24 @@
+Bitrise step android-unit-test started
+Run ./gradlew connectedDebugAndroidTest
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:compileDebugKotlin UP-TO-DATE
+> Task :app:mergeDebugAssets UP-TO-DATE
+> Task :app:packageDebug UP-TO-DATE
+> Task :app:connectedDebugAndroidTest FAILED
+
+Starting 6 tests on Pixel_6_API_34(AVD) - 14
+com.example.profile.ProfileScreenTest:
+Error in opensProfileFromSettings(com.example.profile.ProfileScreenTest):
+java.lang.AssertionError: View with id <profile_name> not found
+at androidx.test.espresso.ViewInteraction.doPerform(ViewInteraction.java:297)
+Finished 6 tests on Pixel_6_API_34(AVD) - 14 - 1 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:connectedDebugAndroidTest'.
+> There were failing tests. See the report at: file:///Users/vagrant/git/app/build/reports/androidTests/connected/debug/index.html
+
+6 actionable tasks: 1 executed, 5 up-to-date
+BUILD FAILED in 2m 41s

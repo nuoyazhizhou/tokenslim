@@ -1,0 +1,12 @@
+git shortlog
+alice.chen (10):
+      Add login feature
+      Add user registration
+      Add password reset
+bob.wang (5):
+      Fix bug in auth
+      Update dependencies
+charlie.li (3):
+      Refactor code
+      Add tests
+      Update docs

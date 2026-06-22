@@ -1,0 +1,15 @@
+scenario: '一个EJS模板文件，包含HTML结构、动态标题和列表渲染，模板标签如<%= title %>和<% for %>循环。'
+target_capability: '模板变量压缩为字典令牌'
+expected_keep: '<!DOCTYPE html>, <html>, <head>, <title>, </title>, </head>, <body>, <h1>, </h1>, <% for (let item of items) { %>, <div>, </div>, <% } %>, </body>, </html>'
+expected_compress: '<%= title %>, <%= item %>'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8931f0d848aec47e619c5cf480095f3b82f51ca6891019c8902aafbc78213cd5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

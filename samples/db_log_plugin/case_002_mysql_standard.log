@@ -1,0 +1,3 @@
+2026-05-07T10:33:10.123456Z 1234 [Note] mysqld: ready for connections.
+2026-05-07T10:33:15.456789Z 1235 [Warning] InnoDB: buffer pool size adjusted to 134217728
+2026-05-07T10:33:20.987654Z 1236 [ERROR] Access denied for user 'root'@'localhost'

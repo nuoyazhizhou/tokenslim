@@ -1,0 +1,15 @@
+scenario: 'Bazel 构建全部命中远程缓存，无代码变更，所有 5432 个动作从缓存获取，构建快速完成'
+target_capability: '缓存命中场景保留构建摘要'
+expected_keep: 'INFO: Analyzed 240 targets; Build completed successfully'
+expected_compress: 'INFO: 5432 processes: 5432 remote cache hit; INFO: Elapsed time: 9.876s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '79a0821791ce2a42284e24cdf327b28a1317cd96c4b3ef61d1c052ab3992e881'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

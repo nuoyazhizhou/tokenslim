@@ -1,0 +1,5 @@
+git diff --stat
+ src/main.rs   | 10 +++++----
+ src/utils.rs  |  5 ++---
+ src/lib.rs    |  2 +--
+ 3 files changed, 8 insertions(+), 9 deletions(-)

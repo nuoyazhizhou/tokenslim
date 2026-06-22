@@ -1,0 +1,49 @@
+{
+    "name": "protobuf",
+    "description": "protoc/buf diagnostic compaction",
+    "priority": 96,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "protoc",
+                    ".proto:",
+                    "warning: Field",
+                    "Type \""
+                ]
+            }
+        ],
+        "min_match_ratio": 0.01
+    },
+    "compress": {
+        "token_prefix": "$PB",
+        "path_patterns": [
+            "[^:\\s]+\\.proto"
+        ],
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "decompress": {
+        "token_prefixes": [
+            "$PB",
+            "$P"
+        ]
+    },
+    "keep_signals": [
+        "error 诊断行（保留错误位置和消息）",
+        "warning 诊断行（最多前6个）",
+        "错误计数和警告计数（汇总行）",
+        "is_error_line 匹配的行（错误信号）"
+    ],
+    "compress_targets": [
+        ".proto 文件路径（替换为 $PB 令牌字典）",
+        "多余空白字符（compact_spaces 压缩）",
+        "重复的警告（超过6个后丢弃）",
+        "非诊断且非错误信号的行（丢弃）"
+    ],
+    "design_intent": "Protobuf脱水：保留诊断信息，折叠重复警告，压缩文件路径。"
+}

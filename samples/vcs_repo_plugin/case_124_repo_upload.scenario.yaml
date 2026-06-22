@@ -1,0 +1,15 @@
+scenario: 'Android Repo 工具执行 repo upload 命令，上传两个项目（platform/frameworks/base 和 platform/packages/apps/Settings）到 Gerrit 服务器，输出包含项目路径、SSH URL 和推送结果。'
+target_capability: 'repo upload 命令输出压缩'
+expected_keep: 'repo upload, Upload project:, * [new branch] HEAD -> refs/changes/'
+expected_compress: 'To ssh://android.googlesource.com/, 2 projects uploaded.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '96b5c08dadeffaaebb4b5714d4d67c8b1f171ea6f9d92ab8b64679b2baa37dfd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

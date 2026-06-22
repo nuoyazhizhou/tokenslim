@@ -1,0 +1,4 @@
+TimeGenerated,ResourceId,LogLevel,Message
+2026-05-13T08:13:39.939Z,/subscriptions/000/resourceGroups/rg/providers/Microsoft.Web/sites/backend,Information,"worker started pid=42"
+2026-05-13T08:13:41.100Z,/subscriptions/000/resourceGroups/rg/providers/Microsoft.Web/sites/backend,Error,"database connection error: timeout after 30s"
+2026-05-13T08:13:45.210Z,/subscriptions/000/resourceGroups/rg/providers/Microsoft.Web/sites/backend,Information,"retrying database connection"

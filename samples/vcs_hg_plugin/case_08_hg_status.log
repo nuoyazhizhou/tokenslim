@@ -1,0 +1,8 @@
+hg status
+M src/plugins/vcs_plugin/methods.rs
+M src/plugins/vcs_plugin/parser.rs
+? config/vcs_plugin.local.json
+? target/debug/build/tokenslim-abc123/build_script_build
+I src/generated/proto_bindings.rs
+! docs/design/architecture.md
+R src/legacy/old_module.rs -> src/plugins/vcs_plugin/legacy_adapter.rs

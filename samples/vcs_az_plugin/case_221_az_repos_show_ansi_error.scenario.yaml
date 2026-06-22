@@ -1,0 +1,15 @@
+scenario: '用户执行 `az repos show --repository my-project` 命令，输出包含 ANSI 彩色项目名、关键字段（DefaultBranch、RemoteUrl）以及一条错误信息 ''error: failed to query repo policy''。'
+target_capability: 'ANSI 错误保留与关键字段提取'
+expected_keep: 'az repos show --repository my-project, DefaultBranch: main, error: failed to query repo policy'
+expected_compress: 'my-project (ANSI 彩色), RemoteUrl: https://dev.azure.com/myorg/my-project'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5b00d44950babb69d17d0afa66cc7c8dc92279ea64e136164c1603f94f52c1f4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

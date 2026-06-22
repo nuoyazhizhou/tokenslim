@@ -1,0 +1,16 @@
+CircleCI received job android-build
+Run ./gradlew --scan assembleRelease
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preReleaseBuild UP-TO-DATE
+> Task :app:compileReleaseKotlin FROM-CACHE
+> Task :app:minifyReleaseWithR8 FROM-CACHE
+> Task :app:packageRelease
+> Task :app:assembleRelease
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.
+You can use '--warning-mode all' to show the individual deprecation warnings.
+Publishing build scan...
+https://gradle.com/s/cx7p2m4nq7uiy
+
+BUILD SUCCESSFUL in 1m 03s
+6 actionable tasks: 2 executed, 2 up-to-date, 2 from cache

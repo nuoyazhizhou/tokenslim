@@ -1,0 +1,15 @@
+scenario: 'Kubectl describe 命令输出，展示 nginx Pod 的详细信息，包括名称、命名空间、节点、标签、状态、IP 和容器状态。'
+target_capability: 'K8S Pod 元数据保留与令牌化'
+expected_keep: 'Name: nginx, Namespace: default, Status: Running'
+expected_compress: 'Node: node-1/10.0.0.1, IP: 10.244.0.5, Start Time: Mon, 15 Jan 2024 10:00:00 +0000'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '91fd1f53a078d671aae997d54668b889288c2dbb506bdb4281d935b27887b057'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

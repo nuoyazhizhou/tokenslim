@@ -1,0 +1,15 @@
+scenario: 'GCC 编译 C 源文件时出现语法错误，错误信息包含行号、错误类型和未声明变量，最终 make 返回错误码。'
+target_capability: '编译错误信息保留'
+expected_keep: 'error: invalid type argument of ''->'', error: ''ptr'' undeclared, Error 1'
+expected_compress: 'gcc -c main.c -o main.o, gcc -c utils.c -o utils.o, make: *** [main.o]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1424f63f46026355d300651deae04789d43a17c9e53da3c41cfc9ffb90fdd3f5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

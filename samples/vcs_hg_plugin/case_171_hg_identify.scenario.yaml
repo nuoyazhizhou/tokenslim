@@ -1,0 +1,15 @@
+scenario: '执行 hg identify 命令，输出变更集 ID ''abc1234''。'
+target_capability: 'Hg命令首行与变更集ID保留'
+expected_keep: 'hg identify, abc1234'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ffc20ce0e1b47926053fb0f17f5d73d941e99a0c5359ca4226bed30abd1f473b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

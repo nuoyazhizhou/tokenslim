@@ -1,0 +1,4 @@
+[WARN] Line 10: O(n^2) complexity detected
+[WARN] Line 20: Potential memory leak: event listener not removed
+[WARN] Line 30: Expensive regex: nested quantifiers
+[INFO] Suggestion: Memoize function on line 40

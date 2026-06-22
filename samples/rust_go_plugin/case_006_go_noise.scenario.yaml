@@ -1,0 +1,15 @@
+scenario: 'Go 构建过程中出现 panic 错误，包含下载依赖、提取模块和堆栈跟踪信息。'
+target_capability: 'Go 构建错误与堆栈保留'
+expected_keep: 'panic: something went wrong, goroutine 1 [running]:, main.main()'
+expected_compress: 'go: downloading github.com/foo/bar v1.2.3, go: extracting github.com/foo/bar v1.2.3, /home/user/project/main.go:10 +0x15'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9c24484c663ee93d7e44daabf3e5bc388bc546c1603a9f73f761d5ed5716d9d6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

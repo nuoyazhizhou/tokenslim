@@ -1,0 +1,4 @@
+svn list --verbose
+16431  alice.chen     1024 Apr 03 14:30 src/core/doctor_workspace/
+16432  bob.wang      2048 Apr 02 09:15 src/plugins/vcs_plugin/
+16433  charlie.li     512 Apr 01 16:45 src/core/

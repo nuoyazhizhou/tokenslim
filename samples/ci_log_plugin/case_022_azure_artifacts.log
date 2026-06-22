@@ -1,0 +1,12 @@
+az pipelines runs show --id 204
+##[section]Starting: Test
+##[command]pytest -q
+220 passed in 21.3s
+##[section]Finishing: Test
+##[section]Starting: Publish artifacts
+Uploading artifact drop
+Artifact upload complete
+Uploading test results
+Test results uploaded
+##[section]Finishing: Publish artifacts
+Job succeeded

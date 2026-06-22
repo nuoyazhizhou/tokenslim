@@ -1,0 +1,15 @@
+scenario: 'Cargo 项目测试运行，包含编译、测试执行、失败详情和最终统计，共 120 个测试，3 个失败，1 个忽略。'
+target_capability: '测试失败详情保留'
+expected_keep: 'test tests::test_fail_divide_by_zero ... FAILED'
+expected_compress: 'test tests::test_add ... ok'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '14e858e7fb15c2652b5d4ca4b900d8d031e0d01b7ed0b1e4eac6990440ec0415'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

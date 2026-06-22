@@ -1,0 +1,12 @@
+go: building...
+panic: runtime error: nil pointer dereference
+
+goroutine 1 [running]:
+main.processRequest(0xc000000000)
+        /home/user/project/handler.go:45 +0x32
+main.main()
+        /home/user/project/main.go:20 +0x1f
+
+goroutine 2 [IO wait]:
+runtime.nanotime1()
+        /usr/local/go/src/runtime/sys_linux_amd64.s:130 +0x15

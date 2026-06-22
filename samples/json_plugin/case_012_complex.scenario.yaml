@@ -1,0 +1,15 @@
+scenario: 'Kubernetes Pod 定义 JSON 文件，包含 apiVersion、kind、metadata 和 spec 等字段，其中 metadata 有 name 和 labels，spec 定义了一个 nginx 容器。'
+target_capability: 'JSON 结构保留与长字符串压缩'
+expected_keep: "{\"apiVersion\":\"v1\",\"kind\":\"Pod\",\"metadata\":{\"name\":\"my-pod\",\"labels\":{\"app\":\"web\"}},\"spec\":{\"containers\":[{\"name\":\"nginx\",\"image\":\"nginx:latest\",\"ports\":[{\"containerPort\":80}]}]}}"
+expected_compress: '无长字符串需要压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4b47a789fa99fc77ab9c056e9a2eb23da82b32f618e327dbde4a7b04612b96c6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

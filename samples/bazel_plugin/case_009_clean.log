@@ -1,0 +1,3 @@
+bazel clean --expunge
+INFO: Starting clean.
+INFO: Output base removed.

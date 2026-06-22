@@ -1,0 +1,3 @@
+deployment.apps/myapp created
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+myapp   3/3     3            3           10s

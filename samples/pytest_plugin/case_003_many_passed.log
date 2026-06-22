@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 12 items
+
+tests/test_many.py::test_001 PASSED                                    [  8%]
+tests/test_many.py::test_002 PASSED                                    [ 16%]
+tests/test_many.py::test_003 PASSED                                    [ 25%]
+tests/test_many.py::test_004 PASSED                                    [ 33%]
+tests/test_many.py::test_005 PASSED                                    [ 41%]
+tests/test_many.py::test_006 PASSED                                    [ 50%]
+tests/test_many.py::test_007 PASSED                                    [ 58%]
+tests/test_many.py::test_008 PASSED                                    [ 66%]
+tests/test_many.py::test_009 PASSED                                    [ 75%]
+tests/test_many.py::test_010 PASSED                                    [ 83%]
+tests/test_many.py::test_011 PASSED                                    [ 91%]
+tests/test_many.py::test_012 PASSED                                    [100%]
+
+============================= 12 passed in 2.03s ===============================

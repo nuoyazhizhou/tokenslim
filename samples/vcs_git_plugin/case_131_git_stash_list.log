@@ -1,0 +1,4 @@
+git stash list
+stash@{0}: WIP on master: abc1234 last commit message
+stash@{1}: saved on feature-xyz: def5678 another work in progress
+stash@{2}: WIP on develop: ghi9012 draft feature

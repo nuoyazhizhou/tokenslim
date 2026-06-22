@@ -1,0 +1,35 @@
+{
+  "name": "Thymeleaf",
+  "slice_type": "ThymeleafTemplate",
+  "priority": 100,
+  "description": "Thymeleaf 模板引擎语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "th:each"},
+        {"pattern_type": "contains", "pattern": "th:if"},
+        {"pattern_type": "contains", "pattern": "th:unless"},
+        {"pattern_type": "contains", "pattern": "th:switch"},
+        {"pattern_type": "contains", "pattern": "th:case"},
+        {"pattern_type": "contains", "pattern": "th:value"},
+        {"pattern_type": "contains", "pattern": "th:text"},
+        {"pattern_type": "contains", "pattern": "th:utext"},
+        {"pattern_type": "contains", "pattern": "th:src"},
+        {"pattern_type": "contains", "pattern": "th:href"},
+        {"pattern_type": "contains", "pattern": "th:action"},
+        {"pattern_type": "contains", "pattern": "th:method"},
+        {"pattern_type": "contains", "pattern": "th:object"},
+        {"pattern_type": "contains", "pattern": "th:field"}
+      ]
+    },
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "[[${", "end_delimiter": "}]]"},
+        {"pattern_type": "paired_delimiters", "pattern": "[[#{", "end_delimiter": "}]]"},
+        {"pattern_type": "paired_delimiters", "pattern": "[(*{", "end_delimiter": "}]]"}
+      ]
+    }
+  ]
+}

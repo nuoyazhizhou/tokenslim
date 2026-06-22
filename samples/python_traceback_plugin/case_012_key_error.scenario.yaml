@@ -1,0 +1,15 @@
+scenario: 'Python 脚本中访问字典不存在的键 ''missing_key''，触发 KeyError 异常，堆栈跟踪显示错误发生在 app.py 第 15 行。'
+target_capability: 'Python 异常堆栈脱水'
+expected_keep: "Traceback (most recent call last):, KeyError: 'missing_key', File \"app.py\", line 15"
+expected_compress: "data[\"missing_key\"], in <module>"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '354ebdcc25d20e3873bc20f9e53876c8d6b76d9230e6ed9162b9abbbcf90bf40'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用在运行时因缺少依赖模块 ''./missing-module'' 而抛出 ''Cannot find module'' 错误，并打印完整堆栈跟踪。'
+target_capability: '错误堆栈脱水'
+expected_keep: 'Error: Cannot find module ''./missing-module'', at Object.<anonymous>, line:col numbers'
+expected_compress: 'internal/modules/cjs/loader.js:638, /home/user/project/index.js:1:1, file paths in stack frames'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4b035a57e7d35731a9b14acafcaf6bfd56a38265d88197011eb84926da004d8a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

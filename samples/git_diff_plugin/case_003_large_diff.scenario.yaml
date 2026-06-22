@@ -1,0 +1,15 @@
+scenario: 'Git diff 展示在 src/lib.rs 文件中新增了一个包含多个公共函数的 utils 模块，diff 包含文件头、索引和 hunk 头以及新增的代码行。'
+target_capability: 'diff header 保留与内容压缩'
+expected_keep: 'diff --git a/src/lib.rs b/src/lib.rs, --- a/src/lib.rs, +++ b/src/lib.rs'
+expected_compress: "+pub mod utils {, +    pub fn greet() {, +        println!(\"Hello from utils!\");"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0c2ebeccac9af9a066b4c77a3fc3f1f782485fbf9620824a8613ef75ba25d0bf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '腾讯云 CLS 日志，包含内网后端服务的健康检查请求（GET /health）和上传接口错误（POST /api/upload 返回 502），JSON 格式，模拟腾讯云日志场景。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: 'GET /health HTTP/1.1 200 OK, POST /api/upload HTTP/1.1 502 Bad Gateway'
+expected_compress: 'timestamp, logsetName, topic, level'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

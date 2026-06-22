@@ -1,0 +1,16 @@
+{
+  "name": "Jinja2/Nunjucks",
+  "slice_type": "JinjaTemplate",
+  "priority": 100,
+  "description": "Jinja2/Nunjucks 模板语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "{{", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{%", "end_delimiter": "%}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{#", "end_delimiter": "#}"}
+      ]
+    }
+  ]
+}

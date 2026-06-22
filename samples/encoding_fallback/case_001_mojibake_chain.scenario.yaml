@@ -1,0 +1,15 @@
+scenario: '一个包含乱码（Mojibake）的日志文件，内容为''Ã¤Â¸Â­Ã¦â€“â€¡''，实际上是''中文''的UTF-8字节被错误解释为Latin-1编码的结果。'
+target_capability: '编码修复与保留'
+expected_keep: '中文'
+expected_compress: 'Ã¤Â¸Â­Ã¦â€“â€¡'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

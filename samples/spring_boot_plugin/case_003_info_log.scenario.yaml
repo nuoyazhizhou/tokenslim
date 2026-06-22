@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用启动时的信息日志，包含应用版本、无活动 profile、Tomcat 启动端口和应用启动耗时。'
+target_capability: 'Spring Boot 启动日志保留'
+expected_keep: 'Starting App v1.0.0, Tomcat started on port(s): 8080, Started App in 1.234 seconds'
+expected_compress: 'No active profile set, o.s.b.w.embedded.tomcat.TomcatWebServer'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '62073bf63d78fb213c56c5d24ac39c9efb058d4fcc08384fc99036c455ff4c05'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

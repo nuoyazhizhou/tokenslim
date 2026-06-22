@@ -1,0 +1,42 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< com.example:myproject >-------------------
+[INFO] Building myproject 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ myproject ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ myproject ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 100 source files to /target/classes
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ myproject ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 10 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ myproject ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 50 test source files to /target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ myproject ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.AppTest
+[INFO] Running com.example.ServiceTest
+[INFO] Running com.example.RepositoryTest
+[INFO] Tests run: 100, Failures: 0, Errors: 0, Skipped: 5
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 100, Failures: 0, Errors: 0, Skipped: 5
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  15.678 s
+[INFO] Finished at: 2024-01-15T10:35:00+08:00
+[INFO] ------------------------------------------------------------------------

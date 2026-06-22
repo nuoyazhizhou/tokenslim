@@ -1,0 +1,15 @@
+scenario: 'Unity引擎启动并加载场景，期间出现缺失纹理警告、空引用异常和缺失音频警告，最终场景加载成功。'
+target_capability: 'Unity日志标签保留与异常保留'
+expected_keep: '[ERROR] NullReferenceException, [WARN] Missing texture, [WARN] Audio clip not found'
+expected_compress: '[INFO] Initializing graphics, [INFO] Loading assets, [INFO] Scene loaded successfully'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6b30bb831ca97778dfdd3f480da82469623b4f0a6cbee2c5edbaf854e147451d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

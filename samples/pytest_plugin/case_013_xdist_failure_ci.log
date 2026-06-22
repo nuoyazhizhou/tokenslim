@@ -1,0 +1,23 @@
+GitHub Actions runner version 2.329.0
+Run pytest -n 4 --dist loadfile tests/api tests/unit
+============================= test session starts =============================
+platform linux -- Python 3.12.4, pytest-8.3.4, pluggy-1.5.0
+plugins: xdist-3.6.1, rerunfailures-14.0
+created: 4/4 workers
+scheduling tests via LoadFileScheduling
+collected 128 items
+
+[gw0] [ 25%] PASSED tests/api/test_health.py::test_health_ok
+[gw1] [ 50%] PASSED tests/unit/test_math.py::test_rounding
+[gw2] [ 75%] FAILED tests/api/test_auth.py::test_rejects_expired_token
+[gw3] [100%] PASSED tests/api/test_users.py::test_get_current_user
+
+=================================== FAILURES ===================================
+________________________ test_rejects_expired_token _________________________
+E   AssertionError: assert 200 == 401
+>   assert response.status_code == 401
+
+FAILED tests/api/test_auth.py::test_rejects_expired_token - AssertionError: assert 200 == 401
+=========================== short test summary info ============================
+FAILED tests/api/test_auth.py::test_rejects_expired_token - AssertionError: assert 200 == 401
+=================== 1 failed, 127 passed in 41.22s ===================

@@ -1,0 +1,12 @@
+Buildkite agent 3.67.0 starting node-build step
+Run CI=true npm run build
+asset main.js 3.2 MiB [emitted] [big] (name: main)
+asset vendors.js 6.8 MiB [emitted] [big] (name: vendors)
+1560 modules
+ERROR in ./src/routes/dashboard.tsx 12:0-48
+Module not found: Error: Can't resolve '../charts/RevenueChart' in '/var/lib/buildkite-agent/builds/web/src/routes'
+webpack 5.96.1 compiled with 1 error in 12844 ms
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! web@1.0.0 build: `webpack --mode production`
+npm ERR! Exit status 1

@@ -1,0 +1,7 @@
+Error: Deep call stack
+    at step1 (/app/a.js:1:10)
+    at step2 (/app/b.js:2:10)
+    at step3 (/app/node_modules/lib/c.js:3:10)
+    at step4 (/app/node_modules/lib/d.js:4:10)
+    at step5 (/app/node_modules/lib/e.js:5:10)
+    at Object.<anonymous> (/app/index.js:15:1)

@@ -1,0 +1,10 @@
+hg parents
+changeset:   18:eeff3344aa55
+user:        alice.chen
+date:        Fri Apr 03 14:32:11 2026 +0800
+summary:     feat(vcs): Add SVN/HG/P4 parser support
+
+changeset:   16:ff11ee22dd33
+user:        charlie.li
+date:        Wed Apr 01 16:45:00 2026 +0800
+summary:     refactor: Extract VcsRuleEngine

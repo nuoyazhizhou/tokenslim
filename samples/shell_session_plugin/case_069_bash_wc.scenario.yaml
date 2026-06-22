@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中使用 wc 命令统计 /var/log/syslog 和 /var/log/auth.log 的行数，以及 src/main.rs 和 README.md 的字节数，并显示总计。'
+target_capability: '命令与输出保留'
+expected_keep: 'wc -l /var/log/syslog /var/log/auth.log, 1234 /var/log/syslog, 1801 total'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '55828010814d7d14ed4e183fd19ceed7b4fd1b9b72e98758812125749742a4f9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 hg archive 命令创建 zip 归档，输出包含归档路径、文件数和大小。'
+target_capability: 'Hg命令脱水与文件操作摘要保留'
+expected_keep: 'hg archive, archive created: /tmp/project-backup.zip, files: 123'
+expected_compress: 'size: 2.3 MB'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b72fa2d0620f97d98e9466d469c9e6eec3fcdce48a6d082a8e81d294f7a0d5c9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

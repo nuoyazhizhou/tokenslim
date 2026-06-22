@@ -1,0 +1,15 @@
+scenario: '静态分析工具的输出日志，包含时间戳、规则执行进度、警告和错误信息，以及分析完成标记。'
+target_capability: '混合内容保留与折叠'
+expected_keep: 'INFO Starting static analysis, [ERROR] File: src/main.js, Line: 20: Unused variable ''temp'', INFO Analysis complete'
+expected_compress: '[WARN] File: src/main.js, Line: 15: Variable ''x'' too short, [INFO] Rule 2/10: check_no_unused_vars'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5e7aa7b0b6dc5b886190f4b93b730dc93b96bae6b964e322ca8dfd5965af7b34'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

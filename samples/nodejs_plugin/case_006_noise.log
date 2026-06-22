@@ -1,0 +1,4 @@
+[HPM] Proxy created: /api -> http://localhost:3000
+Warning: Accessing non-existent property 'length' of undefined
+Error: Something went wrong
+    at /app/index.js:15:10

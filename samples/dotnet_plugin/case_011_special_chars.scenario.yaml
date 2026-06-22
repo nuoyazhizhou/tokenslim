@@ -1,0 +1,15 @@
+scenario: 'C# 编译错误，包含特殊字符（¥、€、£、¬）的报错信息，测试插件对非 ASCII 字符的处理能力。'
+target_capability: '特殊字符保留'
+expected_keep: 'error CS1056: Unexpected character ''¥'''
+expected_compress: 'warning CS8001: Unrecognized preprocessor directive ''¬'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '28a18f1c905c8ee6549ae72690dbc25f5863c5ce2cb213ad61ce38232d37d059'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

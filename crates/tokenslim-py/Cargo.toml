@@ -1,0 +1,13 @@
+[package]
+name = "tokenslim-py"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "tokenslim"
+crate-type = ["cdylib"]
+
+[dependencies]
+tokenslim = { path = "../.." }
+pyo3.workspace = true
+serde_json.workspace = true

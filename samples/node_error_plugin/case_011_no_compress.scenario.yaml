@@ -1,0 +1,15 @@
+scenario: '一段普通文本，不是 Node.js 错误，不需要压缩。'
+target_capability: '非错误文本保留'
+expected_keep: 'This is not a Node.js error.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f4770523f063059d70d71a83e2b644eb54de0568c01212c829206a91d71f7dd1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

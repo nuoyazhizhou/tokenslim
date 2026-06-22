@@ -1,0 +1,15 @@
+scenario: '单行Nginx访问日志，包含客户端IP、用户admin、时间戳、GET /health请求、200状态码、2字节响应、空referer、health-check/1.0 User-Agent。'
+target_capability: '单行常规日志压缩'
+expected_keep: '200 2 health-check/1.0'
+expected_compress: '127.0.0.1 admin [07/May/2026:10:33:10 +0800]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0d6ad29858d38eded6acab239e84aa2084ba87ed020b562d4e92efe8436e6f5f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

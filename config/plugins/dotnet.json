@@ -1,0 +1,27 @@
+{
+    "name": "dotnet",
+    "description": ".NET 构建日志脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$DOTNET"
+    },
+    "keep_signals": [
+        "at method(...) in file:line（堆栈帧行）",
+        "file(line,col): error code: message（MSBuild错误行）",
+        "包含System./Microsoft.的行（疑似.NET相关）"
+    ],
+    "compress_targets": [
+        "堆栈帧参数列表（替换为(...)）"
+    ],
+    "design_intent": ".NET构建日志脱水：保留错误定位和堆栈帧方法名，折叠冗余参数。"
+}

@@ -1,0 +1,15 @@
+scenario: '使用 glab ci view 查看 GitLab CI 流水线日志，显示一个测试用例失败后重试并最终通过的场景。'
+target_capability: 'CI/CD 重试信息压缩'
+expected_keep: 'section_start:1778665000:script[collapsed=false], section_end:1778665070:script, Job succeeded'
+expected_compress: 'Retrying failed tests, tests/flaky.spec.ts failed on attempt 1, tests/flaky.spec.ts passed on attempt 2'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2f897d6432888c29f6ee24e1ad97267d0f03e899a4b6aed4e006fb414e1527d3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

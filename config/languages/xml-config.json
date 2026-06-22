@@ -1,0 +1,27 @@
+{
+  "name": "XML Configuration",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "XML 配置文件语法检测配置",
+  "file_extensions": [".xml", ".config", ".nuspec", ".csproj", ".vcxproj", ".props", ".targets"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "<?xml", "end_delimiter": "?>"},
+        {"pattern_type": "contains", "pattern": "<!--"},
+        {"pattern_type": "contains", "pattern": "-->"},
+        {"pattern_type": "contains", "pattern": "<"},
+        {"pattern_type": "contains", "pattern": ">"},
+        {"pattern_type": "contains", "pattern": "/>"},
+        {"pattern_type": "contains", "pattern": "=\""},
+        {"pattern_type": "contains", "pattern": "='"},
+        {"pattern_type": "contains", "pattern": "&lt;"},
+        {"pattern_type": "contains", "pattern": "&gt;"},
+        {"pattern_type": "contains", "pattern": "&amp;"},
+        {"pattern_type": "contains", "pattern": "&quot;"},
+        {"pattern_type": "contains", "pattern": "&apos;"}
+      ]
+    }
+  ]
+}

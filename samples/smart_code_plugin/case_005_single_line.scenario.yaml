@@ -1,0 +1,15 @@
+scenario: '一个简单的 JavaScript 变量声明语句，包含关键字 ''const''、标识符 ''x'' 和数字字面量 ''42''。'
+target_capability: '短标识符保留与空格压缩'
+expected_keep: 'const, x, 42'
+expected_compress: '（无长标识符或连续空格）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '714dbbba5fcaee4d115351eab7411457925f3a5a2e1a7df821c85f37ce1894c2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

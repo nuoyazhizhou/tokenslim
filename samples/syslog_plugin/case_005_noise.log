@@ -1,0 +1,7 @@
+=======================================
+System startup completed
+=======================================
+May  7 10:33:10 server1 sshd[1234]: Accepted publickey for user
+---------------------------------------
+[ OK ] Network is up
+May  7 10:33:15 server1 CRON[5678]: (root) CMD (/usr/bin/backup.sh)

@@ -1,0 +1,3 @@
+bitbucket repo sync --workspace team-a
+URL: https://bitbucket.org/team-a/token-slim
+CONFLICT: failed to update refs

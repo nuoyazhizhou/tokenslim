@@ -1,0 +1,32 @@
+{
+  "name": "Dockerfile",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Dockerfile 语法检测配置",
+  "file_extensions": ["Dockerfile", ".dockerfile"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "FROM "},
+        {"pattern_type": "contains", "pattern": "RUN "},
+        {"pattern_type": "contains", "pattern": "CMD ["},
+        {"pattern_type": "contains", "pattern": "LABEL "},
+        {"pattern_type": "contains", "pattern": "MAINTAINER "},
+        {"pattern_type": "contains", "pattern": "EXPOSE "},
+        {"pattern_type": "contains", "pattern": "ENV "},
+        {"pattern_type": "contains", "pattern": "ADD "},
+        {"pattern_type": "contains", "pattern": "COPY "},
+        {"pattern_type": "contains", "pattern": "ENTRYPOINT ["},
+        {"pattern_type": "contains", "pattern": "VOLUME ["},
+        {"pattern_type": "contains", "pattern": "USER "},
+        {"pattern_type": "contains", "pattern": "WORKDIR "},
+        {"pattern_type": "contains", "pattern": "ARG "},
+        {"pattern_type": "contains", "pattern": "ONBUILD "},
+        {"pattern_type": "contains", "pattern": "STOPSIGNAL "},
+        {"pattern_type": "contains", "pattern": "HEALTHCHECK "},
+        {"pattern_type": "contains", "pattern": "SHELL ["}
+      ]
+    }
+  ]
+}

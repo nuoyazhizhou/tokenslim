@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用抛出异常，堆栈包含 10 个用户函数调用（f1 到 f10）以及内部模块加载帧，路径均为 /home/user/project/ 下文件。'
+target_capability: '长堆栈折叠与路径字典化'
+expected_keep: 'Error: Deep call stack, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, <anonymous>, line numbers'
+expected_compress: '/home/user/project/a.js, /home/user/project/b.js, /home/user/project/c.js, /home/user/project/d.js, /home/user/project/e.js, /home/user/project/f.js, /home/user/project/g.js, /home/user/project/h.js, /home/user/project/i.js, /home/user/project/j.js, /home/user/project/index.js, internal/modules/cjs/loader.js, internal/modules/cjs/loader.js'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2245f397a4e1202681ca5b62cd0c2a23e0d6e7da17fa48a4f8ad725a411da2ed'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

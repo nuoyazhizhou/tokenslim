@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg status` 命令，显示工作目录中文件的变更状态，包括已修改、未跟踪、已忽略、已删除和已重命名的文件。'
+target_capability: '文件状态摘要保留'
+expected_keep: 'M src/plugins/vcs_plugin/methods.rs, ? config/vcs_plugin.local.json, R src/legacy/old_module.rs -> src/plugins/vcs_plugin/legacy_adapter.rs'
+expected_compress: 'I src/generated/proto_bindings.rs, ! docs/design/architecture.md'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '89285437da024b9ca86720ff0fa66c82d4355975cc874130162a9b955d08f187'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,36 @@
+{
+    "name": "vcs_gh",
+    "description": "GitHub CLI 输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_GH"
+    },
+    "keep_signals": [
+        "gh 命令本身（如 \"gh pr list\"）",
+        "PR/Issue 表格行（如带序号和标题的行）",
+        "KV 对中的短符号键值（如 ST:success）",
+        "去符号后的状态行（含缩写URL）",
+        "通用非空非分隔符非表头行（经空格压缩）"
+    ],
+    "compress_targets": [
+        "空行（跳过）",
+        "分隔线（如 \"---\" 行）",
+        "表头行（列标题行）",
+        "状态符号 ✓ ✗ ○（替换为空格后去除）",
+        "连续多个空格（压缩为单个空格）",
+        "URL 缩写（如 https://github.com/... 变为 URL:...）",
+        "长键名替换为短符号（如 workflow -> WF, status -> ST）",
+        "run list 中块内多行合并为一行（空格分隔）"
+    ],
+    "design_intent": "GitHub CLI输出脱水：保留命令锚点和结构化数据行，折叠块内多行，压缩URL和键名。"
+}

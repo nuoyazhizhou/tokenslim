@@ -1,0 +1,5 @@
+svn import
+Importing into https://svn.example.com/repo/trunk
+Importing src/main.rs
+Importing config/app.json
+Committed revision 12345.

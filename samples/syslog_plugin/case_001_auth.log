@@ -1,0 +1,2 @@
+May  7 10:33:10 server1 sshd[1234]: Accepted publickey for user from 192.168.1.10 port 2222 ssh2: RSA SHA256:abc123
+May  7 10:33:15 server1 sshd[1235]: Failed password for invalid user test from 10.0.0.5 port 3333 ssh2

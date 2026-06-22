@@ -1,0 +1,15 @@
+scenario: 'SVN cat 命令查看远程仓库中 trunk 分支下的 src/main.rs 文件内容，输出文件源码。'
+target_capability: '命令锚点保留与路径压缩'
+expected_keep: 'svn cat https://svn.example.com/repo/trunk/src/main.rs, fn main() {'
+expected_compress: 'https://svn.example.com/repo/trunk/src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '74ef9658f43ac1050f5f1ac0a2ec60f29deacc6e258d32718f8be5e9a0166054'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

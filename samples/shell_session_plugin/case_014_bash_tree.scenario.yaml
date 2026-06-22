@@ -1,0 +1,15 @@
+scenario: '用户使用 Bash shell 执行 `tree src/` 命令，显示项目目录结构，输出包含目录树和统计信息，随后出现新的提示符。'
+target_capability: '命令输出保留与提示符压缩'
+expected_keep: 'tree src/; src/; ├── main.rs; 3 directories, 9 files'
+expected_compress: 'user@host:~$ '
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7d936db2bd7410af0eed9713e5c40eff6034fb5afd5a7b7a546763ca33849035'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

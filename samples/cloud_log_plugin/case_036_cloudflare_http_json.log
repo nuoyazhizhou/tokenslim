@@ -1,0 +1,3 @@
+{"timestamp":"2026-05-13T08:41:01Z","scriptName":"backend-worker","rayID":"7fa01","level":"info","message":"GET /health 200 colo=SJC cache=MISS"}
+{"timestamp":"2026-05-13T08:41:31Z","scriptName":"backend-worker","rayID":"7fa02","level":"info","message":"GET /health 200 colo=SJC cache=MISS"}
+{"timestamp":"2026-05-13T08:41:45Z","scriptName":"backend-worker","rayID":"7fa03","level":"error","message":"POST /api/render 500 error=upstream timeout"}

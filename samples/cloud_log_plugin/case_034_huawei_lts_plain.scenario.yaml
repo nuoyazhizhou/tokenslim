@@ -1,0 +1,15 @@
+scenario: '华为云LTS日志服务中，通过hcloud命令查询后端服务的访问日志，包含健康检查请求和一次POST错误请求。'
+target_capability: '云日志外壳剥离与结构保留'
+expected_keep: 'GET /health HTTP/1.1 200 OK, POST /api/documents HTTP/1.1 500 Internal Server Error'
+expected_compress: '2026-05-13T08:39:01.000Z, INFO lts/prod/backend INFO:, 10.5.1.1:0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '61c65262de226f4ac7c7361857ff45c8b9aa0fba617305e3eaf14d08d8d5b995'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

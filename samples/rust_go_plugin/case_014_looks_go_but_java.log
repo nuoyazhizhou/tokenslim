@@ -1,0 +1,8 @@
+Exception in thread "main" java.lang.NullPointerException: Cannot invoke "String.trim()" because "name" is null
+	at com.example.service.UserService.createUser(UserService.java:42)
+	at com.example.controller.UserController.post(UserController.java:88)
+	at com.example.App.main(App.java:15)
+Caused by: java.lang.IllegalStateException: db closed
+	at com.example.db.Pool.acquire(Pool.java:120)
+	at com.example.service.UserService.createUser(UserService.java:40)
+	... 2 more

@@ -1,0 +1,15 @@
+scenario: 'shell_session_plugin 路由分发测试：Bash 中执行 git status，shell_session_plugin 检测到 git 子命令后路由到 vcs_git_plugin 处理。'
+target_capability: '命令边界检测与路由'
+expected_keep: 'git status, On branch main, modified:   src/main.rs'
+expected_compress: "user@linux:~$, no changes added to commit (use \"git add\" and/or \"git commit -a\")"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe343571fbf90aab9bb135dcd0bb452d4df1a2d2c550aeed48144ac95e6ece98'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T13:54:44.661452'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

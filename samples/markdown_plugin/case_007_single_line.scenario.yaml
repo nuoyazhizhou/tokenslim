@@ -1,0 +1,15 @@
+scenario: '一个仅包含单行Markdown文本的简单场景，文本中有加粗标记（**markdown**），无标题、链接、列表等结构。'
+target_capability: '单行Markdown保留'
+expected_keep: 'Single line of **markdown** text.'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '90caa16891fedfd0b915b6edd06a00a2098067b2663dfc70abd6f3283f6588c1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

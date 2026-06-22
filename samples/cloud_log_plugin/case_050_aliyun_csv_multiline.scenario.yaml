@@ -1,0 +1,15 @@
+scenario: '阿里云SLS日志服务中，CSV格式的多行日志包含Python traceback异常堆栈，需要剥离CSV外壳并保留内部错误信息。'
+target_capability: '云日志外壳剥离与多行保留'
+expected_keep: 'Traceback (most recent call last):, ValueError: Database timeout after 30s'
+expected_compress: '__time__,__source__,__topic__,message'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a2e8e0c2c7316220d73960b3a8ace00a9bb5f0d3d37c26d8f5c40a502d154c57'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

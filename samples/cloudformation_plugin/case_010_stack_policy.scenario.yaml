@@ -1,0 +1,15 @@
+scenario: '用户尝试更新 CloudFormation 栈 prod，但遇到栈策略错误，阻止了对受保护资源 Database 的更新。'
+target_capability: '错误保留与栈策略错误处理'
+expected_keep: 'An error occurred (ValidationError) when calling the UpdateStack operation: Stack policy prevents updates to protected resource Database'
+expected_compress: 'aws cloudformation update-stack --stack-name prod --template-body file://template.yml'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '43730d9c6dc10b44e8844b15aa7e671d28afff07eb85bc2184c828c1767723ec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,29 @@
+{
+  "name": "Go",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Go 代码语法检测配置",
+  "file_extensions": [".go"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "package "},
+        {"pattern_type": "contains", "pattern": "func main()"},
+        {"pattern_type": "contains", "pattern": "func "},
+        {"pattern_type": "contains", "pattern": "import "},
+        {"pattern_type": "contains", "pattern": "fmt.Println"},
+        {"pattern_type": "contains", "pattern": "fmt.Printf"},
+        {"pattern_type": "contains", "pattern": "type "},
+        {"pattern_type": "contains", "pattern": "struct {"},
+        {"pattern_type": "contains", "pattern": "interface {"},
+        {"pattern_type": "contains", "pattern": "chan "},
+        {"pattern_type": "contains", "pattern": "go "},
+        {"pattern_type": "contains", "pattern": "defer "},
+        {"pattern_type": "contains", "pattern": "select {"},
+        {"pattern_type": "contains", "pattern": "case "},
+        {"pattern_type": "contains", "pattern": " := "}
+      ]
+    }
+  ]
+}

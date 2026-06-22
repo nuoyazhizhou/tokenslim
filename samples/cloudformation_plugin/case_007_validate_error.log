@@ -1,0 +1,3 @@
+aws cloudformation validate-template --template-body file://template.yml
+
+An error occurred (ValidationError) when calling the ValidateTemplate operation: Template format error: Unresolved resource dependencies [MissingRole] in the Resources block of the template

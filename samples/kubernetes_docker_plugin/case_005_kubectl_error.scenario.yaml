@@ -1,0 +1,15 @@
+scenario: '用户尝试获取名为 ''nonexistent'' 的 Pod 信息，Kubernetes 返回 404 错误，提示 Pod 未找到。'
+target_capability: 'Kubernetes 错误保留'
+expected_keep: "Error from server (NotFound): pods \"nonexistent\" not found"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dbd41d01615830f1b9505a7021539c1d1384b7d38c09f5f93b338be5b45ef45c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

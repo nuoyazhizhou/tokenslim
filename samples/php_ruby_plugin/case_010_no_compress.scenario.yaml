@@ -1,0 +1,15 @@
+scenario: '一段普通英文文本，既非 PHP 也非 Ruby 错误栈，无需压缩处理。'
+target_capability: '非目标语言文本的保留'
+expected_keep: 'This is not PHP or Ruby, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8ca4c42fac736e6939ca0f765757c33ebc9bcf936c8fa0228eacfe7d2db4ecb2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

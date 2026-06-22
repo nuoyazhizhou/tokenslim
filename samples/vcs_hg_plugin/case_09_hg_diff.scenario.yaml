@@ -1,0 +1,15 @@
+scenario: 'Mercurial diff 命令输出，展示两个变更集之间的代码差异，包含文件修改、新增函数和常量定义。'
+target_capability: 'diff 输出压缩与变更集摘要'
+expected_keep: 'diff -r 17:abc123def456 -r 18:eeff3344aa55, @@ -40,6 +40,11 @@, +    fn detect_tool'
+expected_compress: '--- a/... +++ b/..., 空行, 注释行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a934f1bc3b8f5bf5ceabfc9a578d454c3a39c859225781a2295be1134141a2e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

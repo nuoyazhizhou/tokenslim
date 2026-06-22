@@ -1,0 +1,15 @@
+scenario: '包含特殊符号、Unicode 字符和行尾空白的通用文本，用于测试插件对特殊字符和空白符的处理。'
+target_capability: '特殊字符与空白保留'
+expected_keep: "Text with special chars: !@#$%^&*()_+-=[]{}|;':\",./<>?"
+expected_compress: 'Line with trailing tabs and spaces'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6393b03179a4f61f3a80aa0491a4982524eab044c4b7bd32a60c48109a80d5d4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

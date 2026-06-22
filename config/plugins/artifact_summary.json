@@ -1,0 +1,56 @@
+{
+    "name": "artifact_summary",
+    "description": "Build artifact summary compaction for SARIF security/code scanning results and JUnit XML test reports",
+    "priority": 58,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "<testsuites?|<testcase"
+            },
+            {
+                "type": "regex",
+                "pattern": "\\\"runs\\\"\\s*:"
+            },
+            {
+                "type": "regex",
+                "pattern": "\\\"ruleId\\\"\\s*:"
+            }
+        ],
+        "min_match_ratio": 0.3
+    },
+    "compress": {
+        "token_prefix": "JUNIT|SARIF",
+        "semantic_aggregate": {
+            "enabled": true,
+            "dimensions": [
+                "artifact_type",
+                "test_status",
+                "failure",
+                "error",
+                "skipped",
+                "security_level",
+                "rule_id",
+                "source_location",
+                "tool"
+            ]
+        }
+    },
+    "keep_signals": [
+        "测试套件名称（JUnit 套件标识）",
+        "测试用例名称（含类名）",
+        "测试状态（失败/错误/跳过）",
+        "SARIF 规则ID（安全规则标识）",
+        "严重级别（SARIF 严重性等级）",
+        "源位置（SARIF 问题位置）",
+        "工具名称（扫描工具）"
+    ],
+    "compress_targets": [
+        "原始 XML/JSON 文本（替换为紧凑摘要）",
+        "长字符串（使用字典引擎压缩重复令牌）",
+        "通过状态的测试用例（可能丢弃，仅保留失败/错误/跳过）",
+        "冗余的 SARIF 结果条目（聚合为摘要）"
+    ],
+    "design_intent": "构建产物摘要脱水：保留测试失败/错误和 SARIF 关键信号，折叠冗余的测试用例细节和 SARIF 结果条目。"
+}

@@ -1,0 +1,15 @@
+scenario: '用户使用 Bash shell 的 ll 别名（ls -l 的别名）列出当前目录内容，输出包含文件权限、大小、日期和文件名。'
+target_capability: '命令输出保留'
+expected_keep: 'total 16, drwxr-xr-x, -rw-r--r--'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '03f9bba1d0840e1ca98ab16db5368c6333ca59db6df089a26eb810dfdfbada23'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

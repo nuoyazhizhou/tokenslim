@@ -1,0 +1,15 @@
+scenario: 'Python 嵌套异常场景：app.py 中 main 调用 do_something 抛出 ValueError，该异常作为直接原因导致后续 RuntimeError 被抛出，形成异常链。'
+target_capability: '异常链保留与压缩'
+expected_keep: 'Traceback (most recent call last):, ValueError: Something went wrong, RuntimeError: Failed'
+expected_compress: "File \"app.py\", line 10, in <module>, File \"app.py\", line 5, in main, The above exception was the direct cause of the following exception:"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '86804a7b0e3917b6e3b2f67855f6142d481eaff15b66768f92293a2bd026e00e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

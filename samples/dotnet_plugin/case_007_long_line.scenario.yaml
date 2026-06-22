@@ -1,0 +1,15 @@
+scenario: 'MSBuild 构建警告，包含超长行，显示文件路径、行号、警告代码和消息。'
+target_capability: '超长行处理与错误定位保留'
+expected_keep: 'warning NETSDK1137: It is recommended to either call the GenerateRuntimeConfigurationFiles target or the Publish target instead of building a project for publish purposes without invoking these targets as the resulting output may not be correctly configured for publishing.'
+expected_compress: "C:\\Program Files\\dotnet\\sdk\\6.0.404\\Sdks\\Microsoft.NET.Sdk\\targets\\Microsoft.NET.RuntimeIdentifierInference.targets(211,5):"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd308c247a4de27e10829af8321c0f5b3c27548f8aacfee9273fc946cdd9d1b35'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

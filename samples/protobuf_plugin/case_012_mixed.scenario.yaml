@@ -1,0 +1,15 @@
+scenario: '使用 buf generate 命令编译 protobuf 文件时，输出包含文件路径、行号、错误和警告的诊断信息，其中包含一个未找到类型的错误和两个弃用/枚举值警告。'
+target_capability: 'protobuf 诊断信息压缩'
+expected_keep: "error: Type \"InvoiceStatus\" not found., warning: Field \"old_total\" is deprecated., warning: Enum value \"CUSTOMER_UNKNOWN\" should be zero."
+expected_compress: 'proto/billing/v1/invoice.proto:14:5:, proto/billing/v1/payment.proto:28:9:, proto/billing/v1/customer.proto:51:3:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dfb3d852c5c385f711d5fcd6d98366d08f579febecbab561550a1d032b165de7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

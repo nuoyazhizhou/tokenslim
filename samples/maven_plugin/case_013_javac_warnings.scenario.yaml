@@ -1,0 +1,15 @@
+scenario: 'Maven 编译阶段输出，包含多个 unchecked conversion 警告和一个 cannot find symbol 错误，最终报告 1 个错误和 10 个警告。'
+target_capability: '错误/警告保留与统计'
+expected_keep: '[ERROR] /home/user/project/src/main/java/com/example/Main.java:[10,5] cannot find symbol'
+expected_compress: '[INFO] Compiling 10 source files to target/classes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '76752d10589ea3a84880685bbddb2d815bdb047ea94d219448405a9913593ed4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

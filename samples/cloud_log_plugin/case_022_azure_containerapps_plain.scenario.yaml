@@ -1,0 +1,15 @@
+scenario: 'Azure Container Apps 控制台日志，包含内网 HTTP 请求记录，其中一条返回 503 错误，模拟容器应用访问日志。'
+target_capability: '云日志外壳剥离与压缩'
+expected_keep: 'HTTP 请求行（如 GET /health HTTP/1.1 200 OK）'
+expected_compress: '长资源路径（/subscriptions/000/resourceGroups/rg/providers/Microsoft.App/containerApps/backend）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

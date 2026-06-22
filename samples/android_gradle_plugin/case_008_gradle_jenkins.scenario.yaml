@@ -1,0 +1,15 @@
+scenario: 'Jenkins 持续集成环境中，Android Gradle 构建开始时输出的环境变量列表，包含工作空间、构建号、作业名、Git 分支、Android SDK、Java、Gradle 路径等关键变量。'
+target_capability: '环境变量保留'
+expected_keep: 'WORKSPACE, BUILD_NUMBER, JOB_NAME'
+expected_compress: '（无）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '958e90be83f4a05954589cb9371301005b27679e11211a0f018eb55a8b33f955'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

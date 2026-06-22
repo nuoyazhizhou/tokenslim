@@ -1,0 +1,15 @@
+scenario: 'Webpack 构建成功，输出资产列表和编译时间，无错误或警告。'
+target_capability: '构建成功日志压缩'
+expected_keep: 'webpack 5.90.3 compiled successfully in 3528 ms'
+expected_compress: 'asset main.js 125 KiB [emitted] [minimized] (name: main)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9c0464eec8243ac6afebee0a17a30709ff72faece0905fdd3fa7328430b84f45'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

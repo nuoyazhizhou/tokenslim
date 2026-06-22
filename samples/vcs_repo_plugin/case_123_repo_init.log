@@ -1,0 +1,6 @@
+repo init
+repo init -u https://android.googlesource.com/platform/manifest -b main
+repo: repo initialized in /home/user/android
+repo: Your identity is: alice <alice@example.com>
+repo: will use a mirror located at /home/user/android/mirror
+repo: syncing...

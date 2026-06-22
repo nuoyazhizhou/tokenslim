@@ -1,0 +1,15 @@
+scenario: 'Git log 输出所有分支的提交历史，包含提交哈希、作者、日期、提交信息及分支引用（如 HEAD -> main, feature/parallel-processing）。'
+target_capability: '提交哈希与提交信息保留'
+expected_keep: 'commit abc1234, Implement dictionary manager, Add parallel processing support'
+expected_compress: 'Author: Developer, Date:   Mon Apr 14, (HEAD -> main)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6eafa04b3fb4d598bfa69114a94304af7db276d57eded95eeafbfae66316e499'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

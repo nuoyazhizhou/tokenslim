@@ -1,0 +1,26 @@
+{
+  "name": "@tokenslim/cli-binary-windows-x64",
+  "version": "0.2.6",
+  "description": "Prebuilt TokenSlim CLI + server binaries (Windows x64).",
+  "author": "nuoyazhizhou",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nuoyazhizhou/tokenslim.git",
+    "directory": "packages/cli-binary-windows-x64"
+  },
+  "bugs": {
+    "url": "https://github.com/nuoyazhizhou/tokenslim/issues"
+  },
+  "homepage": "https://github.com/nuoyazhizhou/tokenslim#readme",
+  "os": ["win32"],
+  "cpu": ["x64"],
+  "files": [
+    "bin/",
+    "config/",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

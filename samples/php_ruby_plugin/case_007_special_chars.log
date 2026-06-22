@@ -1,0 +1,3 @@
+PHP Warning:  Invalid character '€' in /app/utf8.php:10
+Ruby Error: encoding error (Encoding::CompatibilityError)
+        from app.rb:15:in `<main>'

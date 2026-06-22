@@ -1,0 +1,15 @@
+scenario: 'JUnit 测试报告中包含大量重复失败的测试用例（timeout 和 wallet callback 错误），以及多个通过的测试用例，需要压缩冗余的失败详情和通过的测试。'
+target_capability: '重复失败聚合与摘要'
+expected_keep: 'testsuite name, testcase classname/name with failure, failure message pattern'
+expected_compress: 'passed testcases, repeated failure details, XML tags'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ce0baf6f432a5f1dc1819f0e62c357153c5c8e5a7fc2135b05026ed8d8ffb9f3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

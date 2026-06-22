@@ -1,0 +1,8 @@
+helm upgrade web ./chart --namespace prod
+Release "web" has been upgraded. Happy Helming!
+NAME: web
+LAST DEPLOYED: Tue May 12 10:14:00 2026
+NAMESPACE: prod
+STATUS: failed
+REVISION: 2
+Error: UPGRADE FAILED: cannot patch "web" with kind Deployment: Deployment.apps "web" is invalid

@@ -1,0 +1,4 @@
+function 函数() {
+    const 变量 = "漢字";
+    console.log(变量);
+}

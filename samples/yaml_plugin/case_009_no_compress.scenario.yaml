@@ -1,0 +1,15 @@
+scenario: '一段不包含任何YAML键值对结构的纯文本日志，内容为普通英文句子，无冒号分隔的键值模式。'
+target_capability: '非YAML文本的保留'
+expected_keep: 'This is a simple log message without any YAML patterns.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cc6780330e4703f10fad96f473649628fee838c48fb0bc355e7883eeb4376e4e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,7 @@
+make[1]: Entering directory '/home/user/project/src'
+gcc -c main.c -o main.o
+[INFO] Building module A...
+make[1]: Leaving directory '/home/user/project/src'
+make[2]: Entering directory '/home/user/project/lib'
+gcc -c lib.c -o lib.o
+[DEBUG] Linking objects...

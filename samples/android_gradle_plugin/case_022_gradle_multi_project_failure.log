@@ -1,0 +1,21 @@
+Azure Pipelines hosted agent 4.256.0
+Run ./gradlew :api:test :service:test :app:assembleDebug
+> Task :api:compileTestKotlin UP-TO-DATE
+> Task :api:test UP-TO-DATE
+> Task :service:compileTestKotlin FROM-CACHE
+> Task :service:processTestResources NO-SOURCE
+> Task :service:test FAILED
+> Task :app:preBuild UP-TO-DATE
+> Task :app:assembleDebug SKIPPED
+
+com.acme.service.PaymentRetryPolicyTest > backsOffAfterGatewayTimeout FAILED
+    java.lang.AssertionError: expected delay <PT30S> but was <PT5S>
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':service:test'.
+> There were failing tests. See the report at: file:///home/vsts/work/1/s/service/build/reports/tests/test/index.html
+
+7 actionable tasks: 1 executed, 3 up-to-date, 1 from cache, 1 skipped, 1 no-source
+BUILD FAILED in 1m 08s

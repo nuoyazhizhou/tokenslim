@@ -1,0 +1,15 @@
+scenario: 'Webpack 构建完成后输出的资源表，包含多个资产文件及其大小、chunk 信息，以及入口点文件列表。'
+target_capability: '资产列表折叠与噪音压缩'
+expected_keep: 'Entrypoint main = runtime.js vendor.js main.js styles.css'
+expected_compress: 'Asset       Size  Chunks                    Chunk Names'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7620c00b15472dbef42e28e95ec8ed6eac291c5239588a70d6db7835d1f6f763'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

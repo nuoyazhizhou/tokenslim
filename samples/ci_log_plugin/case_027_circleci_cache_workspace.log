@@ -1,0 +1,13 @@
+circleci local execute
+CircleCI local build
+====>> Attach workspace
+Downloading workspace layers
+====>> Restore cache
+Restoring cache from v3-deps-main
+Cache restored
+====>> Build
+npm run build
+Build completed successfully
+====>> Persist to workspace
+Uploading workspace
+CircleCI received exit code 0

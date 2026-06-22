@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用抛出一个未捕获异常，错误消息为 ''Something went wrong''，堆栈跟踪包含函数名、文件路径和行号。'
+target_capability: '错误堆栈脱水'
+expected_keep: 'Error, Something went wrong, doSomething'
+expected_compress: '/home/user/project/utils.js:15:10, /home/user/project/index.js:20:5, internal/modules/cjs/loader.js:778:30'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c151c94b9acc24bc9f2c3ad6f3984346fbcc9a3438c6b2d472b312f02c237d71'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

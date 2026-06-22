@@ -1,0 +1,15 @@
+scenario: 'GitHub Actions CI 流程中 Lint 步骤的日志片段，包含步骤分组标记 ::group:: Lint，以及 npm run lint 执行后的 warning 和 error annotations（::warning 和 ::error 行），最后步骤结束标记 ::endgroup:: 和进程退出码。'
+target_capability: 'GitHub Actions annotations 解析'
+expected_keep: '::group::Lint, ::warning file=src/app.ts,line=12::Unexpected console statement, ::error file=src/api.ts,line=18::Unexpected any'
+expected_compress: 'src/app.ts:12:5 warning no-console Unexpected console statement, src/api.ts:18:9 error no-explicit-any Unexpected any, Uploading SARIF results'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0c21088336b9e53422a2a7c443abd0e5ff5eae0bf855cf95165e950ad4d49924'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

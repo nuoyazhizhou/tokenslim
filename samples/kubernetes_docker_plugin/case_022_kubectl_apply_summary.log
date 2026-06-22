@@ -1,0 +1,7 @@
+kubectl apply -f k8s/
+namespace/prod unchanged
+service/api configured
+deployment.apps/api configured
+configmap/api-config created
+secret/api-secret configured
+ingress.networking.k8s.io/api unchanged

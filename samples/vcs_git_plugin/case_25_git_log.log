@@ -1,0 +1,68 @@
+git log
+commit 18f4bb5007aa6e2c48b21c371cd3d884120e668b
+Author: nuoyazhizhou <nuoyazhizhou@example.com>
+Date:   Tue Mar 31 22:11:16 2026 +0800
+
+    feat: Support doctor workspace auto-detection
+
+    Added automatic detection of project type, framework, and dialect
+    from workspace structure. Integrates with the compression pipeline
+    to provide context-aware optimization.
+
+    src/core/doctor_workspace/methods.rs
+    src/core/doctor_workspace/types.rs
+    src/core/doctor_workspace/mod.rs
+    src/core/stream_reader/methods.rs
+    src/core/content_analyzer/methods.rs
+    src/cli/methods.rs
+
+commit 7c3a2d1009bb5e1b37a10b260bc2d773010d557a
+Author: alice.chen <alice.chen@example.com>
+Date:   Mon Mar 30 15:45:33 2026 +0800
+
+    refactor: Extract VcsRuleEngine from monolithic compress method
+
+    Split the 800-line compress method into focused IR pipeline:
+    - GitStatusParser, GitDiffParser, GitLogParser, GitShowParser
+    - VcsRuleEngine for normalization and rendering
+    - Routing logic for status/diff/log/show profiles
+
+    src/plugins/vcs_plugin/parser.rs
+    src/plugins/vcs_plugin/methods.rs
+    src/plugins/vcs_plugin/ir.rs
+    src/plugins/vcs_plugin/rule_engine.rs
+    src/plugins/vcs_plugin/test.rs
+
+commit 4e5f6a7008cc4d0a26b09a150ab1c662900c446b
+Author: bob.wang <bob.wang@example.com>
+Date:   Sun Mar 29 09:30:00 2026 +0800
+
+    fix: Resolve path dictionary collision with email addresses
+
+    The GENERIC_PATH_RE was matching email domains as paths.
+    Added TLD rejection and email detection to looks_like_vcs_path.
+
+    src/plugins/vcs_plugin/methods.rs
+    src/core/path_compressor/methods.rs
+    src/plugins/vcs_plugin/test.rs
+
+commit 9d8e7f6007dd3c0b15a08b040bc0b551800b335a
+Author: charlie.li <charlie.li@example.com>
+Date:   Sat Mar 28 14:00:00 2026 +0800
+
+    feat: Initial VCS plugin skeleton
+
+    Added command whitelists, detection signatures, and basic
+    status/diff/log parsing for Git, SVN, HG, and Perforce.
+
+    src/plugins/vcs_plugin/mod.rs
+    src/plugins/vcs_plugin/types.rs
+    src/plugins/vcs_plugin/methods.rs
+    src/plugins/vcs_plugin/parser.rs
+    src/plugins/vcs_plugin/test.rs
+    docs/design/vcs_plugin.md
+    samples/vcs/git_status.log
+    samples/vcs/git_diff.log
+    samples/vcs/git_log.log
+    Cargo.toml
+    Cargo.lock

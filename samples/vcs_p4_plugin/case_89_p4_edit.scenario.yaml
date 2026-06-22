@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 edit` 命令，输出显示三个文件被标记为打开编辑，包括完整 depot 路径和操作结果。'
+target_capability: '文件操作与路径保留'
+expected_keep: 'opened for edit, //depot/main/src/main.rs, //depot/main/src/utils/helper.rs'
+expected_compress: 'p4 edit'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'efdd1d4914c5562fba351e413b77f66900fff543cc98ee645835aaf39a4f86a2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

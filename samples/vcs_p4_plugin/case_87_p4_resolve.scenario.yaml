@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 resolve 命令，输出显示三个文件的解决结果：一个使用 merge 解决，一个使用 theirs 解决，一个因文本冲突被跳过，最后统计显示 3 个文件已解决，1 个冲突未解决。'
+target_capability: '文件操作与结果保留'
+expected_keep: 'resolved using ''merge'', resolved using ''theirs'', skipped (text conflict)'
+expected_compress: 'p4 resolve, 3 files resolved, 1 conflict remaining'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fc9d67941ca81aad2de9d506fca5740092f7401176fda597ad1537545b81d12a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Maven 构建成功，仅输出一行 BUILD SUCCESS 信息。'
+target_capability: '构建结果保留'
+expected_keep: 'BUILD SUCCESS'
+expected_compress: '[INFO] 行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f8ef0b6dc77280c7b7d59c87b0f7065ccb7bde4e0382cf9914c29b56e9f6c88b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

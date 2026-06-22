@@ -1,0 +1,15 @@
+scenario: '用户在 Bash shell 中执行 echo 和 ls 命令，输出正常结果，提示符为空行。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: "echo \"Hello World\", Hello World, ls -l"
+expected_compress: 'user@ubuntu:~$ , total 4'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a726657e99df4ededf9ae7192bed6a09e5126a7d4d2aa5fa67753ab1f681a334'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,18 @@
+Buildkite agent 3.67.0 starting pytest shard
+Run pytest -n auto --maxfail=1 tests
+============================= test session starts =============================
+platform linux -- Python 3.12.4, pytest-8.3.4
+plugins: xdist-3.6.1
+created: 8/8 workers
+scheduling tests via LoadScheduling
+collected 512 items
+
+[gw0] [ 12%] PASSED tests/test_api.py::test_create_order
+[gw1] [ 25%] PASSED tests/test_api.py::test_update_order
+[gw2] [ 37%] PASSED tests/test_auth.py::test_login
+[gw3] [ 50%] PASSED tests/test_auth.py::test_logout
+[gw4] [ 62%] PASSED tests/test_jobs.py::test_enqueue
+[gw5] [ 75%] PASSED tests/test_jobs.py::test_retry
+[gw6] [ 87%] PASSED tests/test_reports.py::test_export
+[gw7] [100%] PASSED tests/test_reports.py::test_filter
+============================== 512 passed in 62.10s =============================

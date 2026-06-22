@@ -1,0 +1,15 @@
+scenario: 'Maven 构建过程中下载 Spring 框架依赖包的日志，包含下载开始和完成的信息，以及下载进度和速度。'
+target_capability: 'Maven 下载日志压缩'
+expected_keep: 'Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/spring-core/5.3.10/spring-core-5.3.10.jar (1.2 MB at 3.4 MB/s)'
+expected_compress: 'Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/spring-core/5.3.10/spring-core-5.3.10.jar'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a70eeb58af44c902f108beca8337547ce96306695234d23072bb839f07cd427'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

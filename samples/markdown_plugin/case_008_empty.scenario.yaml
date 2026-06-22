@@ -1,0 +1,15 @@
+scenario: '空输入场景，测试插件对空字符串或空白内容的处理能力。'
+target_capability: '空输入处理'
+expected_keep: '无内容'
+expected_compress: '无内容'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

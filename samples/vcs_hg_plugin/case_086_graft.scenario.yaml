@@ -1,0 +1,15 @@
+scenario: '用户使用 hg graft 命令将多个变更集（123, 456, 789, 101, 202）移植到当前分支，每个变更集包含提交信息和合并文件操作。'
+target_capability: 'Hg命令脱水：保留变更集ID和文件操作摘要'
+expected_keep: 'hg graft 123 456 789 101 202, grafting 123:abc1234, grafting 456:def5678'
+expected_compress: 'merging src/auth/login.py, merging src/user/register.py, merging src/email/templates.py'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6392e423f78a959f7fb979fd1e4f0d783094b8fb950d6ab68f4ffaec2d620596'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

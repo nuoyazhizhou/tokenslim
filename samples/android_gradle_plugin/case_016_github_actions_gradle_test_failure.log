@@ -1,0 +1,26 @@
+GitHub Actions runner version 2.329.0
+Current runner version: '2.329.0'
+Run ./gradlew --no-daemon testDebugUnitTest
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:compileDebugKotlin FROM-CACHE
+> Task :app:compileDebugJavaWithJavac UP-TO-DATE
+> Task :app:processDebugUnitTestJavaRes NO-SOURCE
+> Task :app:testDebugUnitTest FAILED
+
+com.example.auth.LoginViewModelTest > rejectsExpiredToken FAILED
+    java.lang.AssertionError: expected:<401> but was:<200>
+        at com.example.auth.LoginViewModelTest.rejectsExpiredToken(LoginViewModelTest.kt:88)
+
+There were failing tests. See the report at: file:///home/runner/work/mobile/mobile/app/build/reports/tests/testDebugUnitTest/index.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/runner/work/mobile/mobile/app/build/reports/tests/testDebugUnitTest/index.html
+
+6 actionable tasks: 1 executed, 3 up-to-date, 1 from cache, 1 no-source
+BUILD FAILED in 1m 12s
+::error title=Gradle test failed::Process completed with exit code 1.
+Error: Process completed with exit code 1.

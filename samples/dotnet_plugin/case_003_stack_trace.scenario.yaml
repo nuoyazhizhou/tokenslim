@@ -1,0 +1,15 @@
+scenario: '一个 .NET 应用程序抛出 NullReferenceException 异常，堆栈跟踪显示异常发生在 UserService.GetUser 方法中，并经过 ASP.NET Core 框架层。'
+target_capability: '堆栈跟踪错误定位保留'
+expected_keep: "at MyApp.Services.UserService.GetUser(Int32 id) in C:\\src\\MyApp\\Services\\UserService.cs:line 42"
+expected_compress: 'at lambda_method1(Closure , Object , Object[] )'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8bfa0989d82783eb2edfaa77f9c97d5904d7667625ec0ba57f79c3d1a8c3f445'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

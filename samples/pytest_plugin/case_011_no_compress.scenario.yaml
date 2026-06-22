@@ -1,0 +1,15 @@
+scenario: '用户运行 `pytest --version` 查看 pytest 版本，输出仅包含版本号，无测试执行内容。'
+target_capability: '短输入回退'
+expected_keep: 'pytest 8.1.1'
+expected_compress: 'pytest --version'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8b04b85d1204244e3936b0439d8dcc72a8dbd131b70bd8f88e5eee6bb7ee11a5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

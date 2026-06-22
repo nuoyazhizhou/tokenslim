@@ -1,0 +1,2 @@
+2026-05-07 10:30:01.123 UTC [12345] ERROR: relation "users" does not exist
+2026-05-07 10:30:01.124 UTC [12345] STATEMENT: select * from users;

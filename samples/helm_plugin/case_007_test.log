@@ -1,0 +1,10 @@
+helm test web --namespace prod
+NAME: web
+LAST DEPLOYED: Tue May 12 11:00:00 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 4
+TEST SUITE: web-test
+Last Started: Tue May 12 11:02:00 2026
+Last Completed: Tue May 12 11:02:08 2026
+Phase: Succeeded

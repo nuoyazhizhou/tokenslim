@@ -1,0 +1,15 @@
+scenario: 'CVS 更新操作，显示更新目录、文件状态（U/A/R）及更新统计。'
+target_capability: 'CVS 命令锚点与文件状态保留'
+expected_keep: 'cvs update, U src/main.rs, A new_file.py'
+expected_compress: 'cvs update: Updating ., 6 files updated'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '665d84e9a9b164fe9d76999c4b8f878071aa00e049197d63743e6c60134efde1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

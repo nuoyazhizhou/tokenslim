@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：混合 UA 含 sqlmap 攻击，插件应保留 403 和异常 UA，压缩正常 UA。'
+target_capability: 'User-Agent distribution & anomaly detection'
+expected_keep: '403 response, sqlmap/1.7, /admin'
+expected_compress: 'Mozilla/5.0, curl/8.4.0, 10.6.0.x'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

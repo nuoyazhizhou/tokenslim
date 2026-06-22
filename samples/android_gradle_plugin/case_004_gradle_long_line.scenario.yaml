@@ -1,0 +1,15 @@
+scenario: 'Android Gradle构建过程中Manifest合并失败，提示属性冲突，建议添加tools:replace覆盖。'
+target_capability: '构建错误保留'
+expected_keep: 'Manifest merger failed : Attribute application@appComponentFactory value=(android.support.v4.app.CoreComponentFactory)'
+expected_compress: '> Task :app:processDebugManifest'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '772d45c3d447d3660ac49a06a4f90f24bf763c2594eeae514cbc04ab0ea9d119'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

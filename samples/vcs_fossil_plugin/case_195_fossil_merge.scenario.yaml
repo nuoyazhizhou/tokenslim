@@ -1,0 +1,15 @@
+scenario: 'vcs_fossil_plugin 测试：Fossil merge 操作，合并 feature-branch，插件应保留合并摘要，压缩拉取详情。'
+target_capability: '合并操作摘要保留'
+expected_keep: 'fossil merge feature-branch, 120 files updated, 3 files merged'
+expected_compress: 'Pulling from http://example.com/repo..., Merging abc1234: Add new feature into current branch'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

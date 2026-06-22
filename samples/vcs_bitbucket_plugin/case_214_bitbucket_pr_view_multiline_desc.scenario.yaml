@@ -1,0 +1,15 @@
+scenario: 'Bitbucket CLI ''pr view'' 命令查看一个包含多行描述的 PR，展示状态、作者、审查者、分支和描述信息。'
+target_capability: 'PR视图元数据保留与噪声压缩'
+expected_keep: 'Pull request #221: Token cache stabilization, State: OPEN, Source: feature/token-cache -> main'
+expected_compress: '=========================================================, Created: 2026-05-12, Description:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ae79cd7996b667c710fe053e9aface02ff2ca504163c9e54e795921ac35e47a7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

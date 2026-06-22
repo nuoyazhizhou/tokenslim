@@ -1,0 +1,15 @@
+scenario: '一个包含韩语CP949编码的二进制数据片段，需要被识别并转换为可读文本。'
+target_capability: '编码兜底与修复'
+expected_keep: '韩语文本内容'
+expected_compress: '编码异常'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '44fec14902f2d524572ad1a7bb09dc678e00566816c0188e0d3a9e3e54763414'
+  final_status: 'not_registered'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:48:46.883643'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: true

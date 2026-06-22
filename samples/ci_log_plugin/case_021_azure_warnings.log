@@ -1,0 +1,12 @@
+az pipelines runs show --id 203
+##[section]Starting: Lint
+##[command]npm run lint
+##[warning]src/app.ts:12 Unexpected console statement
+##[warning]src/api.ts:44 Missing return type
+Lint completed with warnings
+##[section]Finishing: Lint
+##[section]Starting: Build
+##[command]npm run build
+Build completed successfully
+##[section]Finishing: Build
+Job succeeded

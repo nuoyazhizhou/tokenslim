@@ -1,0 +1,15 @@
+scenario: 'Perforce 提交描述（p4 describe）输出，包含变更号、作者、时间、描述、影响文件列表及差异内容。'
+target_capability: 'P4 describe 输出压缩'
+expected_keep: 'Change 12345, Affected files, //depot/main/src/plugins/vcs_plugin/parser.rs#3 add'
+expected_compress: 'Differences ... , ==== //depot/main/src/plugins/vcs_plugin/parser.rs#3 (text) ====, --- //depot/main/src/plugins/vcs_plugin/parser.rs#2 (text)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '088719f96efb1c59a383f571d441c2069f47ceb9460360f62a445d5b0439d0d7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

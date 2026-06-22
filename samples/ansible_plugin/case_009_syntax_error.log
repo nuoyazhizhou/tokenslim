@@ -1,0 +1,7 @@
+ansible-playbook broken.yml
+
+ERROR! Syntax Error while loading YAML.
+  mapping values are not allowed in this context
+
+The error appears to be in 'roles/api/tasks/main.yml': line 17, column 13, but may
+be elsewhere in the file depending on the exact syntax problem.

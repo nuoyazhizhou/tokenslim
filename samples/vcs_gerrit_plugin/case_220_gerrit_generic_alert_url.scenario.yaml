@@ -1,0 +1,15 @@
+scenario: '用户执行 gerrit ls-projects 命令，输出中包含一个 Gerrit 变更 URL 和权限错误信息。'
+target_capability: '命令锚点保留与错误行保留'
+expected_keep: 'gerrit ls-projects --show-description, error: permission denied'
+expected_compress: 'https://gerrit.example.com/c/team/repo/+/12345'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '387f20e6956d7933d227373f08ed76825fb1c0cde1cb82b043937392353046d1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

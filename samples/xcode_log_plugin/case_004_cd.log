@@ -1,0 +1,2 @@
+cd /Users/dev/work/app
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -x objective-c -c /Users/dev/work/app/ViewController.m

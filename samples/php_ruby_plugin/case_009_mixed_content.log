@@ -1,0 +1,6 @@
+2024-01-15 10:30:45 INFO Starting PHP script
+PHP Notice:  Undefined index: id in /app/index.php:10
+2024-01-15 10:30:46 DEBUG Calling Ruby helper
+Ruby Error: Something went wrong (RuntimeError)
+        from helper.rb:5:in `do_work'
+2024-01-15 10:30:47 ERROR Job failed

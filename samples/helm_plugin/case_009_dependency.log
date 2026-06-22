@@ -1,0 +1,7 @@
+helm dependency build ./chart
+Hang tight while we grab the latest from your chart repositories...
+Saving 3 charts
+Downloading redis from repo https://charts.bitnami.com/bitnami
+Downloading postgresql from repo https://charts.bitnami.com/bitnami
+Downloading common from repo https://charts.bitnami.com/bitnami
+Deleting outdated charts

@@ -1,0 +1,26 @@
+gcc -c foo.c -Wall
+foo.c: In function 'main':
+foo.c:10:5: warning: unused variable 'x' [-Wunused-variable]
+   10 |     int x;
+      |     ^
+foo.c:15:5: warning: unused variable 'x' [-Wunused-variable]
+   15 |     int x;
+      |     ^
+foo.c:20:5: warning: unused variable 'x' [-Wunused-variable]
+   20 |     int x;
+      |     ^
+foo.c:25:5: warning: unused variable 'x' [-Wunused-variable]
+   25 |     int x;
+      |     ^
+foo.c:30:5: warning: unused variable 'x' [-Wunused-variable]
+   30 |     int x;
+      |     ^
+foo.c:35:5: warning: unused variable 'x' [-Wunused-variable]
+   35 |     int x;
+      |     ^
+foo.c:40:5: warning: unused variable 'y' [-Wunused-variable]
+   40 |     int y;
+      |     ^
+foo.c:45:5: warning: unused variable 'y' [-Wunused-variable]
+   45 |     int y;
+      |     ^

@@ -1,0 +1,8 @@
+p4 client my-workspace
+Client: my-workspace
+Owner: alice
+Host: alice-laptop
+Root: C:\workspace\myproject
+View:
+    //depot/main/... //my-workspace/...
+    //depot/feature/... //my-workspace/feature/...

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="pytest" tests="6" failures="1" errors="0" skipped="1" time="8.551" hostname="runner-16">
+  <properties>
+    <property name="python" value="3.12.3"/>
+    <property name="pytest" value="8.3.4"/>
+    <property name="commit" value="6f5b3152b87a4b4b8d8e2b31f123901edc06ab9d"/>
+    <property name="workflow" value="pull_request"/>
+  </properties>
+  <testcase classname="tests.web.test_routes" name="test_health" file="tests/web/test_routes.py" line="12" time="0.044"/>
+  <testcase classname="tests.web.test_routes" name="test_metrics_requires_admin" file="tests/web/test_routes.py" line="28" time="0.083"/>
+  <testcase classname="tests.web.test_routes" name="test_openapi_snapshot" file="tests/web/test_routes.py" line="41" time="1.384">
+    <failure message="snapshot mismatch for /v1/reports schema">Snapshot assertion failed: expected property reportStatus enum=[queued,running,done,failed], received enum=[queued,running,completed,failed]</failure>
+  </testcase>
+  <testcase classname="tests.web.test_upload" name="test_upload_rejects_large_file" file="tests/web/test_upload.py" line="63" time="0.552"/>
+  <testcase classname="tests.web.test_upload" name="test_upload_rejects_empty_file" file="tests/web/test_upload.py" line="88" time="0.491"/>
+  <testcase classname="tests.web.test_upload" name="test_upload_scans_virus" file="tests/web/test_upload.py" line="117" time="0.000"><skipped message="clamav service unavailable on forked PR"/></testcase>
+</testsuite>

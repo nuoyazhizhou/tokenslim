@@ -1,0 +1,40 @@
+# TokenSlim 命令重写配置示例
+# 
+# 将此文件复制为 .tokenslim/rewrites.toml 或 ~/.tokenslim/rewrites.toml
+# 
+# 用法：
+#   tokenslim rewrite "make test"
+#   # 输出: make SHELL=tokenslim test
+
+# 跳过模式 - 匹配这些模式的命令不会被重写
+skip_patterns = [
+    "^git ",      # 跳过所有 git 命令
+    "^docker ",   # 跳过所有 docker 命令
+    "^ssh ",      # 跳过所有 ssh 命令
+]
+
+# 用户自定义重写规则
+# 
+# 规则按顺序应用，第一个匹配的规则生效
+# pattern: 正则表达式模式
+# replacement: 替换字符串（支持正则捕获组 $1, $2 等）
+
+[[user_rules]]
+pattern = "^npm test$"
+replacement = "npm run test:tokenslim"
+
+[[user_rules]]
+pattern = "^npm run (\\w+)$"
+replacement = "npm run $1 -- --tokenslim"
+
+[[user_rules]]
+pattern = "^yarn test$"
+replacement = "yarn test --tokenslim"
+
+[[user_rules]]
+pattern = "^pnpm test$"
+replacement = "pnpm test --tokenslim"
+
+# 内置包装器（自动应用，无需配置）：
+# - make → make SHELL=tokenslim
+# - just → just --shell tokenslim

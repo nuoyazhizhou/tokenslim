@@ -1,0 +1,5 @@
+fossil diff --brief
+ADDED      src/auth/login.rs
+MODIFIED   src/main.rs
+MODIFIED   src/lib/utils.rs
+DELETED    src/lib/old_module.rs

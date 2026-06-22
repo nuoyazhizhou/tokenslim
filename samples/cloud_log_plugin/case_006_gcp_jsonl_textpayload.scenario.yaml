@@ -1,0 +1,15 @@
+scenario: 'GCP Cloud Run 后端容器的 JSONL 格式日志，包含 INFO 和 ERROR 级别，记录 worker 启动、数据库连接超时及重试。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: 'textPayload 内容如 ''worker started pid=42''、''database connection error: timeout after 30s''、''retrying database connection'''
+expected_compress: 'timestamp 字段（如 ''2026-05-13T08:13:39.939Z'' 压缩为 ''2026-05-13 08:13:39''）、resource 字段（如 ''cloud_run_revision'' 路径缩短）、logName 字段（如 ''projects/cloud-document/logs/run.googleapis.com%2Fstdout'' 截断）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'faba72a45a0ca753bb2cebe774cc10dc35032ed26499666dcda044fada61442f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

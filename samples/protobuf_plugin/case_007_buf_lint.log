@@ -1,0 +1,3 @@
+buf lint
+proto/user/v1/user.proto:1:1: warning: Files with package "user.v1" should be in directory "user/v1"
+proto/order/v1/order.proto:33:5: error: Field name "UserID" should be lower_snake_case, such as "user_id".

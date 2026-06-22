@@ -1,0 +1,6 @@
+git reflog
+HEAD@{0}: commit (merge): Merge branch 'feature-auth' into main
+HEAD@{1}: checkout: moving from main to feature-auth
+HEAD@{2}: commit: Add login functionality
+HEAD@{3}: checkout: moving from feature-auth to main
+HEAD@{4}: commit: Fix typo in README

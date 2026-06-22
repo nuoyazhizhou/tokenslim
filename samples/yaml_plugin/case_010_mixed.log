@@ -1,0 +1,7 @@
+Regular log line
+name: value
+Another log line
+items:
+  - item1
+  - item2
+End of log

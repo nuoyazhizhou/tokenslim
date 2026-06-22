@@ -1,0 +1,15 @@
+scenario: '通过 AWS CLI `aws logs tail` 查看 ECS 后端服务日志，包含内网健康检查（200）和错误响应（500/503），模拟混合状态云日志。'
+target_capability: '云日志外壳剥离与压缩'
+expected_keep: 'INFO: GET /health HTTP/1.1 200 OK'
+expected_compress: '2026-05-13T08:13:39.939000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

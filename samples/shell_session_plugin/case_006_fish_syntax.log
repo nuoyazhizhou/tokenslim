@@ -1,0 +1,3 @@
+user@macbook ~> for i in 1 2 3
+fish: Expected END, but found end of line
+user@macbook ~> 

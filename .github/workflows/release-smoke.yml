@@ -1,0 +1,32 @@
+name: release-smoke
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  smoke-gate:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Run release smoke gate (debug)
+        shell: pwsh
+        run: |
+          ./scripts/release_smoke_gate.ps1 -Profile debug
+
+      - name: Run release smoke gate (release + bin sync check)
+        shell: pwsh
+        run: |
+          ./scripts/release_smoke_gate.ps1 -Profile release -SyncBin -RequireBinSync

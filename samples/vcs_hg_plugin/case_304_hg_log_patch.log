@@ -1,0 +1,27 @@
+hg log --patch -l 2
+changeset:   42:a1b2c3d4e5f6
+user:        Alice Chen <alice@example.com>
+date:        Fri Apr 11 14:30:00 2026 +0800
+summary:     Refactor main entry point
+
+diff -r b4c5d6e7f8g9 -r a1b2c3d4e5f6 src/main.rs
+--- a/src/main.rs	Thu Apr 10 09:15:00 2026 +0800
++++ b/src/main.rs	Fri Apr 11 14:30:00 2026 +0800
+@@ -10,6 +10,8 @@
+     let config = load_config();
++    let auth = Auth::new();
++    auth.initialize();
+     run_server(config);
+
+changeset:   38:b4c5d6e7f8g9
+user:        Bob Wang <bob@example.com>
+date:        Thu Apr 10 09:15:00 2026 +0800
+summary:     Add configuration loader
+
+diff -r c7d8e9f0a1b2 -r b4c5d6e7f8g9 src/lib/config.rs
+--- /dev/null	Thu Apr 10 09:15:00 2026 +0800
++++ b/src/lib/config.rs	Thu Apr 10 09:15:00 2026 +0800
+@@ -0,0 +1,15 @@
++pub struct Config {
++    pub port: u16,
++}

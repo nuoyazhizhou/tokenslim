@@ -1,0 +1,15 @@
+scenario: 'Gradle 构建过程中下载多个 Maven 依赖（如 spring-boot, spring-core, jackson-databind, slf4j），执行编译、打包任务，最终构建成功。'
+target_capability: '依赖下载URL压缩与Task行折叠'
+expected_keep: 'BUILD SUCCESSFUL in 34s'
+expected_compress: 'Download https://repo.maven.apache.org/maven2/...; > Task :compileJava'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0b94652cac05530337fe19cb67b3f07eaa94c17a461e1479907c1f45c4db5932'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'PostgreSQL 数据库日志，包含一条慢查询（421.75 ms）和一条快速 UPDATE 语句的执行持续时间记录，以及一条死锁检测错误日志。'
+target_capability: '数据库日志脱水：保留 pid、duration、level、query 标签'
+expected_keep: 'duration: 421.75 ms, duration: 33.12 ms, ERROR: deadlock detected'
+expected_compress: '2026-05-12 10:03:01.123 UTC, SELECT * FROM orders WHERE status = ''pending'' ORDER BY created_at DESC LIMIT 100, execute <unnamed>: UPDATE orders SET locked_at = now() WHERE id = $1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e2fe66baf0fd37bd6d8491c7185afa6b312f710d9698aa95ac5c210d289984af'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

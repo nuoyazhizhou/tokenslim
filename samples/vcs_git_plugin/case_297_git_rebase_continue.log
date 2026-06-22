@@ -1,0 +1,3 @@
+git rebase --continue
+Applying: Add user validation
+Applying: Fix password hashing

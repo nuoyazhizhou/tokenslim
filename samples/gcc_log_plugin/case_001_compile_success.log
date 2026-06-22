@@ -1,0 +1,6 @@
+gcc -c main.c -o main.o
+gcc -c utils.c -o utils.o
+gcc -c logger.c -o logger.o
+main.c: In function 'main':
+main.c:15:5: warning: unused variable 'count'
+gcc main.o utils.o logger.o -o app

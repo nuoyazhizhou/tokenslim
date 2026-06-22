@@ -1,0 +1,15 @@
+scenario: 'Ansible playbook部署，在''Restart service''任务中api2主机失败，错误信息为服务控制进程退出错误码。'
+target_capability: '错误保留与任务状态压缩'
+expected_keep: 'TASK [Restart service] *********, failed: [api2], PLAY RECAP'
+expected_compress: "ok: [api1], changed: [api1], 'msg': \"Job for api.service failed...\" (压缩为简短摘要)"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cf55fcb068cc4a6e9c78288a224309698004007bcc05b99f1465ec329bde4482'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

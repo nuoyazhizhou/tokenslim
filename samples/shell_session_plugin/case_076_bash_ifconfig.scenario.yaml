@@ -1,0 +1,15 @@
+scenario: '用户在 Bash 中执行 ifconfig eth0 和 ifconfig lo 查看网络接口详情，输出包含 IP 地址、MAC 地址、数据包统计等信息。'
+target_capability: '命令输出保留'
+expected_keep: 'ifconfig eth0, inet addr:192.168.1.50, RX packets:12345678'
+expected_compress: 'user@host:~$, user@host:~$ ifconfig lo'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f5db592f684628232bf84d1c73f031ab79deaae8ba1e5d16bf04b7e1ff072b71'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

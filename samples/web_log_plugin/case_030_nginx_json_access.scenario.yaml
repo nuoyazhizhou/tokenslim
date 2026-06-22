@@ -1,0 +1,15 @@
+scenario: 'Nginx JSON access log with health check, normal API request, and a 500 error on POST /api/reports/123456 with slow request time 2.400s.'
+target_capability: '异常/慢请求信号保留'
+expected_keep: 'status 500, request_time 2.400, /api/reports/123456'
+expected_compress: '10.4.0.1, ELB-HealthChecker/2.0, Mozilla/5.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '31fe4d60767510586d994ca4269bfdf897ba1c334ddfcf292267845322bb73af'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

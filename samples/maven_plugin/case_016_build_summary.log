@@ -1,0 +1,51 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building example-project 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ example-project ---
+[INFO] Deleting /home/user/project/target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ example-project ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 5 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:compile (default-compile) @ example-project ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 50 source files to /home/user/project/target/classes
+[WARNING] /home/user/project/src/main/java/com/example/Foo.java:[42,10] unchecked conversion
+[WARNING] /home/user/project/src/main/java/com/example/Bar.java:[15,5] unchecked conversion
+[WARNING] /home/user/project/src/main/java/com/example/Baz.java:[20,8] unchecked conversion
+[WARNING] /home/user/project/src/main/java/com/example/Qux.java:[25,3] unchecked conversion
+[WARNING] /home/user/project/src/main/java/com/example/Test.java:[30,5] unchecked conversion
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:testResources (default-testResources) @ example-project ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 2 resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.1:testCompile (default-testCompile) @ example-project ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 20 source files to /home/user/project/target/test-classes
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.2:test (default-test) @ example-project ---
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.FooTest
+[INFO] Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.345 s - in com.example.FooTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 50, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- maven-jar-plugin:3.2.0:jar (default-jar) @ example-project ---
+[INFO] Building jar: /home/user/project/target/example-project-1.0.0-SNAPSHOT.jar
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.345 s
+[INFO] Finished at: 2024-01-15T10:30:45Z
+[INFO] ------------------------------------------------------------------------

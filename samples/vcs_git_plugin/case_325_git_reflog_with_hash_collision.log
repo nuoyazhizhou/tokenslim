@@ -1,0 +1,4 @@
+git reflog -n 3
+aaaaaaaaaab1111111111111111111111111111111 HEAD@{0}: commit: first
+aaaaaaaaaac2222222222222222222222222222222 HEAD@{1}: commit: second
+bbbbbbbbbbd3333333333333333333333333333333 HEAD@{2}: commit: third

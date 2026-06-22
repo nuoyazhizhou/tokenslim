@@ -1,0 +1,15 @@
+scenario: 'PowerShell 用户执行 Get-ChildItem -Recurse 命令，递归列出项目目录结构，包括 src、tests 子目录及 Cargo.toml、Cargo.lock、main.rs 文件，输出包含目录和文件列表。'
+target_capability: '命令输出保留与提示符压缩'
+expected_keep: "Get-ChildItem -Recurse, Directory: C:\\workspace\\project, main.rs"
+expected_compress: "PS C:\\workspace> , PS C:\\workspace> "
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0fe156a3a1429c6a52cf64f21176931c676a888a6d76366c3c692ac4ef931b7d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

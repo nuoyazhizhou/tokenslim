@@ -1,0 +1,15 @@
+scenario: 'Cloudflare CSV格式的Web访问日志，包含正常请求（200）和异常请求（403、404、500），以及来自恶意IP的扫描行为（访问/.git/config、/wp-login.php等敏感路径）。'
+target_capability: '异常检测与扫描行为识别'
+expected_keep: '403, 404, 500, BadBot'
+expected_compress: '200, Mozilla/5.0, /cdn/app.js'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2a437cf56843cef9bdb4752714ca377577ba2cc006035335cd1547900e0293c2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

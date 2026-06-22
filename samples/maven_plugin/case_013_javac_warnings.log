@@ -1,0 +1,41 @@
+[INFO] Compiling 10 source files to target/classes
+[WARNING] /home/user/project/src/main/java/com/example/Foo.java:[42,10] unchecked conversion
+  required: List<String>
+  found:    List
+[WARNING] /home/user/project/src/main/java/com/example/Bar.java:[15,5] unchecked conversion
+  required: Map<String,Object>
+  found:    Map
+[WARNING] /home/user/project/src/main/java/com/example/Baz.java:[20,8] unchecked conversion
+  required: Set<Integer>
+  found:    Set
+[WARNING] /home/user/project/src/main/java/com/example/Qux.java:[25,3] unchecked conversion
+  required: List<String>
+  found:    List
+[WARNING] /home/user/project/src/main/java/com/example/Test1.java:[30,5] unchecked conversion
+  required: Map<String,Object>
+  found:    Map
+[WARNING] /home/user/project/src/main/java/com/example/Test2.java:[35,8] unchecked conversion
+  required: Set<Integer>
+  found:    Set
+[WARNING] /home/user/project/src/main/java/com/example/Test3.java:[40,3] unchecked conversion
+  required: List<String>
+  found:    List
+[WARNING] /home/user/project/src/main/java/com/example/Test4.java:[45,5] unchecked conversion
+  required: Map<String,Object>
+  found:    Map
+[WARNING] /home/user/project/src/main/java/com/example/Test5.java:[50,8] unchecked conversion
+  required: Set<Integer>
+  found:    Set
+[WARNING] /home/user/project/src/main/java/com/example/Test6.java:[55,3] unchecked conversion
+  required: List<String>
+  found:    List
+[ERROR] /home/user/project/src/main/java/com/example/Main.java:[10,5] cannot find symbol
+  symbol:   variable foo
+  location: class com.example.Main
+[INFO] -------------------------------------------------------------
+[ERROR] COMPILATION ERROR : 
+[INFO] -------------------------------------------------------------
+[ERROR] /home/user/project/src/main/java/com/example/Main.java:[10,5] cannot find symbol
+[INFO] 1 error
+[WARNING] 10 warnings
+[INFO] -------------------------------------------------------------

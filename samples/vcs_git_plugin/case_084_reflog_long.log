@@ -1,0 +1,51 @@
+git reflog -n 50
+abc1234 HEAD@{0}: commit: feat: Add new feature
+def5678 HEAD@{1}: commit: fix: Fix bug in auth
+ghi9012 HEAD@{2}: commit: feat: Add user registration
+jkl3456 HEAD@{3}: commit: fix: Fix validation error
+mno7890 HEAD@{4}: commit: feat: Add password reset
+pqr1234 HEAD@{5}: commit: fix: Fix email sending
+stu5678 HEAD@{6}: commit: feat: Add profile page
+vwx9012 HEAD@{7}: commit: fix: Fix image upload
+yza3456 HEAD@{8}: commit: feat: Add settings page
+bcd7890 HEAD@{9}: commit: fix: Fix settings save
+efg1234 HEAD@{10}: checkout: moving from main to feature/new-feature
+hij5678 HEAD@{11}: commit: feat: Add logging system
+klm9012 HEAD@{12}: commit: fix: Fix log rotation
+nop3456 HEAD@{13}: commit: feat: Add dashboard UI
+qrs7890 HEAD@{14}: commit: fix: Fix dashboard layout
+tuv1234 HEAD@{15}: commit: feat: Add user profile UI
+wxy5678 HEAD@{16}: commit: fix: Fix profile validation
+zab9012 HEAD@{17}: commit: feat: Add settings UI
+cde3456 HEAD@{18}: commit: fix: Fix settings form
+fgh7890 HEAD@{19}: commit: feat: Add API endpoints
+ijk1234 HEAD@{20}: commit: fix: Fix API error handling
+lmn5678 HEAD@{21}: commit: feat: Add GraphQL support
+opq9012 HEAD@{22}: commit: fix: Fix GraphQL schema
+rst3456 HEAD@{23}: commit: feat: Add database migrations
+uvw7890 HEAD@{24}: commit: fix: Fix migration rollback
+xyz1234 HEAD@{25}: checkout: moving from feature/api to main
+abc5678 HEAD@{26}: commit: feat: Add REST API
+def9012 HEAD@{27}: commit: fix: Fix REST API validation
+ghi3456 HEAD@{28}: commit: feat: Add API documentation
+jkl7890 HEAD@{29}: commit: fix: Fix documentation links
+mno1234 HEAD@{30}: commit: feat: Add authentication middleware
+pqr5678 HEAD@{31}: commit: fix: Fix middleware error handling
+stu9012 HEAD@{32}: commit: feat: Add rate limiting
+vwx3456 HEAD@{33}: commit: fix: Fix rate limit calculation
+yza7890 HEAD@{34}: commit: feat: Add caching layer
+bcd1234 HEAD@{35}: commit: fix: Fix cache invalidation
+efg5678 HEAD@{36}: commit: feat: Add monitoring system
+hij9012 HEAD@{37}: commit: fix: Fix monitoring metrics
+klm3456 HEAD@{38}: commit: feat: Add alerting system
+nop7890 HEAD@{39}: commit: fix: Fix alert notifications
+qrs1234 HEAD@{40}: commit: feat: Add backup system
+tuv5678 HEAD@{41}: commit: fix: Fix backup scheduling
+wxy9012 HEAD@{42}: commit: feat: Add restore functionality
+zab3456 HEAD@{43}: commit: fix: Fix restore validation
+cde7890 HEAD@{44}: commit: feat: Add health check endpoint
+fgh1234 HEAD@{45}: commit: fix: Fix health check timeout
+ijk5678 HEAD@{46}: commit: feat: Add metrics endpoint
+lmn9012 HEAD@{47}: commit: fix: Fix metrics collection
+opq3456 HEAD@{48}: commit: feat: Add tracing support
+rst7890 HEAD@{49}: commit: fix: Fix trace sampling

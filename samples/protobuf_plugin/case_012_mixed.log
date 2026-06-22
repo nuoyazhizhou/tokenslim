@@ -1,0 +1,4 @@
+buf generate
+proto/billing/v1/invoice.proto:14:5: warning: Field "old_total" is deprecated.
+proto/billing/v1/payment.proto:28:9: error: Type "InvoiceStatus" not found.
+proto/billing/v1/customer.proto:51:3: warning: Enum value "CUSTOMER_UNKNOWN" should be zero.

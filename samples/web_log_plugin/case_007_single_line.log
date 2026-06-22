@@ -1,0 +1,1 @@
+127.0.0.1 - admin [07/May/2026:10:33:10 +0800] "GET /health HTTP/1.1" 200 2 "-" "health-check/1.0"

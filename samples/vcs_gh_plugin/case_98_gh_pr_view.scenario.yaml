@@ -1,0 +1,15 @@
+scenario: '使用 gh pr view 查看单个 PR 的详细信息，输出包含 PR 编号、分支、状态、标题、作者、日期和构建/合并信息。'
+target_capability: 'PR 视图结构化数据保留'
+expected_keep: '#22   feature/new-ui    open     Add dark mode support   alice   2026-04-05  build: #1234'
+expected_compress: '表头行（如无）或空行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1d9428e670549bcc404587214e4ef6836381ea08b358c13fd785a50269441691'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

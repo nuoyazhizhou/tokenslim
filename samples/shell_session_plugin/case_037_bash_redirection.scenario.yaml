@@ -1,0 +1,15 @@
+scenario: '用户使用 Bash shell 执行重定向操作，包括输出重定向到文件、追加重定向和错误重定向。'
+target_capability: '重定向操作保留'
+expected_keep: "echo \"Hello World\" > test.txt, cat test.txt >> append.txt, ls nonexistent 2> error.log"
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3cd6de3b1998d8bc0fb45665da2a0970b911f8fdfc65a8e1d917ba1305e11be6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

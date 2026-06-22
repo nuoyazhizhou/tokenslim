@@ -1,0 +1,15 @@
+scenario: 'Redis 服务器日志，包含启动就绪、客户端连接错误（达到最大连接数）、主从连接以及数据库键统计信息。'
+target_capability: 'Redis 事件日志压缩'
+expected_keep: 'Ready to accept connections, Error accepting a client connection, Connecting to MASTER'
+expected_compress: '12345:M 12 May 2026 10:02:03.123, 12345:M 12 May 2026 10:02:05.456, 12345:S 12 May 2026 10:02:07.789'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '857b4ee463387fa3d8bb4616c56f2945a8b118e068e17ec983e04c3efe0aa007'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

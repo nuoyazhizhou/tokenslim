@@ -1,0 +1,15 @@
+scenario: '用户执行 git log --oneline -n 20 查看最近20条提交记录，输出包含提交哈希和提交信息。'
+target_capability: '提交日志保留'
+expected_keep: 'abc1234 Implement dictionary manager with producer-consumer model'
+expected_compress: 'git log --oneline -n 20'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd2ed5f30e0253e40b90a201b02f8b85d7d3aaa21ba5e2361b523beb1c75488a4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

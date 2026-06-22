@@ -1,0 +1,15 @@
+scenario: 'Git log 命令输出，包含图形化提交历史，每个提交有哈希、作者、日期和提交信息。'
+target_capability: 'Git 日志图形压缩'
+expected_keep: 'commit abc1234, Author: Developer, Implement dictionary manager'
+expected_compress: '* , | , /'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1d716bc545283ba7a7c6b4b7b8d4c365aa5938e1bdc1dee920c2bb052c05e1b8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

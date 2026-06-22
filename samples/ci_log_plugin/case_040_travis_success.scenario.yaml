@@ -1,0 +1,15 @@
+scenario: 'Travis CI 构建成功：安装依赖和运行测试，步骤折叠标记保留，详细日志压缩'
+target_capability: 'CI 步骤标记与成功状态保留'
+expected_keep: 'travis_fold:start:install, travis_fold:start:script, Done. Your build exited with 0.'
+expected_compress: '$ bundle install --jobs=3 --retry=3, 12 runs, 48 assertions, 0 failures, 0 errors, 0 skips'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e8cfcc83e668af55be5b91e9c4847f6e7a5931d8b59610dfe7aab4002dbb2ef0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

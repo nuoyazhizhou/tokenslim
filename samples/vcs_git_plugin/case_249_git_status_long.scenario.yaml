@@ -1,0 +1,15 @@
+scenario: 'Git仓库执行git status --long，显示工作区状态：有暂存的新文件、未暂存的修改、未跟踪的文件和目录。'
+target_capability: 'Git状态输出保留与压缩'
+expected_keep: 'new file:   src/core/dictionary_manager/mod.rs, modified:   src/core/text_slicer/methods.rs, Untracked files:'
+expected_compress: "use \"git restore --staged <file>...\" to unstage, use \"git add <file>...\" to update what will be committed, no changes added to commit"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '43763313743367f84aaf77427699a0a839da4b542c7d7115fa50621e1ac5203e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

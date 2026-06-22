@@ -1,0 +1,15 @@
+scenario: 'JUnit XML 测试报告全通过场景：8 个测试用例全部通过，无失败、错误或跳过，需要压缩所有通过用例，仅保留套件摘要和系统输出。'
+target_capability: '通过用例压缩'
+expected_keep: "testsuite name=\"unit.auth.success\", tests=\"8\", failures=\"0\", system-out"
+expected_compress: "testcase classname=\"tests.auth.test_login\" name=\"test_login_with_valid_password\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2ddc88348aab770c3eb87f4c00176346f09872608de2e396eed0bcab40bdf9dc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

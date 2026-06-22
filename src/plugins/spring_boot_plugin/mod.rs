@@ -1,0 +1,22 @@
+//! Spring Boot 应用日志脱水：保留关键事件（下载、生命周期、启动），折叠 Maven 下载 URL 和 Spring 组件包名。
+
+//! ## 保留信号
+//! - Downloaded from 行（Maven 下载完成）
+//! - Downloading from 行（Maven 下载开始）
+//! - Spring Boot 行（启动标识）
+//! - Starting application 行（应用启动）
+//! - SPRING_LIFECYCLE_RE 匹配行（Spring 生命周期事件）
+
+//! ## 压缩目标
+//! - Maven 下载 URL 替换为 $SPRING 令牌字典（路径折叠）
+//! - Spring 生命周期日志中的 logger 包名替换为令牌字典（包名压缩）
+//! - Bean 初始化消息中的包名（如配置 extract_beans_packages）折叠为令牌
+pub mod methods;
+#[cfg(test)]
+mod test;
+pub mod types;
+
+pub use types::*;
+
+#[cfg(test)]
+mod showcase;

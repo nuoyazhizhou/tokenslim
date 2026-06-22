@@ -1,0 +1,95 @@
+=== RUN   TestAdd
+--- PASS: TestAdd (0.00s)
+=== RUN   TestSub
+--- PASS: TestSub (0.00s)
+=== RUN   TestMul
+--- PASS: TestMul (0.00s)
+=== RUN   TestDiv
+--- PASS: TestDiv (0.00s)
+=== RUN   TestMod
+--- PASS: TestMod (0.00s)
+=== RUN   TestPow
+--- PASS: TestPow (0.00s)
+=== RUN   TestSqrt
+--- PASS: TestSqrt (0.00s)
+=== RUN   TestAbs
+--- PASS: TestAbs (0.00s)
+=== RUN   TestMin
+--- PASS: TestMin (0.00s)
+=== RUN   TestMax
+--- PASS: TestMax (0.00s)
+=== RUN   TestClamp
+--- PASS: TestClamp (0.00s)
+=== RUN   TestRound
+--- PASS: TestRound (0.00s)
+=== RUN   TestFloor
+--- PASS: TestFloor (0.00s)
+=== RUN   TestCeil
+--- PASS: TestCeil (0.00s)
+=== RUN   TestTrunc
+--- PASS: TestTrunc (0.00s)
+=== RUN   TestSign
+--- PASS: TestSign (0.00s)
+=== RUN   TestCopySign
+--- PASS: TestCopySign (0.00s)
+=== RUN   TestIsNaN
+--- PASS: TestIsNaN (0.00s)
+=== RUN   TestIsInf
+--- PASS: TestIsInf (0.00s)
+=== RUN   TestSin
+--- PASS: TestSin (0.00s)
+=== RUN   TestCos
+--- PASS: TestCos (0.00s)
+=== RUN   TestTan
+--- PASS: TestTan (0.00s)
+=== RUN   TestAsin
+--- PASS: TestAsin (0.00s)
+=== RUN   TestAcos
+--- PASS: TestAcos (0.00s)
+=== RUN   TestAtan
+--- PASS: TestAtan (0.00s)
+=== RUN   TestAtan2
+--- PASS: TestAtan2 (0.00s)
+=== RUN   TestSinh
+--- PASS: TestSinh (0.00s)
+=== RUN   TestCosh
+--- PASS: TestCosh (0.00s)
+=== RUN   TestTanh
+--- PASS: TestTanh (0.00s)
+=== RUN   TestAsinh
+--- PASS: TestAsinh (0.00s)
+=== RUN   TestAcosh
+--- PASS: TestAcosh (0.00s)
+=== RUN   TestAtanh
+--- PASS: TestAtanh (0.00s)
+=== RUN   TestExp
+--- PASS: TestExp (0.00s)
+=== RUN   TestExp2
+--- PASS: TestExp2 (0.00s)
+=== RUN   TestLog
+--- PASS: TestLog (0.00s)
+=== RUN   TestLog2
+--- PASS: TestLog2 (0.00s)
+=== RUN   TestLog10
+--- PASS: TestLog10 (0.00s)
+=== RUN   TestCbrt
+--- PASS: TestCbrt (0.00s)
+=== RUN   TestHypot
+--- PASS: TestHypot (0.00s)
+=== RUN   TestParseInt
+--- PASS: TestParseInt (0.00s)
+=== RUN   TestParseFloat
+--- PASS: TestParseFloat (0.00s)
+=== RUN   TestFormatInt
+--- PASS: TestFormatInt (0.00s)
+=== RUN   TestFormatFloat
+--- PASS: TestFormatFloat (0.00s)
+=== RUN   TestStringConcat
+--- PASS: TestStringConcat (0.00s)
+=== RUN   TestStringSplit
+--- PASS: TestStringSplit (0.00s)
+=== RUN   TestDivideByZero
+    math_test.go:500: Expected error for division by zero
+--- FAIL: TestDivideByZero (0.01s)
+PASS
+ok  	example.com/math	0.123s

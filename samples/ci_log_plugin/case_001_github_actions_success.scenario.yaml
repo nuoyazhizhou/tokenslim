@@ -1,0 +1,15 @@
+scenario: 'GitHub Actions 成功构建：npm test 通过，无错误警告，仅含步骤标记和成功退出码。'
+target_capability: '步骤信号保留与详细日志压缩'
+expected_keep: '::group::, ::endgroup::, Process completed with exit code 0'
+expected_compress: 'PASS, Current runner version, Syncing repository'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a33e3141208fc8e5553f904ada0163c385fd033cbb8095548efe67c7b62a5d47'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

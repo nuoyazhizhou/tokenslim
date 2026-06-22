@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：K8s 健康检查和静态资源混合，插件应折叠常规请求，保留异常。'
+target_capability: 'health/static routine folding'
+expected_keep: 'summary line for health/static patterns, any anomalies'
+expected_compress: 'individual health check lines, individual static asset lines'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

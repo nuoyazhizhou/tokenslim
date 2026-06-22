@@ -1,0 +1,13 @@
+gh run view 103 --log
+::group::Lint
+Run npm run lint
+src/app.ts:12:5 warning no-console Unexpected console statement
+::warning file=src/app.ts,line=12::Unexpected console statement
+src/api.ts:18:9 error no-explicit-any Unexpected any
+::error file=src/api.ts,line=18::Unexpected any
+Process completed with exit code 1
+::endgroup::
+::group::Upload annotations
+Uploading SARIF results
+Artifact upload complete
+::endgroup::

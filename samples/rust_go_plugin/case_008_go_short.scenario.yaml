@@ -1,0 +1,15 @@
+scenario: 'Go 程序崩溃时的 goroutine 堆栈跟踪，显示 main.main 在 main.go:5 处 panic，包含协程 ID 和调用栈。'
+target_capability: 'Go 协程堆栈保留'
+expected_keep: 'goroutine 1 [running]:'
+expected_compress: '/home/user/main.go:5 +0x10'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e0e1d2b902553be63ee5ecbec4a7cf35d29b8dfbbd4ae9daa12b814ba3d8cfcd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一个 UTF-32LE 编码的文本文件，内容为 ''Hi''，但缺少 BOM 标记，需要编码兜底插件正确识别并保留文本内容。'
+target_capability: '编码兜底：无 BOM 的 UTF-32LE 识别'
+expected_keep: 'Hi'
+expected_compress: '编码异常修复'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

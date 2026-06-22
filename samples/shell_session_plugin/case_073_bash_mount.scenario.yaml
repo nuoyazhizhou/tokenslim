@@ -1,0 +1,15 @@
+scenario: '用户通过 mount 命令查看系统挂载的文件系统，过滤出 /dev 设备并统计行数。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: '/dev/sda1 on / type ext4 (rw,relatime,errors=remount-ro)'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a80adce92f75544b9ea3c5fd97d8b599a180ece41405296f87df979560dd27b6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

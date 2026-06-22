@@ -1,0 +1,3 @@
+protoc --proto_path=proto --go-grpc_out=gen proto/service.proto
+protoc-gen-go-grpc: program not found or is not executable
+proto/service.proto:21:8: error: Plugin failed with status code 1.

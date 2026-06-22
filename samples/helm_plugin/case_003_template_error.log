@@ -1,0 +1,4 @@
+helm template web ./chart --values prod.yaml
+Error: template: web/templates/deployment.yaml:22:18: executing "web/templates/deployment.yaml" at <.Values.image.tag>: nil pointer evaluating interface {}.tag
+
+Use --debug flag to render out invalid YAML

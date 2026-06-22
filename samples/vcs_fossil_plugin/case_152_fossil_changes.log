@@ -1,0 +1,4 @@
+fossil changes
+ADDED      src/newfile.py
+EDITED     src/existing.py
+DELETED    src/oldfile.txt

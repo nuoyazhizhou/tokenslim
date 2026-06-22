@@ -1,0 +1,11 @@
+glab ci view --log
+Running with gitlab-runner 16.11.0
+section_start:1778664000:deploy[collapsed=false]
+$ kubectl apply -f k8s/deployment.yaml
+deployment.apps/api configured
+service/api unchanged
+$ kubectl rollout status deployment/api --timeout=120s
+Waiting for deployment "api" rollout to finish: 1 old replicas are pending termination
+deployment "api" successfully rolled out
+section_end:1778664070:deploy
+Job succeeded

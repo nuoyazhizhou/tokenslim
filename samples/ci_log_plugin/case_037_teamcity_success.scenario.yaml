@@ -1,0 +1,15 @@
+scenario: 'TeamCity 构建成功日志，包含 checkout、build 步骤，以及 javac 编译的详细输出，最终构建状态为 success。'
+target_capability: 'TeamCity service messages 保留'
+expected_keep: '##teamcity[blockOpened name=''Build''] ##teamcity[buildStatus status=''SUCCESS'' text=''Build finished successfully'']'
+expected_compress: '[javac] Compiling 128 source files [javac] Note: Some input files use unchecked or unsafe operations.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'effc2348b8adb76eb06d9e8b68ade0fbef50ea9a5eba854370742833c1791912'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'PowerShell 会话中执行递归删除操作：先通过管道将 Get-ChildItem 结果传递给 Remove-Item -Recurse -Force 静默删除 tmp 目录内容，然后列出当前目录确认删除结果，最后使用 -WhatIf 参数模拟删除 old.log 文件。'
+target_capability: '递归删除与 WhatIf 模拟'
+expected_keep: "Get-ChildItem . | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue; Get-ChildItem .; Directory listing; Remove-Item .\\old.log -WhatIf; What if: Performing the operation"
+expected_compress: "PS C:\\Users\\user>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1f1701c77ebbf4051a2d9ee018fffd2071e22d592cdd31860bc5d9b495222292'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

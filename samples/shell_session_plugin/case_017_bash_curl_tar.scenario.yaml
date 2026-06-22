@@ -1,0 +1,15 @@
+scenario: '用户通过 bash 使用 curl 下载一个 tar.gz 压缩包，并用 tar 解压，然后进入目录执行 install.sh 安装脚本。'
+target_capability: '进度行压缩与命令保留'
+expected_keep: 'curl -O https://example.com/release.tar.gz && tar -xzf release.tar.gz, cd release/ && ./install.sh, Installing dependencies...'
+expected_compress: 'user@host:~$,   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current, 100 10.0M  100 10.0M    0     0  5.0M      0  0:00:02  0:00:02 --:--:--  5.0M'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'eb91711f7c22ece6194311987dde62a9d58c6c3043b5a627c2eef0f7a4ce7d47'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

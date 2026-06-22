@@ -1,0 +1,9 @@
+terraform import aws_s3_bucket.logs company-prod-logs
+aws_s3_bucket.logs: Importing from ID "company-prod-logs"...
+aws_s3_bucket.logs: Import prepared!
+  Prepared aws_s3_bucket for import
+aws_s3_bucket.logs: Refreshing state... [id=company-prod-logs]
+
+Import successful!
+
+The resources that were imported are shown above. These resources are now in your Terraform state.

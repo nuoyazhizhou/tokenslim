@@ -1,0 +1,15 @@
+scenario: '构建输出和源文件列表，包含多个不同路径的文件路径，如 /app/build/assets/index.html 和 /app/src/index.ts，路径有重复前缀。'
+target_capability: '路径字典压缩'
+expected_keep: 'Build output:'
+expected_compress: '/app/build/assets/index.html'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dfe02129152cacabbc63b3c3e20f086231332034a957ff652a7342e9a2782a50'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

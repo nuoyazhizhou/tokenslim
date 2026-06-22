@@ -1,0 +1,35 @@
+{
+    "name": "vcs_hg",
+    "description": "Mercurial 命令输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_HG"
+    },
+    "keep_signals": [
+        "命令首行（如hg update）",
+        "变更集ID（grafting行中提取）",
+        "文件操作摘要（如'3 updated, 2 removed'）",
+        "分支名（含~表示inactive）",
+        "日期（压缩为YYYY-MM-DD HH:MM格式）",
+        "histedit命令（pick/edit/fold等）",
+        "shelve列表条目（--list时）"
+    ],
+    "compress_targets": [
+        "重复的grafting行（合并为一条，计数）",
+        "注释行（#开头）与空行",
+        "分支inactive状态（替换为~）",
+        "日期（压缩为紧凑格式）",
+        "跳过merging行（详细信息）"
+    ],
+    "design_intent": "Hg命令脱水：保留命令首行、变更集、文件操作摘要，折叠重复grafting和注释行。"
+}

@@ -1,0 +1,5 @@
+aws cloudformation wait stack-update-complete --stack-name payments
+2026-05-12 11:00:00 payments AWS::CloudFormation::Stack UPDATE_IN_PROGRESS User Initiated
+2026-05-12 11:00:09 TaskRole AWS::IAM::Role UPDATE_FAILED Resource handler returned message: policy contains an invalid principal
+2026-05-12 11:00:10 payments AWS::CloudFormation::Stack UPDATE_ROLLBACK_IN_PROGRESS The following resource failed to update: [TaskRole].
+2026-05-12 11:02:45 payments AWS::CloudFormation::Stack UPDATE_ROLLBACK_COMPLETE -

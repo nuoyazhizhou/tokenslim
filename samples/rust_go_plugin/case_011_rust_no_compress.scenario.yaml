@@ -1,0 +1,15 @@
+scenario: '一段不包含任何 Rust 编译器模式（如 Compiling、Finished、test FAILED 等）的普通文本，期望原样通过，不触发任何压缩或保留规则。'
+target_capability: '非匹配文本的透传能力'
+expected_keep: 'This is just regular text'
+expected_compress: '（无匹配内容）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f02c8e9704cc9260bc01ea8c484cbe9e951b9fa309425374d60d74957c9739a8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

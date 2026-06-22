@@ -1,0 +1,15 @@
+scenario: 'MySQL 主从复制日志，包含 binlog dump 启动和 Slave SQL 线程停止事件，展示了复制状态变化。'
+target_capability: '数据库日志压缩'
+expected_keep: 'binlog_dump, Coordinator stopped, [Note]'
+expected_compress: '2026-05-07T10:33:10.123456Z, 192.168.1.5:3306, 12345678-1234-1234-1234-123456789012'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ed9a5f1ca729109d37a28cfe5d978338f93b34df6bb5ff17fbcd25122e388a20'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

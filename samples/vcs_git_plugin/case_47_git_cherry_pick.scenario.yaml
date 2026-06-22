@@ -1,0 +1,15 @@
+scenario: '执行 git cherry-pick 时，显示从远程仓库获取的引用更新列表，包括多个分支的哈希范围映射，以及后续的对象解包和计数进度信息。'
+target_capability: '远程引用更新与进度压缩'
+expected_keep: 'a1b2c3d..e5f6g7h  main       -> origin/main'
+expected_compress: 'Unpacking objects: 100% (25/25), done.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a4a1e615a7ec53f7ef5b76d54374687af23b4b88ce2e43d505c779b8a0b7ad07'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

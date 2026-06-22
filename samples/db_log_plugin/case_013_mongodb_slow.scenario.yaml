@@ -1,0 +1,15 @@
+scenario: 'MongoDB 慢查询日志，包含一条耗时 1284ms 的 find 命令、一条查询执行器错误（耗时 30000ms）以及一条连接结束事件。'
+target_capability: '数据库慢查询/错误日志压缩'
+expected_keep: 'conn42, durationMillis:1284, Executor error'
+expected_compress: '2026-05-12T10:00:01.123+00:00, shop.orders, 10.0.0.12:52144'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4b1039e06e47979f4c8f06789389d806776d4988791a375d51ba345c67257886'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

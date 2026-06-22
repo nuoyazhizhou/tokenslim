@@ -1,0 +1,15 @@
+scenario: "Xcode 编译命令中包含带空格的文件路径（File With Spaces.m），路径被转义为 File\\ With\\ Spaces.m，输出路径也包含空格。"
+target_capability: '特殊字符路径保留'
+expected_keep: 'CompileC 行'
+expected_compress: '路径参数'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '55666f780ca6347e2ed00b4e4bc18022918c0c4154f0bea498c3476fd533ce45'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

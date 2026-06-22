@@ -1,0 +1,2 @@
+2026-05-07T10:33:10.123456Z 1234 [Note] User 'test@localhost' connected using SSL/TLS cipher: TLS_AES_256_GCM_SHA384
+2026-05-07T10:33:15.456789Z 1235 [Warning] Statement contains special chars: \x00\x01\x02

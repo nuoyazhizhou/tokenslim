@@ -1,0 +1,6 @@
+bazel test //services/api:api_test
+INFO: Analyzed target //services/api:api_test (3 packages loaded, 90 targets configured).
+ERROR: C:/repo/services/api/BUILD.bazel:18:8: Testing //services/api:api_test failed: Test failed
+//services/api:api_test FAILED in 2.3s
+INFO: Elapsed time: 6.000s, Critical Path: 2.900s
+INFO: Build did NOT complete successfully

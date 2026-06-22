@@ -1,0 +1,15 @@
+scenario: 'GCC 编译多个 C 源文件时出现未声明变量、缺少分号、未使用变量和隐式函数声明等错误与警告，最终 make 失败。'
+target_capability: '编译错误与警告摘要'
+expected_keep: 'error: ''undeclared_var'' undeclared, error: expected '';'' before ''}'' token, warning: unused variable ''x'''
+expected_compress: 'gcc -c /home/user/projects/myproject/src/foo.c ..., each undeclared identifier is reported only once, make: *** [Makefile:10: ...] Error 1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd1055d46a32320c79c2c5cf8247d8cb000a9fc2b4fa7675e48f14f8fc465444b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

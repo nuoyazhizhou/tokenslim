@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 边界测试：git blame 哈希碰撞，两个提交前缀相同但完整哈希不同，插件应保留完整哈希。'
+target_capability: '哈希碰撞保留'
+expected_keep: 'aaaaaaaaaab1111111111111111111111111111111, aaaaaaaaaac2222222222222222222222222222222'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

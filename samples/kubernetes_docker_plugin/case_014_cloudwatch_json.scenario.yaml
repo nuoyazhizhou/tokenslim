@@ -1,0 +1,15 @@
+scenario: 'AWS Lambda 函数日志中的一条 JSON 格式日志，记录数据库连接超时错误，包含时间戳、日志组、消息和请求 ID。'
+target_capability: 'JSON 结构保留与消息提取'
+expected_keep: "{\"message\":\"Database connection failed: timeout after 5s\",\"logGroup\":\"/aws/lambda/checkout-api\"}"
+expected_compress: "{\"timestamp\":\"2024-01-15T10:30:45Z\",\"requestId\":\"abc-123-def\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '755e1556d3296ef3cf8b8d3de5ab13f59070c16b15c1d1ccf83ff527cb989618'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

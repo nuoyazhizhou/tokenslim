@@ -1,0 +1,15 @@
+scenario: '一个包含标题、二级标题、带加粗和斜体的段落以及无序列表的简单Markdown文档。'
+target_capability: 'Markdown核心结构保留'
+expected_keep: '# Title, ## Subtitle, - List item 1'
+expected_compress: '<!-- comment -->'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5497de048af7ad593093d64942bc77d11631988285d3e1d3947075ff8697ce59'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

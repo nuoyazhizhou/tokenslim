@@ -1,0 +1,16 @@
+p4 changes -l
+Change 12345 on 2026/04/15 by alice@workspace 'Fix authentication timeout'
+
+    The authentication module was timing out after 30 seconds
+    when connecting to the LDAP server. This change increases
+    the timeout to 60 seconds and adds retry logic.
+
+Change 12344 on 2026/04/14 by bob@workspace 'Add user validation'
+
+    Added input validation for user registration form.
+    Validates email format, password strength, and username
+    uniqueness before submission.
+
+Change 12343 on 2026/04/13 by alice@workspace 'Update dependencies'
+
+    Bumped all crate dependencies to latest versions.

@@ -1,0 +1,33 @@
+C:\src> robocopy C:\src C:\dst /MIR
+
+-------------------------------------------------------------------------------
+   ROBOCOPY     ::     Robust File Copy for Windows                              
+-------------------------------------------------------------------------------
+
+  Started : Sunday, June 7, 2026 8:00:00 AM
+   Source : C:\src\
+     Dest : C:\dst\
+
+    Files : *.*
+            
+  Options : *.* /S /E /DCOPY:DA /COPY:DAT /PURGE /MIR /R:1000000 /W:30 
+
+------------------------------------------------------------------------------
+
+                           3    C:\src\
+100%        New File                 100        file1.txt
+100%        New File                 200        file2.txt
+100%        New File                 300        file3.txt
+
+------------------------------------------------------------------------------
+
+               Total    Copied   Skipped  Mismatch    FAILED    Extras
+    Dirs :         1         0         1         0         0         0
+   Files :         3         3         0         0         0         0
+   Bytes :       600       600         0         0         0         0
+   Times :   0:00:00   0:00:00                       0:00:00   0:00:00
+   Speed :               600 Bytes/sec.
+   Speed :                0.034 MegaBytes/min.
+   Ended : Sunday, June 7, 2026 8:00:01 AM
+
+C:\src> 

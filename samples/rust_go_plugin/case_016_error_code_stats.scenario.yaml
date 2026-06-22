@@ -1,0 +1,15 @@
+scenario: 'Rust 编译错误输出，包含多个 E0425 和 E0308 错误，以及错误统计行。'
+target_capability: '错误码统计与保留'
+expected_keep: 'error[E0425]: cannot find value `foo` in this scope'
+expected_compress: 'error: aborting due to 5 previous errors'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '94575dac98b874d6bff45d2e80f715d6e6bf41361addf0b61a462b3f9b0cade1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Ruby 应用 app.rb 在执行时抛出 RuntimeError，错误栈显示异常发生在 doSomething 方法中，包含文件行号引用。'
+target_capability: 'Ruby 错误栈保留关键行'
+expected_keep: 'app.rb:5:in `doSomething'': Something went wrong (RuntimeError)'
+expected_compress: 'Traceback (most recent call last):'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e197e1ffeb0cc5e30b1011269c485c3981b5e8b02bc3adad760c780bacc56122'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

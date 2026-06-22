@@ -1,0 +1,146 @@
+# Rust
+/target/
+**/*.rs.bk
+Cargo.lock.bak
+
+# Node
+node_modules/
+packages/*/dist/
+*.tsbuildinfo
+
+# Java / Gradle
+.gradle/
+jetbrains-plugin/build/
+jetbrains-plugin/.gradle/
+
+# VSCode / Chrome
+vscode-extension/out/
+chrome-extension/dist/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# IDE
+.vs/
+.idea/
+.vscode/
+.waylog/
+*.suo
+*.user
+*.userosscache
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local
+.env
+.env.local
+*.log
+# 跟踪 samples/ 下的所有测试样本 .log（1107 个插件测试用例）
+!samples/**/*.log
+# 但保留脱敏草稿豁免
+!**/case_*_sani*.log
+tmp/
+scratch/
+test_temp*.txt
+check_output.txt
+
+# Drop performance benchmark from publish (kept internally; not part of public release)
+tests/algorithm_comparison.rs
+# Drop sanitization scratch from publish (one-off cleanups)
+samples/cloud_log_plugin/case_*_sani*.log
+# Drop AI-协作基础设施与内部 doctor 工具设计文档（不公开）
+.github/copilot-instructions.md
+docs/design/doctor_workspace.md
+
+# Drop 内部审计/补样本流程（不公开）
+docs/development/TARGETED_EDGE_SAMPLE_PLAYBOOK.md
+
+# Drop 内部设计笔记（仅保留贡献者最需要的 10 个；详见 docs/design/ 整理说明）
+# 单插件内部笔记（69 个）：
+docs/design/ast_plugin.md
+docs/design/chrome_extension.md
+docs/design/cli.md
+docs/design/content_analyzer.md
+docs/design/dedup_engine.md
+docs/design/dictionary_engine.md
+docs/design/dictionary_manager.md
+docs/design/doctor_encoding.md
+docs/design/dotnet_plugin.md
+docs/design/dynamic_plugin_loader.md
+docs/design/DYNAMIC_PLUGIN_SYSTEM.md
+docs/design/embedding_engine.md
+docs/design/encoding_fallback.md
+docs/design/error_isolation.md
+docs/design/FUTURE_PLAN.md
+docs/design/gcc_log_plugin.md
+docs/design/git_diff_plugin.md
+docs/design/init_command.md
+docs/design/jetbrains_plugin.md
+docs/design/json_plugin.md
+docs/design/kubernetes_docker_plugin.md
+docs/design/log_miner.md
+docs/design/log_reorderer.md
+docs/design/multi_user_context.md
+docs/design/noise_filter_plugin.md
+docs/design/observability.md
+docs/design/path_analyzer.md
+docs/design/path_compressor.md
+docs/design/php_ruby_plugin.md
+# docs/design/plugin_dispatcher.md  ← 保留（关键架构）
+docs/design/plugin_interface_crate.md
+docs/design/python_bindings.md
+docs/design/rehydration_pipeline.md
+docs/design/rule_diagnosis.md
+docs/design/sdk.md
+docs/design/smart_code_plugin.md
+docs/design/smart_path_plugin.md
+docs/design/sql_plugin.md
+docs/design/static_rule_plugin.md
+docs/design/stream_reader.md
+docs/design/sys_env.md
+docs/design/template_driven_plugin.md
+docs/design/text_slicer.md
+docs/design/timestamp_converter.md
+docs/design/unity_unreal_plugin.md
+docs/design/vcs_az_plugin.md
+docs/design/vcs_bitbucket_plugin.md
+docs/design/vcs_bzr_plugin.md
+docs/design/vcs_cvs_plugin.md
+docs/design/vcs_darcs_plugin.md
+docs/design/vcs_fossil_plugin.md
+docs/design/vcs_gerrit_plugin.md
+docs/design/vcs_gh_plugin.md
+docs/design/vcs_git_plugin.md
+docs/design/vcs_glab_plugin.md
+docs/design/vcs_hg_plugin.md
+docs/design/vcs_p4_plugin.md
+docs/design/vcs_plugin.md
+docs/design/vcs_repo_plugin.md
+docs/design/vcs_svn_plugin.md
+docs/design/vscode_extension.md
+docs/design/webpack_vite_plugin.md
+docs/design/xml_html_plugin.md
+docs/design/yaml_plugin.md
+docs/design/数据流图.md
+docs/design/模块功能点模板.md
+
+# 本地迁移工具 (一次性使用,不入仓)
+scripts/private-sweep.ps1
+scripts/publish-rebuild-step1-copy.ps1
+scripts/private-sweep-verify.ps1
+docs/design/TokenSlim WASM 插件系统设计方案.md
+# 未来规划
+docs/design/PLUGIN_ARCHITECTURE_ANALYSIS.md
+docs/design/PLUGIN_DEVELOPMENT_GUIDE.md
+
+# Drop 内部 tactical prompt 草稿（仅保留 docs/prompts/README.md 和 semantic_audit_profiles.md）
+docs/prompts/*_tactical_prompt.md
+docs/prompts/vcs_classical_prompts.md
+docs/prompts/non_vcs_classical_prompts.md
+docs/prompts/vcs_cloud_cli_prompt.md
+docs/prompts/vcs_needs_fix_tactical_prompt.md
+docs/prompts/vcs_prompts_delta.md

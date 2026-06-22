@@ -1,0 +1,15 @@
+scenario: 'Kubernetes Pod YAML 配置，包含 Pod 元数据、容器定义、资源限制等字段，结构清晰但可压缩。'
+target_capability: 'YAML 结构压缩与键字典化'
+expected_keep: 'apiVersion: v1, kind: Pod, metadata: name: mypod'
+expected_compress: "labels: app: myapp, ports: - containerPort: 80, resources: limits: memory: \"128Mi\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ec684e97f721799beeaa7108f6345510fdfca96b705022d2bc0c1b75ee5b44ed'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,9 @@
+act -j build
+[build/checkout] Start image=node:20
+[build/checkout] Run actions/checkout@v4
+[build/test] Run pytest -q
+[build/test] tests/test_api.py::test_update_user FAILED
+[build/test] E   AssertionError: expected 200
+[build/test] ::error file=tests/test_api.py,line=51::expected 200
+[build/test] Process completed with exit code 1
+[build/post] Cleaning up container

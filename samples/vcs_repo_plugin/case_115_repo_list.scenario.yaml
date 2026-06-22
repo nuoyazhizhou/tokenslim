@@ -1,0 +1,15 @@
+scenario: '执行 Android Repo 工具的项目列表命令（repo list 和 repo list -p），输出项目路径与名称的映射。'
+target_capability: '命令锚点保留与项目列表压缩'
+expected_keep: 'repo list, repo list -p, platform/build/make: platform/build/make'
+expected_compress: 'Listing projects ...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3ddc12e781118099a17a6e06b4f5d5de4bd3e3cfb163815fc716f644c340ee6a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

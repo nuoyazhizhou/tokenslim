@@ -1,0 +1,11 @@
+circleci local execute
+CircleCI local build
+====>> Run unit tests
+go test ./... -json
+ok example/api 12.4s
+ok example/worker 8.1s
+====>> Store test results
+Uploading test results
+====>> Store artifacts
+Uploading artifacts
+CircleCI received exit code 0

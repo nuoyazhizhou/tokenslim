@@ -1,0 +1,15 @@
+scenario: 'MongoDB 慢查询日志，包含聚合管道超时（4210ms）和 find 命令超时（30000ms），以及连接结束事件。'
+target_capability: '慢查询与超时错误保留'
+expected_keep: 'Slow query, Command failed, durationMillis'
+expected_compress: '原始时间戳, 完整查询管道, 连接结束事件'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '76d346761c6cfbf761aed8448b497e1b20d50985d709e18a15aecbd6ee2de1e7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

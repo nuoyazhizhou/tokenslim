@@ -1,0 +1,26 @@
+{
+    "name": "ndjson",
+    "description": "NDJSON 脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$NDJSON"
+    },
+    "keep_signals": [
+        "前5行（保留开头）",
+        "后5行（保留结尾）"
+    ],
+    "compress_targets": [
+        "中间行（折叠为省略行）"
+    ],
+    "design_intent": "NDJSON脱水：保留首尾行，折叠中间行，压缩测试摘要。"
+}

@@ -1,0 +1,15 @@
+scenario: 'AWS Lambda 函数执行日志，包含 S3 下载、通用文档解析与索引批处理作业启动、批处理输出（解析多类文档、写入搜索索引示例）以及执行报告。'
+target_capability: '云日志外壳剥离与结构化压缩'
+expected_keep: 'START RequestId, END RequestId, REPORT RequestId'
+expected_compress: '长结构化字段值（如 worker stdout JSON）, 时间戳（毫秒精度）, 资源路径（S3路径）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 changes -m 5 命令，查看 //depot/main/... 路径下最新的 5 个 changelist，输出包含 change 编号、提交者、日期和客户端信息。'
+target_capability: 'changelist 列表压缩'
+expected_keep: 'Change 12349, Change 12348, Change 12347'
+expected_compress: 'by alice.chen@client on 2026/04/03 16:00'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a5e6955eb3b6658da0b56267a028ec04a16a3f0ec0972a60fda8cd0521897fa'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

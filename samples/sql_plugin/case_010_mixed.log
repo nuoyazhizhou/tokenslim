@@ -1,0 +1,4 @@
+2024-01-15 10:30:45 INFO Starting database job
+UPDATE products SET price = price * 1.1 WHERE category = 'books'
+-- 234 rows updated
+2024-01-15 10:30:46 INFO Job complete

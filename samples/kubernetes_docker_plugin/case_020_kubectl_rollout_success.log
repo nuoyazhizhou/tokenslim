@@ -1,0 +1,6 @@
+kubectl rollout status deployment/api -n prod
+Waiting for deployment "api" rollout to finish: 2 old replicas are pending termination...
+deployment "api" successfully rolled out
+kubectl get pods -n prod -l app=api
+prod/api-6f5d4b8c9d-abcde   1/1   Running   0   42s
+prod/api-6f5d4b8c9d-fghij   1/1   Running   0   41s

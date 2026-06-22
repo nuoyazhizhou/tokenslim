@@ -1,0 +1,15 @@
+scenario: 'Gradle CI构建成功，从缓存和远程仓库下载依赖，所有任务状态为UP-TO-DATE或FROM-CACHE，无错误或警告。'
+target_capability: '缓存任务行折叠与计数'
+expected_keep: 'BUILD SUCCESSFUL in 44s'
+expected_compress: '> Task :app:preBuild UP-TO-DATE, > Task :app:compileDebugKotlin FROM-CACHE, 8 actionable tasks: 1 executed, 4 up-to-date, 3 from cache'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '011d05b2f351b2894f48e7049a8743b4736f3572bafd1d45b437edee157673fe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

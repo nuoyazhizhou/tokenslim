@@ -1,0 +1,5 @@
+p4 depot
+Depot depottype      description
+//depot/main/      local       Main development
+//depot/backup/    local       Backup storage
+//depot/archive/   archive     Archive storage

@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.IllegalStateException: Invalid path: /data/files/test_äöü.txt
+    at com.example.app.PathValidator.check(PathValidator.java:22)
+    at com.example.app.FileProcessor.process(FileProcessor.java:45)
+    at com.example.app.Main.main(Main.java:10)

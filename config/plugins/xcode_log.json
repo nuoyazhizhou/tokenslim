@@ -1,0 +1,40 @@
+{
+    "name": "xcode_log",
+    "description": "Xcode 构建日志脱水",
+    "priority": 180,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "xcodebuild",
+                    "CompileC ",
+                    "Linking ",
+                    "Build succeeded",
+                    "Build failed"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.1
+    },
+    "compress": {
+        "token_prefix": "$XCODE",
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "keep_signals": [
+        "CompileC 行（编译命令）",
+        "Linking 行（链接命令）",
+        "clang 行（编译命令）",
+        "Build succeeded/failed 行（构建结果）"
+    ],
+    "compress_targets": [
+        "/dev/null 探针行（clang/libtool，批量折叠为 $XC|PROBE|x）",
+        "编译命令中的路径参数（替换为字典令牌 $XC|C|）",
+        "编译命令中的源文件路径（压缩为 $XC|C| 的一部分）"
+    ],
+    "design_intent": "Xcode构建日志脱水：保留编译链接命令骨架，折叠/dev/null探针噪音，压缩路径参数。"
+}

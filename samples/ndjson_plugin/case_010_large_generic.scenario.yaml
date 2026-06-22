@@ -1,0 +1,15 @@
+scenario: '20条NDJSON记录，每条包含id、name、role字段，role均为reader，用于测试NDJSON插件对大量相似JSON行的截断压缩能力。'
+target_capability: 'NDJSON截断压缩'
+expected_keep: "{\"id\":1,\"name\":\"User1\",\"role\":\"reader\"}, {\"id\":2,\"name\":\"User2\",\"role\":\"reader\"}, {\"id\":19,\"name\":\"User19\",\"role\":\"reader\"}"
+expected_compress: "{\"id\":6,\"name\":\"User6\",\"role\":\"reader\"}, {\"id\":10,\"name\":\"User10\",\"role\":\"reader\"}, {\"id\":15,\"name\":\"User15\",\"role\":\"reader\"}"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '797088401cce8a0ece86eaf8564fc9d1ea58c7fb4a7ac0781ad2d092ad38ca37'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:38:56.728570'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

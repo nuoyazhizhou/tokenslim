@@ -1,0 +1,15 @@
+scenario: 'pytest 测试运行，一个测试用例失败，断言 payload 字典中 count 值不匹配，显示 diff 信息。'
+target_capability: '断言 diff 保留'
+expected_keep: 'FAILED tests/test_payload.py::test_payload - AssertionError'
+expected_compress: 'AssertionError: assert {''status'': ''ok'', ''count'': 1} == {''status'': ''ok'', ''count'': 2}'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ca94c9a0d1614192706d77ee47a1fbeba080c5aae290131d794172ed93394a48'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

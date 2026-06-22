@@ -1,0 +1,15 @@
+scenario: '阿里云SLS表格格式的Syslog日志，包含INFO、ERROR、WARN级别的系统日志和SSH失败登录记录。'
+target_capability: '云日志外壳剥离与表格结构压缩'
+expected_keep: 'systemd[1]: Started backend.service, kernel: blk_update_request: I/O error, sshd[42]: Failed password for invalid user root'
+expected_compress: '| timestamp | source | level | message |, 1778661101, aliyun-sls/backend-7f9d'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1a35eb99b7079333706fef13802635c707a0272bd5439dbb71470550fe2ed063'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

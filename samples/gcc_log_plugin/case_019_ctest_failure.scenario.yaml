@@ -1,0 +1,15 @@
+scenario: 'CTest 测试套件运行，包含 4 个测试用例，其中 api_contract 测试失败，返回 HTTP 500 错误，其余通过。'
+target_capability: '测试失败摘要提取'
+expected_keep: '***Failed, Expected status 200 but got 500, The following tests FAILED'
+expected_compress: 'Passed, Start, Test project'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '97cde62fa414cbb06516be97fc64fb7a27c1ed4b92c2c51b19838aa350bac532'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T17:50:50.677345'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

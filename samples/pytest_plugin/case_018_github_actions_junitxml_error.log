@@ -1,0 +1,16 @@
+GitHub Actions runner version 2.329.0
+Run pytest tests --junitxml=artifacts/pytest.xml --maxfail=1
+============================= test session starts =============================
+platform linux -- Python 3.12.4, pytest-8.3.4
+collected 19 items / 1 error
+
+==================================== ERRORS ====================================
+_____________________ ERROR collecting tests/test_settings.py _____________________
+ImportError while importing test module '/home/runner/work/app/tests/test_settings.py'.
+E   ModuleNotFoundError: No module named 'dynaconf'
+
+generated xml file: /home/runner/work/app/artifacts/pytest.xml
+=========================== short test summary info ============================
+ERROR tests/test_settings.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 1.42s ===============================

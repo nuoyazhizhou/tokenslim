@@ -1,0 +1,15 @@
+scenario: '一个包含多行普通文本的日志文件，其中一些行末尾有尾随空格，另一些没有。'
+target_capability: '通用文本脱水与空白行折叠'
+expected_keep: 'This is a normal text file.'
+expected_compress: 'Some lines have trailing spaces   '
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ff64f6687b64ec2b5b2e7da622c48813ef008aa005e4a18d8dad1c6fa0d7f1fe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

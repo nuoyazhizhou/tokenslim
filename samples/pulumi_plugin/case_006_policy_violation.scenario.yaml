@@ -1,0 +1,15 @@
+scenario: 'Pulumi部署预览时检测到策略违规，阻止创建公共S3存储桶，输出包含错误诊断和资源计数摘要。'
+target_capability: '错误保留与资源摘要'
+expected_keep: 'error: policy violation: public S3 buckets are not allowed, Resources:'
+expected_compress: 'pulumi up --stack prod, Previewing update (prod), Diagnostics:, pulumi:pulumi:Stack (prod):, + 1 to create, 24 unchanged'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '28cc34acb590b142baf28d29905904dc8ea8ca1353a52b7d12fb8571359a6919'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:46:40.296980'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

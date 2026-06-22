@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh actions view` 查看 GitHub Actions 工作流运行详情，输出包含工作流名称、运行编号、状态、触发事件、创建时间以及各作业状态和耗时。'
+target_capability: '结构化数据行保留与状态符号压缩'
+expected_keep: 'gh actions view 12345, Workflow: CI, Run: #12345'
+expected_compress: '✓ Passed (3m24s), ✓ Passed (5m12s), ✓ Passed (1m30s)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6b93f04c304050f8337e101d61417e3775e283149d3cb49960e238b84c452c81'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

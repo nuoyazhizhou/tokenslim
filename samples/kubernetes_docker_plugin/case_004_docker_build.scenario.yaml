@@ -1,0 +1,15 @@
+scenario: 'Docker build 日志，展示从 node:18 基础镜像构建 myapp 镜像的完整步骤，包括 npm install 的警告和包安装信息。'
+target_capability: 'Docker CI 步骤保留与容器 ID 压缩'
+expected_keep: "Step 1/5 : FROM node:18, Step 5/5 : CMD [\"node\", \"index.js\"], Successfully tagged myapp:latest"
+expected_compress: ' ---> abc123, ---> def456, ---> 7890ab'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe72d899a3bde28eb3f570dc468264c74142bc200ee3a495a3bf403e30c9b8dd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

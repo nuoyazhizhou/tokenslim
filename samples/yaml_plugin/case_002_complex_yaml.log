@@ -1,0 +1,13 @@
+server:
+  port: 8080
+  host: localhost
+  ssl:
+    enabled: true
+    cert_path: /etc/ssl/cert.pem
+database:
+  type: postgresql
+  host: db.example.com
+  port: 5432
+  credentials:
+    username: admin
+    password: secret

@@ -1,0 +1,15 @@
+scenario: '一个包含多表连接、聚合、分组、过滤、排序和限制的复杂SQL查询语句。'
+target_capability: 'SQL语句结构保留'
+expected_keep: 'SELECT, FROM, LEFT JOIN, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT'
+expected_compress: '无长INSERT VALUES可压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '106cb4203560221104456782099515442fe54cb006741bad67338572118a4d7a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

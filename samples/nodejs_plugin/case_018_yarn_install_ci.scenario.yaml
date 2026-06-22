@@ -1,0 +1,15 @@
+scenario: 'GitLab CI 中执行 yarn install --frozen-lockfile 的完整输出，包含警告和成功信息。'
+target_capability: '保留警告和成功行，压缩进度行'
+expected_keep: 'warning package.json: No license field, warning left-pad@1.3.0: use String.prototype.padStart(), success Saved lockfile.'
+expected_compress: '[1/4] Resolving packages..., [2/4] Fetching packages..., [3/4] Linking dependencies..., [4/4] Building fresh packages...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '097289d6fe31b58da5b8e0b75dac3597b689d4ac8705f259e2acf78fcf746e99'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

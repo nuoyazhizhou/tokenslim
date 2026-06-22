@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh gist view` 命令查看一个公开 Gist 的详细信息，包括描述、文件名、公开状态、创建时间和 URL。'
+target_capability: 'GitHub CLI 结构化数据保留'
+expected_keep: 'gh gist view abc1234, Description: Add utility functions, Files: utils.rs, helpers.rs'
+expected_compress: 'URL: https://gist.github.com/abc1234, Public: true, Created: 2026-04-05'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ff0783e70db4a34c74ac8213c4d8c8a4323af2ff2d967d43a9e3afcb59adaa50'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

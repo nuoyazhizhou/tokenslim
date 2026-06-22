@@ -1,0 +1,15 @@
+scenario: '执行Ansible playbook安装并启动nginx，包含三个任务（收集事实、安装nginx、启动nginx）在三个主机（web1, web2, web3）上执行，输出显示任务状态和PLAY RECAP汇总。'
+target_capability: 'play聚合与任务状态保留'
+expected_keep: 'TASK [Install nginx] 行, ok: [web1], PLAY RECAP 行'
+expected_compress: '重复的 ''ok: [webN]'' 行（压缩为摘要）, 主机列表 ''web1 web2 web3'' 重复出现'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ba1771522f8f3e4da3778cbe03b9a666b22d14fb5a31185f1640a26476798e5f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Clang 编译 main.c 时产生两个警告：一个关于未使用的编译参数 ''-Wno-deprecated''，另一个关于变量 ''result'' 已设置但未使用。'
+target_capability: '编译警告保留与压缩'
+expected_keep: 'warning: variable ''result'' set but not used'
+expected_compress: 'clang -c main.c -o main.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a8cf599961c6173abf72d86fb56cffefae1501276840479d16717b2cb06cb1fb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

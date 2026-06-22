@@ -1,0 +1,15 @@
+scenario: 'Mercurial diff 输出，包含文件内容变更和文件重命名操作，展示了 diff --git 格式的差异。'
+target_capability: '文件操作摘要保留'
+expected_keep: 'diff --git a/src/main.rs b/src/main.rs, rename from src/old_name.rs, rename to src/new_name.rs'
+expected_compress: '具体的代码行变更（如 +    let auth = Auth::new();）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9354a5b45c1cc02a8ad661624f50b306fae2171f2716820dd6b27280072da404'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

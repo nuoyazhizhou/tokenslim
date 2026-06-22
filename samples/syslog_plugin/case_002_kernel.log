@@ -1,0 +1,2 @@
+May  7 10:30:00 server1 kernel: [12345.678901] eth0: link up
+May  7 10:30:05 server1 kernel: [12345.678902] IPv6: ADDRCONF(NETDEV_UP): eth0: link is not ready

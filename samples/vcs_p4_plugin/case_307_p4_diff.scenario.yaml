@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 diff 命令，显示两个文件的差异：main.rs 添加了 Auth 初始化代码，utils.rs 修改了 helper 函数返回值。'
+target_capability: '差异输出压缩与路径精简'
+expected_keep: 'p4 diff, //depot/main/src/main.rs#5, //depot/main/src/lib/utils.rs#3'
+expected_compress: '---/+++ 头行, 日期时间, 文件路径长前缀'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bb08b9535504f83494521b40f5cc0f9673d6b99ea4d3ed0626115a87305c2cbb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

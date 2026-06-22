@@ -1,0 +1,15 @@
+scenario: 'noise_filter_plugin 测试：构建日志混合进度条、文件名和长哈希值，长哈希应被识别为二进制噪声并压缩。'
+target_capability: '二进制数据检测与替换'
+expected_keep: '纯文本行如 ''Starting build''、''Build complete'''
+expected_compress: '长哈希值 ''0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

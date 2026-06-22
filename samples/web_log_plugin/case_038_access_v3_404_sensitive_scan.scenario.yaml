@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：单 IP 扫描敏感路径全返回 404，插件应保留扫描信号，压缩正常请求。'
+target_capability: 'scan/burst spotlight'
+expected_keep: '404 lines with sensitive paths'
+expected_compress: '200 lines, IP addresses, timestamps'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

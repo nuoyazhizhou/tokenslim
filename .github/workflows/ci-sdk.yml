@@ -1,0 +1,42 @@
+name: CI - SDK build & test
+
+# Verify the npm SDK package compiles and loads on every PR / push.
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - 'packages/sdk-nodejs/**'
+  pull_request:
+    paths:
+      - 'packages/sdk-nodejs/**'
+
+jobs:
+  build:
+    name: Build tokenslim-sdk
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        node: ['18.x', '20.x']
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node }} on ${{ matrix.os }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install
+        working-directory: packages/sdk-nodejs
+        run: npm ci
+
+      - name: Build
+        working-directory: packages/sdk-nodejs
+        run: npm run build
+
+      - name: Smoke test
+        working-directory: packages/sdk-nodejs
+        shell: bash
+        run: |
+          node -e "const { TokenSlimClient } = require('./dist/index.js'); \
+                   if (typeof TokenSlimClient !== 'function') throw new Error('export missing');"

@@ -1,0 +1,15 @@
+scenario: '用户运行 `fossil diff --brief` 查看工作区文件变更摘要，输出显示新增、修改和删除的文件路径。'
+target_capability: 'Fossil diff 状态变更摘要'
+expected_keep: 'fossil diff --brief, ADDED, MODIFIED, DELETED'
+expected_compress: '空行, 元数据噪音, 叙事废话'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '784e2817305e3557849691826f45a1b420154634bd33c6466e0a07f38b5f9f0c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

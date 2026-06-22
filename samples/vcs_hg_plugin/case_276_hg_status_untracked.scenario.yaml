@@ -1,0 +1,15 @@
+scenario: '用户执行 ''hg status -u'' 命令，显示未跟踪的文件，包括 ''samples/vcs/'' 目录和 ''.trae/documents/vcs_task_plan.md'' 文件。'
+target_capability: '未跟踪文件列表保留'
+expected_keep: '? samples/vcs/'
+expected_compress: '? .trae/documents/vcs_task_plan.md'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e07449111187fc51265cfff3ae28d1158fb4bba84b028500aac56092030935f3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

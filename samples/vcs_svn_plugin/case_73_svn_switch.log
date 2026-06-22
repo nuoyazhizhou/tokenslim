@@ -1,0 +1,2 @@
+svn switch https://svn.example.com/repo/branches/feature/new-feature
+Switched to new URL: https://svn.example.com/repo/branches/feature/new-feature

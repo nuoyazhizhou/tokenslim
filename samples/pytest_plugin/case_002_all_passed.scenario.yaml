@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话，4 个测试全部通过，无失败或错误，输出简洁的通过摘要。'
+target_capability: '全部通过场景的摘要压缩'
+expected_keep: '4 passed in 0.41s'
+expected_compress: 'tests/test_api.py::test_create PASSED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c535005c01ea749a73216482fe1cd1159f115b538147e745c242a295204010f6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

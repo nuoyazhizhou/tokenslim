@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git reflog 长输出，插件应保留最近条目，折叠旧条目。'
+target_capability: 'reflog 条目折叠'
+expected_keep: 'abc1234 HEAD@{0}: commit: feat: Add new feature'
+expected_compress: 'rst7890 HEAD@{49}: commit: fix: Fix trace sampling'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

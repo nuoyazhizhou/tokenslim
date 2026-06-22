@@ -1,0 +1,15 @@
+scenario: 'Java堆栈跟踪中包含包含特殊字符（如äöü）的文件路径，测试插件对非ASCII字符的处理能力。'
+target_capability: '特殊字符保留'
+expected_keep: "Exception in thread \"main\" java.lang.IllegalStateException: Invalid path: /data/files/test_äöü.txt"
+expected_compress: 'at com.example.app.PathValidator.check(PathValidator.java:22)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '884f0095d09dd54800b4ae3f41e283b945960c956b554edec5ab6e1e4c792616'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

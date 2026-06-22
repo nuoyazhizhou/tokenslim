@@ -1,0 +1,3 @@
+hg status -u
+? samples/vcs/
+? .trae/documents/vcs_task_plan.md

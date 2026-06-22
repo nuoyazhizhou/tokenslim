@@ -1,0 +1,15 @@
+scenario: '在Windows CMD中执行递归目录列表命令''dir /s src''，显示卷标、序列号、目录路径、文件列表及统计信息。'
+target_capability: 'CMD命令输出保留'
+expected_keep: "Directory of C:\\src, main.rs, Total Files Listed"
+expected_compress: "C:\\> dir /s src, Volume in drive C has no label., Volume Serial Number is ABCD-1234"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3818da5766f2592ad8fd890ee4407a6554bd892af2171e67da108b1f014af608'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '在 Perforce 中执行 p4 integrate 命令，将 //depot/main 分支的文件集成到 //depot/feature 分支，输出显示了两个文件的映射关系。'
+target_capability: '文件操作保留与路径压缩'
+expected_keep: '//depot/main/src/main.rs -> //depot/feature/src/main.rs'
+expected_compress: 'p4 integrate //depot/main //depot/feature'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3f8cef0339f4c743d5f2317ff68b7bd2b25557618b33b17bdd2ab68c5cfab03d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,6 @@
+kubectl logs deployment/api -n prod --previous
+prod/api-6f5d4b8c9d-z9x8y: starting migration
+prod/api-6f5d4b8c9d-z9x8y: connection string host=postgres-prod
+prod/api-6f5d4b8c9d-z9x8y: panic: failed to connect to postgres
+prod/api-6f5d4b8c9d-z9x8y: goroutine 1 [running]
+prod/api-6f5d4b8c9d-z9x8y: main.main()

@@ -1,0 +1,15 @@
+scenario: 'Python 单行语法错误日志，仅包含异常类型和错误消息，无堆栈帧。'
+target_capability: '单行错误保留'
+expected_keep: 'SyntaxError: invalid syntax at line 42'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '126e3f2de6894f5fb1ed4c432d96f2ab81ca2f4a16f1b9c4c19a26e30afc260f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

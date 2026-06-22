@@ -1,0 +1,10 @@
+kubectl diff -f k8s/deployment.yaml
+diff -u -N /tmp/LIVE-123456/apps.v1.Deployment.prod.api /tmp/MERGED-654321/apps.v1.Deployment.prod.api
+--- /tmp/LIVE-123456/apps.v1.Deployment.prod.api
++++ /tmp/MERGED-654321/apps.v1.Deployment.prod.api
+@@ -18,7 +18,7 @@
+       containers:
+       - name: api
+-        image: registry.example.com/api:old
++        image: registry.example.com/api:new
+         imagePullPolicy: IfNotPresent

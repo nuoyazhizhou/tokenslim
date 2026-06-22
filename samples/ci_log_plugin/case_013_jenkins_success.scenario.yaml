@@ -1,0 +1,15 @@
+scenario: '一个 Jenkins 流水线构建成功日志，包含 checkout 和 gradle build 步骤，最终输出 ''Finished: SUCCESS''。'
+target_capability: 'CI/CD状态信号保留与步骤折叠'
+expected_keep: 'Finished: SUCCESS, [Pipeline]'
+expected_compress: 'Checking out Revision, ./gradlew assemble'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '14c74646193f6e395813cbe15c66cf251fc5e3303b8d8c28b331e67ae94a5c3e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

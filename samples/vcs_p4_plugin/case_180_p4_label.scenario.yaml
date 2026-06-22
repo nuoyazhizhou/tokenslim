@@ -1,0 +1,15 @@
+scenario: 'P4 label 命令输出，显示标签 v1.0.0 的创建日期和视图映射。'
+target_capability: '标签信息保留与路径压缩'
+expected_keep: 'Label v1.0.0, View: //depot/main/...'
+expected_compress: '2026/04/08, ''Release 1.0.0'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '183ee1dbd7506106506cdba2361e5d1557ff5e7af51da0571e97c41d5d8e648e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

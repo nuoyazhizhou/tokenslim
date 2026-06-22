@@ -1,0 +1,15 @@
+scenario: '在 GitHub Actions CI 中运行 pytest 并行测试（xdist 4 workers），128 个测试用例中 1 个失败，失败原因为断言 200 == 401（过期 token 测试），最终 1 failed, 127 passed。'
+target_capability: 'pytest 测试结果与摘要压缩'
+expected_keep: 'test session starts, FAILED tests/api/test_auth.py::test_rejects_expired_token, 1 failed, 127 passed'
+expected_compress: 'GitHub Actions runner version 2.329.0, Run pytest -n 4 --dist loadfile tests/api tests/unit, platform linux -- Python 3.12.4, pytest-8.3.4, pluggy-1.5.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '29c2274472ce995848daf5fe8e6bde042d5c6b7701eb5958393903605754ccb5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

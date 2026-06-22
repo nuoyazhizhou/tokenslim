@@ -1,0 +1,7 @@
+repo status
+project platform/build/make/            branch master (clean)
+project platform/frameworks/base/       branch feature-xyz (clean)
+project platform/packages/apps/Settings/ branch feature-xyz (dirty)
+ - Modified: src/SettingsActivity.java
+ - Added: res/values/strings.xml
+project vendor/partner/products/MyApp/   branch main (clean)

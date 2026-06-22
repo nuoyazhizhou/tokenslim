@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库的安静模式日志查询，显示一系列提交记录，包含版本号、作者和日期，无文件变更详情。'
+target_capability: 'SVN 日志压缩与重复行去重'
+expected_keep: 'r1234 | developer | 2026-04-14 15:00:00 +0000 (Mon, 14 Apr 2026)'
+expected_compress: '------------------------------------------------------------------------'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '99c16be99d2513becb33b28e3d14f33fdb5b1248877447579546a949694805a6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

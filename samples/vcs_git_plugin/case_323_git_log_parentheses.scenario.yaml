@@ -1,0 +1,15 @@
+scenario: '执行 git log -n 2 查看最近两次提交，输出包含提交哈希、作者、日期和提交信息，其中一条提交信息包含括号（如 Mercurial (Hg)）。'
+target_capability: '提交日志保留与括号内容处理'
+expected_keep: 'commit a5265b0fc18c4ff0d9e7bd460838fb52e8959b54, Author: nuoyazhizhou, Date:   Thu Apr 30 10:49:15 2026 +0800'
+expected_compress: '无明显的压缩目标，但提交信息中的括号内容可能被保留或压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b8c73f67d4b1873ca32f31f7e3d360977e22366de4ebb95d3c4c9e76a13ecc9f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

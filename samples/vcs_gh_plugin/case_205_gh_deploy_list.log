@@ -1,0 +1,5 @@
+gh deploy list
+ENVIRONMENT     URL                             ACTIVE  LAST DEPLOY
+production      https://prod.example.com        ✓       2026-04-08
+staging         https://staging.example.com    ✓       2026-04-07
+development     https://dev.example.com         ✗       2026-04-05

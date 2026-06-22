@@ -1,0 +1,15 @@
+scenario: '用户使用 tar 命令创建压缩归档，输出文件列表，然后返回空提示符。'
+target_capability: 'tar 进度行压缩'
+expected_keep: 'tar -czvf backup.tar.gz /home/user/docs'
+expected_compress: '/home/user/docs/file1.txt'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6ab36ad3be1823611814a185d4b8fec0f7d671ac8d136e8296f1aebfb12fe7c2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

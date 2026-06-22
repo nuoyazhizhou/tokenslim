@@ -1,0 +1,7 @@
+bazel query 'deps(//services/api:api)'
+//services/api:api
+//services/api:routes
+//services/api:handlers
+//libs/auth:auth
+//libs/db:db
+//third_party/go:protobuf

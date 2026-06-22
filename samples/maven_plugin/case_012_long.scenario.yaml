@@ -1,0 +1,15 @@
+scenario: 'Maven 构建日志，包含资源复制、编译、测试等阶段，最终构建成功，测试通过，输出较长。'
+target_capability: '构建日志脱水'
+expected_keep: 'BUILD SUCCESS, Tests run: 100, Failures: 0'
+expected_compress: '[INFO] Scanning for projects..., [INFO] --- maven-resources-plugin:3.2.0:resources, [INFO] Using ''UTF-8'' encoding'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9d8408e4ea0c45c8d69b4846ee6c82a9569b35eb1f3d65719ff9175401359f96'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: true

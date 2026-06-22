@@ -1,0 +1,15 @@
+scenario: '在 GitHub Actions CI 中运行 pytest 测试，由于缺少依赖模块 ''dynaconf'' 导致收集阶段报错，测试被中断，最终生成 JUnit XML 报告。'
+target_capability: '测试收集错误保留与摘要压缩'
+expected_keep: 'ERROR collecting tests/test_settings.py, ModuleNotFoundError: No module named ''dynaconf'', 1 error in 1.42s'
+expected_compress: 'collected 19 items / 1 error, generated xml file: /home/runner/work/app/artifacts/pytest.xml, !!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bd6b605a2d360377306375334771e1fd972e68b1a4d840f11c47a07711f407e8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

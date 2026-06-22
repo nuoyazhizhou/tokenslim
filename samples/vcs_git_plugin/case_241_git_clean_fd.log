@@ -1,0 +1,4 @@
+git clean -fd
+Removing build/temp/main.o
+Removing build/temp/parser.o
+Removing __pycache__

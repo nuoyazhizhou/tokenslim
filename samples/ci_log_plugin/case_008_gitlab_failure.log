@@ -1,0 +1,11 @@
+glab ci view --log
+Running with gitlab-runner 16.11.0
+section_start:1778661000:prepare_script[collapsed=true]
+Preparing environment
+section_end:1778661002:prepare_script
+section_start:1778661003:script[collapsed=false]
+$ docker build -t registry.example.com/api:sha .
+#11 4.21 npm ERR! code ERESOLVE
+#11 4.22 npm ERR! ERESOLVE unable to resolve dependency tree
+ERROR: Job failed: exit code 1
+section_end:1778661030:script

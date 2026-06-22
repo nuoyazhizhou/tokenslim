@@ -1,0 +1,33 @@
+{
+  "name": "Nginx Configuration",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Nginx 配置文件语法检测配置",
+  "file_extensions": [".nginx", ".nginxconf", ".conf"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "server {"},
+        {"pattern_type": "contains", "pattern": "location "},
+        {"pattern_type": "contains", "pattern": "listen "},
+        {"pattern_type": "contains", "pattern": "server_name "},
+        {"pattern_type": "contains", "pattern": "root "},
+        {"pattern_type": "contains", "pattern": "index "},
+        {"pattern_type": "contains", "pattern": "proxy_pass "},
+        {"pattern_type": "contains", "pattern": "proxy_set_header "},
+        {"pattern_type": "contains", "pattern": "ssl_certificate "},
+        {"pattern_type": "contains", "pattern": "ssl_certificate_key "},
+        {"pattern_type": "contains", "pattern": "upstream "},
+        {"pattern_type": "contains", "pattern": "rewrite "},
+        {"pattern_type": "contains", "pattern": "return "},
+        {"pattern_type": "contains", "pattern": "include "},
+        {"pattern_type": "contains", "pattern": "access_log "},
+        {"pattern_type": "contains", "pattern": "error_log "},
+        {"pattern_type": "contains", "pattern": "worker_processes "},
+        {"pattern_type": "contains", "pattern": "events {"},
+        {"pattern_type": "contains", "pattern": "http {"}
+      ]
+    }
+  ]
+}

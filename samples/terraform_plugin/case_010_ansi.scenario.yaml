@@ -1,0 +1,15 @@
+scenario: 'Terraform plan 输出包含 ANSI 转义序列，显示将创建一个 S3 存储桶资源，并带有计划摘要。'
+target_capability: 'ANSI 净化与 Terraform 脱水'
+expected_keep: 'Terraform will perform the following actions:; # aws_s3_bucket.assets will be created; Plan: 1 to add, 0 to change, 0 to destroy.'
+expected_compress: "ANSI 转义序列 (如 \\033[32m); (known after apply)"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '521fd01641b8c020139af6704b9e64e4c95cc639fe99b6323d0e161f401a2434'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

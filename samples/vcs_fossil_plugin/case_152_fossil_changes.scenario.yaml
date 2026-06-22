@@ -1,0 +1,15 @@
+scenario: 'Fossil 仓库状态变更查询：用户执行 `fossil changes` 命令，输出显示新增、编辑和删除的文件列表。'
+target_capability: '状态变更摘要保留'
+expected_keep: 'fossil changes, ADDED, EDITED, DELETED'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a00cd94f58c7e6f03ba65e6d7c1266534a73c0b41ea8ea74c71f6ad492f270b7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

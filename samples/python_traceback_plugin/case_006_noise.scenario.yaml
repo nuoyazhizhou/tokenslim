@@ -1,0 +1,15 @@
+scenario: 'Python 脚本执行过程中抛出 ValueError 异常，堆栈跟踪被日志中的 INFO、DEBUG 和 ERROR 行包围，形成噪声。'
+target_capability: '异常堆栈保留与噪声过滤'
+expected_keep: "Traceback (most recent call last):, ValueError: Error, File \"app.py\", line 10, in <module>"
+expected_compress: '[INFO] 2024-01-15 10:30:45 Starting script, [DEBUG] 2024-01-15 10:30:46 Processing data, [ERROR] 2024-01-15 10:30:47 Script failed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '94983943654329e8fcb4bb854420aaa2bcca911543b584452429f5aa526a231d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

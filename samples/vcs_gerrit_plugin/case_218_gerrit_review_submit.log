@@ -1,0 +1,5 @@
+gerrit review 12345,2
+  Code-Review+1 (alice)
+  Verified-1 (ci-bot)
+  Submit+1 (release-bot)
+Labels are now set

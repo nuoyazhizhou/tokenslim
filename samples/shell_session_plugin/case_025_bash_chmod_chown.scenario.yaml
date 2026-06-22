@@ -1,0 +1,15 @@
+scenario: 'Bash 会话中执行 chown 和 chmod 命令修改 /etc/shadow 文件权限'
+target_capability: '命令保留与提示符压缩'
+expected_keep: 'chown root:root /etc/shadow, chmod 600 /etc/shadow'
+expected_compress: 'root@linux:/#'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1fc32df937eda20f2273bd100d9afe7ceed04aab894b2ac3129203ab1bfcfccf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

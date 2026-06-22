@@ -1,0 +1,7 @@
+aws cloudformation describe-stack-events --stack-name web
+2026-05-12 10:00:01 web AWS::CloudFormation::Stack CREATE_IN_PROGRESS User Initiated
+2026-05-12 10:00:02 Vpc AWS::EC2::VPC CREATE_IN_PROGRESS Resource creation Initiated
+2026-05-12 10:00:09 Vpc AWS::EC2::VPC CREATE_COMPLETE -
+2026-05-12 10:00:10 Instance AWS::EC2::Instance CREATE_IN_PROGRESS Resource creation Initiated
+2026-05-12 10:00:21 Instance AWS::EC2::Instance CREATE_FAILED API: ec2:RunInstances Not authorized for images
+2026-05-12 10:00:22 web AWS::CloudFormation::Stack ROLLBACK_IN_PROGRESS The following resource failed to create: [Instance].

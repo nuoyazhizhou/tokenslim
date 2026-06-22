@@ -1,0 +1,9 @@
+PS C:\Users\user> Get-Process -Name "nonexistent"
+Get-Process : Cannot find a process with the name "nonexistent". Verify the process name and call the cmdlet again.
+At line:1 char:1
++ Get-Process -Name "nonexistent"
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (nonexistent:String) [Get-Process], ProcessCommandException
+    + FullyQualifiedErrorId : NoProcessFoundForGivenName,Microsoft.PowerShell.Commands.GetProcessCommand
+
+PS C:\Users\user> 

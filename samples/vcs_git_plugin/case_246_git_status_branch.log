@@ -1,0 +1,4 @@
+git status --branch
+## main...origin/main
+## ahead 1
+ M src/main.rs

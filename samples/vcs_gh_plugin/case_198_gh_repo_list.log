@@ -1,0 +1,5 @@
+gh repo list owner
+name                description           visibility   updated
+my-repo            Main repository        private      2026-04-08
+another-repo       Another project        public       2026-04-05
+old-project        Legacy codebase       private      2026-03-20

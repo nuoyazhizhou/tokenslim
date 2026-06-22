@@ -1,0 +1,15 @@
+scenario: '一个包含应用配置的YAML文件，定义了应用名称、版本、调试模式、日志级别、输出目标和功能开关。'
+target_capability: 'YAML结构压缩与键字典化'
+expected_keep: 'app: name: myapp, logging: level: info, features: auth: true'
+expected_compress: 'outputs: - file, - console, debug: false'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1539dc9246f1ece39c15960230909703ebb491626bb73c24510cfad5061dfa0e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

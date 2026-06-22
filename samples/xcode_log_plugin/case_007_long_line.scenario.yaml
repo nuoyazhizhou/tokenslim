@@ -1,0 +1,15 @@
+scenario: 'Xcode 编译日志中出现超长文件名路径的编译命令，测试路径压缩能力'
+target_capability: '超长路径压缩'
+expected_keep: 'CompileC'
+expected_compress: 'VeryLongFileNameThatExceedsNormalLengthViewController.m'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b45fc23c72758dc304ea3a734931c27ee768a34099ef01e0de59dff55e26af31'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

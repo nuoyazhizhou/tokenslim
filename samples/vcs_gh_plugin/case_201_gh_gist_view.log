@@ -1,0 +1,7 @@
+gh gist view abc1234
+gist: abc1234
+Description: Add utility functions
+Files: utils.rs, helpers.rs
+Public: true
+Created: 2026-04-05
+URL: https://gist.github.com/abc1234

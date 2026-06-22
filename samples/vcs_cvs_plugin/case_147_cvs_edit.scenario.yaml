@@ -1,0 +1,15 @@
+scenario: '用户尝试编辑一个已被他人编辑的 CVS 文件，CVS 返回错误提示文件已被 alice 标记为编辑中。'
+target_capability: '错误/冲突行保留'
+expected_keep: 'cvs edit: `src/main.java'' is already marked as being edited by alice'
+expected_compress: 'cvs edit src/main.java'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4747e988dab881ae8cb0ec39309a710d12a3bee1bee3b1b924531d095d08f635'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

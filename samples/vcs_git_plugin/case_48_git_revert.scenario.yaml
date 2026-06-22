@@ -1,0 +1,15 @@
+scenario: 'Git revert 操作输出，包含 revert 的提交哈希、作者、日期、自动 revert 成功信息以及变更的文件路径和统计。'
+target_capability: 'Git revert 输出保留'
+expected_keep: 'Reverting commit abc1234, Reverted commit abc1234, src/utils/helper.rs'
+expected_compress: '2 files changed, 12 insertions(+), 10 deletions(-)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '77a043d2bccf202a6496c900a6b3725dc819e625da9d6093b6f8a0d930bc7656'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,10 @@
+pulumi up --stack prod
+Previewing update (prod)
+
+Diagnostics:
+  pulumi:pulumi:Stack (prod):
+    error: policy violation: public S3 buckets are not allowed
+
+Resources:
+    + 1 to create
+    24 unchanged

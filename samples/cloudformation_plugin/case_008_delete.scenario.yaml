@@ -1,0 +1,15 @@
+scenario: '用户查询已删除的CloudFormation堆栈事件，输出包含从删除开始到完成的完整事件序列，包括EC2实例的删除过程。'
+target_capability: '删除事件序列保留'
+expected_keep: 'DELETE_IN_PROGRESS, DELETE_COMPLETE, AWS::CloudFormation::Stack'
+expected_compress: '空行, 重复状态行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9be2fc8c18938c2135b21475a0d2f543383291e2ffe155a79bd69d0853602e47'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

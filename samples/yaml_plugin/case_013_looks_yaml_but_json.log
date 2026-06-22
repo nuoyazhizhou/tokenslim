@@ -1,0 +1,14 @@
+{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "looks-yaml",
+    "labels": {
+      "app": "demo"
+    }
+  },
+  "data": {
+    "host": "localhost",
+    "port": 5432
+  }
+}

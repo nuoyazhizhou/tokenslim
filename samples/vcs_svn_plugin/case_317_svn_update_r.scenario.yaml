@@ -1,0 +1,15 @@
+scenario: 'SVN 更新到指定版本 r42，输出变更文件列表及状态，最终确认更新完成。'
+target_capability: 'SVN 命令输出脱水'
+expected_keep: 'svn update -r 42, U    src/main.rs, Updated to revision 42.'
+expected_compress: 'Updating ''.'':, U    src/lib/utils.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd9d0f0f299078a27e73f0d5014cf7fb8b1980d370aa53b344edb33f838f629b1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+2024-01-15 10:30:45 INFO Parsing code
+def process(data) {
+    return data.map(x => x * 2);
+}
+2024-01-15 10:30:46 INFO Code parsed

@@ -1,0 +1,15 @@
+scenario: 'Azure DevOps CLI 中执行 ''az repos show'' 命令查看仓库详情，输出包含项目名、默认分支、远程 URL、分支列表和同步状态。'
+target_capability: '命令锚点保留与K-V压缩'
+expected_keep: 'az repos show, DefaultBranch: main, RemoteUrl: https://dev.azure.com/myorg/my-project'
+expected_compress: 'my-project, Branches: main, develop, feature/*, SyncStatus: up to date'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f2d8fe6027aa440c82d2716a6b14c7cf496bf55cb0ea4b99729df34a32448e9f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

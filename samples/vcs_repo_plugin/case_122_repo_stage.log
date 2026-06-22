@@ -1,0 +1,5 @@
+repo stage
+repo stage --all
+Staged changes in:
+  platform/frameworks/base: 3 files
+  platform/packages/apps/Settings: 2 files

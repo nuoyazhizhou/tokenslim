@@ -1,0 +1,7 @@
+VITE v6.5.0  ready in 300 ms
+  ➜  Local:   http://localhost:5173/
+asset main.js 125 KiB [emitted] [minimized]
+Some regular log message here
+ERROR in ./src/App.jsx 12:15
+Module parse failed: Unexpected token
+webpack 5.90.3 compiled successfully in 3528 ms

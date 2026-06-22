@@ -1,0 +1,15 @@
+scenario: '执行 ansible-playbook 时遇到 YAML 语法错误，错误信息指出映射值不允许出现在该上下文中，并提示错误位于 roles/api/tasks/main.yml 文件的特定行和列。'
+target_capability: '语法错误保留与压缩'
+expected_keep: 'ERROR! Syntax Error while loading YAML.'
+expected_compress: 'The error appears to be in ''roles/api/tasks/main.yml'': line 17, column 13'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3853b54baf396d1b133d68c5e93d336732de697cf0a0ba72714f67ccb27870f7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

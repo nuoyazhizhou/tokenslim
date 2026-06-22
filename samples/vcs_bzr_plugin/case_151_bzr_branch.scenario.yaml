@@ -1,0 +1,15 @@
+scenario: '用户使用 bzr branch 命令从 Launchpad 分支一个项目，输出显示分支成功并包含修订版本数。'
+target_capability: 'bzr branch 命令锚点保留与统计行压缩'
+expected_keep: 'bzr branch lp:~user/project/new-branch'
+expected_compress: 'Branched 123 revisions.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '23860fb790493092a9cf051d522d571174c3ca0905f640674bf32ca23f7f0d68'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

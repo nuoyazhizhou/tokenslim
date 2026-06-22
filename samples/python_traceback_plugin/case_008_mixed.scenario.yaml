@@ -1,0 +1,15 @@
+scenario: 'python_traceback_plugin 测试：日志混合普通文本与 Python 异常堆栈，插件应保留 RuntimeError 堆栈，压缩普通日志行。'
+target_capability: '堆栈跟踪脱水'
+expected_keep: "Traceback (most recent call last):, RuntimeError: Something happened, File \"app.py\", line 10, in <module>"
+expected_compress: "raise RuntimeError(\"Something happened\"), More regular log output"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

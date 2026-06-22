@@ -1,0 +1,8 @@
+MSBuild version 17.4.0+18d5aef85 for .NET
+  Checking build systems...
+  Building with tools version "Current".
+  Target "Build" in file "Microsoft.Common.CurrentVersion.targets" from project "C:\src\MyApp\MyApp.csproj".
+  Using "Csc" task from assembly "Microsoft.Net.Compilers.Task, Version=4.4.0.0".
+  C:\Program Files\dotnet\sdk\6.0.404\Roslyn\bincore\csc.exe /noconfig /unsafe+ ...
+  The command exited with code 0.
+Done Building Project "C:\src\MyApp\MyApp.csproj" (Build target(s)).

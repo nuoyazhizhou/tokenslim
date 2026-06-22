@@ -1,0 +1,15 @@
+scenario: '用户执行 git rm 删除文件，输出显示被删除的文件路径和状态标记。'
+target_capability: '文件路径与状态标记保留'
+expected_keep: 'src/old_file.rs, config/old_config.json, deleted:'
+expected_compress: 'rm ''src/old_file.rs'', remove ''config/old_config.json'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2d19872e9faa116f28341924e9ef47f0ff0e5b7e4af8ac57974fc06145ef45a8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

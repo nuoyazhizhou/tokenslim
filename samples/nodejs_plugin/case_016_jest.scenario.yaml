@@ -1,0 +1,15 @@
+scenario: 'Jest 测试运行结果，包含通过和失败的测试用例，nodejs_plugin 保留失败用例的错误信息，压缩通过用例详情。'
+target_capability: '错误保留与堆栈跟踪'
+expected_keep: 'FAIL, Error, TypeError'
+expected_compress: 'PASS, tests/, at Object.<anonymous>'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

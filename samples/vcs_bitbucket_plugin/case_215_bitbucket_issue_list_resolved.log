@@ -1,0 +1,5 @@
+bitbucket issue list --status all
+ID     TITLE                         STATUS      ASSIGNEE   PRIORITY
+-----------------------------------------------------------------------
+11     Rotate expired API key        RESOLVED    alice      High
+12     Remove stale webhook          CLOSED      bob        Low

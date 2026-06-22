@@ -1,0 +1,9 @@
+Build started...
+  Restoring packages...
+C:\src\MyApp\Models\User.cs(8,10): warning CS0169: The field 'User.id' is never used [C:\src\MyApp\MyApp.csproj]
+  MyApp -> C:\src\MyApp\bin\Debug\net6.0\MyApp.dll
+Build succeeded.
+    1 Warning(s)
+    0 Error(s)
+Running tests...
+Passed!  - Failed:     0, Passed:     5, Skipped:     0, Total:     5

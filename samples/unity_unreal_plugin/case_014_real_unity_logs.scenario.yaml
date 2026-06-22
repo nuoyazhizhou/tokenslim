@@ -1,0 +1,15 @@
+scenario: 'Unity构建日志，包含卸载序列化文件、释放资源、构建AssetBundle和着色器编译完成的消息。'
+target_capability: 'Unity构建日志脱水'
+expected_keep: 'Building AssetBundle for platform StandaloneWindows64, Shader compilation finished, total shaders compiled: 1523'
+expected_compress: 'Unloading 12 Unused Serialized files, Unloading 256 unused Assets, Unloading 3 Unused Serialized files'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f0a4d9c13ffb4cda0c43fb8a02553c816e79e90bcf3757b33e3ce08a1cabed40'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,19 @@
+Buildkite agent 3.67.0 starting android pipeline step
+Run ./gradlew :feature:compileDebugKotlin
+> Task :core:preBuild UP-TO-DATE
+> Task :core:compileDebugKotlin UP-TO-DATE
+> Task :feature:preBuild UP-TO-DATE
+> Task :feature:kaptGenerateStubsDebugKotlin UP-TO-DATE
+> Task :feature:compileDebugKotlin FAILED
+
+e: file:///var/lib/buildkite-agent/builds/mobile/feature/src/main/java/com/acme/feature/FeatureRepository.kt:42:17 Unresolved reference: sessionToken
+e: file:///var/lib/buildkite-agent/builds/mobile/feature/src/main/java/com/acme/feature/FeatureRepository.kt:45:9 Type mismatch: inferred type is String? but String was expected
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':feature:compileDebugKotlin'.
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+
+5 actionable tasks: 1 executed, 4 up-to-date
+BUILD FAILED in 37s

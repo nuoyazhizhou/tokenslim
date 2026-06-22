@@ -1,0 +1,74 @@
+{
+    "name": "web_log",
+    "description": "Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals",
+    "priority": 170,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^\\d+\\.\\d+\\.\\d+\\.\\d+"
+            },
+            {
+                "type": "regex",
+                "pattern": "INFO:\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+\\s+-\\s+\\\"(GET|POST|PUT|PATCH|DELETE)"
+            },
+            {
+                "type": "regex",
+                "pattern": "\\\"(request_method|ClientRequestMethod|httpRequest|message)\\\""
+            },
+            {
+                "type": "regex",
+                "pattern": "^#Fields:\\s+.*cs-method.*sc-status"
+            },
+            {
+                "type": "regex",
+                "pattern": "^\\[\\d{4}-\\d{2}-\\d{2}T[^\\]]+\\]\\s+\\\"(GET|POST|PUT|PATCH|DELETE)"
+            }
+        ],
+        "min_match_ratio": 0.2
+    },
+    "compress": {
+        "token_prefix": "$W",
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        },
+        "semantic_aggregate": {
+            "enabled": true,
+            "dimensions": [
+                "summary",
+                "status",
+                "method",
+                "top_url",
+                "top_ip",
+                "top_ua",
+                "top_ref",
+                "dict_ip",
+                "dict_ua",
+                "routine",
+                "anomaly",
+                "scan",
+                "burst",
+                "slow"
+            ]
+        }
+    },
+    "keep_signals": [
+        "$W|SUMMARY行（健康摘要）",
+        "异常行（如4xx/5xx错误）",
+        "慢请求行（slow lines）",
+        "原始错误日志行（error_log_pattern匹配的）"
+    ],
+    "compress_targets": [
+        "IP地址替换为字典令牌",
+        "URI路径替换为分层字典令牌",
+        "User-Agent替换为字典令牌",
+        "时间戳压缩为紧凑格式（YYYY-MM-DD HH:MM:SS）",
+        "流路径（如/stream/xxx）折叠为前8字符",
+        "URL编码解码（%20等替换）",
+        "多个连续空格压缩为一个",
+        "重复的详细记录聚合为标准摘要"
+    ],
+    "design_intent": "Web访问日志脱水：保留异常/慢请求信号，折叠常规记录为紧凑摘要，压缩IP/UA/路径等冗余字段。"
+}

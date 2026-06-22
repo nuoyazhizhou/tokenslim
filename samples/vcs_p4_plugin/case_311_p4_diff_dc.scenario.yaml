@@ -1,0 +1,15 @@
+scenario: 'vcs_p4_plugin 测试：p4 diff -dc5 上下文差异输出，插件应保留变更行，压缩分隔符和行号头。'
+target_capability: 'diff 头行丢弃与变更行保留'
+expected_keep: '行如 ''+    let auth = Auth::new();'' 和 ''-    42'''
+expected_compress: '行如 ''***************'' 和 ''--- 10,15 ****'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

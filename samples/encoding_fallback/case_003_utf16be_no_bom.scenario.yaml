@@ -1,0 +1,15 @@
+scenario: '一个 UTF-16 BE 编码的文本文件，内容为 ''Hi!''，但缺少 BOM 标记，需要被正确识别并解码为可读文本。'
+target_capability: '编码检测与修复'
+expected_keep: 'Hi!'
+expected_compress: '00 48 00 69 00 21'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

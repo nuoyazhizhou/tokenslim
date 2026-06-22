@@ -1,0 +1,15 @@
+scenario: 'Trivy 安全扫描结果以 SARIF 2.1.0 格式展示，包含容器镜像 Dockerfile 中的 CVE 漏洞和 Terraform 基础设施代码中的 AWS 配置问题。'
+target_capability: 'SARIF 安全扫描结果压缩'
+expected_keep: 'CVE-2025-12345, CVE-2024-55555, AVD-AWS-0099, level: error, level: warning, containers/backend/Dockerfile line 9, infra/aws/storage.tf line 54'
+expected_compress: '$schema, version, tool.driver.informationUri, 完整的 JSON 结构'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '75419f05ea63e4f2d5f32b8b3196aeb8832f832253893346f6ae2126e06fa6d0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

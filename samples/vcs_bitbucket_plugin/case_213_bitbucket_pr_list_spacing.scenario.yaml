@@ -1,0 +1,15 @@
+scenario: 'Bitbucket CLI 列出所有 OPEN 状态的 PR，输出包含表头、分隔线和两行 PR 数据，其中一行状态为 DECLINED 但被列出（可能因 --state OPEN 过滤不严格或数据问题）。'
+target_capability: 'PR 列表数据行保留与表头/分隔线压缩'
+expected_keep: 'OPEN   221     Fix token cache race condition, DECLINED 220   Remove legacy endpoint'
+expected_compress: 'TYPE   ID      TITLE                                       AUTHOR      STATE      CREATED, -----------------------------------------------------------------------------------------------'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'af4015004bb2d127c2216d83aa47717300fca0e0c20c752768df8cc97c89b5a2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

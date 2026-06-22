@@ -1,0 +1,15 @@
+scenario: '执行 hg update -C 命令后，显示 4 个文件已更新、0 个文件合并、2 个文件已移除、0 个文件未解决。'
+target_capability: '文件操作摘要保留'
+expected_keep: '4 files updated, 0 files merged, 2 files removed, 0 files unresolved'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ac9e620228424928072514369ea7140f148119572fe4a643048fdf71711d8235'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/app/main.py", line 42, in <module>
+    process_data()
+  File "/app/data.py", line 15, in process_data
+    return parse(raw)
+ValueError: error: invalid literal for int() with base 10: 'abc'
+During handling of the above exception, another exception occurred:
+RuntimeError: warning: fallback path taken but no fallback registered

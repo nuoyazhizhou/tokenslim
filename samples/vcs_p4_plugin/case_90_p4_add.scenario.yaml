@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 add 命令添加两个文件到 Perforce 仓库，输出显示文件路径和操作结果。'
+target_capability: '文件添加操作保留与路径压缩'
+expected_keep: 'added for add'
+expected_compress: '//depot/main/src/new_file.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1fad10beceadb2e2433ccc6c604328acb5a0dff968cc79a015f2ecbab6ab0eed'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

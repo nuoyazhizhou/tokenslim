@@ -1,0 +1,5 @@
+bzr status
+modified: src/plugins/vcs_plugin/methods.rs
+added: samples/vcs/case_33_bzr_status.log
+removed: src/legacy/old_bzr_adapter.rs
+unknown: tmp/bzr-note.txt

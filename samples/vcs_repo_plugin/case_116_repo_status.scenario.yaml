@@ -1,0 +1,15 @@
+scenario: 'Android Repo 仓库状态检查，显示多个项目的分支和干净/脏状态，其中 Settings 项目有修改和新增文件。'
+target_capability: '项目状态与脏文件保留'
+expected_keep: 'project platform/packages/apps/Settings/ branch feature-xyz (dirty)'
+expected_compress: 'repo status'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8ae3bf832cad5a0667f82d71ad01fc399dadee5d8229d1ea5607ed64ab0435ce'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

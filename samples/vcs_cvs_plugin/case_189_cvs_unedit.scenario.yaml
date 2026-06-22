@@ -1,0 +1,15 @@
+scenario: 'CVS unedit 命令执行后，提示用户对 src/main.java 没有未完成的编辑，属于正常状态反馈。'
+target_capability: 'CVS unedit 无编辑状态保留'
+expected_keep: 'cvs unedit src/main.java, You have no outstanding edits to src/main.java'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '140b5ae3031648d9da86e6405ad6772a7ca0e8b8413c30f93cdc47b59f16e2e7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Helm test 命令的输出，显示测试套件 ''web-test'' 在命名空间 ''prod'' 中成功完成，状态为 Succeeded。'
+target_capability: 'Helm 测试输出关键字段保留'
+expected_keep: 'NAME: web, NAMESPACE: prod, Phase: Succeeded'
+expected_compress: '非关键行如 ''Last Started: ...'' 和 ''Last Completed: ...'' 可能被压缩或丢弃'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ee7fc3519060e36819732f64d126c3eaac59b109c53f8817ed9b91f879ddafdb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

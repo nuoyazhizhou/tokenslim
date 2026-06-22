@@ -1,0 +1,15 @@
+scenario: '用户执行 darcs record 命令，记录了一个包含两个文件修改的补丁，补丁名为 ''Add user authentication module''，操作成功完成。'
+target_capability: 'darcs record 命令锚点与补丁结构保留'
+expected_keep: 'darcs record, Recording patch, Hunk'
+expected_compress: 'Patch applied successfully.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'be6028c979df6c05b0dea544b797d36b1369a1bef701d610599bf1f2d83fac9f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

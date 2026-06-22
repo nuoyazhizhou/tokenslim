@@ -1,0 +1,15 @@
+scenario: 'CloudWatch Insights 查询结果以表格形式展示多个 IP 对 /health 端点的健康检查请求，所有请求均返回 200 OK，无异常。'
+target_capability: '健康检查请求的常规折叠'
+expected_keep: '200 OK'
+expected_compress: '10.0.0.231, 10.0.1.254, 10.0.1.94'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f5c26dbdb264d547f8def05d514c127335393fdaf97d1b0eaa7b63767b04fd30'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

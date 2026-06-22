@@ -1,0 +1,15 @@
+scenario: '模板引擎日志，包含时间戳、INFO 级别、模板标记（{{ header }}、{{ content }}）和普通文本行，模板标记之间的可变内容被压缩。'
+target_capability: '模板结构保留与变量压缩'
+expected_keep: '{{ header }}, {{ content }}, INFO'
+expected_compress: '2024-01-15 10:30:45, Some regular text, More regular text'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bb0a44893888374ac357155bb1be2b3f52b4e6cd8783d1693cd331e6dcd5f7f9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

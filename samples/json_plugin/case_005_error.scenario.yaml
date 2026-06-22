@@ -1,0 +1,15 @@
+scenario: '一个包含错误标志、状态码、消息和堆栈信息的JSON错误对象，用于测试JSON压缩插件对错误结构的处理。'
+target_capability: 'JSON结构保留与长字符串压缩'
+expected_keep: "{\"error\": true, \"code\": 500, \"message\": \"Internal Server Error\", \"stack\": [\"line 1\", \"line 2\", \"line 3\"]}"
+expected_compress: '无（所有字符串较短，可能不压缩）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5b2cc89dbf7f6f0a1c6cab4aea4d39691aa02de0141aad77b658e1e98d5cb787'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:33:43.911471'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

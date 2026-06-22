@@ -1,0 +1,9 @@
+{
+  "user": {
+    "name": "Alice",
+    "address": {
+      "city": "Shanghai",
+      "street": "Main Street"
+    }
+  }
+}

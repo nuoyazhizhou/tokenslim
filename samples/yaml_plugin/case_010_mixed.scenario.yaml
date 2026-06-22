@@ -1,0 +1,15 @@
+scenario: '一个混合了普通日志行和YAML结构（包含映射键值对和序列）的日志片段，用于测试YAML压缩插件对混合内容的处理能力。'
+target_capability: 'YAML结构压缩与混合内容处理'
+expected_keep: 'name: value, items: - item1 - item2'
+expected_compress: 'Regular log line, Another log line, End of log'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4465317857dc202e3cc91590a7242fad95b0b3b64c6a8b650229190571bd2a1d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

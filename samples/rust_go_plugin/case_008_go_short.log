@@ -1,0 +1,3 @@
+goroutine 1 [running]:
+main.main()
+        /home/user/main.go:5 +0x10

@@ -1,0 +1,15 @@
+scenario: '压缩包含 CodeQL 和 Hadolint 两个工具扫描结果的 SARIF JSON 文件，保留关键安全问题和警告，丢弃冗余的 JSON 结构细节。'
+target_capability: 'SARIF 多工具结果压缩'
+expected_keep: 'CodeQL, java/log-injection, Hadolint, DL3008, services/billing/src/main/java/com/acme/BillingController.java'
+expected_compress: '原始 JSON 文本, 长字符串, 冗余的 SARIF 结果条目'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '596f4eec3d55974842b8c6a14c35cf2d2032c7d4adb8bb8bf15a613e593f0899'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

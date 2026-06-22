@@ -1,0 +1,15 @@
+scenario: 'Helm upgrade 命令执行失败，输出包含升级记录和错误信息，显示 Deployment 资源补丁无效。'
+target_capability: '错误保留与关键字段提取'
+expected_keep: 'STATUS: failed, Error: UPGRADE FAILED, NAME: web'
+expected_compress: "Release \"web\" has been upgraded. Happy Helming!, REVISION: 2"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '576975ccffb2133204ec190862d30ba61c86a0cac3220ae712303b0a4b3e50b0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

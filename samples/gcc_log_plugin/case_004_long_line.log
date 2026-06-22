@@ -1,0 +1,1 @@
+gcc -c /home/user/projects/very/long/path/to/source/code/main.c -o /home/user/projects/very/long/path/to/build/objects/main.o -I/home/user/projects/very/long/path/to/include -DDEBUG=1 -Wall -Wextra -O2

@@ -1,0 +1,16 @@
+scenario: 'shell_session_plugin 路由分发测试：PowerShell 中执行 cargo test，shell_session_plugin 检测到 cargo 子命令后路由到 rust_go_plugin 处理。'
+target_capability: '外部命令路由到 specialist 插件'
+expected_keep: 'cargo test, running 1 test, test result: ok. 1 passed'
+expected_compress: "PS C:\\>, Compiling project, Finished test"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+expected_dispatch_chain: ['shell_session_plugin', 'cargo_plugin']
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '227f36b4054f64b4e2243c1e15c025a9f88cc19e7c375751770d1b658087befc'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T13:54:44.661452'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,5 @@
+git push origin HEAD:refs/for/main
+refs/heads/main -> refs/heads/main
+refs/changes/34/1234/5 -> refs/changes/34/1234/5
+refs/heads/feature-x -> refs/heads/main
+Pushed 3 refs

@@ -1,0 +1,23 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 6 items
+
+tests/test_a.py::test_ok PASSED                                        [ 16%]
+tests/test_a.py::test_skip SKIPPED (requires network)                  [ 33%]
+tests/test_b.py::test_bad FAILED                                       [ 50%]
+tests/test_b.py::test_other PASSED                                     [ 66%]
+tests/test_c.py::test_fixture ERROR                                    [ 83%]
+tests/test_c.py::test_expected XFAIL                                   [100%]
+
+=================================== FAILURES ===================================
+_______________________________ test_bad _______________________________
+E   AssertionError: expected 42
+
+==================================== ERRORS ====================================
+________________________ ERROR at setup of test_fixture ________________________
+E   RuntimeError: database unavailable
+
+=========================== short test summary info ============================
+FAILED tests/test_b.py::test_bad - AssertionError: expected 42
+ERROR tests/test_c.py::test_fixture - RuntimeError: database unavailable
+=========== 1 failed, 2 passed, 1 skipped, 1 xfailed, 1 error in 2.40s ==========

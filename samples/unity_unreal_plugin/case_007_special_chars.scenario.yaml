@@ -1,0 +1,15 @@
+scenario: 'Unity/Unreal构建日志中出现包含中文和特殊字符（空格）的文件路径，测试插件对非ASCII字符和特殊符号的处理能力。'
+target_capability: '特殊字符保留'
+expected_keep: "漢字文字.png, C:\\Path\\With\\Spaces\\File.txt"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '518c9bb624b4a44a23804cdaf7f132d48cb6106358da1503d08d9f871a023501'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

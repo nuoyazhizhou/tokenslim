@@ -1,0 +1,15 @@
+scenario: '展示 ansible 版本查询命令的输出，仅包含版本信息，无任务执行内容，插件应保持原样不压缩。'
+target_capability: '非任务输出保留'
+expected_keep: 'ansible [core 2.16.1]'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a7bef0848202a7c29066f368a7f7ead35cb7c71eb2aad6a64113f3fcc2c810cc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'PowerShell 会话中执行 Get-Process 命令，输出以表格形式展示进程信息，包含表头和三条进程数据行，随后显示下一个提示符。'
+target_capability: 'PowerShell 提示符压缩与表格输出保留'
+expected_keep: 'Get-Process | Select-Object -First 3, Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName, 201      15     2104       5304       0.12   4012   1 ApplicationFrameHost'
+expected_compress: "PS C:\\Users\\user> (提示符), PS C:\\Users\\user> (后续提示符)"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b1a1c9d44086603b601a94acf5429a4520eed9f92db013ab3c4887c14ca9e116'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,4 @@
+bitbucket pr create --title "Add new feature" --description "This PR adds new functionality"
+Source: feature-auth -> main
+✓ Created PR #125
+URL: https://bitbucket.org/owner/repo/pull-requests/125

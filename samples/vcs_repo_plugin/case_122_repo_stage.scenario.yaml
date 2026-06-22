@@ -1,0 +1,15 @@
+scenario: '用户使用 Android Repo 工具执行 `repo stage` 和 `repo stage --all` 命令，查看暂存的文件变更，输出显示两个项目路径下的文件数量。'
+target_capability: 'repo 命令锚点保留与项目路径压缩'
+expected_keep: 'repo stage, platform/frameworks/base: 3 files, platform/packages/apps/Settings: 2 files'
+expected_compress: 'Staged changes in:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd496fdd64ace6ce3b24dfb6550ff560a458c91f36ddb9cbf9382fde3a7eace5f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

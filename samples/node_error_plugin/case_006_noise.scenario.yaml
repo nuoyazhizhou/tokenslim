@@ -1,0 +1,15 @@
+scenario: 'Node.js 错误堆栈与 npm 废弃警告噪声混合，测试插件在噪声环境中提取核心错误信息的能力。'
+target_capability: '堆栈帧路径字典压缩与噪声过滤'
+expected_keep: 'ReferenceError, x is not defined, /home/user/project/index.js:5'
+expected_compress: 'npm WARN deprecated some-package@1.0.0, npm WARN deprecated another-package@2.0.0, console.log(x)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,6 @@
+az repos show
+my-project
+   DefaultBranch: main
+  RemoteUrl: https://dev.azure.com/myorg/my-project
+  Branches: main, develop, feature/*
+  SyncStatus: up to date

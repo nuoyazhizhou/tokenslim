@@ -1,0 +1,15 @@
+scenario: '一段非 Python 堆栈跟踪的普通文本，测试插件在无异常信息时是否保持原样不压缩。'
+target_capability: '非异常文本保留'
+expected_keep: 'This is not Python, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a1301107fdb43f7c02a746e17476c77f40d4303ccfac8d8e1934abaa84998e24'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

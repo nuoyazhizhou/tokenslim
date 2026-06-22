@@ -1,0 +1,15 @@
+scenario: '混合云环境下的Web访问日志，包含AWS ECS、Cloudflare、GCP Cloud Run和OCI等多种云平台的日志格式，以及健康检查、API请求、扫描探测等不同请求类型。'
+target_capability: '多格式日志混合处理与异常保留'
+expected_keep: '503错误、404扫描探测、健康检查摘要'
+expected_compress: 'IP地址、URI路径、User-Agent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '46527ef00830598093be75049e3a73e0fc27b8c6ad9ea2017e1b5e8961e14f7c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

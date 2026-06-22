@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg diff --stat` 查看变更统计，输出显示修改的文件、行数及总变更摘要。'
+target_capability: '文件操作摘要保留'
+expected_keep: '3 files changed, 16 insertions(+), 1 deletions(-)'
+expected_compress: 'src/main.rs              |  5 +++++'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c988105eb081a10d34849cac585ee32a7910d9c5d5834568ae6c102b9ee16615'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

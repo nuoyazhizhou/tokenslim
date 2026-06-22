@@ -1,0 +1,15 @@
+scenario: '用户使用 Bitbucket CLI 创建了一个从 feature-auth 分支到 main 分支的 Pull Request，标题为 ''Add new feature''，系统返回创建成功信息及 PR 编号和 URL。'
+target_capability: 'PR 创建结果保留与噪声压缩'
+expected_keep: 'Created PR #125, Source: feature-auth -> main'
+expected_compress: 'URL: https://bitbucket.org/owner/repo/pull-requests/125'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1d13c6a03c42669de37f5de78ae1433ffc2bc300445558d35fba65e9af5c5d30'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:08:37.353323'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

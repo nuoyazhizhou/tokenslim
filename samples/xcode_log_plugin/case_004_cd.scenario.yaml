@@ -1,0 +1,15 @@
+scenario: 'Xcode 构建日志中，用户执行 cd 命令切换目录后，执行 clang 编译 ViewController.m 文件。'
+target_capability: '编译命令骨架保留'
+expected_keep: 'clang -x objective-c -c /Users/dev/work/app/ViewController.m'
+expected_compress: 'cd /Users/dev/work/app'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6f923ea816f02d8c25af1e0065e36ee01fc70fcf907f88a75b334d49a8e3dbf8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '在Windows CMD中执行copy命令复制文件，然后使用dir命令列出文件，展示复制结果和目录列表。'
+target_capability: 'CMD提示符压缩与命令输出保留'
+expected_keep: 'copy file1.txt file2.txt, 1 file(s) copied., dir file*.txt'
+expected_compress: "C:\\>, Volume in drive C has no label., Volume Serial Number is ABCD-1234"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '504c9560f369589d85105dbb372aa38778dff4198f80bb04b65d272a1c9c6ec0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

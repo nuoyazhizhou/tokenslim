@@ -1,0 +1,15 @@
+scenario: '用户执行 git reset --soft HEAD~1 命令，撤销最近一次提交但保留工作区更改。'
+target_capability: 'Git 重置命令输出保留'
+expected_keep: 'git reset --soft HEAD~1'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bfca1107c17545de1cfeaa38c29fafbf7b6a8fa892852b029c174a3d342ec682'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

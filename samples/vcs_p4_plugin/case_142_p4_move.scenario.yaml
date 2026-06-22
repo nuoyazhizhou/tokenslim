@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 move 命令将 source.txt 移动到 dest.txt，输出显示移动后的文件版本和来源信息。'
+target_capability: '文件操作与结果保留'
+expected_keep: 'moved from //depot/main/source.txt'
+expected_compress: 'p4 move source.txt dest.txt'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '429b2cdadbba840741e5c1c7c2a5e63c6471983fd24e06e6efeacb156eacda43'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,13 @@
+Hash: abc123def456
+Version: webpack 5.90.3
+Time: 3528ms
+Built at: 2024-01-15 10:30:00
+       Asset       Size  Chunks                    Chunk Names
+    main.js   125.4 KiB       0  [emitted]         main
+   vendor.js   892.3 KiB       1  [emitted]  [big]  vendor
+  Entrypoint main = main.js vendor.js
+ [123] ./src/main.js + 2 modules {0} [built]
+ [456] ./node_modules/react/index.js {1} [built]
+Child mini-css-extract-plugin:
+    Entrypoint mini-css-extract-plugin = *
+    [0] ./node_modules/css-loader/dist/cjs.js!./src/index.css 10 KiB {0} [built]

@@ -1,0 +1,15 @@
+scenario: 'Git merge 操作产生冲突，输出冲突文件路径和自动合并失败提示。'
+target_capability: '冲突标记保留'
+expected_keep: 'CONFLICT (content): Merge conflict in src/main.rs'
+expected_compress: 'Merge made by the ''ort'' strategy.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0959b8b9416437e00996963cbc7b70aad5790674d717a29293e84e517ca890ce'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

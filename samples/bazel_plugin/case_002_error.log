@@ -1,0 +1,7 @@
+bazel test //services/payment:payment_test
+INFO: Analyzed target //services/payment:payment_test (12 packages loaded, 133 targets configured).
+ERROR: C:/repo/services/payment/BUILD.bazel:42:11: GoCompilePkg services/payment/payment.a failed: compilepkg failed
+services/payment/payment.go:88:14: undefined: ledgerClient
+INFO: Elapsed time: 8.321s, Critical Path: 2.145s
+INFO: Build did NOT complete successfully
+FAILED: //services/payment:payment_test

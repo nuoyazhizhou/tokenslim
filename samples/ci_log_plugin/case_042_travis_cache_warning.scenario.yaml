@@ -1,0 +1,15 @@
+scenario: 'Travis CI 构建日志，包含缓存设置、pytest 测试执行，过程中产生一个 deprecated fixture 警告，最终构建成功退出码 0。'
+target_capability: '保留警告和步骤边界，压缩非关键日志行'
+expected_keep: 'travis_fold:start:cache, WARNING: deprecated fixture, exited with 0'
+expected_compress: 'Setting up build cache, store build cache, tests/test_deprecated.py::test_old_api PASSED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f6f87e841cf8fad8059f021869e9b3642e603a2412ac318a062659b160047a75'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

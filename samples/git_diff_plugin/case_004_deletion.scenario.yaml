@@ -1,0 +1,15 @@
+scenario: 'Git diff 展示了一个文件的删除操作，旧文件 src/old.rs 被完全移除，diff 内容包含删除标记和旧文件内容。'
+target_capability: '文件删除场景的 diff 压缩'
+expected_keep: 'diff --git a/src/old.rs b/src/old.rs, deleted file mode 100644, --- a/src/old.rs'
+expected_compress: "fn old_function() { println!(\"This is old\"); }"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '64562850bfe5ceadcd7ba21a28b218e253cc40929ab51eae2bddaad683d739e1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

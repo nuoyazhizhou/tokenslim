@@ -1,0 +1,15 @@
+scenario: '用户执行 ''p4 describe -s 12345'' 查看变更列表，输出包含变更编号、作者、时间、描述、更新文件列表及 depot 路径。'
+target_capability: '变更描述与文件列表压缩'
+expected_keep: 'Change 12345, Updated files, //depot/main/src/plugins/vcs_plugin/parser.rs'
+expected_compress: 'alice.chen@client on 2026/04/03 14:30:00, feat(vcs): Add VCS parsers, ... //depot/main/src/plugins/vcs_plugin/methods.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7a406b2e6e8d266ba979fb2c3b4acb2b8dfaaa16704fdad62bde84cc68f3ba3b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

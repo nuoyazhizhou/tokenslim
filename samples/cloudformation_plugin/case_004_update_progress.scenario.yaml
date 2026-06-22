@@ -1,0 +1,15 @@
+scenario: 'AWS CloudFormation 堆栈更新过程中，describe-stack-events 命令输出的各资源状态事件，包括 UPDATE_IN_PROGRESS 和 UPDATE_COMPLETE 状态。'
+target_capability: 'CloudFormation 事件状态折叠'
+expected_keep: 'UPDATE_IN_PROGRESS, UPDATE_COMPLETE, AWS::CloudFormation::Stack'
+expected_compress: '重复的 UPDATE_IN_PROGRESS 行（如 LaunchTemplate 和 AutoScalingGroup 的相同状态）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c242bcfef4a2cd92b74f5aba9968a1d708c34eba5c6feefd8032d15f9c1f7a42'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

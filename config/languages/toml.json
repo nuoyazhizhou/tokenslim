@@ -1,0 +1,27 @@
+{
+  "name": "TOML Configuration",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "TOML 配置文件语法检测配置",
+  "file_extensions": [".toml"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "["},
+        {"pattern_type": "contains", "pattern": "]"},
+        {"pattern_type": "contains", "pattern": " = "},
+        {"pattern_type": "contains", "pattern": "#"},
+        {"pattern_type": "contains", "pattern": "'''"},
+        {"pattern_type": "contains", "pattern": "\"\"\""},
+        {"pattern_type": "contains", "pattern": "true"},
+        {"pattern_type": "contains", "pattern": "false"},
+        {"pattern_type": "contains", "pattern": "null"},
+        {"pattern_type": "contains", "pattern": "inf"},
+        {"pattern_type": "contains", "pattern": "nan"},
+        {"pattern_type": "contains", "pattern": "Z\""},
+        {"pattern_type": "contains", "pattern": "+00:00"}
+      ]
+    }
+  ]
+}

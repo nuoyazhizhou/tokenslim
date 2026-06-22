@@ -1,0 +1,15 @@
+scenario: 'SSH 认证日志，包含一次公钥认证成功和一次无效用户密码认证失败。'
+target_capability: '系统日志脱水'
+expected_keep: '时间戳、消息内容、PID'
+expected_compress: '主机名、进程名'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7c5f03fa04e0896ad7c3e6e4dd182289f77e776b7d873bdc61c487bb25b140e5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

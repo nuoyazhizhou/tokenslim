@@ -1,0 +1,15 @@
+scenario: 'Java 应用启动时产生非法反射访问警告，随后抛出 UnsupportedOperationException 异常，堆栈包含两帧，无异常链。'
+target_capability: 'Java 堆栈跟踪脱水'
+expected_keep: "Exception in thread \"main\" java.lang.UnsupportedOperationException, at com.example.app.OldAPI.call(OldAPI.java:78), at com.example.app.Main.main(Main.java:15)"
+expected_compress: 'WARNING: An illegal reflective access operation has occurred, WARNING: Illegal reflective access by com.example.app.Reflector (file:/app/lib/reflection.jar) to field java.lang.String.value, WARNING: Please consider reporting this to the maintainers of com.example.app.Reflector'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd07954c250ed0fcb825adb118d06c491d9e4bfabde8216a433db07ea938d6938'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

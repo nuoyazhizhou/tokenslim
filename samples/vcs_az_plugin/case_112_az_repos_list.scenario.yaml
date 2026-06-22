@@ -1,0 +1,15 @@
+scenario: '用户执行 `az repos list` 命令列出 Azure DevOps 仓库，输出为 JSON 数组，包含仓库名称、ID、默认分支、项目信息和 URL。'
+target_capability: 'JSON 列表输出脱水'
+expected_keep: 'az repos list, name: my-repo, defaultBranch: main'
+expected_compress: '[, ], {, }'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2d1ee417d36232fd21ea1a766569dd92c0dcfcd6a12944e9b4e684a4d8f1dbd7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

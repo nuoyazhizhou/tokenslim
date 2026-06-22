@@ -1,0 +1,15 @@
+scenario: '用户使用 Bash 的 tail -n 命令查看系统日志文件 /var/log/syslog 的最后 5 行，然后执行 tail -f 跟踪 /var/log/nginx/access.log 的实时更新。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'Oct 10 10:00:00 host systemd[1]: Started Daily apt download activities.'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '56b99c8bea6e11f2f29002aa4b9f6f579dfb8511451c7882b3021d49300e9dfc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

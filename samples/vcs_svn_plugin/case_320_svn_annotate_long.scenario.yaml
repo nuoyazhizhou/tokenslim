@@ -1,0 +1,15 @@
+scenario: 'SVN annotate 命令输出，显示文件 src/core/analyzer.py 每行的作者、版本号和代码内容，包含多个开发者的提交历史。'
+target_capability: 'SVN annotate 输出压缩'
+expected_keep: 'svn annotate src/core/analyzer.py, 123   alice.chen, 125   bob.wang'
+expected_compress: "def analyze_project(root):, \"\"\"Analyze project structure and dependencies.\"\"\", diagnostics = []"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'eda92676b4ccdceeb9df685093f18adf0806cbb3bd16f452d5585386a8b5f44a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

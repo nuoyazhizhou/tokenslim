@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 opened` 命令查看已打开的文件，输出包含两个文件路径、变更编号、客户端和用户信息。'
+target_capability: 'P4 opened 输出压缩'
+expected_keep: '//depot/main/src/core/doctor_workspace/methods.rs#2, //depot/main/src/plugins/vcs_plugin/parser.rs#3, opened'
+expected_compress: 'by alice.chen@client, by bob.wang@client, (text)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '41aa4e8bcfd46cd7eb4693d9125a97d3803ed4f2e158605ad42a464f99cb61f3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

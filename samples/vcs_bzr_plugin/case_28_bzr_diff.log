@@ -1,0 +1,14 @@
+bzr diff
+=== modified file 'src/plugins/vcs_plugin/methods.rs'
+--- src/plugins/vcs_plugin/methods.rs	2026-04-05 09:10:00 +0800
++++ src/plugins/vcs_plugin/methods.rs	2026-04-06 10:15:00 +0800
+@@ -120,6 +120,12 @@
+ fn compact_log_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
+     match tool {
++        Some(VcsTool::Cvs) => compact_cvs_log_for_ai(raw),
++        Some(VcsTool::Bzr) => compact_bzr_log_for_ai(raw),
++        Some(VcsTool::Fossil) => compact_fossil_log_for_ai(raw),
++        Some(VcsTool::Darcs) => compact_darcs_log_for_ai(raw),
+         Some(VcsTool::Git) => compact_git_log_for_ai(raw),
+         Some(VcsTool::Svn) => compact_svn_log_for_ai(raw),
+         Some(VcsTool::Hg) => compact_hg_log_family_for_ai(raw),

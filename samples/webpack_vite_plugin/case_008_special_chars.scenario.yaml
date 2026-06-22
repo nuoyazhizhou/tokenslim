@@ -1,0 +1,15 @@
+scenario: 'Webpack 构建日志，包含特殊字符（⚠️）和警告信息，资产列表和编译结果。'
+target_capability: '特殊字符保留与警告行识别'
+expected_keep: '⚠️  warning: ./src/utils/helper.js contains console.log statements'
+expected_compress: 'asset main.abc123.js 125 KiB [emitted]'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fbcc6daae7a755d5aeca59bc451836efa9f3e7591762e671e51bbf928e1ffa2e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

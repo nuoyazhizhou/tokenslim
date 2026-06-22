@@ -1,0 +1,15 @@
+scenario: 'vcs_p4_plugin 测试：p4 diff2 比较两个 depot 路径差异，插件应保留文件路径和变更行，压缩分隔符头行。'
+target_capability: 'P4 diff2 输出压缩'
+expected_keep: '//depot/main/src/main.rs#2 - //depot/feature/src/main.rs#1, 1c1, < fn main() {'
+expected_compress: '==== //depot/main/src/main.rs#2 - //depot/feature/src/main.rs#1, ---/+++ 头行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

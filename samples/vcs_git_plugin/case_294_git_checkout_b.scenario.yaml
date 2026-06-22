@@ -1,0 +1,15 @@
+scenario: '用户执行 git checkout -b 创建并切换到新分支 ''feature/new-api''，输出显示切换成功。'
+target_capability: '分支切换信息保留'
+expected_keep: 'Switched to a new branch ''feature/new-api'''
+expected_compress: 'git checkout -b feature/new-api'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0dbb96670a4778a1e7b63d6afe8ef8ea3edce5e5aef5b727554fe8a467adfd69'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

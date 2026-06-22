@@ -1,0 +1,15 @@
+scenario: 'JUnit 测试报告包含 Windows 路径类测试，其中 test_unc_share_copy 因文件未找到失败，test_registry_value_applied 因权限错误，test_registry_cleanup 被跳过。'
+target_capability: 'JUnit 错误保留'
+expected_keep: 'failure/error/skipped 行'
+expected_compress: '通过的测试用例及 XML 标签'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f319b924df8645551dfd09929877671611c845437d4f3b143ebd72b6fe1808ea'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:50:45.425190'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

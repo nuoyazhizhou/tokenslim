@@ -1,0 +1,15 @@
+scenario: 'PHP 脚本执行过程中产生 Notice 和 Fatal error 日志，夹杂 INFO/DEBUG/ERROR 级别日志噪声。'
+target_capability: '错误保留与噪声过滤'
+expected_keep: 'PHP Fatal error:  Uncaught Exception in /app/index.php:42'
+expected_compress: '[INFO] Starting script, [DEBUG] Processing data, [ERROR] Script failed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6fe7ff5627e39726ff872e1ba322f080160919939c36ff114e4a48b46c33b473'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

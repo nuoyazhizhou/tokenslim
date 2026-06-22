@@ -1,0 +1,15 @@
+scenario: '使用-vv详细模式运行ansible-playbook收集主机事实，输出包含每个主机的完整JSON事实及其主机状态摘要。'
+target_capability: '冗长JSON事实压缩'
+expected_keep: 'TASK [Gathering Facts] 行、ok: [web1] 行、PLAY RECAP 行'
+expected_compress: 'ansible_facts 中的详细键值对（如 ansible_hostname、ansible_kernel 等）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5cae31b94a9a4478fdc20b41eebd930c71686f45bce1faed1fecc04b2a298852'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

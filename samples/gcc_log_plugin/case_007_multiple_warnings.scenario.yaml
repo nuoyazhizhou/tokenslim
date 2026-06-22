@@ -1,0 +1,15 @@
+scenario: 'GCC 编译两个 C 源文件（parser.c 和 lexer.c），分别产生警告：指针与整数比较、隐式函数声明。'
+target_capability: '编译警告保留与压缩'
+expected_keep: 'warning: comparison between pointer and integer'
+expected_compress: 'gcc -c parser.c -o parser.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3f01ff0ccaeb28b8e77c846ff5086d2e2f3b1dc49fa74920cff09ca9e119a2d7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

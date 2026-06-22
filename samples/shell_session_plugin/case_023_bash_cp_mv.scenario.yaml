@@ -1,0 +1,15 @@
+scenario: '用户在 Bash shell 中执行 cp 和 mv 文件操作，并检查退出码。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'cp /var/log/syslog ./backup/; mv ./backup/syslog ./backup/syslog.bak; echo $?; 0'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ab1865fcb357938daf2afac357ec0554bcbcc3c19724e93314828de038ed4bab'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

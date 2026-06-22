@@ -1,0 +1,15 @@
+scenario: '一个简单的HTML文档，包含DOCTYPE声明、head和body结构，标题为Hello World，正文有标题和段落。'
+target_capability: 'HTML标签和文本保留'
+expected_keep: '<title>Hello World</title>, <h1>Welcome</h1>, <p>This is a paragraph.</p>'
+expected_compress: '标签间的换行和缩进空白'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4faf55c158f3158fe06aa15db0b1444f532b985ac3bcf714e727591d42d66165'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

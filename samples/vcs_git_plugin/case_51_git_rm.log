@@ -1,0 +1,5 @@
+git rm
+rm 'src/old_file.rs'
+remove 'config/old_config.json'
+deleted:    src/old_file.rs
+deleted:    config/old_config.json

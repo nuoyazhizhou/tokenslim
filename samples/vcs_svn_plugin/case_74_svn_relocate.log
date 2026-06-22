@@ -1,0 +1,2 @@
+svn relocate https://svn.example.com/new-repo
+Relocated '/path/to/working/copy' to new URL https://svn.example.com/new-repo

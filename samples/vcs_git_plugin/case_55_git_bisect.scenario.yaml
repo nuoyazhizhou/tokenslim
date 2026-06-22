@@ -1,0 +1,15 @@
+scenario: 'Git bisect 启动场景：用户执行 git bisect start 命令，输出显示当前分支为 main，并提示 bisect run 在 main 分支上运行。'
+target_capability: '分支切换信息保留'
+expected_keep: 'git bisect start, branch ''main'', bisect run on branch ''main'''
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '23fea6019a5fb16d568eb3c9133ecc351d640001eaefc60073a778f37a758253'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

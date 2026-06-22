@@ -1,0 +1,3 @@
+protoc --proto_path=proto --go_out=gen proto/user.proto proto/order.proto
+Generated gen/user.pb.go
+Generated gen/order.pb.go

@@ -1,0 +1,15 @@
+scenario: '用户通过 AWS CLI 查询 CloudFormation 堆栈 ''web'' 的变更集 ''cs-001''，返回变更集状态为 CREATE_COMPLETE，并列出三个资源变更：Modify（WebService）、Add（CanaryAlarm）、Remove（OldDashboard）。'
+target_capability: '变更集资源变更脱水'
+expected_keep: 'ResourceChange: Action=Modify LogicalResourceId=WebService, ResourceChange: Action=Add LogicalResourceId=CanaryAlarm, ResourceChange: Action=Remove LogicalResourceId=OldDashboard'
+expected_compress: 'aws cloudformation describe-change-set --stack-name web --change-set-name cs-001, ChangeSetName: cs-001, Status: CREATE_COMPLETE'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0522b6a98d5614cd5a8d3b3bdfb361eadf48493629e7d2967081ecfc0229a182'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

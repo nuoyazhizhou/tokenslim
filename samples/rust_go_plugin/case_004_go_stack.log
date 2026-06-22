@@ -1,0 +1,7 @@
+goroutine 10 [running]:
+github.com/example/pkg.process(0xc00001c0a0)
+        /home/user/go/pkg/process.go:23 +0x45
+github.com/example/pkg.handle(0x0)
+        /home/user/go/pkg/handle.go:12 +0x32
+created by main.main
+        /home/user/project/main.go:8 +0x2a

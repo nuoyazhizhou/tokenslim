@@ -1,0 +1,15 @@
+scenario: '终端输出包含下载进度条和状态信息（如下载完成、完整性检查、OK），并包裹ANSI颜色和光标控制序列。'
+target_capability: 'ANSI清理：保留文本，移除控制码'
+expected_keep: 'Download completed, Checking integrity..., OK'
+expected_compress: "ANSI转义序列（如\\x1b[32m）, 进度条覆盖历史（\\r\\x1b[?25l）"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6de42349f70d855e0207bf67a6a611921fa2fcbcb835985e4979703536fe2a3b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

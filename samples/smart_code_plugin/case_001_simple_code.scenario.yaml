@@ -1,0 +1,15 @@
+scenario: '一个简单的 JavaScript 函数定义和调用，包含函数 add 和 console.log 语句。'
+target_capability: '代码脱水：保留短标识符，压缩长标识符'
+expected_keep: 'function, add, console, log'
+expected_compress: '无长标识符或连续空格可压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '820c2ebd4347000f11cf1de48ec0fcd618ab8788211582561edf1f68022f4b35'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

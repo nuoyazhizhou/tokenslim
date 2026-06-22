@@ -1,0 +1,2 @@
+May  7 10:33:10 server1 app[1234]: Request with special chars: \x00\x01\x02 and unicode: \u2764\u1F600
+May  7 10:33:15 server1 app[1235]: URL encoded: %20%2F%3F%3D%26

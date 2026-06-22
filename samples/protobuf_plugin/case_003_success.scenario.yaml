@@ -1,0 +1,15 @@
+scenario: '使用 protoc 编译 proto 文件生成 Go 代码，输出成功信息。'
+target_capability: '成功输出保留'
+expected_keep: 'Generated gen/user.pb.go, Generated gen/order.pb.go'
+expected_compress: 'protoc --proto_path=proto --go_out=gen proto/user.proto proto/order.proto'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fee7f950b3585080fbaac1dc6b89db2d224df00c311c96a5e46d4a17c94a6657'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

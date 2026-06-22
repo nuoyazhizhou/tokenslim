@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 shelve 命令，创建了一个 shelve change（编号 12345），并列出被 shelve 的两个文件路径。'
+target_capability: 'P4 shelve 结果保留'
+expected_keep: 'Shelve change 12345 created.'
+expected_compress: '//depot/main/src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7185cd8c4caa601dce4d2a604ad34cb713b15709319864209b1f87224a405530'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

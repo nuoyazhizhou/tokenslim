@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 构建过程中出现多条资源移除警告，所有警告均来自同一个包名（com.example.app），提示移除无默认值的字符串资源，无其他构建任务输出。'
+target_capability: '资源警告保留与合并'
+expected_keep: 'warn: removing resource'
+expected_compress: 'warn: removing resource com.example.app:string/'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0b4c77aa8bab113d95509c61b7d8deee3d013d572cbeb0af7a7fb69b5caf3fd6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

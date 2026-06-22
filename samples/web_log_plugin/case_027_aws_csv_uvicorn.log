@@ -1,0 +1,9 @@
+timestamp,provider,message
+2026-05-13T08:25:01Z,aws,"INFO:     10.0.1.94:0 - ""GET /health HTTP/1.1"" 200 OK"
+2026-05-13T08:25:02Z,aws,"INFO:     10.0.0.231:0 - ""GET /health HTTP/1.1"" 200 OK"
+2026-05-13T08:25:03Z,aws,"INFO:     10.0.0.231:0 - ""POST /api/documents HTTP/1.1"" 500 Internal Server Error"
+2026-05-13T08:25:04Z,aws,"INFO:     10.0.1.94:0 - ""GET /health HTTP/1.1"" 200 OK"
+2026-05-13T08:25:05Z,aws,"INFO:     10.0.0.231:0 - ""GET /health HTTP/1.1"" 200 OK"
+2026-05-13T08:25:06Z,aws,"INFO:     10.0.0.231:0 - ""POST /api/documents HTTP/1.1"" 500 Internal Server Error"
+2026-05-13T08:25:07Z,aws,"INFO:     10.0.1.94:0 - ""GET /api/status HTTP/1.1"" 503 Service Unavailable"
+2026-05-13T08:25:08Z,aws,"INFO:     10.0.1.94:0 - ""GET /health HTTP/1.1"" 200 OK"

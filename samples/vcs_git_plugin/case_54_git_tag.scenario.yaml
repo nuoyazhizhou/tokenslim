@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git tag 列出轻量和附注标签，插件应保留标签名和注释，压缩命令行。'
+target_capability: '标签列表保留'
+expected_keep: 'v1.0.0, v1.1.0, v2.0.0 (annotated)'
+expected_compress: 'git tag, git tag -l, tag ''v1.0.0'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

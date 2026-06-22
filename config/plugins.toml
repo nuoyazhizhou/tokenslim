@@ -1,0 +1,254 @@
+# TokenSlim 插件配置文件
+
+# 插件加载配置
+[plugins]
+# 启用/禁用插件
+enabled = [
+    "android_gradle_plugin",
+    "ansi_cleaner_plugin",
+    "ansible_plugin",
+    "artifact_summary_plugin",
+    "bazel_plugin",
+    "ci_log_plugin",
+    "cloud_log_plugin",
+    "cloudformation_plugin",
+    "db_log_plugin",
+    "dotnet_plugin",
+    "gcc_log_plugin",
+    "generic_text_plugin",
+    "git_diff_plugin",
+    "helm_plugin",
+    "java_stack_plugin",
+    "json_plugin",
+    "kubernetes_docker_plugin",
+    "markdown_plugin",
+    "maven_plugin",
+    "ndjson_plugin",
+    "node_error_plugin",
+    "nodejs_plugin",
+    "noise_filter_plugin",
+    "php_ruby_plugin",
+    "protobuf_plugin",
+    "pulumi_plugin",
+    "pytest_plugin",
+    "python_traceback_plugin",
+    "rust_go_plugin",
+    "smart_code_plugin",
+    "smart_path_plugin",
+    "spring_boot_plugin",
+    "sql_plugin",
+    "static_rule_plugin",
+    "syslog_plugin",
+    "template_driven_plugin",
+    "terraform_plugin",
+    "unity_unreal_plugin",
+    "vcs_plugin",
+    "web_log_plugin",
+    "webpack_vite_plugin",
+    "xcode_log_plugin",
+    "xml_html_plugin",
+    "yaml_plugin",
+]
+
+# 静态插件（编译进主程序）- 核心高频使用插件
+static_plugins = [
+    "android_gradle",
+    "ansi_cleaner",
+    "ansible",
+    "artifact_summary",
+    "bazel",
+    "ci_log",
+    "cloud_log",
+    "cloudformation",
+    "db_log",
+    "dotnet",
+    "gcc_log",
+    "generic_text",
+    "git_diff",
+    "helm",
+    "java_stack",
+    "json",
+    "kubernetes_docker",
+    "markdown",
+    "maven",
+    "ndjson",
+    "node_error",
+    "nodejs",
+    "noise_filter",
+    "php_ruby",
+    "protobuf",
+    "pulumi",
+    "pytest",
+    "python_traceback",
+    "rust_go",
+    "smart_code",
+    "smart_path",
+    "spring_boot",
+    "sql",
+    "static_rule",
+    "syslog",
+    "template_driven",
+    "terraform",
+    "unity_unreal",
+    "vcs",
+    "web_log",
+    "webpack_vite",
+    "xcode_log",
+    "xml_html",
+    "yaml",
+]
+
+# 动态插件（已迁入内置插件，当前留空）
+dynamic_plugins = []
+# 插件优先级（数字越大优先级越高）
+[plugins.priority]
+xcode_log_plugin = 210
+gcc_log_plugin = 100
+android_gradle_plugin = 90
+nodejs_plugin = 85
+java_stack_plugin = 80
+python_traceback_plugin = 75
+
+# 插件特定配置
+[plugins.gcc_log_plugin]
+# 是否启用时间戳转换
+convert_timestamps = true
+# 是否启用路径压缩
+compress_paths = true
+# 是否启用宏定义提取
+extract_macros = true
+# 连续行去重阈值
+dedup_threshold = 3
+
+[plugins.android_gradle_plugin]
+# Gradle 任务路径压缩
+compress_gradle_tasks = true
+# 构建路径压缩
+compress_build_paths = true
+# Jenkins 环境变量优化
+optimize_jenkins_env = true
+# D8/R8 消息优化
+optimize_d8_messages = true
+# APK 签名信息优化
+optimize_apk_info = true
+# 资源警告优化
+optimize_resource_warnings = true
+
+[plugins.nodejs_plugin]
+# node_modules 路径压缩
+compress_node_modules = true
+# npm/yarn 错误优化
+optimize_npm_yarn = true
+# webpack 信息优化
+optimize_webpack = true
+# TypeScript 错误优化
+optimize_typescript = true
+
+# 压缩引擎配置
+[compression]
+# 字典使用阈值（字节）
+dictionary_threshold = 102400  # 100KB
+# 并行处理阈值（字节）
+parallel_threshold = 1048576  # 1MB
+# 最大字典大小（条目数）
+max_dictionary_size = 10000
+
+# 时间戳配置
+[timestamps]
+# 启用相对时间戳转换
+enabled = true
+# 支持的时间戳格式
+formats = ["iso8601", "time_only", "unix_millis"]
+
+# 路径压缩配置
+[paths]
+# 启用路径压缩
+enabled = true
+# 最小前缀长度
+min_prefix_length = 20
+# 最小出现次数
+min_occurrences = 2
+
+# Token 优化策略（全局字典经济模型）
+[token_optimizer]
+enabled = true
+
+[token_optimizer.scopes.paths]
+# footer token 至少在正文出现 N 次才会落入 paths: 字典
+min_footer_token_uses = 2
+# 是否允许生成嵌套字典（例如 $P7=$P3/subdir）
+enable_nested_aliases = true
+
+[token_optimizer.presets.fast.paths]
+min_footer_token_uses = 2
+enable_nested_aliases = false
+path_parse_cost = 1
+global_paths_block_cost = 1
+nested_parse_cost = 2
+
+[token_optimizer.presets.balanced.paths]
+min_footer_token_uses = 2
+enable_nested_aliases = true
+path_parse_cost = 0
+global_paths_block_cost = 0
+nested_parse_cost = 1
+
+[token_optimizer.presets.ai.paths]
+min_footer_token_uses = 2
+enable_nested_aliases = true
+path_parse_cost = 0
+global_paths_block_cost = 0
+nested_parse_cost = 0
+
+
+[plugins.dotnet_plugin]
+fold_stack_traces = true
+clean_msbuild_output = true
+extract_namespaces = true
+
+[plugins.kubernetes_docker_plugin]
+extract_kubernetes_metadata = true
+clean_container_ids = true
+unwrap_cloud_json = true
+
+[plugins.markdown_plugin]
+extract_links = true
+extract_images = true
+remove_comments = true
+
+[plugins.maven_plugin]
+fold_javadoc_noise = true
+fold_download_noise = true
+extract_artifacts = true
+
+[plugins.noise_filter_plugin]
+clean_progress_bars = true
+fold_repetitive_noise = true
+mask_long_hex = true
+hex_threshold = 32
+
+[plugins.smart_code_plugin]
+fold_large_bodies = true
+body_threshold_lines = 15
+strip_comments = true
+compress_indentation = true
+extract_identifiers = true
+
+[plugins.spring_boot_plugin]
+fold_maven_downloads = true
+merge_lifecycle_logs = true
+extract_beans_packages = true
+
+[plugins.sql_plugin]
+extract_skeleton = true
+max_insert_values_len = 200
+obfuscate_sensitive = true
+min_sql_length = 20
+
+[pricing]
+default = "claude-4.8"
+
+[pricing.models]
+"claude-4.8" = 5.00
+"gpt-5.5" = 5.00
+"gemini-3.1-pro" = 2.00

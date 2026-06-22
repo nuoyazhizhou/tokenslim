@@ -1,0 +1,15 @@
+scenario: '空日志文件，无任何内容'
+target_capability: '空日志处理'
+expected_keep: '无'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

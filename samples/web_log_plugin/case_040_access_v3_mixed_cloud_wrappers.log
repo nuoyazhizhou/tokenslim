@@ -1,0 +1,24 @@
+2026-05-13T10:30:01.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T10:30:02.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+{"provider":"cloudflare","time":"2026-05-13T10:30:03Z","ClientIP":"198.51.100.60","ClientRequestMethod":"GET","ClientRequestURI":"/static/app.js","EdgeResponseStatus":200,"EdgeResponseBytes":8132,"ClientRequestUserAgent":"Mozilla/5.0"}
+{"timestamp":"2026-05-13T10:30:04Z","resource":{"type":"cloud_run_revision"},"httpRequest":{"requestMethod":"GET","requestUrl":"https://api.example.test/api/v1/orders/123456","status":200,"responseSize":"512","remoteIp":"198.51.100.61","userAgent":"Mozilla/5.0","latency":"0.089s"}}
+{"cloud":"oci","timestamp":"2026-05-13T10:30:05Z","message":"203.0.113.88 - - [13/May/2026:10:30:05 +0000] \"GET /.env HTTP/1.1\" 404 162 \"-\" \"curl/8.4.0\""}
+2026-05-13T10:30:06.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T10:30:07.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+{"provider":"cloudflare","time":"2026-05-13T10:30:08Z","ClientIP":"198.51.100.62","ClientRequestMethod":"GET","ClientRequestURI":"/static/app.css","EdgeResponseStatus":200,"EdgeResponseBytes":2431,"ClientRequestUserAgent":"Mozilla/5.0"}
+{"timestamp":"2026-05-13T10:30:09Z","resource":{"type":"cloud_run_revision"},"httpRequest":{"requestMethod":"GET","requestUrl":"https://api.example.test/api/v1/orders/789012","status":200,"responseSize":"512","remoteIp":"198.51.100.63","userAgent":"Mozilla/5.0","latency":"0.091s"}}
+{"cloud":"oci","timestamp":"2026-05-13T10:30:10Z","message":"203.0.113.88 - - [13/May/2026:10:30:10 +0000] \"GET /wp-admin HTTP/1.1\" 404 162 \"-\" \"curl/8.4.0\""}
+2026-05-13T10:30:11.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T10:30:12.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+{"provider":"cloudflare","time":"2026-05-13T10:30:13Z","ClientIP":"198.51.100.64","ClientRequestMethod":"GET","ClientRequestURI":"/static/app.js","EdgeResponseStatus":200,"EdgeResponseBytes":8132,"ClientRequestUserAgent":"Mozilla/5.0"}
+{"timestamp":"2026-05-13T10:30:14Z","resource":{"type":"cloud_run_revision"},"httpRequest":{"requestMethod":"POST","requestUrl":"https://api.example.test/api/v1/checkout","status":503,"responseSize":"90","remoteIp":"198.51.100.65","userAgent":"Mozilla/5.0","latency":"3.200s"}}
+{"cloud":"oci","timestamp":"2026-05-13T10:30:15Z","message":"203.0.113.88 - - [13/May/2026:10:30:15 +0000] \"GET /config.php HTTP/1.1\" 404 162 \"-\" \"curl/8.4.0\""}
+2026-05-13T10:30:16.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T10:30:17.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+{"provider":"cloudflare","time":"2026-05-13T10:30:18Z","ClientIP":"198.51.100.66","ClientRequestMethod":"GET","ClientRequestURI":"/static/app.css","EdgeResponseStatus":200,"EdgeResponseBytes":2431,"ClientRequestUserAgent":"Mozilla/5.0"}
+{"timestamp":"2026-05-13T10:30:19Z","resource":{"type":"cloud_run_revision"},"httpRequest":{"requestMethod":"POST","requestUrl":"https://api.example.test/api/v1/checkout","status":503,"responseSize":"90","remoteIp":"198.51.100.67","userAgent":"Mozilla/5.0","latency":"3.400s"}}
+{"cloud":"oci","timestamp":"2026-05-13T10:30:20Z","message":"203.0.113.88 - - [13/May/2026:10:30:20 +0000] \"GET /backup.zip HTTP/1.1\" 404 162 \"-\" \"curl/8.4.0\""}
+2026-05-13T10:30:21.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T10:30:22.000000+00:00 ecs/backend/a1b2c3d4 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+{"timestamp":"2026-05-13T10:30:23Z","resource":{"type":"cloud_run_revision"},"httpRequest":{"requestMethod":"POST","requestUrl":"https://api.example.test/api/v1/checkout","status":503,"responseSize":"90","remoteIp":"198.51.100.68","userAgent":"Mozilla/5.0","latency":"3.600s"}}
+{"cloud":"oci","timestamp":"2026-05-13T10:30:24Z","message":"203.0.113.88 - - [13/May/2026:10:30:24 +0000] \"GET /.git/config HTTP/1.1\" 404 162 \"-\" \"curl/8.4.0\""}

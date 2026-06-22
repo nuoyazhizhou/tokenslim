@@ -1,0 +1,18 @@
+{
+  "name": "Freemarker",
+  "slice_type": "FreemarkerTemplate",
+  "priority": 100,
+  "description": "Freemarker 模板引擎语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "${", "end_delimiter": "}"},
+        {"pattern_type": "paired_delimiters", "pattern": "<#", "end_delimiter": ">"},
+        {"pattern_type": "paired_delimiters", "pattern": "</#", "end_delimiter": ">"},
+        {"pattern_type": "paired_delimiters", "pattern": "<@", "end_delimiter": ">"},
+        {"pattern_type": "paired_delimiters", "pattern": "</@", "end_delimiter": ">"}
+      ]
+    }
+  ]
+}

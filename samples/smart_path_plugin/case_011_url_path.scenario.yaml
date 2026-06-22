@@ -1,0 +1,15 @@
+scenario: '包含URL和API端点的日志行，其中URL路径和API路径需要被压缩为字典令牌，而非路径文本如''URL:''和''API endpoint:''应保留。'
+target_capability: '路径字典压缩'
+expected_keep: 'URL:, API endpoint:'
+expected_compress: 'https://example.com/path/to/resource, /api/v1/users'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5c6ed44cff9e0c42fdd427ae960fcad9ced233891d47c22c405db526d3780d93'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

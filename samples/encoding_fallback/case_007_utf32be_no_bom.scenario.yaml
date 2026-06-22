@@ -1,0 +1,15 @@
+scenario: '一个 UTF-32BE 编码的文本文件，内容为 ''Hi''，但缺少 BOM 标记，encoding_fallback 插件需要识别并修复编码问题，保留文本内容。'
+target_capability: '编码修复与保留'
+expected_keep: 'Hi'
+expected_compress: '00 00 00 48 00 00 00 69'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: true

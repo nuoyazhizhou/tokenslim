@@ -1,0 +1,15 @@
+scenario: '用户执行 ''gerrit checkout 123456'' 切换到分支 ''feature-xyz''，并显示分支状态为与远程同步。'
+target_capability: 'Gerrit checkout 命令锚点与分支状态保留'
+expected_keep: "gerrit checkout 123456, Switched to branch \"feature-xyz\", Your branch is up to date with 'origin/feature-xyz'."
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2585bc28366769ad8e8404b955894798ecf52b725efe3a888a0a60c1e6761664'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

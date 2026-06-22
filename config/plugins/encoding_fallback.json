@@ -1,0 +1,25 @@
+{
+    "name": "encoding_fallback",
+    "description": "编码兜底",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$ENCODI"
+    },
+    "keep_signals": [
+        "所有文本内容"
+    ],
+    "compress_targets": [
+        "编码异常修复"
+    ],
+    "design_intent": "编码兜底：修复编码问题，保留文本内容。"
+}

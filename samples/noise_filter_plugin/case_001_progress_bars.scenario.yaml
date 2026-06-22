@@ -1,0 +1,15 @@
+scenario: '下载进度条日志，包含百分比和进度条，最后有成功消息。'
+target_capability: '进度条噪声过滤'
+expected_keep: 'File downloaded successfully'
+expected_compress: 'Downloading: 10%... 20%... 30%... 40%... 50%... 60%... 70%... 80%... 90%... 100%'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '116b67e11f2245ccbcdffc2c4543cd29c84d4aebcc80556db5a2f0f298bd2db6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:43:25.678814'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

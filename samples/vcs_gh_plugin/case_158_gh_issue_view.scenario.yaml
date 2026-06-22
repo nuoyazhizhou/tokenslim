@@ -1,0 +1,15 @@
+scenario: '使用 gh issue view 命令查看 GitHub Issue #42，显示标题、标签、指派人、作者、状态和复现步骤。'
+target_capability: 'Issue 视图结构化数据保留'
+expected_keep: 'issue #42: Bug: Login fails with OAuth, Labels: bug, State: open'
+expected_compress: 'Steps to reproduce:, 1. Go to login page, 2. Click OAuth button'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '38078f5d5eee87cb17c6ff3acd4bea79f03e441cbd0ca1a339d4637494e1255a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Kubernetes Pod 日志，包含 auth-service、payment-gateway、redis-cache 三个 Pod 的 INFO、ERROR、WARN 级别日志，展示了用户登录、会话启动、上游超时、内存使用告警和缓存驱逐事件。'
+target_capability: 'Pod 日志结构保留与容器 ID 压缩'
+expected_keep: 'production/auth-service-6f5d4b8c9d-abcde: [INFO] user admin logged in'
+expected_compress: 'production/auth-service-6f5d4b8c9d-abcde'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '52861039db57bb431854e8edecd0a79c0502e9f5a904fb1585c6106cdee2149d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

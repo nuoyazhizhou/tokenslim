@@ -1,0 +1,36 @@
+p4 describe
+Change 12345 by alice.chen@alice-workstation on 2026/04/03 14:32:11
+
+	feat(vcs): Add SVN/HG/P4 parser support
+
+Added parsers for svn blame, svn list, hg heads, p4 fstat,
+and routing logic for 60+ test cases across all VCS tools.
+
+Affected files ...
+... //depot/main/src/plugins/vcs_plugin/parser.rs#3 add
+... //depot/main/src/plugins/vcs_plugin/methods.rs#12 edit
+... //depot/main/src/plugins/vcs_plugin/types.rs#5 edit
+... //depot/main/docs/design/vcs_plugin.md#5 edit
+
+Differences ...
+==== //depot/main/src/plugins/vcs_plugin/parser.rs#3 (text) ====
+--- //depot/main/src/plugins/vcs_plugin/parser.rs#2 (text)
++++ //depot/main/src/plugins/vcs_plugin/parser.rs (working copy)
+@@ -1,5 +1,10 @@
+ use super::ir::{VcsDocKind, VcsDocument, VcsRecord};
+ use super::types::VcsTool;
++use std::collections::HashMap;
++
++/// Shared helper for parsing key-value pairs
++pub fn parse_kv_lines(lines: &[&str]) -> Vec<(String, String)> {
++    ...
++}
+
+==== //depot/main/src/plugins/vcs_plugin/methods.rs#12 (text) ====
+--- //depot/main/src/plugins/vcs_plugin/methods.rs#11 (text)
++++ //depot/main/src/plugins/vcs_plugin/methods.rs (working copy)
+@@ -40,6 +40,11 @@
+     fn classify_tool(&self, text: &str) -> Option<&str>;
++    fn detect_tool(&self, text: &str) -> Option<VcsTool>;
++    fn apply_overrides(&mut self, config: VcsOverrideConfig);
+ }

@@ -1,0 +1,15 @@
+scenario: 'Git status 输出，显示 feature/vcs-plugin 分支领先 origin/master 3 个提交，有 10 个已修改文件（未暂存）和 24 个未跟踪文件，最后提示无更改添加至提交。'
+target_capability: 'Git status 输出压缩'
+expected_keep: 'modified:   src/core/doctor_workspace/methods.rs'
+expected_compress: "no changes added to commit (use \"git add\" and/or \"git commit -a\")"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd871a96f60d6b8d9325192d1e018e2d4b3bb059dad5ada59727d5e745a7685a2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

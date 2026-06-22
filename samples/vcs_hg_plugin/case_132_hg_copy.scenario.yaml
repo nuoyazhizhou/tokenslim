@@ -1,0 +1,15 @@
+scenario: '用户执行 hg copy 命令，将 src/file.txt 复制到 dst/file.txt，并输出复制操作信息。'
+target_capability: '文件操作摘要保留'
+expected_keep: 'hg copy src/file.txt dst/file.txt'
+expected_compress: 'copying src/file.txt to dst/file.txt'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '192deb49557f095bb16587dc09de26dbf881d38f879aa05d1e2f9b2c3f4d4c25'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

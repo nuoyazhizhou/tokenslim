@@ -1,0 +1,18 @@
+GitLab CI job pytest_flaky started
+$ pytest --reruns 2 tests/integration/test_gateway.py -q
+============================= test session starts =============================
+platform linux -- Python 3.11.9, pytest-8.3.4
+plugins: rerunfailures-14.0
+collected 6 items
+
+tests/integration/test_gateway.py::test_gateway_timeout RERUN
+tests/integration/test_gateway.py::test_gateway_timeout RERUN
+tests/integration/test_gateway.py::test_gateway_timeout FAILED
+tests/integration/test_gateway.py::test_gateway_recovers PASSED
+tests/integration/test_gateway.py::test_gateway_metrics PASSED
+tests/integration/test_gateway.py::test_gateway_headers PASSED
+
+=================================== FAILURES ===================================
+E   TimeoutError: gateway did not respond within 2.0s
+FAILED tests/integration/test_gateway.py::test_gateway_timeout - TimeoutError: gateway did not respond within 2.0s
+==================== 1 failed, 5 passed, 2 reruns in 28.52s ====================

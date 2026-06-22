@@ -1,0 +1,34 @@
+{
+    "name": "vcs_glab",
+    "description": "GitLab CLI 输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_GL"
+    },
+    "keep_signals": [
+        "glab 命令起始行（如 glab mr list）",
+        "MR/Issue 列表行（精简行，如 !123 Title [state] author date）",
+        "MR/Issue 元数据（title, state, author, date 等）",
+        "创建结果（如 A:!456）",
+        "view 中的 Description 内容"
+    ],
+    "compress_targets": [
+        "空行（跳过）",
+        "分隔符和表格标题（如 ---, ---+ 等）",
+        "成功标记（✓）",
+        "URL 行（以 http 或 URL: 开头）",
+        "噪声行（如 is_glab_noise, is_glab_view_noise）",
+        "创建过程中的提示行（如 Creating merge request）"
+    ],
+    "design_intent": "GitLab CLI输出脱水：保留命令及关键结果，折叠表格格式和噪声行，压缩长描述和冗余信息。"
+}

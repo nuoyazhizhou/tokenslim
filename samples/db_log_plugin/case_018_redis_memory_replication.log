@@ -1,0 +1,5 @@
+9812:M 13 May 2026 09:02:01.010 * Ready to accept connections tcp
+9812:M 13 May 2026 09:02:02.020 # OOM command not allowed when used memory > 'maxmemory'.
+9812:S 13 May 2026 09:02:03.030 * Connecting to MASTER 10.0.0.10:6379
+9812:S 13 May 2026 09:02:04.040 # MASTER aborted replication with an error: ERR max number of clients reached
+9812:S 13 May 2026 09:02:05.050 - DB 0: 990000 keys (3000 volatile) in 1048576 slots HT.

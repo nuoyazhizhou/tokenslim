@@ -1,0 +1,15 @@
+terraform apply -auto-approve
+
+Terraform will perform the following actions:
+
+  # module.app.aws_lambda_function.worker will be updated in-place
+  ~ resource "aws_lambda_function" "worker" {
+      ~ memory_size = 512 -> 1024
+      + last_modified = (known after apply)
+    }
+
+Plan: 0 to add, 1 to change, 0 to destroy.
+aws_lambda_function.worker: Modifying... [id=worker-prod]
+aws_lambda_function.worker: Modifications complete after 8s [id=worker-prod]
+
+Apply complete! Resources: 0 added, 1 changed, 0 destroyed.

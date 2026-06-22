@@ -1,0 +1,10 @@
+act -j build
+[build/checkout] Start image=node:20
+[build/checkout] Run actions/checkout@v4
+[build/test] Run npm ci
+[build/test] added 900 packages
+[build/test] Run npm test
+[build/test] Tests: 310 passed, 310 total
+[build/test] Process completed with exit code 0
+[build/package] Run docker build -t api:local .
+[build/package] Successfully built 7ab12cd34ef5

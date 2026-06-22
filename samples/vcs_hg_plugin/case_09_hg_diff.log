@@ -1,0 +1,50 @@
+hg diff
+diff -r 17:abc123def456 -r 18:eeff3344aa55 src/plugins/vcs_plugin/methods.rs
+--- a/src/plugins/vcs_plugin/methods.rs	Thu Apr 02 09:15:33 2026 +0800
++++ b/src/plugins/vcs_plugin/methods.rs	Fri Apr 03 14:32:11 2026 +0800
+@@ -40,6 +40,11 @@
+     fn classify_tool(&self, text: &str) -> Option<&str>;
++
++    /// Detect VCS tool from output text
++    fn detect_tool(&self, text: &str) -> Option<VcsTool>;
++
++    /// Apply configuration overrides
++    fn apply_overrides(&mut self, config: VcsOverrideConfig);
+ }
+
+ impl VcsPlugin {
+@@ -120,7 +125,7 @@
+         let mut records = Vec::new();
+         for line in raw.lines() {
+             let trimmed = line.trim_end_matches('\r').trim();
+-            if trimmed.is_empty() { continue; }
++            if trimmed.is_empty() || trimmed.starts_with('#') { continue; }
+             if let Some((status, path)) = parse_simple_status_path(trimmed) {
+                 records.push(VcsRecord::File { status: Some(status), path });
+                 continue;
+@@ -1417,6 +1422,12 @@
+ pub fn analyze_project(root: &Path) -> Vec<Diagnostic> {
+     let mut diagnostics = Vec::new();
++
++    // VCS Plugin Config Guidance
++    if let Some(config) = load_vcs_config(root) {
++        diagnostics.push(config.validate());
++    }
++
+     for file in walk_dir(root) {
+         if let Some(diag) = check_file(&file) {
+             diagnostics.push(diag);
+
+diff -r 17:abc123def456 -r 18:eeff3344aa55 src/plugins/vcs_plugin/types.rs
+--- a/src/plugins/vcs_plugin/types.rs	Thu Apr 02 09:10:00 2026 +0800
++++ b/src/plugins/vcs_plugin/types.rs	Fri Apr 03 14:30:00 2026 +0800
+@@ -47,6 +47,10 @@
+ pub const GIT_COMMANDS: &[&str] = &[
+     "status",
+     "diff",
+     "log",
++    "show",
++    "branch",
++    "merge",
++    "rebase",
+ ];

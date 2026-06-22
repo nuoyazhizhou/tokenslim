@@ -1,0 +1,15 @@
+scenario: '一个混合了 act、GitHub Actions (::group::/::endgroup::)、GitLab CI (section_start/section_end) 和 Azure Pipelines (##[section]) 的 CI/CD 流水线日志，包含 docker build、kubectl apply 和 curl 健康检查命令，最终以退出码 0 结束。'
+target_capability: '混合 CI wrapper 步骤边界保留'
+expected_keep: '步骤边界信号（::group::、section_start、##[section]）和退出码行'
+expected_compress: 'docker build 输出、kubectl apply 输出、curl 响应体'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a3345e4a31fc86e27c61d433c2bb40d83f593e54b3a158adb3814551bad0754'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

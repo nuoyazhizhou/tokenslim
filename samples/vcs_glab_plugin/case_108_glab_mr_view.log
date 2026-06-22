@@ -1,0 +1,18 @@
+glab mr view 123
+!123 feat: Add new feature
+==========================================
+Author:    alice <alice@example.com>
+Assignee:  bob
+Reviewers: charlie (1)
+Labels:    enhancement
+Status:    Open
+Created:   2026-04-01 10:00:00
+Milestone: v1.0
+Source:    feature-branch -> main
+Web URL:   https://gitlab.com/owner/repo/-/merge_requests/123
+Description:
+This merge request adds a new feature to the project.
+
+Changes:
+- Added new feature
+- Updated documentation

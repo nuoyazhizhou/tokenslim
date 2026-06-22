@@ -1,0 +1,15 @@
+scenario: 'Bazaar 仓库的提交历史查看，使用 `bzr log --show-id -l 3` 命令显示最近 3 条提交记录，包含修订号、revision-id、提交者、时间戳和提交信息。'
+target_capability: 'bzr log 输出压缩'
+expected_keep: 'bzr log --show-id -l 3, revno: 42, revision-id: alice-20260411143000-a1b2c3d4e5f6'
+expected_compress: '------------------------------------------------------------, committer: Alice Chen <alice@example.com>, branch nick: main'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd84e72e9c1ff679a538c88eb81e4f4a538fe34cf12314e30d8dba19a569edf70'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

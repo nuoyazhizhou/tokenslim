@@ -1,0 +1,41 @@
+<!-- Plugin Configuration File. See https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>com.tokenslim.plugin</id>
+    <name>TokenSlim: AI Input Decompression</name>
+    <vendor email="support@tokenslim.com" url="https://github.com/tokenslim/TokenSlim">TokenSlim Team</vendor>
+
+    <description><![CDATA[
+    <h1>TokenSlim: Optimize AI Inputs</h1>
+    <p>Significantly reduce token consumption for Large Language Models (LLMs) by decompressing structured logs and code directly within your IDE.</p>
+    <ul>
+      <li>Fast compression of build logs (Android, iOS, GCC).</li>
+      <li>Smart path and macro deduplication.</li>
+      <li>Automatic Sidecar service management.</li>
+    </ul>
+  ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <notificationGroup id="TokenSlim Notifications" displayType="BALLOON"/>
+    </extensions>
+
+    <actions>
+        <group id="com.tokenslim.plugin.actions" text="TokenSlim" popup="true">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            
+            <action id="com.tokenslim.plugin.actions.CompressAction"
+                    class="com.tokenslim.plugin.actions.CompressAction"
+                    text="Compress with TokenSlim"
+                    description="Compress selected text or current file for AI context">
+            </action>
+            
+            <action id="com.tokenslim.plugin.actions.RestartServerAction"
+                    class="com.tokenslim.plugin.actions.RestartServerAction"
+                    text="Restart TokenSlim Sidecar Server"
+                    description="Restart the local Rust backend service">
+            </action>
+        </group>
+    </actions>
+</idea-plugin>

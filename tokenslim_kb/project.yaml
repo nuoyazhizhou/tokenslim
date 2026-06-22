@@ -1,0 +1,42 @@
+# tokenslim_kb/project.yaml
+#
+# 作用：TokenSlim 项目的"身份卡"，被 LLM 注入到所有审计提示词的开头。
+# 这是 LLM 知道"我在给谁干活"的唯一来源。
+#
+# 维护规则：
+# - display_name / mission / tagline 任何一项变化都需评审（LLM 上下文会变）。
+# - audience / non_goals 是给 LLM 划定边界的"宪法级别"信息。
+# - 不写实现细节 — 那是 architecture.yaml 和 prompt 模板的事。
+
+display_name: TokenSlim
+mission: |
+  TokenSlim is a structured log/command-output compression library for AI agents.
+  It classifies text into 60+ plugin families (shell, access_log, data_struct, vcs,
+  build, error_trace, ...) and runs family-specific compression algorithms that
+  keep the decision-useful lines and drop the noise.
+tagline: |
+  60+ plugins, 1000+ sample cases, deterministic enough to be tested, smart enough
+  to keep the parts that matter.
+
+audience: |
+  - AI agents that need to send long terminal/log content through context windows
+    without losing the parts that affect subsequent decisions
+  - Token-sensitive LLM tool pipelines (CI logs, build outputs, stack traces)
+
+non_goals: |
+  - General English text compression (no NLP summarization)
+  - Lossy semantic rewriting (TokenSlim is line-based, not paraphrase-based)
+  - Replacing ripgrep / grep / awk for ad-hoc filtering
+  - Compressing binaries / images / videos
+
+design_principles: |
+  - Real-environment realism > synthetic LLM-fabricated cases (audit gate)
+  - Per-plugin compression rules (no single heuristic fits all families)
+  - Deterministic behavior when input is identical (testable)
+  - Honest about what was kept vs dropped (showcase reports show diff)
+
+core_questions_auditor_must_answer: |
+  1. Is this sample case something that would actually come out of a real shell /
+     server / compiler / VCS / interpreter — or does it look LLM-fabricated?
+  2. Does this case exercise the plugin's intended compression capability?
+  3. Will compressing this case keep the decision-useful signals?

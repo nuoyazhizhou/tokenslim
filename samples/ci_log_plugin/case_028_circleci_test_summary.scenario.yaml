@@ -1,0 +1,15 @@
+scenario: 'CircleCI 本地构建流程：依次执行单元测试（go test）、上传测试结果和制品，最终退出码为 0，无错误或警告。'
+target_capability: '步骤保留与详细日志压缩'
+expected_keep: '====>> Run unit tests, CircleCI received exit code 0, ====>> Store test results'
+expected_compress: 'ok example/api 12.4s, Uploading test results, Uploading artifacts'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fec7a0214536f42f76dadc42f10469fba2fa6ed23313c959065103f1229130b1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

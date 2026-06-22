@@ -1,0 +1,15 @@
+scenario: '用户执行 `fossil undo` 命令，Fossil 返回撤销成功信息，包含版本号。'
+target_capability: '命令锚点保留与状态变更摘要'
+expected_keep: 'fossil undo, Undo successful: changes reverted to version abc123'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe4791960bb06037c84f17585776caa6c4347135816ab40117b972c9e02c213b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

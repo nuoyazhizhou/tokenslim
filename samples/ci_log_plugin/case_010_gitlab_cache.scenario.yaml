@@ -1,0 +1,15 @@
+scenario: 'GitLab CI 作业中使用缓存恢复和保存，执行 npm install 安装 900 个包后运行测试，所有 310 个测试通过，作业成功结束。'
+target_capability: 'CI缓存与步骤信号保留'
+expected_keep: 'section_start:..., section_end:..., Job succeeded'
+expected_compress: 'Restoring cache, Successfully extracted cache, added 900 packages'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4be013bca42c16013283b74fa3375cc47f66ee4e8960dc3afb6a216a0fe76655'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

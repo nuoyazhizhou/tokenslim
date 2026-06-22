@@ -1,0 +1,201 @@
+[project]
+name = "TokenSlim"
+language = "rust"
+goal = "配置驱动提取功能点、调用链和审计覆盖矩阵"
+
+[goals.weights]
+decision_quality = 1.0
+compression_roi = 1.0
+routing_accuracy = 1.1
+audit_regression = 1.1
+cross_platform_usability = 0.9
+
+[scan]
+include = [
+  "src/**/*.rs",
+  "scripts/*.ps1",
+  "scripts/*.py",
+  "config/*.toml",
+  "docs/audit/*.json",
+]
+exclude = [
+  "target/**",
+  "tmp/**",
+  "**/.git/**",
+  "**/.idea/**",
+  "**/.vscode/**",
+]
+
+[callchain]
+entry_functions = ["main", "run_cli"]
+max_depth = 5
+
+[[features]]
+id = "cli_run_pipeline"
+title = "CLI run 执行与压缩链路"
+category = "cli"
+owner = "core"
+priority = "P0"
+goal_impact = { decision_quality = 4, compression_roi = 5, routing_accuracy = 5, audit_regression = 4, cross_platform_usability = 4 }
+entry_functions = ["run_cli", "handle_run_command"]
+paths = ["src/cli/methods.rs"]
+evidence_patterns = [
+  "CliMode::Run",
+  "handle_run_command\\(",
+  "plugins_for_run_command\\(",
+  "detect_vcs_run_intent\\(",
+  "run_filter_pipeline\\(",
+]
+audit_artifacts = [
+  "docs/audit/audit_health.md",
+  "docs/audit/audit_index.json",
+]
+
+[[features]]
+id = "cli_explain_plugin"
+title = "插件选择解释链路"
+category = "routing"
+owner = "core"
+priority = "P0"
+goal_impact = { decision_quality = 4, compression_roi = 3, routing_accuracy = 5, audit_regression = 4, cross_platform_usability = 4 }
+entry_functions = ["run_cli", "explain_plugin_for_command_line", "explain_plugin_for_log_text"]
+paths = ["src/cli/methods.rs", "scripts/audit_all_case_metrics.ps1"]
+evidence_patterns = [
+  "CliMode::ExplainPlugin",
+  "explain_plugin_for_command_line\\(",
+  "explain_plugin_for_log_text\\(",
+  "recommendation_",
+  "fallback_decision",
+]
+audit_artifacts = [
+  "docs/audit/route_replay_cases.md",
+  "docs/audit/route_replay_cases.json",
+  "docs/audit/audit_review_prompt.md",
+]
+
+[[features]]
+id = "doctor_workspace_encoding"
+title = "doctor workspace/encoding 诊断链路"
+category = "doctor"
+owner = "core"
+priority = "P1"
+goal_impact = { decision_quality = 3, compression_roi = 2, routing_accuracy = 2, audit_regression = 3, cross_platform_usability = 5 }
+entry_functions = ["run_cli", "run_workspace_doctor", "run_encoding_doctor"]
+paths = ["src/cli/methods.rs", "src/core/doctor_encoding/*.rs", "src/core/doctor_workspace/*.rs"]
+evidence_patterns = [
+  "CliMode::DoctorWorkspace",
+  "CliMode::DoctorEncoding",
+  "run_workspace_doctor\\(",
+  "run_encoding_doctor\\(",
+]
+audit_artifacts = [
+  "tests/doctor_encoding.rs",
+]
+
+[[features]]
+id = "encoding_repair_file"
+title = "repair-file 编码修复链路"
+category = "encoding"
+owner = "core"
+priority = "P1"
+goal_impact = { decision_quality = 3, compression_roi = 2, routing_accuracy = 1, audit_regression = 3, cross_platform_usability = 5 }
+entry_functions = ["run_cli", "run_repair_file_command", "run_single_repair", "run_bulk_repair"]
+paths = ["src/cli/methods.rs", "src/core/encoding_fallback/*.rs"]
+evidence_patterns = [
+  "CliMode::RepairFile",
+  "run_repair_file_command\\(",
+  "run_single_repair\\(",
+  "run_bulk_repair\\(",
+  "encoding_fallback",
+]
+audit_artifacts = [
+  "tests/doctor_encoding.rs",
+]
+
+[[features]]
+id = "audit_single_plugin_case"
+title = "单插件 case 审计与冻结"
+category = "audit"
+owner = "qa"
+priority = "P0"
+goal_impact = { decision_quality = 5, compression_roi = 4, routing_accuracy = 4, audit_regression = 5, cross_platform_usability = 3 }
+entry_functions = []
+entry_optional = true
+paths = ["scripts/audit_case_metrics.ps1"]
+evidence_patterns = [
+  "FreezeCase",
+  "FailOnRegression",
+  "FailOnFrozenChange",
+  "RequireSemanticGate",
+  "frozen_cases\\.json",
+  "audit_state\\.json",
+]
+audit_artifacts = [
+  "docs/audit/*/frozen_cases.json",
+  "docs/audit/*/audit_state.json",
+]
+
+[[features]]
+id = "audit_global_orchestration"
+title = "全插件审计编排与健康报告"
+category = "audit"
+owner = "qa"
+priority = "P0"
+goal_impact = { decision_quality = 5, compression_roi = 4, routing_accuracy = 4, audit_regression = 5, cross_platform_usability = 3 }
+entry_functions = []
+entry_optional = true
+paths = ["scripts/audit_all_case_metrics.ps1"]
+evidence_patterns = [
+  "Invoke-PluginAudit",
+  "audit_index\\.json",
+  "audit_health\\.md",
+  "Write-RouteReplayCases",
+  "Write-AuditReviewPrompt",
+  "generate_plugin_capability_index\\.ps1",
+]
+audit_artifacts = [
+  "docs/audit/audit_index.json",
+  "docs/audit/audit_health.md",
+  "docs/audit/plugin_capability_index.json",
+]
+
+[[features]]
+id = "web_log_semantic_aggregation"
+title = "web_log 语义聚合能力"
+category = "plugin"
+owner = "plugins"
+priority = "P1"
+goal_impact = { decision_quality = 5, compression_roi = 5, routing_accuracy = 3, audit_regression = 4, cross_platform_usability = 3 }
+entry_functions = []
+entry_optional = true
+paths = ["src/plugins/web_log_plugin/*.rs", "samples/web_log_plugin/*.log"]
+evidence_patterns = [
+  "DICT_IP",
+  "DICT_UA",
+  "ROUTINE",
+  "SCAN",
+  "BURST",
+  "SLOW",
+]
+audit_artifacts = [
+  "docs/audit/web_log/web_log.latest.json",
+]
+
+[[features]]
+id = "cloud_log_unwrap"
+title = "cloud_log 外壳剥离能力"
+category = "plugin"
+owner = "plugins"
+priority = "P1"
+goal_impact = { decision_quality = 4, compression_roi = 4, routing_accuracy = 3, audit_regression = 4, cross_platform_usability = 3 }
+entry_functions = []
+entry_optional = true
+paths = ["src/plugins/cloud_log_plugin/*.rs", "samples/cloud_log_plugin/*.log"]
+evidence_patterns = [
+  "aws|gcp|azure|oci",
+  "table|csv|json",
+  "unwrap|de[-_ ]shell",
+]
+audit_artifacts = [
+  "docs/audit/cloud_log/cloud_log.latest.json",
+]

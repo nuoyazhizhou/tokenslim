@@ -1,0 +1,15 @@
+scenario: 'SVN diff 命令对比两个版本间的文件变更，输出包含路径、索引和代码差异的补丁格式。'
+target_capability: '路径字典压缩与变更状态保留'
+expected_keep: 'svn diff -r 100:200, diff --git a/..., @@ -1,5 +1,10 @@'
+expected_compress: 'src/core/text_slicer/methods.rs, use std::sync::Arc;'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '53c826c674abf6485130dff3dcc38795c48c6b78796c17cf9e3596f797a98b97'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

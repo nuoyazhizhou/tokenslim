@@ -1,0 +1,4 @@
+git log --oneline -n 3
+aaaaaaaaaab1111111111111111111111111111111 feat: first collision candidate
+aaaaaaaaaac2222222222222222222222222222222 feat: second collision candidate
+bbbbbbbbbbd3333333333333333333333333333333 feat: third distinct commit

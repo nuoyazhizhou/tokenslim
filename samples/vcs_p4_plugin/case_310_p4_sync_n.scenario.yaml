@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 sync -n` 预览同步操作，输出显示三个文件将被更新，包括 depot 路径、版本号和本地路径，最后一行统计文件总数。'
+target_capability: '同步预览压缩与路径精简'
+expected_keep: '//depot/main/src/main.rs#5 - updating, 3 files would be updated.'
+expected_compress: '//depot/main/src/main.rs#5 - updating /home/user/project/src/main.rs, //depot/main/src/lib/utils.rs#4 - updating /home/user/project/src/lib/utils.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dbf50374e82ff0a37e106121e4b2fea2ebd894837078906ce71ed322035ca5bc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

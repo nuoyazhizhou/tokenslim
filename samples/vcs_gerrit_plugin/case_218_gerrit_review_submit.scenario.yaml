@@ -1,0 +1,15 @@
+scenario: 'Gerrit code review 提交操作：用户对变更 12345 的 patch set 2 设置 Code-Review+1、Verified-1 和 Submit+1 标签，系统确认标签已设置。'
+target_capability: 'review 标签与变更摘要保留'
+expected_keep: 'gerrit review 12345,2; Code-Review+1; Verified-1; Submit+1; Labels are now set'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c5b2ccf0b1cbddcc7d0dbdd4fc88ef1ecab54112668dcd68b27140a65a40ca16'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

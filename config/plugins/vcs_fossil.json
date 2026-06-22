@@ -1,0 +1,33 @@
+{
+    "name": "vcs_fossil",
+    "description": "Fossil 命令输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_FO"
+    },
+    "keep_signals": [
+        "fossil status/changes 等命令锚点行",
+        "映射后的状态码行（M/A/D/R/!）",
+        "Pull/Push 行（sync命令）",
+        "警报行（map_fossil_alert）",
+        "非噪音非叙事的有效行（generic fallback）"
+    ],
+    "compress_targets": [
+        "空行",
+        "元数据噪音行（如Repository/Check-ins等）",
+        "叙事废话行（如Stash changes/Autosync等）",
+        "非锚点的fossil命令前缀行（重复命令）",
+        "状态变化前的冗长描述行（语法覆盖）"
+    ],
+    "design_intent": "Fossil脱水：保留命令锚点和状态变更摘要，折叠叙事废话，压缩元数据噪音。"
+}

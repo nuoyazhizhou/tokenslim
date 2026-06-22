@@ -1,0 +1,15 @@
+scenario: '执行 `hg verify` 命令检查仓库完整性，输出显示检查进度和最终确认 456 个变更集已验证。'
+target_capability: '命令首行保留与变更集计数'
+expected_keep: 'hg verify, verified 456 changesets'
+expected_compress: 'checking changesets, checking manifests, crosschecking files'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2c848c4b58aa90c3b1da7acf41c18914de0b2c7471c6d5208639f7ec75f5f5ec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

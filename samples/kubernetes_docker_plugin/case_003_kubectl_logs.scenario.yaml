@@ -1,0 +1,15 @@
+scenario: 'Kubernetes Pod 日志，包含 INFO、WARN、ERROR 级别事件，时间戳格式为 ISO 8601。'
+target_capability: '日志级别与时间戳保留'
+expected_keep: 'INFO, WARN, ERROR, 时间戳'
+expected_compress: '无容器ID或Pod元数据可压缩'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7d4a499242801c39ad608a0ba75b4a7a7b950a946a2c9fa621f64495c4032fa8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

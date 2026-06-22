@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 branches` 命令，列出所有分支名称，包括 feature-auth、feature-ui、release-1.0 和 hotfix-urgent。'
+target_capability: '分支列表保留'
+expected_keep: 'feature-auth, feature-ui, release-1.0, hotfix-urgent'
+expected_compress: 'p4 branches'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6768886567add7df5d5044f23f709ce6e6546aa4dee788213095aff4c91c872c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

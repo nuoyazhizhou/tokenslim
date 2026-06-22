@@ -1,0 +1,15 @@
+scenario: 'Travis CI 构建日志：在 install 步骤通过 npm ci 安装依赖（1204 个包），在 script 步骤执行 npm test 失败，测试 case 期望 HTTP 200 却得到 201，最终构建退出码 1，job 标记为 failed。'
+target_capability: 'CI 日志脱水：保留步骤边界与错误信号'
+expected_keep: 'travis_fold:start:install, travis_fold:start:script, FAIL, exited with 1'
+expected_compress: "added 1204 packages in 18s, expected 201 to equal 200, The command \"npm test\" exited with 1"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f791fedfc85b2e57a4672176cb45072ae128f8531a9a40a9985527aa29f7a4cd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户使用 glab CLI 创建 GitLab issue，命令成功执行并返回 issue 编号和 URL。'
+target_capability: '创建结果保留与噪声压缩'
+expected_keep: "glab issue create --title \"Bug in login\" --description \"Cannot login with OAuth\""
+expected_compress: '✓ Created issue !50'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2f1e48b36dac94768c87fcda52dae84779bb205ab5d94d47cbf43593327cfeb3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:24:36.860421'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

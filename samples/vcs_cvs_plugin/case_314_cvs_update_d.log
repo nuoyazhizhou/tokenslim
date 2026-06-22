@@ -1,0 +1,9 @@
+cvs update -d
+cvs update: Updating src
+U src/main.rs
+U src/lib/utils.rs
+cvs update: Updating tests
+cvs update: Updating docs
+? docs/api_reference.md
+cvs update: New directory `src/auth' - ignored
+U src/auth/login.rs

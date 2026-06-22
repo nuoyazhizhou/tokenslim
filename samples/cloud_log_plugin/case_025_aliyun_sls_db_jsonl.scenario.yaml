@@ -1,0 +1,15 @@
+scenario: '阿里云SLS日志中记录了三条后端服务日志：一条PostgreSQL慢查询（12.345ms）、一条Redis连接拒绝错误、一条MongoDB慢查询（421ms），均为JSONL格式，包含时间戳、来源、级别和内容字段。'
+target_capability: '云日志外壳剥离与内层日志保留'
+expected_keep: 'PostgreSQL duration: 12.345 ms statement: SELECT id FROM documents WHERE tenant_id = $1'
+expected_compress: '__time__: 1778661201, __source__: backend-7f9d, level: INFO'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd05f71fafce34f733d7268583e22d8fb9bdcd9ea20591bc3d740765e12f0074c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

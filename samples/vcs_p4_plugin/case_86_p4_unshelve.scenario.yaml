@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 unshelve 命令，恢复一个 shelved changelist，输出显示 change 编号、恢复的文件列表及成功结果。'
+target_capability: 'change编号与文件操作保留'
+expected_keep: 'Unshelved change 12345., //depot/main/src/main.rs, 2 files restored.'
+expected_compress: 'p4 unshelve, //depot/main/config/app.json'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4f86248617b36511ce3d7121903e27f44181e318ad7bdc2779a0854ec005d2ad'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

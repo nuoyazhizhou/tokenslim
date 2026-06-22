@@ -1,0 +1,4 @@
+10.7.0.1 - - [13/May/2026:08:31:01 +0000] "GET /assets/app.js HTTP/1.1" 200 89123 "-" "Mozilla/5.0"
+10.7.0.2 - - [13/May/2026:08:31:02 +0000] "GET /assets/app.css HTTP/1.1" 200 12033 "-" "Mozilla/5.0"
+10.7.0.3 - - [13/May/2026:08:31:03 +0000] "GET /assets/logo.svg HTTP/1.1" 200 4100 "-" "Mozilla/5.0"
+10.7.0.4 - - [13/May/2026:08:31:04 +0000] "GET /assets/missing.png HTTP/1.1" 404 180 "-" "Mozilla/5.0"

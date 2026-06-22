@@ -1,0 +1,15 @@
+scenario: 'SVN log 输出，包含多个提交记录，每个记录有作者、时间戳、提交信息及变更文件列表（含状态标记 A/M）。'
+target_capability: 'SVN log 解析与路径字典压缩'
+expected_keep: 'r12345, r12344, r12343, r12342, r12341, feat(vcs):, fix:, refactor:, chore:, M /, A /'
+expected_compress: '/trunk/src/plugins/vcs_plugin/parser.rs, /trunk/src/plugins/vcs_plugin/methods.rs, /trunk/src/plugins/vcs_plugin/ir.rs, /trunk/docs/design/vcs_plugin.md'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b2f3124f3d67aad9c694bd1d6cf9456a3b8814fd093848be89dd53f0fa35c822'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

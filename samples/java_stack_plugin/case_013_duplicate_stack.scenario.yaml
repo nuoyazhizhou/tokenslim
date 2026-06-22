@@ -1,0 +1,15 @@
+scenario: 'Java 应用抛出 NullPointerException，堆栈完全重复三次，测试重复堆栈折叠能力。'
+target_capability: '重复堆栈折叠'
+expected_keep: "Exception in thread \"main\" java.lang.NullPointerException"
+expected_compress: '重复的堆栈帧（后两次完整堆栈）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd96bbcfa147440bc3550a0b8471fef43531fddd82beb0232912f15a4005a6ce4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

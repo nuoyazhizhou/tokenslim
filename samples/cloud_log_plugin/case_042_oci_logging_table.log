@@ -1,0 +1,6 @@
+oci logging-search search-logs --search-query "search \"ocid1.compartment.oc1..aaaa\""
+| datetime | source | level | logContent |
+|----------|--------|-------|------------|
+| 2026-05-13T08:22:00Z | ocid1.instance.oc1.iad.backend1 | INFO | Started backend.service |
+| 2026-05-13T08:22:30Z | ocid1.instance.oc1.iad.backend1 | ERROR | java.sql.SQLTransientConnectionException: HikariPool timeout |
+| 2026-05-13T08:22:31Z | ocid1.instance.oc1.iad.backend1 | WARN | Redis Connection refused on redis.internal:6379 |

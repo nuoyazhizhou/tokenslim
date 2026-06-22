@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库的详细日志输出，显示两个提交记录，包含新增和修改的文件路径及提交信息。'
+target_capability: '路径字典压缩与变更状态保留'
+expected_keep: 'svn log -v, r1234, A /src/core/dictionary_manager/mod.rs'
+expected_compress: '/src/core/dictionary_manager/mod.rs, /src/core/text_slicer/methods.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '87d6f400bd9ba133fa04b1046507b6235ac73b67d8f5e2b1fa42bb59c68da0c2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

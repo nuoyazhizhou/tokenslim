@@ -1,0 +1,15 @@
+scenario: 'PowerShell 中执行一个不存在的命令 ''unknown-command''，系统返回详细的命令未找到错误信息，包括错误类型、位置和 FullyQualifiedErrorId。'
+target_capability: '错误保留'
+expected_keep: 'unknown-command : The term ''unknown-command'' is not recognized'
+expected_compress: "PS C:\\>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1656de35c4ffdb1cb0b3594973ffbb42562c84f0606810fd8ac2f76b455ab5e0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,3 @@
+hg copy
+hg copy src/file.txt dst/file.txt
+copying src/file.txt to dst/file.txt

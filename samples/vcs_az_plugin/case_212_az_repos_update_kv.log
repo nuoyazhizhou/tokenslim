@@ -1,0 +1,5 @@
+az repos update --name app-repo
+Name: app-repo
+DefaultBranch: main
+WebUrl: https://dev.azure.com/myorg/app-project/_git/app-repo
+SyncStatus: ahead by 2

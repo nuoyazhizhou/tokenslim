@@ -1,0 +1,15 @@
+scenario: '一个看起来像YAML但实际是JSON格式的ConfigMap配置，包含嵌套的metadata和data字段，用于测试插件对伪YAML结构的识别与压缩能力。'
+target_capability: '伪YAML识别与键值压缩'
+expected_keep: "\"apiVersion\": \"v1\", \"kind\": \"ConfigMap\", \"name\": \"looks-yaml\""
+expected_compress: '缩进与空白，长序列（无），深度限制（无）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b5c7953f34034f6376c13cdb68b775dccfded363a3dc3172dfbc4189d148167e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Cloudflare Logpush 输出的 HTTP JSONL 日志，包含健康检查请求（/health 返回 200）和恶意扫描请求（/.env 和 /wp-admin 返回 404），客户端 IP 和 User-Agent 各异。'
+target_capability: '云日志 JSON 结构剥离与字段压缩'
+expected_keep: 'EdgeResponseStatus 200/404, ClientRequestURI /health /.env /wp-admin'
+expected_compress: 'EdgeStartTimestamp 时间戳, RayID 字段, ClientIP 地址'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bcf15c597c61c10e9278f96cd21b5700778bd29895b73258fad0d00cf2c86831'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

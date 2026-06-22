@@ -1,0 +1,15 @@
+scenario: 'Git diff 对比两个分支 branch1 和 branch2 的差异，显示文件修改和新增模块的代码变更。'
+target_capability: '文件路径与状态标记保留'
+expected_keep: 'diff --git a/src/core/text_slicer/methods.rs b/src/core/text_slicer/methods.rs, new file mode 100644'
+expected_compress: 'index 1234567..7890123 100644, @@ -1,5 +1,10 @@, +use std::thread;'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '51a705ac15b739eb7ca0316dbe27a159bb3f5e2498825d3227dc6c8cd35e7fbd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

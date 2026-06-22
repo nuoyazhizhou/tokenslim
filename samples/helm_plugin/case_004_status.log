@@ -1,0 +1,9 @@
+helm status web --namespace prod
+NAME: web
+LAST DEPLOYED: Tue May 12 10:14:00 2026
+NAMESPACE: prod
+STATUS: deployed
+REVISION: 3
+TEST SUITE: None
+deployment/web 3/3 3 3 10m
+service/web ClusterIP 10.0.0.12 <none> 80/TCP 10m

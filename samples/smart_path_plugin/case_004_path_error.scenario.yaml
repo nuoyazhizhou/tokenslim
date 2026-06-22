@@ -1,0 +1,15 @@
+scenario: '两个文件系统错误消息，分别涉及不存在的文件和权限拒绝，路径需要被压缩为字典令牌。'
+target_capability: '路径字典压缩'
+expected_keep: 'Error: File not found:'
+expected_compress: '/home/user/missing/file.txt'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '69017e741d71f674fb39b863dc24743920120cbc9f25f700d28d8a34ad3c8fcb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,28 @@
+   svn blame
+   123   alice.chen     pub fn analyze_project(root: &Path) -> Vec<Diagnostic> {
+   123   alice.chen         let mut diagnostics = Vec::new();
+   123   alice.chen 
+   125   bob.wang           // VCS Plugin Config Guidance
+   125   bob.wang           if let Some(config) = load_vcs_config(root) {
+   125   bob.wang               diagnostics.push(config.validate());
+   125   bob.wang           }
+   123   alice.chen 
+   130   charlie.li         for file in walk_dir(root) {
+   130   charlie.li             if let Some(diag) = check_file(&file) {
+   130   charlie.li                 diagnostics.push(diag);
+   130   charlie.li             }
+   123   alice.chen         }
+   123   alice.chen         diagnostics
+   123   alice.chen     }
+   137   dave.zhang 
+   137   dave.zhang     const MAX_DEPTH: usize = 10;
+   137   dave.zhang 
+   140   alice.chen     pub fn find_common_prefixes(paths: &[String]) -> Vec<String> {
+   140   alice.chen         let mut prefixes = Vec::new();
+   142   bob.wang           for path in paths {
+   142   bob.wang               if let Some(prefix) = extract_prefix(path) {
+   142   bob.wang                   prefixes.push(prefix);
+   142   bob.wang               }
+   140   alice.chen         }
+   140   alice.chen         prefixes
+   140   alice.chen     }

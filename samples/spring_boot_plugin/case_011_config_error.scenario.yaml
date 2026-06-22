@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用启动失败，显示 BeanCreationException 和 BeanInstantiationException 错误堆栈。'
+target_capability: '错误保留与包名压缩'
+expected_keep: 'Application run failed, BeanCreationException, BeanInstantiationException'
+expected_compress: 'org.springframework.beans.factory, org.springframework.beans, o.s.boot.SpringApplication'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd2ecdb3a408e50e577883f4109d0a06a5062e20ca02dd91770e5d72de4c4d209'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

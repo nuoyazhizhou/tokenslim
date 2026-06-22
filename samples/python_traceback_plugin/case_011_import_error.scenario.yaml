@@ -1,0 +1,15 @@
+scenario: 'Python 脚本 app.py 导入缺失模块 missing_module，触发 ModuleNotFoundError 异常，堆栈跟踪显示导入错误位置。'
+target_capability: '异常类型保留与堆栈压缩'
+expected_keep: 'Traceback (most recent call last):, ModuleNotFoundError: No module named ''missing_module'''
+expected_compress: "File \"app.py\", line 1, in <module>"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '170af9e55745330b8abaa837e2699e5eb2e3446932a5de1691777db0998c4348'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

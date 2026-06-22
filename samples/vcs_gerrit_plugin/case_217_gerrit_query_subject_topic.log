@@ -1,0 +1,8 @@
+gerrit query --format text status:open project:platform/frameworks/base
+change I111aaa222bbb333
+  project: platform/frameworks/base
+  branch: master
+  status: NEW
+  owner: alice@company.com
+  subject: Refactor auth session handling
+  topic: auth-refactor

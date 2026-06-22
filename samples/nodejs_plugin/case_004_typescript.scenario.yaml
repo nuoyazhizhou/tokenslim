@@ -1,0 +1,15 @@
+scenario: 'TypeScript 编译错误输出，包含两个错误：属性不存在和对象可能未定义，以及错误计数和文件监听提示。'
+target_capability: '错误保留'
+expected_keep: 'error TS2339, error TS2532, Found 2 errors'
+expected_compress: 'Watching for file changes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '60bd695c6f3d0c40b71c5ceea324cbe102039cceac81b6f7b0e34cc9b8c54c93'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

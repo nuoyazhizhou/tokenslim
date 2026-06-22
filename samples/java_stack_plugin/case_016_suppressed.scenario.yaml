@@ -1,0 +1,15 @@
+scenario: 'Java 程序抛出 RuntimeException 主异常，并附带三个 Suppressed 异常（IOException、IllegalStateException、NullPointerException），展示异常链中抑制异常的堆栈跟踪。'
+target_capability: 'Suppressed 异常保留与压缩'
+expected_keep: "Exception in thread \"main\" java.lang.RuntimeException: Primary exception"
+expected_compress: 'Suppressed: java.lang.IOException: Resource cleanup failed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'afc326bc71ca876ef8ebe164d84d82231b33f54ea9e51c335bb6418f91379c78'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

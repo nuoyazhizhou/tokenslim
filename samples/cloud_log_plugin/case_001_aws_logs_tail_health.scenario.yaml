@@ -1,0 +1,15 @@
+scenario: 'AWS ECS 后端服务的健康检查日志，通过 aws logs tail 命令获取，每 30 秒左右两个 IP 交替请求 /health 端点，均返回 200 OK。'
+target_capability: '云日志外壳剥离与时间压缩'
+expected_keep: 'GET /health HTTP/1.1 200 OK'
+expected_compress: '2026-05-13T08:13:39.939000+00:00'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3c83d8c19770e374467b1d70df9d134b5985cefea70e20328ffde553e21605e2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,7 @@
+darcs whatsnew
+hunk ./src/main.rs +1
+  println!("New feature");
+
+hunk ./src/utils.rs -2
+  - old code
+  + new code

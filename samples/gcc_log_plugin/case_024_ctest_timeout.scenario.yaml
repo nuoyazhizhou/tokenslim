@@ -1,0 +1,15 @@
+scenario: 'CMake CTest 运行集成测试时，integration_slow_path 测试用例超时（60秒），导致测试失败并输出超时错误信息。'
+target_capability: '测试超时错误保留'
+expected_keep: 'Timeout, integration_slow_path, Errors while running CTest'
+expected_compress: 'Test project /build, Start 7, 1/1 Test #7'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '88866cb9239415bd6e30dcf07fe58941a0215048985637b2277a162aec603408'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T17:50:50.677345'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

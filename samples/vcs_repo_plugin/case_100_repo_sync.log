@@ -1,0 +1,9 @@
+repo sync -c -j8 --no-tags --no-clone-bundle
+Downloading TFW: 15%
+Downloading platform/frameworks/base: 45%
+Downloading platform/packages/apps/Camera: 78%
+Syncing: 100/120 projects
+
+project platform/frameworks/base/: HEAD is now at abc123def
+project platform/packages/apps/Camera/: HEAD is now at def456ghi
+Syncing done.

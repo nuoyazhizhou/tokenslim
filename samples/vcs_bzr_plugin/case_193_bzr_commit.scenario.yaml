@@ -1,0 +1,15 @@
+scenario: "Bazaar 提交操作：用户执行 'bzr commit -m \"Add new feature\"'，提交修改了 src/main.java 和 src/utils.java 两个文件，生成修订版本 123。"
+target_capability: 'commit 锚点与文件状态保留'
+expected_keep: "bzr commit -m \"Add new feature\", modified src/main.java, modified src/utils.java"
+expected_compress: 'Committing to: lp:~user/project/branch/, Committed revision 123.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4cfed4ceacbc57254987e5264bf2e62c9eb4884ad5becfd74822993ff33c6102'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户通过 bash 的 jobs 命令查看后台任务，然后使用 kill %1 终止已停止的 vim 进程，展示了 shell 作业控制的基本操作。'
+target_capability: '作业控制命令保留'
+expected_keep: 'jobs, kill %1, Stopped vim test.txt'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '33fdfab64cf4b30195d289eac643e96c6863176168782d8d9536279dbc77b090'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

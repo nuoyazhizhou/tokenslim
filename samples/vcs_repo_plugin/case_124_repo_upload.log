@@ -1,0 +1,8 @@
+repo upload
+Upload project: platform/frameworks/base/
+To ssh://android.googlesource.com/platform/frameworks/base
+ * [new branch] HEAD -> refs/changes/123/456/1
+Upload project: platform/packages/apps/Settings/
+To ssh://android.googlesource.com/platform/packages/apps/Settings
+ * [new branch] HEAD -> refs/changes/124/457/1
+2 projects uploaded.

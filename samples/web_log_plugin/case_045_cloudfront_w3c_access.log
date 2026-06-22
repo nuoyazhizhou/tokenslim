@@ -1,0 +1,26 @@
+#Version: 1.0
+#Fields: date time x-edge-location sc-bytes c-ip cs-method cs(Host) cs-uri-stem sc-status cs(Referer) cs(User-Agent) cs-uri-query x-edge-result-type time-taken
+2026-05-13 12:00:01 SFO53-C1 512 198.51.100.10 GET d111111abcdef8.cloudfront.net /health 200 - ELB-HealthChecker/2.0 - Hit 0.010
+2026-05-13 12:00:02 SFO53-C1 8132 198.51.100.11 GET d111111abcdef8.cloudfront.net /static/app.js 200 - Mozilla/5.0 - Hit 0.031
+2026-05-13 12:00:03 SFO53-C1 2431 198.51.100.12 GET d111111abcdef8.cloudfront.net /static/app.css 200 - Mozilla/5.0 - Hit 0.028
+2026-05-13 12:00:04 SFO53-C1 512 198.51.100.10 GET d111111abcdef8.cloudfront.net /health 200 - ELB-HealthChecker/2.0 - Hit 0.009
+2026-05-13 12:00:05 SFO53-C1 162 203.0.113.45 GET d111111abcdef8.cloudfront.net /.env 404 - python-requests/2.31 - Error 0.020
+2026-05-13 12:00:06 SFO53-C1 162 203.0.113.45 GET d111111abcdef8.cloudfront.net /wp-admin 404 - python-requests/2.31 - Error 0.020
+2026-05-13 12:00:07 SFO53-C1 162 203.0.113.45 GET d111111abcdef8.cloudfront.net /config.php 404 - python-requests/2.31 - Error 0.020
+2026-05-13 12:00:08 SFO53-C1 90 198.51.100.20 POST d111111abcdef8.cloudfront.net /api/v1/checkout 503 - Mozilla/5.0 - Error 3.200
+2026-05-13 12:00:09 SFO53-C1 90 198.51.100.21 POST d111111abcdef8.cloudfront.net /api/v1/checkout 503 - Mozilla/5.0 - Error 3.400
+2026-05-13 12:00:10 SFO53-C1 90 198.51.100.22 POST d111111abcdef8.cloudfront.net /api/v1/checkout 503 - Mozilla/5.0 - Error 3.600
+2026-05-13 12:00:11 SFO53-C1 512 198.51.100.10 GET d111111abcdef8.cloudfront.net /health 200 - ELB-HealthChecker/2.0 - Hit 0.011
+2026-05-13 12:00:12 SFO53-C1 8132 198.51.100.13 GET d111111abcdef8.cloudfront.net /static/app.js 200 - Mozilla/5.0 - Hit 0.030
+2026-05-13 12:00:13 SFO53-C1 2431 198.51.100.14 GET d111111abcdef8.cloudfront.net /static/app.css 200 - Mozilla/5.0 - Hit 0.027
+2026-05-13 12:00:14 SFO53-C1 162 203.0.113.45 GET d111111abcdef8.cloudfront.net /backup.zip 404 - python-requests/2.31 - Error 0.020
+2026-05-13 12:00:15 SFO53-C1 162 203.0.113.45 GET d111111abcdef8.cloudfront.net /.git/config 404 - python-requests/2.31 - Error 0.020
+2026-05-13 12:00:16 SFO53-C1 700 198.51.100.30 GET d111111abcdef8.cloudfront.net /api/orders/10001 200 - Mozilla/5.0 - Miss 0.082
+2026-05-13 12:00:17 SFO53-C1 700 198.51.100.31 GET d111111abcdef8.cloudfront.net /api/orders/10002 200 - Mozilla/5.0 - Miss 0.084
+2026-05-13 12:00:18 SFO53-C1 512 198.51.100.10 GET d111111abcdef8.cloudfront.net /health 200 - ELB-HealthChecker/2.0 - Hit 0.010
+2026-05-13 12:00:19 SFO53-C1 8132 198.51.100.15 GET d111111abcdef8.cloudfront.net /static/app.js 200 - Mozilla/5.0 - Hit 0.030
+2026-05-13 12:00:20 SFO53-C1 2431 198.51.100.16 GET d111111abcdef8.cloudfront.net /static/app.css 200 - Mozilla/5.0 - Hit 0.027
+2026-05-13 12:00:21 SFO53-C1 512 198.51.100.10 GET d111111abcdef8.cloudfront.net /health 200 - ELB-HealthChecker/2.0 - Hit 0.009
+2026-05-13 12:00:22 SFO53-C1 8132 198.51.100.17 GET d111111abcdef8.cloudfront.net /static/app.js 200 - Mozilla/5.0 - Hit 0.030
+2026-05-13 12:00:23 SFO53-C1 2431 198.51.100.18 GET d111111abcdef8.cloudfront.net /static/app.css 200 - Mozilla/5.0 - Hit 0.027
+2026-05-13 12:00:24 SFO53-C1 512 198.51.100.10 GET d111111abcdef8.cloudfront.net /health 200 - ELB-HealthChecker/2.0 - Hit 0.010

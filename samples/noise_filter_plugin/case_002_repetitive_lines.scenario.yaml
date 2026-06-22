@@ -1,0 +1,15 @@
+scenario: 'noise_filter_plugin 测试：文件复制操作日志，重复进度行应被折叠，仅保留结果摘要。'
+target_capability: '重复行压缩'
+expected_keep: 'All files copied'
+expected_compress: 'Copying file1.txt..., Copying file2.txt..., Copying file3.txt...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

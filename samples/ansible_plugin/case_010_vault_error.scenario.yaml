@@ -1,0 +1,15 @@
+scenario: '用户执行 ansible-playbook 命令时，因 vault 密码文件缺失导致解密失败，playbook 运行中止并输出错误信息。'
+target_capability: '错误保留'
+expected_keep: 'ERROR! Decryption failed (no vault secrets were found that could decrypt) on /repo/group_vars/prod/vault.yml'
+expected_compress: 'ansible-playbook secrets.yml --ask-vault-pass PLAY [all] *********************************************************************'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1172ab951725a6160240df63a136609afb757e36c8dbc000952af65119bdca07'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

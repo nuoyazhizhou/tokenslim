@@ -1,0 +1,15 @@
+scenario: 'AWS CloudFormation 堆栈事件日志，包含创建、失败和回滚事件，需要压缩重复状态并保留失败/回滚信号。'
+target_capability: '事件聚合与错误保留'
+expected_keep: 'CREATE_FAILED, ROLLBACK_IN_PROGRESS, Instance'
+expected_compress: 'CREATE_IN_PROGRESS, CREATE_COMPLETE, 2026-05-12'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '389535707181a7c3265746184f6c0b14f86db00a1b7051e48094420a5cda8abf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

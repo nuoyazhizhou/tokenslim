@@ -1,0 +1,5 @@
+git reset --mixed HEAD~1
+Unstaged changes after reset:
+M	src/main.rs
+M	src/lib/utils.rs
+D	src/lib/old_module.rs

@@ -1,0 +1,15 @@
+scenario: 'Go 测试日志，包含大量 PASS 和一行 FAIL，测试函数覆盖数学运算和字符串处理。'
+target_capability: '测试结果压缩与失败保留'
+expected_keep: '--- FAIL: TestDivideByZero'
+expected_compress: '=== RUN   TestAdd, --- PASS: TestAdd (0.00s)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1cf6d7baa8dd33e87975a6a34654fca928cd735be71a0e51ad5e617792793bcf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

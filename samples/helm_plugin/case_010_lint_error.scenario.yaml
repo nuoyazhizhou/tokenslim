@@ -1,0 +1,15 @@
+scenario: 'Helm lint 命令检查 chart 时，输出包含 INFO 建议和 ERROR 错误，最终报告失败。'
+target_capability: '错误保留与压缩'
+expected_keep: 'ERROR: templates/deployment.yaml: unable to parse YAML'
+expected_compress: '[INFO] Chart.yaml: icon is recommended'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'acdb0b87d3d557da23741dceda58f4b2cd7ebb13f62595c15e028b7ee5418e0b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

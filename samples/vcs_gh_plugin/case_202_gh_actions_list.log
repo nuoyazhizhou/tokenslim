@@ -1,0 +1,6 @@
+gh actions list
+WORKFLOW          STATUS   DURATION  TRIGGER
+CI                 ✓ Pass   10m       push
+Release            ✓ Pass   5m        release
+Lint               ✓ Pass   2m        pull_request
+Deploy             ○ Pending  -       workflow_dispatch

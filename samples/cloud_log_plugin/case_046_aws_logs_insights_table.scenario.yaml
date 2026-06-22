@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch Logs Insights 查询结果，包含 wrapped message table 格式的日志条目，每条记录包含时间戳、字段和消息内容（通用 CSV→Parquet ETL 批处理作业）。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: '日志消息文本、时间戳、字段名'
+expected_compress: '长结构化字段值、多余空白字符、时间毫秒部分'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一个不匹配任何已知日志格式的纯文本输入，包含三行无格式文本，用于测试插件在无法识别格式时的无压缩回退行为。'
+target_capability: '无压缩回退'
+expected_keep: 'Plain text without log format, Not matching combined log format, Should pass through unchanged'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c50f26449d2249481ab65f0000614990fd93074476a4e11ab0875d1b85177792'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

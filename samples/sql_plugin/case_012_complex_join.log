@@ -1,0 +1,17 @@
+SELECT 
+    p.id,
+    p.name,
+    c.name AS category,
+    b.name AS brand,
+    p.price,
+    p.stock,
+    CASE WHEN p.stock < 10 THEN 'Low' ELSE 'OK' END AS stock_status
+FROM products p
+INNER JOIN categories c ON p.category_id = c.id
+INNER JOIN brands b ON p.brand_id = b.id
+LEFT JOIN product_tags pt ON p.id = pt.product_id
+LEFT JOIN tags t ON pt.tag_id = t.id
+WHERE p.active = 1
+AND p.price > 100
+ORDER BY p.price DESC, p.name ASC
+LIMIT 50;

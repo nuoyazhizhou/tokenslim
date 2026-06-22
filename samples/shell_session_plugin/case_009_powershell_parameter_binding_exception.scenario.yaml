@@ -1,0 +1,15 @@
+scenario: 'PowerShell 用户尝试使用 Get-Process 命令查询名为 ''nonexistent'' 的进程，但该进程不存在，系统返回 ProcessCommandException 错误，包含详细的错误信息和调用堆栈。'
+target_capability: '错误保留与异常处理'
+expected_keep: "Get-Process : Cannot find a process with the name \"nonexistent\". Verify the process name and call the cmdlet again."
+expected_compress: "PS C:\\Users\\user> "
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bd6f377448d0a8a667eb3f5509b25b4b6ba85df7a24f8da55d98606ced9f5e78'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

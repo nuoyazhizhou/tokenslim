@@ -1,0 +1,15 @@
+scenario: 'Python 链式异常：一个 ValueError 在 app.py 的 do_something 函数中引发，随后在 error_handler 中处理时又引发 RuntimeError，形成异常链。'
+target_capability: '链式异常保留与压缩'
+expected_keep: 'ValueError: Original error, RuntimeError: Error during handling, Traceback (most recent call last):'
+expected_compress: "File \"app.py\", line 10, in <module>, File \"app.py\", line 5, in main, File \"app.py\", line 15, in do_something"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd87643d20d9ef03323e5f71a5c07b044b9fe825490031546257b04688c0fc44a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

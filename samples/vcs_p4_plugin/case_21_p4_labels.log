@@ -1,0 +1,6 @@
+p4 labels
+Release-2.0 2026/04/03 14:30:00 alice.chen 'Release 2.0 - VCS plugin support'
+Release-1.5 2026/03/15 10:00:00 bob.wang 'Release 1.5 - Dictionary engine improvements'
+Release-1.0 2026/02/01 08:00:00 charlie.li 'Initial release - Core compression pipeline'
+Nightly-2026-04-02 2026/04/02 23:59:00 build-bot 'Nightly build snapshot'
+Sprint-24 2026/03/28 17:00:00 dave.zhang 'Sprint 24 deliverables'

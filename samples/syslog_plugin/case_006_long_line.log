@@ -1,0 +1,1 @@
+May  7 10:33:10 server1 auditd[1234]: USER_AUTH pid=5678 uid=1000 auid=1000 ses=12345 msg='op=PAM:authentication grantors=pam_unix acct="user" exe="/usr/bin/sudo" hostname=? addr=? terminal=/dev/pts/0 res=success'

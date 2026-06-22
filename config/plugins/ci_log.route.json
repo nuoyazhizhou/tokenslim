@@ -1,0 +1,28 @@
+{
+  "name": "ci_log",
+  "enabled": true,
+  "priority": 160,
+  "skills": [
+    "ci",
+    "pipeline",
+    "stage",
+    "artifact",
+    "annotation",
+    "cache"
+  ],
+  "route": {
+    "command_arg_prefixes": [
+      {
+        "command": "az",
+        "args": ["pipelines"]
+      }
+    ],
+    "route_group": "build"
+  },
+  "run_parse_hints": {
+    "az": {
+      "options_with_value": ["--subscription", "--output", "--query", "--tenant", "--defaults"],
+      "inline_value_prefixes": ["--subscription=", "--output=", "--query=", "--tenant=", "--defaults="]
+    }
+  }
+}

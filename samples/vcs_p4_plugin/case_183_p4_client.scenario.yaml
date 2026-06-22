@@ -1,0 +1,15 @@
+scenario: '展示 P4 客户端工作区配置信息，包括客户端名、所有者、主机、根目录和视图映射。'
+target_capability: 'P4 客户端配置保留'
+expected_keep: "Client: my-workspace, Owner: alice, Root: C:\\workspace\\myproject"
+expected_compress: 'Host: alice-laptop, View: //depot/main/... //my-workspace/...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8591a22643ddf677bad5e07ac6dca1aa32083c98d94e2e0579cda9ec95b1e6fb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

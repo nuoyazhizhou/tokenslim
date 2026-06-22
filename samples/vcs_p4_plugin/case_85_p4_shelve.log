@@ -1,0 +1,4 @@
+p4 shelve
+Shelve change 12345 created.
+  //depot/main/src/main.rs
+  //depot/main/config/app.json

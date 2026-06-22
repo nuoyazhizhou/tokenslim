@@ -1,0 +1,15 @@
+scenario: 'Cloudflare CDN访问日志，包含对静态资源（/cdn/app.js、/cdn/app.css）的正常请求（200）和对API（/api/documents）的500错误以及对/wp-login.php的404扫描请求。'
+target_capability: '错误保留与扫描检测'
+expected_keep: '500错误行、404扫描行、健康摘要行'
+expected_compress: 'IP地址、URI路径、User-Agent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4a397c679fb83f1a599aa6c2adfad12f39a1058242f26c2852f3507a70793907'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

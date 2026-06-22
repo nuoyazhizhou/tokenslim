@@ -1,0 +1,12 @@
+output_template = "SUMMARY failed={failed_count}\n{body}"
+
+[[sections]]
+name = "failed_tests"
+enter = "^FAILED tests"
+exit = "^===="
+keep = ["^FAILED", "^ERROR"]
+
+[[sections.aggregates]]
+name = "failed_count"
+kind = "count"
+pattern = "^FAILED"

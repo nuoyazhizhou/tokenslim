@@ -1,0 +1,15 @@
+scenario: '静态规则检测到单行错误：缺少分号。'
+target_capability: '单行错误保留'
+expected_keep: '[ERROR] Rule violation: missing_semicolon'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1b817df0b99558c56d807f6a7053387a07e63000fd3547e8f13ad3166a701765'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,12 @@
+##teamcity[blockOpened name='Checkout']
+Checking out revision 1a2b3c4 from repository
+Updating sources in C:\BuildAgent\work\project
+##teamcity[blockClosed name='Checkout']
+##teamcity[blockOpened name='Build']
+##teamcity[compilationStarted compiler='javac']
+[javac] Compiling 128 source files
+[javac] Note: Some input files use unchecked or unsafe operations.
+##teamcity[compilationFinished compiler='javac']
+##teamcity[publishArtifacts 'build/reports/tests => reports.zip']
+##teamcity[blockClosed name='Build']
+##teamcity[buildStatus status='SUCCESS' text='Build finished successfully']

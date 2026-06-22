@@ -1,0 +1,15 @@
+scenario: '一段非 Maven 输出的普通文本，用于验证插件在无 Maven 构建日志特征时不会误压缩或修改内容。'
+target_capability: '非目标内容保留'
+expected_keep: 'This is not Maven output.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6864d60c4c7aa3398afccc30bba3aa9b8dd709c28b9389a30dd081dbe99b3818'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

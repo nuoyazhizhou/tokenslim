@@ -1,0 +1,15 @@
+scenario: 'Java线程池中抛出IllegalArgumentException异常，堆栈显示从Validator.validate到ThreadPoolExecutor的调用链。'
+target_capability: '异常堆栈脱水'
+expected_keep: "Exception in thread \"pool-1-thread-3\" java.lang.IllegalArgumentException: Invalid parameter: null"
+expected_compress: 'at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c3d4b682a05ccb1990e9a4bae1c5d4fa78989a36cd3a1e4e449e62116c1aa668'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,32 @@
+{
+  "name": "Rust",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Rust 代码语法检测配置",
+  "file_extensions": [".rs"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "fn main()"},
+        {"pattern_type": "contains", "pattern": "fn "},
+        {"pattern_type": "contains", "pattern": "let mut"},
+        {"pattern_type": "contains", "pattern": "let "},
+        {"pattern_type": "contains", "pattern": "pub struct"},
+        {"pattern_type": "contains", "pattern": "pub enum"},
+        {"pattern_type": "contains", "pattern": "impl "},
+        {"pattern_type": "contains", "pattern": "trait "},
+        {"pattern_type": "contains", "pattern": "match "},
+        {"pattern_type": "contains", "pattern": "if let "},
+        {"pattern_type": "contains", "pattern": "println!("},
+        {"pattern_type": "contains", "pattern": "println!("},
+        {"pattern_type": "contains", "pattern": "Box<"},
+        {"pattern_type": "contains", "pattern": "Rc<"},
+        {"pattern_type": "contains", "pattern": "Arc<"},
+        {"pattern_type": "contains", "pattern": "-> "},
+        {"pattern_type": "contains", "pattern": "unsafe "},
+        {"pattern_type": "contains", "pattern": "mut "}
+      ]
+    }
+  ]
+}

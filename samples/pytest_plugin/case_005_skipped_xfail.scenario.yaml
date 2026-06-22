@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话，包含 5 个测试用例，结果包括 2 个通过、1 个跳过、2 个预期失败（xfail），测试文件路径为 tests/test_flags.py。'
+target_capability: '测试结果状态保留与压缩'
+expected_keep: 'PASSED, SKIPPED, XFAIL'
+expected_compress: 'tests/test_flags.py::test_enabled, tests/test_flags.py::test_disabled, tests/test_flags.py::test_legacy'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '305502282f68226cc7613a2aa1f88cf35e30d2a49cc030610b5a6c1c9495b794'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '静态代码分析工具的输出，包含文件分析统计、错误和警告信息，以及总结行。'
+target_capability: '静态规则脱水：保留进入和保留模式匹配的行'
+expected_keep: '[INFO] ========================================, [ERROR] src/main.js:42 - no_hardcoded_passwords, [INFO] Errors: 2, Warnings: 2'
+expected_compress: '[INFO] Files analyzed: 23, [INFO] Rules applied: 15, [WARN] src/main.js:100 - line_length_exceeded'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '205ee7b4f51afd1e8376e9e1fa84fe29db26ddebd04510468fcb4fb6151d3f5f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

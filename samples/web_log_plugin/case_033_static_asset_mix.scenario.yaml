@@ -1,0 +1,15 @@
+scenario: 'Web access log 中混合了静态资源请求（JS、CSS、SVG）和一个 404 错误（missing.png），测试插件能否区分正常静态资源与错误响应。'
+target_capability: '错误保留与静态资源折叠'
+expected_keep: '404 错误行'
+expected_compress: '200 正常静态资源行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a3f4b9b3a04c2fcfbece3c72c372e1f2aea0eccb420fd3fbe35020fdc7d2952'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

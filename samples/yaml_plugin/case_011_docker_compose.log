@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+  db:
+    image: postgres:14
+    volumes:
+      - db_data:/var/lib/postgresql/data
+volumes:
+  db_data:

@@ -1,0 +1,15 @@
+scenario: '用户执行 `hg log -r tip` 查看最新提交的变更集信息，输出包含变更集ID、用户、日期和摘要。'
+target_capability: 'Hg命令脱水：保留变更集ID和摘要'
+expected_keep: 'changeset:   1234:abcdef123456'
+expected_compress: 'user:        developer <dev@example.com>'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '34d6f180dca84408a6d2426b0a7aec82e0befeaa4add4076ea79af16d76d30f9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '展示 p4 triggers 命令的输出，包含两个触发器定义，分别关联 change 和 sync 操作，涉及 depot 路径和 shell 命令。'
+target_capability: '触发器定义保留与路径压缩'
+expected_keep: "Triggers:, hellochangeChangeUser //depot/... \"echo %serverport%\""
+expected_compress: "depotsync sync //depot/... \"echo syncing %serverport%\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd2c761fdf692dc286b475480ad0cd7d8a5a8c5988e920bca71a6667a6895a2ab'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户使用 unzip 命令解压 archive.zip 到 ./extracted 目录，然后列出解压后的文件。'
+target_capability: '命令与输出保留'
+expected_keep: 'unzip archive.zip -d ./extracted, ls extracted/project/, inflating: ./extracted/project/main.py'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9534ef4caa424bcfc0a1d8965a0a2dcd5cc9b6459d1ad8cf0713cd0cbc7d817c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

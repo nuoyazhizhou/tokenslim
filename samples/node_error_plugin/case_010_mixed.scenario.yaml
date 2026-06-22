@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用启动后抛出未捕获异常，错误堆栈包含文件路径、行号、列号和函数名，日志记录应用崩溃。'
+target_capability: '堆栈帧路径字典压缩'
+expected_keep: 'Error: Something went wrong, <anonymous>, line 10:11'
+expected_compress: '/home/user/project/index.js, 2024-01-15 10:30:45 INFO, 2024-01-15 10:30:46 ERROR'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e1fd48425b60c12571e16c14309ffef22991b87c87c9d94f4b556dfa2e7aeeef'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

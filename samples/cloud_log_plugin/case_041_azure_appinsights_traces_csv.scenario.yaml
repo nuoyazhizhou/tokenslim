@@ -1,0 +1,15 @@
+scenario: 'Azure Application Insights 的 traces 表以 CSV 格式导出，包含时间戳、消息、严重级别、云角色名和操作名，其中包含一条超时错误和一条重试警告。'
+target_capability: '云日志外壳剥离与元数据压缩'
+expected_keep: '消息文本如 ''worker started''、''System.TimeoutException: dependency call timed out''、''retry scheduled for order 91'''
+expected_compress: '时间戳字段如 ''2026-05-13T08:21:00Z'' 压缩为 ''2026-05-13 08:21''，CSV 表头行 ''timestamp,message,severityLevel,cloud_RoleName,operation_Name'' 可能被压缩或丢弃'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a479c9d73836473ef0a27964de350e9fe20fcdf07be78f33bb079c41fbd895dc'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

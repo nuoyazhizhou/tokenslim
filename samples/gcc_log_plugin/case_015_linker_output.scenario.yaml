@@ -1,0 +1,15 @@
+scenario: 'GCC 链接阶段失败，多个目标文件（main.o, utils.o, network.o）中引用的函数（init_database, connect_network, get_timestamp, encrypt_data）未定义，最终 ld 返回错误，make 构建终止。'
+target_capability: '链接错误保留与路径压缩'
+expected_keep: 'undefined reference to `init_database'', undefined reference to `connect_network'', collect2: error: ld returned 1 exit status'
+expected_compress: 'gcc -o /home/user/projects/myproject/build/myapp /home/user/projects/myproject/build/main.o /home/user/projects/myproject/build/utils.o /home/user/projects/myproject/build/network.o /home/user/projects/myproject/build/database.o -lm -lpthread -lssl -lcrypto, make: *** [Makefile:20: /home/user/projects/myproject/build/myapp] Error 1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'eeae371b791a155d769b4dc1454ba189df58ebe4177006d9a43557d571fc8378'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

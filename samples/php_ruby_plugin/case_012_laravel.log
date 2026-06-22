@@ -1,0 +1,5 @@
+[2024-01-15 10:30:45] local.ERROR: Something went wrong {"exception":"[object] (Exception(code: 0): Something went wrong at /app/app/Http/Controllers/HomeController.php:42)
+[stacktrace]
+#0 /app/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App\Http\Controllers\HomeController->index()
+#1 /app/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(45): Illuminate\Routing\Controller->callAction()
+"}

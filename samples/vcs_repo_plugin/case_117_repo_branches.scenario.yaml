@@ -1,0 +1,15 @@
+scenario: '使用 repo 命令查看仓库分支列表，输出包含本地分支和远程跟踪分支。'
+target_capability: '分支列表保留与远程引用压缩'
+expected_keep: 'repo branches, * master, remotes/origin/HEAD -> origin/master'
+expected_compress: 'feature-auth, feature-ui, feature-api'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fd28f62f90daf99a408b5f9759d8b7c423d0e55c24b3ec57da7bc3542ac7c6b2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:32:00.721858'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

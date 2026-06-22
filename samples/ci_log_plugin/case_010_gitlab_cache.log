@@ -1,0 +1,14 @@
+glab ci view --log
+Running with gitlab-runner 16.11.0
+Restoring cache
+Checking cache for node-modules-main
+Successfully extracted cache
+section_start:1778663000:script[collapsed=false]
+$ npm ci
+added 900 packages in 28s
+$ npm test
+Tests: 310 passed, 310 total
+section_end:1778663060:script
+Saving cache for successful job
+Created cache
+Job succeeded

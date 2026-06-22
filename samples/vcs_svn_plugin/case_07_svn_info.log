@@ -1,0 +1,13 @@
+svn info
+Path: src/core/doctor_workspace
+Working Copy Root Path: C:\git_work\TokenSlim
+URL: https://svn.example.com/repos/project/trunk/src/core/doctor_workspace
+Relative URL: ^/trunk/src/core/doctor_workspace
+Repository Root: https://svn.example.com/repos/project
+Repository UUID: a1b2c3d4-e5f6-7890-abcd-ef1234567890
+Revision: 12345
+Node Kind: directory
+Schedule: normal
+Last Changed Author: alice.chen
+Last Changed Rev: 12340
+Last Changed Date: 2026-04-03 14:30:00 +0800 (Fri, 03 Apr 2026)

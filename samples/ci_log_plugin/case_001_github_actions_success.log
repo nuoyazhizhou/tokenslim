@@ -1,0 +1,19 @@
+gh run view 101 --log
+GitHub Actions runner version 2.316.0
+::group::Set up job
+Current runner version: 2.316.0
+Operating System: Ubuntu 22.04
+Runner Image: ubuntu-22.04
+::endgroup::
+::group::Checkout
+Run actions/checkout@v4
+Syncing repository: example/api
+Checking out the ref
+::endgroup::
+::group::Test
+Run npm test
+PASS test/health.test.js
+PASS test/users.test.js
+Tests: 2 passed, 2 total
+Process completed with exit code 0
+::endgroup::

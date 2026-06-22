@@ -1,0 +1,27 @@
+{
+    "name": "markdown",
+    "description": "Markdown 脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$MARKDO"
+    },
+    "keep_signals": [
+        "# 标题行",
+        "[链接]或![图片]",
+        "- 或 * 或 1. 列表项"
+    ],
+    "compress_targets": [
+        "HTML/XML注释（如 <!-- comment -->）"
+    ],
+    "design_intent": "Markdown脱水：保留标题、链接、图片、列表等核心结构，折叠注释以压缩体积。"
+}

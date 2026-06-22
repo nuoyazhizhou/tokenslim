@@ -1,0 +1,6 @@
+g++ -c main.cpp -o main.o
+g++ -c utils.cpp -o utils.o
+main.cpp: In function 'int main()':
+main.cpp:20:17: error: no matching function for call to 'process(std::vector<int>&)'
+note: candidate: template<class T> void process(T)
+note:   template argument deduction/substitution failed:

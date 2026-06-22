@@ -1,0 +1,4 @@
+git grep "TODO"
+src/main.rs:15: // TODO: implement error handling
+src/utils.rs:42: // TODO: add unit tests
+src/plugins/vcs_plugin/parser.rs:100: // TODO: optimize for large files

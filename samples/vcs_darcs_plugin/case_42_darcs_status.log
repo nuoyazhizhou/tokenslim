@@ -1,0 +1,5 @@
+darcs status
+darcs whatsnew -ls
+A src/plugins/vcs_plugin/new_darcs_adapter.rs
+M src/plugins/vcs_plugin/methods.rs
+R src/legacy/old_darcs_parser.rs

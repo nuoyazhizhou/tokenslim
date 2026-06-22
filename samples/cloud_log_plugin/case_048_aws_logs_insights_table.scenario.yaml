@@ -1,0 +1,15 @@
+scenario: 'AWS Lambda 函数执行日志（CSV 格式），包含 S3 文件下载、通用日志聚合分析批处理作业启动、批处理输出（按服务+时间窗口聚合日志指标示例）以及执行报告。'
+target_capability: '云日志外壳剥离与结构化压缩'
+expected_keep: '批处理输出中的聚合指标行（如聚合中 | service=api-gateway | window=... | p50_ms=... | p99_ms=...）'
+expected_compress: '长命令行参数（如 --db-pass REDACTED）和示例字段（如 {''product_name'': ...}）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

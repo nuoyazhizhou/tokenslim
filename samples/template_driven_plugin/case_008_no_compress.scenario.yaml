@@ -1,0 +1,15 @@
+scenario: '一段不匹配任何模板的普通文本，包含三行无结构文字，期望原样保留不压缩。'
+target_capability: '无模板匹配时保留原样'
+expected_keep: 'This is not a template, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '22523f2c6d75511968c034957e07c5ed669ba3b9a8331e6d6f870ca8bd12aa36'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

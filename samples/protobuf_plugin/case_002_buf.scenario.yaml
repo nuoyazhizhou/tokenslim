@@ -1,0 +1,15 @@
+scenario: '使用 buf 工具编译 protobuf 文件时，出现类型未找到的错误和字段弃用、导入未使用的警告。'
+target_capability: 'protobuf 诊断信息保留与路径压缩'
+expected_keep: "error: Type \"Money\" not found., warning: Field \"legacy_sku\" is deprecated., warning: Import google/protobuf/timestamp.proto is unused."
+expected_compress: 'proto/catalog/product.proto:44:3:, proto/catalog/product.proto:52:12:, proto/catalog/category.proto:17:1:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2e420847a541daf990c3497aaa4f7d2b006062cd1263a78581a5a608022db4b5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

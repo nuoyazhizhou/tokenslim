@@ -1,0 +1,14 @@
+> Task :app:compileDebugJavaWithJavac
+> Task :app:compileDebugKotlin
+> Task :app:mergeDebugResources
+> Task :app:processDebugManifest
+> Task :app:processDebugResources
+> Task :app:mergeDebugAssets
+> Task :app:compileDebugSources
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:mergeDebugShaders
+> Task :app:compileDebugShaders
+> Task :app:generateDebugAssets
+> Task :app:packageDebug
+BUILD SUCCESSFUL in 8s
+12 actionable tasks: 12 executed, 0 up-to-date

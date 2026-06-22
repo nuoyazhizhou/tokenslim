@@ -1,0 +1,15 @@
+scenario: '一个React函数组件Counter，使用useState和useEffect管理计数状态，并更新文档标题。'
+target_capability: '代码脱水：保留关键字和短标识符，压缩长标识符'
+expected_keep: 'useState, useEffect, return'
+expected_compress: 'Increment, Decrement, document.title'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a22aff9218fc5bd8ed16c370aa148355270ca60218e09ff7599b07efb135ac03'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

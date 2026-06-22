@@ -1,0 +1,38 @@
+{
+    "name": "vcs_gerrit",
+    "description": "Gerrit 命令输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_GE"
+    },
+    "keep_signals": [
+        "命令锚点行（如 \"gerrit query\"）",
+        "change ID 行（压缩为 CHG @xxx）",
+        "关键 key-value 字段（project, branch, status 等，压缩为 PRJ, BR 等）",
+        "reviewer 列表（逗号分隔）",
+        "review 标签（如 Code-Review+2）",
+        "push ref 映射（压缩后保留源和目标分支名）",
+        "checkout 分支和状态（如 Switched to branch, up-to-date）"
+    ],
+    "compress_targets": [
+        "噪音行（通过 is_gerrit_noise 过滤，如 Counting objects, remote:）",
+        "长 URL（以 http 或 Push to ssh:// 开头）",
+        "进度条/传输中行（以 \"...\" 结尾且长度小于40）",
+        "空行",
+        "重复的 URL",
+        "change ID 完整格式压缩为 CHG @+短id",
+        "key-value 字段键名压缩为短符号（如 project->PRJ）",
+        "refs/heads/ 前缀在 push 映射中移除"
+    ],
+    "design_intent": "Gerrit脱水：保留命令锚点与核心变更摘要，折叠噪音与长URL，压缩为符号化摘要。"
+}

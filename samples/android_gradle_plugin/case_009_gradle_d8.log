@@ -1,0 +1,12 @@
+> Task :app:compileDebugJavaWithJavac
+> Task :app:compileDebugKotlin
+> Task :app:mergeDebugJavaResource
+> Task :app:dexBuilderDebug
+D8: Program type already present: android/support/v4/app/INotificationSideChannel
+> Task :app:mergeProjectDexDebug
+> Task :app:mergeLibDexDebug
+> Task :app:mergeExtDexDebug
+> Task :app:packageDebug
+> Task :app:assembleDebug
+BUILD SUCCESSFUL in 12s
+10 actionable tasks: 10 executed, 0 up-to-date

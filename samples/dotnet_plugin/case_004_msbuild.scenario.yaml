@@ -1,0 +1,15 @@
+scenario: 'MSBuild 构建 .NET 项目 MyApp.csproj 的日志，显示构建版本、目标、使用的编译任务和命令，最终成功退出。'
+target_capability: '构建日志脱水'
+expected_keep: 'MSBuild version 17.4.0+18d5aef85 for .NET, Done Building Project, The command exited with code 0'
+expected_compress: "C:\\Program Files\\dotnet\\sdk\\6.0.404\\Roslyn\\bincore\\csc.exe /noconfig /unsafe+ ..."
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f990703ac58df5d1d3bc51dc8cbb260142a41399f6c9ae39a75671f77984ec74'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

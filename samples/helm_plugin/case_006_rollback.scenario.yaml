@@ -1,0 +1,15 @@
+scenario: 'Helm 回滚操作输出，包含回滚成功消息和部署状态信息。'
+target_capability: 'Helm 输出关键字段保留'
+expected_keep: 'NAME: web, NAMESPACE: prod, STATUS: deployed'
+expected_compress: 'Rollback was a success! Happy Helming!, REVISION: 4'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ecaeba74065ae5b1f504b372171ec572e3cb5cdbd6750e6015a62a4094c7d6c2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

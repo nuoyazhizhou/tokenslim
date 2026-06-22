@@ -1,0 +1,6 @@
+user@ubuntu:~$ set -o pipefail
+user@ubuntu:~$ cat not_exist.txt | grep "foo"
+cat: not_exist.txt: No such file or directory
+user@ubuntu:~$ echo $?
+1
+user@ubuntu:~$ 

@@ -1,0 +1,15 @@
+scenario: 'Fossil status 命令输出，显示仓库信息、检出版本、标签、提交注释以及文件变更列表（EDITED 和 ADDED）。'
+target_capability: '状态变更摘要保留'
+expected_keep: 'fossil status, EDITED src/plugins/vcs_plugin/methods.rs, ADDED samples/vcs/case_29_fossil_status.log'
+expected_compress: 'repository:   C:/repo/project.fossil, local-root:   C:/git_work/TokenSlim/, checkout:     9d41f1ac7a6d7f25d3b7f5b31d2f4f6b6f4f0aa5 2026-04-06 12:20:17 UTC'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5dc4e97b09310a4d4d929462d12d0bd4f2ea10d0c1ae62c49d5bf38dc80428da'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

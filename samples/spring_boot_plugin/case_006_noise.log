@@ -1,0 +1,5 @@
+[DEBUG] 2024-01-15 10:30:45 Initializing context
+2024-01-15 10:30:45.123 ERROR 12345 --- [main] com.example.Service : Error processing request
+java.lang.RuntimeException: Something went wrong
+    at com.example.Service.process(Service.java:100)
+[INFO] 2024-01-15 10:30:46 Shutting down

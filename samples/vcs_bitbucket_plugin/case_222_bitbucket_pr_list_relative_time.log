@@ -1,0 +1,5 @@
+bitbucket pr list --state all
+TYPE   ID      TITLE                               AUTHOR      STATE      CREATED
+--------------------------------------------------------------------------------------
+OPEN   310     Fix stale cache invalidation        alice       OPEN       2 days ago
+MERGED 309     Add cloud retry guard               bob         MERGED     1 week ago

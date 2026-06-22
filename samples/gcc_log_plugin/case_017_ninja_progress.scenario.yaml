@@ -1,0 +1,15 @@
+scenario: 'Ninja 构建系统编译 C/C++ 项目的进度日志，包含编译和链接步骤，共 245 个任务。'
+target_capability: '编译进度压缩'
+expected_keep: '[245/245] Linking CXX executable bin/tokenslim-tests.exe'
+expected_compress: '[1/245] Building CXX object src/core/CMakeFiles/core.dir/tokenizer.cpp.o'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2511a2b87b92d371b515d386cfaf4ea221b96a3662a369b371b400c54eef0ab0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

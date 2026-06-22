@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh gist list` 命令列出 GitHub Gist，输出包含描述、文件数、公开状态和创建日期等列的表格式数据。'
+target_capability: '表格行保留与表头压缩'
+expected_keep: 'Add utility functions   2 files    ✓       2026-04-05'
+expected_compress: 'DESCRIPTION              FILES      PUBLIC  CREATED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bdc29f25a13e895c27a7c35ac0ad8cbc4bba5de4907ce34641c6e27b68673629'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

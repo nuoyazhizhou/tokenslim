@@ -1,0 +1,11 @@
+ansible-playbook ping.yml
+
+PLAY [all] *********************************************************************
+
+TASK [Ping hosts] **************************************************************
+ok: [web1]
+unreachable: [web2] => {"changed": false, "msg": "Failed to connect to the host via ssh: Connection timed out", "unreachable": true}
+
+PLAY RECAP *********************************************************************
+web1                       : ok=1    changed=0    unreachable=0    failed=0
+web2                       : ok=0    changed=0    unreachable=1    failed=0

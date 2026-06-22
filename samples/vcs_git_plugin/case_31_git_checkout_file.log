@@ -1,0 +1,7 @@
+git checkout src/cli/methods.rs src/core/doctor_workspace/methods.rs
+Updating files:
+Updated 2 files
+
+Restored files:
+src/cli/methods.rs
+src/core/doctor_workspace/methods.rs

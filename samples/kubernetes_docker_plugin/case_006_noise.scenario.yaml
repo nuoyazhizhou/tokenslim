@@ -1,0 +1,15 @@
+scenario: 'Docker daemon启动日志，包含一条info级别的启动消息和一行容器列表表头，无实际容器数据。'
+target_capability: '噪声过滤与结构保留'
+expected_keep: "time=\"2024-01-15T10:30:45Z\" level=info msg=\"Starting Docker\""
+expected_compress: 'CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a943e9cb0f0f396c210c9204b4bff77753c29cd1d981a36c53fbdcf72265cb38'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

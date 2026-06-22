@@ -1,0 +1,29 @@
+{
+  "name": "Java",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Java 代码语法检测配置",
+  "file_extensions": [".java", ".jsp"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "public class"},
+        {"pattern_type": "contains", "pattern": "public static void main"},
+        {"pattern_type": "contains", "pattern": "System.out.println"},
+        {"pattern_type": "contains", "pattern": "private "},
+        {"pattern_type": "contains", "pattern": "protected "},
+        {"pattern_type": "contains", "pattern": "interface "},
+        {"pattern_type": "contains", "pattern": "extends "},
+        {"pattern_type": "contains", "pattern": "implements "},
+        {"pattern_type": "contains", "pattern": "@Override"},
+        {"pattern_type": "contains", "pattern": "@Autowired"},
+        {"pattern_type": "contains", "pattern": "@SpringBootApplication"},
+        {"pattern_type": "contains", "pattern": "new "},
+        {"pattern_type": "contains", "pattern": "throw "},
+        {"pattern_type": "contains", "pattern": "catch "},
+        {"pattern_type": "contains", "pattern": "finally"}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+scenario: 'Bazaar版本控制仓库中执行`bzr status --short`命令，显示工作目录中文件的修改、添加和未跟踪状态。'
+target_capability: '文件状态行保留与路径压缩'
+expected_keep: 'bzr status --short, M  src/main.rs, +A  src/auth/login.rs'
+expected_compress: '?   tests/smoke_test.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '098749b19d3dbed3936e043e1c0f64a500d16c2aa06929cc335d65c46d86936d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

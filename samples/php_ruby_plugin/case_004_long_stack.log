@@ -1,0 +1,11 @@
+PHP Fatal error:  Stack overflow! in /app/recursive.php:5
+Stack trace:
+#0 /app/recursive.php(5): recurse()
+#1 /app/recursive.php(5): recurse()
+#2 /app/recursive.php(5): recurse()
+#3 /app/recursive.php(5): recurse()
+#4 /app/recursive.php(5): recurse()
+#5 /app/recursive.php(5): recurse()
+#6 /app/recursive.php(5): recurse()
+#7 /app/recursive.php(10): main()
+#8 {main}

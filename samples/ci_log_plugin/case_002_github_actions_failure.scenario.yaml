@@ -1,0 +1,15 @@
+scenario: 'GitHub Actions CI 运行中，安装依赖成功后运行 pytest 测试时失败，输出断言错误（expected 201 got 500）和退出码 1，日志中包含步骤分组和错误标记。'
+target_capability: 'CI 错误信号保留'
+expected_keep: '::error file=tests/test_api.py,line=42::AssertionError: expected 201 got 500 ::group::Run tests Process completed with exit code 1'
+expected_compress: 'Run npm ci added 820 packages in 31s Run pytest -q'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3046bf511ba2c35b1104f56e0864ed510102bc7ef762c09243482ed191cd2a6b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

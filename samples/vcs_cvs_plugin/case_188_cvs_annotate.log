@@ -1,0 +1,5 @@
+cvs annotate src/main.java
+Annotations for src/main.java
+*** 1.1 (alice: 01-Apr-06): package com.example;
+*** 1.2 (bob:   05-Apr-08): import java.util.*;
+*** 1.2 (bob:   05-Apr-08): public class Main {

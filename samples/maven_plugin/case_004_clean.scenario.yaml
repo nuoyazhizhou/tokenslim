@@ -1,0 +1,15 @@
+scenario: 'Maven 项目执行 mvn clean 命令，输出清理目标目录的构建日志，最终构建成功。'
+target_capability: '构建日志脱水'
+expected_keep: 'BUILD SUCCESS'
+expected_compress: '[INFO] Scanning for projects...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '309cba24ee56ffa8ed24e88205ce436959496323575f0de7b840c23333836895'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

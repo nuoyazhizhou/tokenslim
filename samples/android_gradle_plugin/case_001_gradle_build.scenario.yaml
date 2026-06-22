@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 构建成功，所有 Task 行正常完成，输出 BUILD SUCCESSFUL 状态'
+target_capability: '折叠非失败Task行'
+expected_keep: 'BUILD SUCCESSFUL'
+expected_compress: '> Task :app:compileDebugJavaWithJavac, > Task :app:compileDebugKotlin'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8887fde292b312fd54d39c1013121a989a01c76bd788af530dbb61c10468e7f3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,4 @@
+{"Time":"2024-01-01T11:00:00Z","Action":"run","Package":"github.com/shop/payment","Test":"TestCharge"}
+{"Time":"2024-01-01T11:00:01Z","Action":"output","Package":"github.com/shop/payment","Test":"TestCharge","Output":"=== RUN   TestCharge\n"}
+{"Time":"2024-01-01T11:00:02Z","Action":"output","Package":"github.com/shop/payment","Test":"TestCharge","Output":"    charge_test.go:42: gateway timeout\n"}
+{"Time":"2024-01-01T11:00:03Z","Action":"fail","Package":"github.com/shop/payment","Test":"TestCharge","Elapsed":1.44}

@@ -1,0 +1,15 @@
+scenario: '执行 helm version 命令，输出包含版本号、Git 提交和 Go 版本信息的 BuildInfo 结构体。'
+target_capability: '不压缩场景（保留所有输出）'
+expected_keep: "version.BuildInfo{Version:\"v3.14.4\", GitCommit:\"81c902a\", GitTreeState:\"clean\", GoVersion:\"go1.21.9\"}"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c127d913c8d34de0cdc36910b6dc18670b8b5fbfa305d35323b630d72ad618a6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

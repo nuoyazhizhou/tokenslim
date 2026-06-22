@@ -1,0 +1,15 @@
+scenario: 'Docker pull 操作因权限不足失败，返回 access denied 错误，提示需要 docker login。'
+target_capability: 'Docker 错误保留'
+expected_keep: 'access denied for myimage, repository does not exist or may require ''docker login'''
+expected_compress: 'See ''docker run --help'''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bb9c818fd9d2484ec6c1cbc1b516553224cddbe63a34975614d31e7a4640c404'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

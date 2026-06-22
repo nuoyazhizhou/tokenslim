@@ -1,0 +1,15 @@
+scenario: 'Bazaar 用户执行 ''bzr missing'' 命令，显示本地分支与远程分支之间缺失的提交记录，包含提交哈希、描述和作者。'
+target_capability: 'bzr missing 命令输出保留'
+expected_keep: 'bzr missing lp:~user/project/branch, abc1234: Add new feature (alice), def5678: Fix bug (bob)'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '36f890ce2f47088026931bc4d6b682c48857859303281df3237195f2701ac159'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

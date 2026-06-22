@@ -1,0 +1,5 @@
+aws cloudformation describe-stack-events --stack-name old
+2026-05-12 14:00:00 old AWS::CloudFormation::Stack DELETE_IN_PROGRESS User Initiated
+2026-05-12 14:00:08 Instance AWS::EC2::Instance DELETE_IN_PROGRESS -
+2026-05-12 14:02:40 Instance AWS::EC2::Instance DELETE_COMPLETE -
+2026-05-12 14:02:43 old AWS::CloudFormation::Stack DELETE_COMPLETE -

@@ -1,0 +1,14 @@
+act -j deploy
+::group::Build image
+docker build -t api:sha .
+Successfully built 7ab12cd34ef5
+::endgroup::
+section_start:1778667000:deploy[collapsed=false]
+kubectl apply -f k8s/
+deployment.apps/api configured
+section_end:1778667060:deploy
+##[section]Starting: Smoke test
+curl -f https://api.example.com/health
+HTTP/1.1 200 OK
+##[section]Finishing: Smoke test
+Process completed with exit code 0

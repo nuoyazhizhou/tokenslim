@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git status -s 短格式输出，插件应保留文件状态标记和路径，压缩提示文本。'
+target_capability: 'Git 状态短格式压缩'
+expected_keep: 'M src/core/text_slicer/methods.rs, A  src/core/dictionary_manager/mod.rs, ?? samples/vcs/'
+expected_compress: 'git status -s'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '75b1588ef27626a430a07e83261a0da35a1c24ab867edc02f75b96683f287aa8'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

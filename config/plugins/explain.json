@@ -1,0 +1,23 @@
+{
+    "name": "explain",
+    "description": "解释插件",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$EXPLAI"
+    },
+    "keep_signals": [
+        "解释内容"
+    ],
+    "compress_targets": [],
+    "design_intent": "解释插件：生成压缩结果的解释说明。"
+}

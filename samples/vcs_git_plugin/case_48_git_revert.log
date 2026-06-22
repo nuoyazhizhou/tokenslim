@@ -1,0 +1,12 @@
+git revert
+Reverting commit abc1234:
+  This reverts commit abc1234567890abcdef1234567890abcdef12345678
+  which was originally committed on 2026-04-01 by alice.chen
+
+Reverted commit abc1234.
+Automatic revert of commit abc1234 with parent def5678 completed successfully.
+
+Changes made:
+  src/utils/helper.rs    |  15 +++++++------
+  src/models/config.rs   |   8 +++----
+  2 files changed, 12 insertions(+), 10 deletions(-)

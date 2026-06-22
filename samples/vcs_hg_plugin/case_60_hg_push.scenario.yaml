@@ -1,0 +1,15 @@
+scenario: '执行 hg push 命令，将本地变更推送到远程 Bitbucket 仓库，输出显示推送目标 URL 和成功推送的变更集数量。'
+target_capability: '命令首行与变更集摘要保留'
+expected_keep: 'hg push, pushed 2 changesets'
+expected_compress: 'pushing to https://bitbucket.org/user/myrepo, pushing to ssh://hg@bitbucket.org/user/myrepo'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8902ce512c802e211bf383d66455df1871354f32cc09dd9b26a2ee465c8fd3b0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

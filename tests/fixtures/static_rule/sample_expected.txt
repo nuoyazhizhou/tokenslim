@@ -1,0 +1,3 @@
+SUMMARY failed=1
+[failed_tests] FAILED test_a
+[failed_tests] ERROR test_b

@@ -1,0 +1,25 @@
+{
+  "name": "Svelte",
+  "slice_type": "SvelteComponent",
+  "priority": 100,
+  "description": "Svelte 框架语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": "{#if"},
+        {"pattern_type": "contains", "pattern": "{#each"},
+        {"pattern_type": "contains", "pattern": "{#await"},
+        {"pattern_type": "contains", "pattern": "{:else"},
+        {"pattern_type": "contains", "pattern": "{:catch"},
+        {"pattern_type": "contains", "pattern": "{/if"},
+        {"pattern_type": "contains", "pattern": "{/each"},
+        {"pattern_type": "contains", "pattern": "{/await"},
+        {"pattern_type": "contains", "pattern": "@html"},
+        {"pattern_type": "contains", "pattern": "@debug"},
+        {"pattern_type": "contains", "pattern": "export let"},
+        {"pattern_type": "contains", "pattern": "$:"}
+      ]
+    }
+  ]
+}

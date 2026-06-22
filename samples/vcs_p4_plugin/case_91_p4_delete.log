@@ -1,0 +1,3 @@
+p4 delete
+//depot/main/src/old_file.rs - deleted for delete
+//depot/main/src/deprecated/module.rs - deleted for delete

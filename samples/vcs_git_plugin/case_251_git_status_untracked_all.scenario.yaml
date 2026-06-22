@@ -1,0 +1,15 @@
+scenario: '用户执行 `git status --untracked-files=all` 查看工作区状态，显示当前分支 main 与远程同步，有暂存的新文件、未暂存的修改以及多个未跟踪文件。'
+target_capability: 'Git status 输出压缩'
+expected_keep: 'new file:   src/core/dictionary_manager/mod.rs, modified:   src/core/text_slicer/methods.rs, Untracked files:'
+expected_compress: 'On branch main, Your branch is up to date with ''origin/main''., no changes added to commit'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fe50a5d60ee0a866203113d3e97464cc32b3c579927ee6a49ed90753e85f0ef2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

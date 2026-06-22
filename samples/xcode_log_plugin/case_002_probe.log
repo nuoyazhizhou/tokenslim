@@ -1,0 +1,3 @@
+/usr/bin/clang -x c -c /dev/null -o /dev/null
+/usr/bin/clang -x c -c /dev/null -o /dev/null
+/usr/bin/clang -x c -c /dev/null -o /dev/null

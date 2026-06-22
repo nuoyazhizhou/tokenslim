@@ -1,0 +1,3 @@
+{"__time__": 1717560600, "__topic__": "app_logs", "__source__": "192.168.1.100", "level": "INFO", "content": "Starting database migration"}
+{"__time__": 1717560601, "__topic__": "app_logs", "__source__": "192.168.1.100", "level": "ERROR", "content": "Error executing migration script:\njava.sql.SQLException: Access denied for user 'db_user'@'localhost'\n\tat com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)\n\tat com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)"}
+{"__time__": 1717560602, "__topic__": "app_logs", "__source__": "192.168.1.100", "level": "INFO", "content": "Migration script aborted."}

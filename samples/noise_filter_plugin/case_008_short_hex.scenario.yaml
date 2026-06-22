@@ -1,0 +1,15 @@
+scenario: 'noise_filter_plugin 边界测试：短十六进制字符串 0x123456 不应被误判为二进制噪声，纯文本行应保留。'
+target_capability: '短十六进制压缩'
+expected_keep: 'This should not be masked'
+expected_compress: '0x123456'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

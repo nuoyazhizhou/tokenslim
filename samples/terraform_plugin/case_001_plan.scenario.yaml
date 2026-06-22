@@ -1,0 +1,15 @@
+scenario: 'Terraform plan 输出显示将创建 aws_instance.web 和 aws_security_group.web，并原地更新 aws_lb.app，计划摘要为 2 个新增、1 个变更、0 个销毁。'
+target_capability: '资源变更行保留与路径压缩'
+expected_keep: '# aws_instance.web will be created, # aws_lb.app will be updated in-place, Plan: 2 to add, 1 to change, 0 to destroy.'
+expected_compress: "ami = \"ami-0c55b159cbfafe1f0\", (known after apply), subnet_id = \"subnet-1234567890abcdef0\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'be4c7f63e2bc8a470a6c3f7a490fd78e32b19292d99bfff033ddc5acfbc2d473'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,22 @@
+{
+  "name": "Go Templates",
+  "slice_type": "TemplateBlock",
+  "priority": 100,
+  "description": "Go html/template 和 text/template 语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "{{if", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{range", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{with", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{block", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{define", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{template", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{end", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{else", "end_delimiter": "}}"},
+        {"pattern_type": "paired_delimiters", "pattern": "{{.", "end_delimiter": "}}"}
+      ]
+    }
+  ]
+}

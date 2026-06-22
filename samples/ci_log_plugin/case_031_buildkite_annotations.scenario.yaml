@@ -1,0 +1,15 @@
+scenario: 'Buildkite CI 中 Lint 和 Typecheck 步骤执行后，通过 buildkite-agent annotate 生成警告和错误注释，并显示退出码 1。'
+target_capability: '保留错误/警告注释及退出码'
+expected_keep: 'buildkite-agent annotate --style warning, buildkite-agent annotate --style error, Command exited with status 1'
+expected_compress: 'npm run lint, src/app.ts warning no-console, npm run typecheck, src/api.ts error TS2322: Type string is not assignable to number'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a423381e4369b5b2cc0f165ef6901c012f691a08d7d40af18518a5d47776eb65'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

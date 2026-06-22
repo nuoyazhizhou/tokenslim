@@ -1,0 +1,15 @@
+scenario: '一个简单的 JavaScript 函数定义和调用，包含短标识符 ''hello'' 和 ''console''，无异常或长标识符。'
+target_capability: '短标识符保留与空格压缩'
+expected_keep: 'function, hello, console.log'
+expected_compress: '连续空格'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9211fcb6f74ef67b96bf259ff1c47f9422f07af116967ee985641e5828e4eec4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

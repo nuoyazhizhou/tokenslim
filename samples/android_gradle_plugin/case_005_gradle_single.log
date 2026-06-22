@@ -1,0 +1,3 @@
+> Task :app:compileDebugKotlin
+> Task :app:compileDebugJavaWithJavac
+BUILD SUCCESSFUL in 2s

@@ -1,0 +1,15 @@
+scenario: '在Windows CMD中执行xcopy命令递归复制目录，输出复制的文件列表和汇总信息，随后显示提示符。'
+target_capability: 'CMD提示符压缩与命令输出保留'
+expected_keep: "xcopy /s /e /h .\\source .\\dest, .\\source\\file1.txt, 3 File(s) copied"
+expected_compress: "C:\\src>"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e22ba5da6d954de707ed9d93cf364cf5c903b64dccb86c9db97b91b010d3c113'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

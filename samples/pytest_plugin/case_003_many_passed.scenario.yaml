@@ -1,0 +1,15 @@
+scenario: 'pytest 测试会话，12 个测试全部通过，输出包含每个测试的 PASSED 状态和最终摘要。'
+target_capability: '大量通过折叠'
+expected_keep: '12 passed in 2.03s'
+expected_compress: 'tests/test_many.py::test_001 PASSED'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8df071bf75c90fd572698dbf51a5dff0495b4bbe82e03bc69d05075832f2e6d0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:48:06.999871'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

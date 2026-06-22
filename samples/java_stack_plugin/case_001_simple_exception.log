@@ -1,0 +1,4 @@
+Exception in thread "main" java.lang.NullPointerException
+    at com.example.app.Main.process(Main.java:45)
+    at com.example.app.Main.run(Main.java:23)
+    at com.example.app.Main.main(Main.java:10)

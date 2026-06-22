@@ -1,0 +1,27 @@
+{
+    "name": "sql",
+    "description": "SQL 输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$SQL"
+    },
+    "keep_signals": [
+        "SQL关键字（SELECT、INSERT等）所在行",
+        "INSERT语句的前缀部分（不被截断）",
+        "短SQL语句（完整保留）"
+    ],
+    "compress_targets": [
+        "长INSERT VALUES（超过max_insert_values_len时截断为占位符）"
+    ],
+    "design_intent": "SQL脱水：保留SQL语句结构，折叠超长INSERT VALUES内容。"
+}

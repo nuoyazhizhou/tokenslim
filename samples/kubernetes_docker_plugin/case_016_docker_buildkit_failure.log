@@ -1,0 +1,9 @@
+docker build --progress=plain -t registry.example.com/api:sha .
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.2kB done
+#2 [internal] load metadata for docker.io/library/node:20
+#2 sha256:9b8f7d6c5a4e3d2c1b0a9876543210fedcba9876543210fedcba9876543210fe
+#3 [builder 4/6] RUN npm test
+#3 12.44 tests/api.spec.ts failed
+#3 ERROR: process "/bin/sh -c npm test" did not complete successfully: exit code: 1
+failed to solve: process "/bin/sh -c npm test" did not complete successfully: exit code: 1

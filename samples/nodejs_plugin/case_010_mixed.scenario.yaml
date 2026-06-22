@@ -1,0 +1,15 @@
+scenario: 'Node.js 服务器启动时发生连接拒绝错误，随后崩溃，日志包含错误栈和错误级别信息。'
+target_capability: '错误栈保留'
+expected_keep: 'Error: Connection refused, [ERROR] Server crashed'
+expected_compress: '2024-01-15 10:30:45 [INFO] Server started on port 3000'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3ce21adc7b44f8a222d23b1ad68978022dfa1077cf8d293c5b808b69e7f3a34d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

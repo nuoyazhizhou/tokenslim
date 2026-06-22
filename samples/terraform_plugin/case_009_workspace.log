@@ -1,0 +1,8 @@
+terraform workspace list
+  default
+* dev
+  staging
+  prod
+
+terraform workspace select prod
+Switched to workspace "prod".

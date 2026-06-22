@@ -1,0 +1,15 @@
+scenario: 'Python 应用 app.py 中 main 函数调用 do_something 时抛出 ValueError 异常，堆栈跟踪显示从调用入口到异常抛出的完整路径。'
+target_capability: 'Python 堆栈跟踪脱水'
+expected_keep: "Traceback (most recent call last):, ValueError: Something went wrong, File \"app.py\", line 10, in <module>"
+expected_compress: "File \"app.py\", line 5, in main, File \"app.py\", line 15, in do_something"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '09a4a0c3b686f94f83dac366947d5b165dbc74c8ef92ac97816713b2f0b3072f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,16 @@
+scenario: 'shell_session_plugin 路由分发测试：Bash 中执行 kubectl get pods，shell_session_plugin 检测到 kubectl 子命令后路由到 kubernetes_docker_plugin 处理。'
+target_capability: '外部命令路由到 specialist 插件'
+expected_keep: 'kubectl get pods, nginx-deployment-7fb96c846b-8b5x2, 1/1 Running'
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+expected_dispatch_chain: ['shell_session_plugin', 'vcs_kubectl_plugin']
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '768c0a41d3613fccbe486ad1a4a4219c6cf46670fb0c409fcc0e7dcf4f271f01'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T13:54:44.661452'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,6 @@
+cvs status
+M src/plugins/vcs_plugin/methods.rs
+A samples/vcs/case_31_git_checkout_file.log
+R src/legacy/old_cvs_adapter.rs
+? tmp/debug-notes.txt
+C src/plugins/vcs_plugin/parser.rs

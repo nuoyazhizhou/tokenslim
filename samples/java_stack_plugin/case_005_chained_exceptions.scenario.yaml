@@ -1,0 +1,15 @@
+scenario: 'Java 应用在读取文件时抛出 IOException，并链式包含 FileNotFoundException，堆栈跟踪显示异常链和调用帧。'
+target_capability: '异常链保留与堆栈帧压缩'
+expected_keep: "Exception in thread \"main\" java.io.IOException: Failed to read file, Caused by: java.io.FileNotFoundException: /path/to/missing.txt (No such file or directory)"
+expected_compress: 'at java.io.FileInputStream.open0(Native Method), at java.io.FileInputStream.open(FileInputStream.java:195), ... 1 more'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0d34d96d62d879fca82f43f2ce1ac41da7259e6b0fd4fc9b7d1e4ed85b0acac7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

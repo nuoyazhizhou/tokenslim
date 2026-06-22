@@ -1,0 +1,15 @@
+scenario: '一个 .NET 项目的构建日志，显示还原依赖、编译成功，无错误和警告。'
+target_capability: '构建成功日志压缩'
+expected_keep: 'Build succeeded.'
+expected_compress: 'Determining projects to restore...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e82c92e65432820b560d51897b5e82b8561661e834e4b622892e6750815d3f9f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

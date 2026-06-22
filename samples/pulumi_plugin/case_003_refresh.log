@@ -1,0 +1,10 @@
+pulumi refresh --stack dev
+Previewing refresh (dev)
+
+     Type                         Name       Plan
+ ~   aws:s3/bucket:Bucket         assets     refresh
+ ~   aws:ec2/instance:Instance    web        refresh
+
+Resources:
+    ~ 2 to refresh
+    8 unchanged

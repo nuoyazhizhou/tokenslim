@@ -1,0 +1,15 @@
+scenario: 'Spring Boot 应用启动时输出单行 INFO 日志，记录应用已启动。'
+target_capability: 'Spring Boot 启动日志保留'
+expected_keep: 'Application started'
+expected_compress: '2024-01-15 10:30:45.123  INFO 12345 --- [main] com.example.App'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a7c149f434453752bd6e79913a4d86596ed7d3b9cd99cc321ff4fbb57e348d35'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:00:16.001386'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

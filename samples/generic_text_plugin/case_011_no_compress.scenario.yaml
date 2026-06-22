@@ -1,0 +1,15 @@
+scenario: '一段已经格式良好的纯文本，没有尾部空格、空白行、ANSI码或制表符，内容为''Already clean text.''等五行，测试插件在无压缩目标时的行为。'
+target_capability: '不压缩场景（无压缩目标）'
+expected_keep: 'Already clean text., No trailing spaces., No blank lines to collapse.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6571bd5d489d65d4ecb884c6999efa09989762f61fa4e1d2f7498f572bc87dfe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

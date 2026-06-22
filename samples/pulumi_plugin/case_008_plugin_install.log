@@ -1,0 +1,5 @@
+pulumi plugin install resource aws v6.30.0
+[resource plugin aws-6.30.0] installing
+Downloading plugin: 45.21 MiB / 45.21 MiB [======================] 100.00% 2s
+Moving plugin... done.
+Successfully installed plugin aws v6.30.0.

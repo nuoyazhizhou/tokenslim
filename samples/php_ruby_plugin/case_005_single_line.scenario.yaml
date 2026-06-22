@@ -1,0 +1,15 @@
+scenario: 'PHP 解析错误日志，单行记录语法错误信息，包含文件名和行号。'
+target_capability: '错误关键行保留'
+expected_keep: 'PHP Parse error:  syntax error, unexpected '';'' in /app/index.php:23'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '38b6e773f515ba3dbc1f02754eec85a912d5ff2897fd16350999c68e3e896644'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

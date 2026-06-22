@@ -1,0 +1,16 @@
+p4 diff -dc5
+***************
+*** 10,15 ****
+     let config = load_config();
+     println!("Config loaded");
++    let auth = Auth::new();
++    auth.initialize();
+     run_server(config);
+  }
+***************
+*** 1,4 ****
+  pub fn helper() -> i32 {
+-    42
++    43
+  }
++

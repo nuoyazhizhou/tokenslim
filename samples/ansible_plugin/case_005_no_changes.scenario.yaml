@@ -1,0 +1,15 @@
+scenario: '使用 ansible-playbook 的 --check 模式对两台主机执行安全加固检查，所有任务均为 ok，无任何变更，输出显示任务执行成功但无实际修改。'
+target_capability: '无变更场景的压缩'
+expected_keep: 'TASK [Ensure sysctl values], ok: [host1], PLAY RECAP'
+expected_compress: 'ok: [host2] (重复行), 详细任务输出, 空行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0f47053f2ec927bad90ce9a70724e5aa3d320439348a1d0914e2117fd031f025'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:43:04.753310'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

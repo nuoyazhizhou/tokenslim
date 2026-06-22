@@ -1,0 +1,9 @@
+svn log src/core/text_slicer/
+------------------------------------------------------------------------
+r1233 | developer | 2026-04-14 14:00:00 +0000 (Mon, 14 Apr 2026) | 1 line
+
+    Add parallel processing support to TextSlicer
+------------------------------------------------------------------------
+r1231 | developer | 2026-04-14 12:00:00 +0000 (Mon, 14 Apr 2026) | 1 line
+
+    Add slice_flags functionality to TextSlicer

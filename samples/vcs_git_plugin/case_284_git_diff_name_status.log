@@ -1,0 +1,6 @@
+git diff --name-status
+M	src/main.rs
+A	src/lib/new_module.rs
+D	src/lib/old_module.rs
+M	tests/integration_test.rs
+R100	src/lib/old_name.rs	src/lib/new_name.rs

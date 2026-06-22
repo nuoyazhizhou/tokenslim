@@ -1,0 +1,15 @@
+scenario: '用户使用 Azure DevOps CLI 删除一个名为 my-repo 的仓库，并确认成功删除。'
+target_capability: '删除结果保留与噪音压缩'
+expected_keep: 'Repository deleted: my-repo'
+expected_compress: 'az repos delete my-repo --project MyProject --yes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '06bf837fefafccb4e00a53841e7cb0e4c34c85212b5cccba0f595c5303cae1f4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

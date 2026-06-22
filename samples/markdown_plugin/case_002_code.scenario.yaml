@@ -1,0 +1,15 @@
+scenario: 'Markdown 文档中包含一个 Python 代码块和一行内联代码，测试代码块和内联代码的保留。'
+target_capability: '代码块与内联代码保留'
+expected_keep: "```python\\ndef hello():\\n    print(\"Hello, world!\")\\n```, `print(\"hello\")`"
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5db69c128c51f33a7ccfef4e3435bae01d983eca59b1e15b3f7796f819e39222'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

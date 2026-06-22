@@ -1,0 +1,3 @@
+p4 copy //depot/main //depot/backup
+//depot/main/file1.txt -> //depot/backup/file1.txt
+//depot/main/file2.txt -> //depot/backup/file2.txt

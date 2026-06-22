@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 changes -l` 查看 Perforce 提交历史，输出包含变更编号、作者、日期和详细描述。'
+target_capability: '变更列表摘要保留'
+expected_keep: 'Change 12345, Change 12344, Change 12343'
+expected_compress: 'The authentication module was timing out..., Added input validation..., Bumped all crate dependencies...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '76eee1b5b15e4281638135175df32c82fc899336d4f1d466d6335b9bcfd1c965'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

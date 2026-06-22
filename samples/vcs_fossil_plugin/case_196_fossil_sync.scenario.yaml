@@ -1,0 +1,15 @@
+scenario: 'Fossil 仓库同步操作，执行 `fossil sync` 命令，显示与远程仓库的同步结果，包括拉取和推送的提交数及文件数。'
+target_capability: '命令锚点与同步摘要保留'
+expected_keep: 'fossil sync, Pull: 5 commits, 3 files, Push: 2 commits, 1 file'
+expected_compress: 'Sync with http://example.com/repo..., Done.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'debbdf4613caaf65555fa4793a8944125bd72a32df6e496ad352e3ced8d681fe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,12 @@
+asset main.js 125 KiB [emitted] [minimized] (name: main)
+asset index.html 2.5 KiB [emitted]
+runtime modules 1.05 KiB 5 modules
+cacheable modules 328 KiB
+  modules by path ./src/ 245 KiB
+    ./src/main.js + 2 modules 180 KiB [built] [code generated]
+    ./src/App.jsx 45 KiB [built] [code generated]
+    ./src/components/ 20 KiB 4 modules
+  modules by path ./node_modules/ 83 KiB
+    ./node_modules/react/index.js 1.32 KiB
+    ./node_modules/react-dom/client.js 9.64 KiB
+webpack 5.90.3 compiled successfully in 3528 ms

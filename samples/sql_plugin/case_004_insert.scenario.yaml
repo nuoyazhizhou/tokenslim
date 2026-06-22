@@ -1,0 +1,15 @@
+scenario: '一个INSERT语句插入单行用户数据，包含name、email和created_at字段，执行成功返回''Query OK, 1 row affected''。'
+target_capability: 'INSERT语句结构保留'
+expected_keep: 'INSERT INTO users (name, email, created_at)'
+expected_compress: '-- Query OK, 1 row affected'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd7e42c414851c12e5d2efdbe9873258526cd5db4e6c45ded6f50f0d88fdf2640'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

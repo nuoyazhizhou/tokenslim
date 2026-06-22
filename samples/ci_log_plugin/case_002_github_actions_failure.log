@@ -1,0 +1,17 @@
+gh run view 102 --log
+GitHub Actions runner version 2.316.0
+::group::Set up job
+Runner Image: ubuntu-22.04
+Preparing workflow directory
+::endgroup::
+::group::Install dependencies
+Run npm ci
+added 820 packages in 31s
+::endgroup::
+::group::Run tests
+Run pytest -q
+tests/test_api.py::test_create_user FAILED
+E   AssertionError: expected 201 got 500
+::error file=tests/test_api.py,line=42::AssertionError: expected 201 got 500
+Process completed with exit code 1
+::endgroup::

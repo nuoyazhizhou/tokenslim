@@ -1,0 +1,9 @@
+pulumi up --stack dev
+[32mPreviewing update (dev)[0m
+
+ +   aws:s3/bucket:Bucket          logs      create
+ ~   aws:lambda/function:Function  worker    update
+
+[32mResources:
+    + 1 to create
+    ~ 1 to update[0m

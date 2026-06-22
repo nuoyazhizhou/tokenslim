@@ -1,0 +1,4 @@
+clang -c main.c -o main.o
+clang: warning: argument unused during compilation: '-Wno-deprecated'
+main.c:12:5: warning: variable 'result' set but not used
+1 warning generated.

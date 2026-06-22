@@ -1,0 +1,15 @@
+scenario: '一个包含标题、列表、引用、分隔线和强调文本的复杂Markdown文档，用于测试Markdown压缩插件对核心结构的保留能力。'
+target_capability: 'Markdown核心结构保留'
+expected_keep: '# Project Documentation, ## Overview, 1. Feature A'
+expected_compress: '> Quote block, ---, **Note:** Important information.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3308b1953e6a184787d3ca4bb87aad236bfe3fdb4ef72404055ce1b55c54a782'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

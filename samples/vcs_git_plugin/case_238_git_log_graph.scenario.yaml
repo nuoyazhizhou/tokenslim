@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 测试：git log --graph --oneline 图形化提交历史，插件应保留提交信息，压缩图形字符。'
+target_capability: '图形字符压缩与提交信息保留'
+expected_keep: 'a1b2c3d feat: Add VCS plugin'
+expected_compress: '*'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

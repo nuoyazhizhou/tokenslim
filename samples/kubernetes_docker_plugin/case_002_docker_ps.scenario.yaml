@@ -1,0 +1,15 @@
+scenario: 'Docker ps 命令输出，列出两个运行中的容器（nginx 和 redis），包含容器 ID、镜像、命令、创建时间、状态、端口和名称。'
+target_capability: '容器ID压缩为短令牌'
+expected_keep: 'IMAGE: nginx:latest, IMAGE: redis:alpine, PORTS: 80/tcp'
+expected_compress: 'CONTAINER ID: abc123, CONTAINER ID: def456, NAMES: web'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4410c0077ce88b68e46c5cc8a544f9f8489487d34e29b10e9971cf43fec4a504'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

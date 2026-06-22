@@ -1,0 +1,19 @@
+Exception in thread "main" java.lang.NullPointerException
+    at com.example.app.Main.process(Main.java:45)
+    at com.example.app.Main.main(Main.java:10)
+
+Exception in thread "worker-1" java.lang.IllegalArgumentException
+    at com.example.app.Worker.validate(Worker.java:55)
+    at com.example.app.Worker.run(Worker.java:30)
+
+Exception in thread "worker-2" java.lang.IllegalArgumentException
+    at com.example.app.Worker.validate(Worker.java:55)
+    at com.example.app.Worker.run(Worker.java:30)
+
+Exception in thread "worker-3" java.lang.NullPointerException
+    at com.example.app.Main.process(Main.java:45)
+    at com.example.app.Main.main(Main.java:10)
+
+Exception in thread "worker-4" java.lang.RuntimeException
+    at com.example.app.Handler.handle(Handler.java:100)
+    at com.example.app.Handler.execute(Handler.java:80)

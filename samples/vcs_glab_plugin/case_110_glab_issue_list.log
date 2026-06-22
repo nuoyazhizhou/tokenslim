@@ -1,0 +1,6 @@
+glab issue list
+#   Title                          Labels        Assignee    Author    Status
+------------------------------------------------------------------------------------
+1   Fix login bug                  bug            alice       alice     Open
+2   Add new feature                enhancement   bob         charlie   Open
+3   Update documentation           documentation  -           alice     Closed

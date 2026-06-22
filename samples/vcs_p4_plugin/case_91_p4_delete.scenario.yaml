@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 delete 命令删除两个文件，输出显示每个文件的删除操作结果。'
+target_capability: '文件操作保留与路径压缩'
+expected_keep: '//depot/main/src/old_file.rs - deleted for delete'
+expected_compress: 'p4 delete'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '164a3b66ad7dc0409b5c5ecec122430fc79790be243d20cd066f653cbce4bd9e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

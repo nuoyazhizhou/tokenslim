@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch CSV 格式的 uvicorn 访问日志，包含 /health 健康检查（200 OK）和 /api/documents 的 500 错误以及 /api/status 的 503 错误。'
+target_capability: 'CSV 格式解析与错误保留'
+expected_keep: '500 Internal Server Error, 503 Service Unavailable'
+expected_compress: "GET /health HTTP/1.1\" 200 OK, 10.0.1.94:0, 10.0.0.231:0"
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'eabb6f92fb77ba9e5909e594193891be556163cdd9285cebf2df21f54fd7ca3a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

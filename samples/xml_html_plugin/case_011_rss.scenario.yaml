@@ -1,0 +1,15 @@
+scenario: '一个RSS 2.0格式的博客订阅源，包含频道标题、链接、描述以及一篇文章条目。'
+target_capability: 'XML标签结构与文本保留'
+expected_keep: "<rss version=\"2.0\">, <title>My Blog</title>, <item>"
+expected_compress: '标签间的换行和缩进空白'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '66d199676b64ada7f2855dddc90ba3520604a621ea18ac2ee9268909ff932e0c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

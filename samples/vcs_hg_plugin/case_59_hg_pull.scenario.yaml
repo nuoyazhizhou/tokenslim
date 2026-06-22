@@ -1,0 +1,15 @@
+scenario: '用户执行hg pull命令从远程仓库拉取变更，输出显示拉取来源、搜索变更、无新变更但添加了3个变更集并更新到指定哈希。'
+target_capability: '变更集ID与命令首行保留'
+expected_keep: 'hg pull, added 3 changesets, updated to abc123def456'
+expected_compress: 'pulling from https://bitbucket.org/user/myrepo, searching for changes, no changes found'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '58eb4058668c15a05568945132965f711721f37975a0f67d6e1bc7ab87f0530a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

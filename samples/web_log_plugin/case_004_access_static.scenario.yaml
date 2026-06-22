@@ -1,0 +1,15 @@
+scenario: 'Web access log showing two successful GET requests for static assets (CSS and JS files) with 200 status codes, typical of a user loading a web page.'
+target_capability: 'Static asset access pattern'
+expected_keep: '200 4096, 200 8192'
+expected_compress: '10.0.0.5, /static/css/main.css, Mozilla/5.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6470798c6317dcadd123f64277cbc690e9322f2ed8748962d671431c96e0f584'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

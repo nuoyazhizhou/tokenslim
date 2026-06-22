@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 构建，使用 --scan 参数，出现弃用警告，构建成功并发布构建扫描链接。'
+target_capability: '构建设置与扫描警告保留'
+expected_keep: 'Deprecated Gradle features were used in this build, making it incompatible with Gradle 9.0.; Publishing build scan...; https://gradle.com/s/cx7p2m4nq7uiy'
+expected_compress: '> Task :app:preBuild UP-TO-DATE; > Task :app:preReleaseBuild UP-TO-DATE; 6 actionable tasks: 2 executed, 2 up-to-date, 2 from cache'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '844e73e9698e425a3f7a90a20eea5a93d7de122ad3a139b0125bbde88ec22ce8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

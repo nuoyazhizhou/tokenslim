@@ -1,0 +1,15 @@
+scenario: '一个单行HTML文档，包含html、body和h1标签，文本内容为''Hello''。'
+target_capability: '单行HTML结构压缩'
+expected_keep: '<html><body><h1>Hello</h1></body></html>'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '03652bd21da4bf063eecf9bc37bd653630dea9449fab786d5c51a47b6550dc6b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

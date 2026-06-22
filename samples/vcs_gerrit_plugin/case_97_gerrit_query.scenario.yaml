@@ -1,0 +1,15 @@
+scenario: 'Gerrit query 命令输出，展示两个变更的元数据（项目、分支、状态、所有者、审查者）。'
+target_capability: 'Gerrit 变更摘要压缩'
+expected_keep: 'gerrit query, change Iabc123def456789, project: platform/frameworks/base'
+expected_compress: 'change Idef789ghi012345, project: platform/packages/apps/Camera, owner: bob@company.com'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bede4d9beca074ed61efebe21f8c21d56b8e1d4e42a89a883e718696398714c1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:15:59.809777'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

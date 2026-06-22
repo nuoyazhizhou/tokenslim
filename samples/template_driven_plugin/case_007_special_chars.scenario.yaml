@@ -1,0 +1,15 @@
+scenario: '模板驱动插件处理包含特殊字符（如中文、空格）的模板变量，验证模板结构保留与变量压缩为字典令牌的能力。'
+target_capability: '特殊字符模板变量压缩'
+expected_keep: '{{ title }}'
+expected_compress: '{{ 漢字变量 }}'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b1a615e8bf259e95410a8d7257113bc9bc9b635cb2601a4cc3b6f61a51af7233'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:04:51.390085'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

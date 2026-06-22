@@ -1,0 +1,15 @@
+scenario: '一个混合了ANSI颜色转义序列（蓝色Info、绿色Success）和多种缩进（制表符、空格）的日志输出，包含步骤标题和状态信息。'
+target_capability: 'ANSI转义压缩与空白折叠'
+expected_keep: 'Info: Starting process..., Step 1: Initialize, Success: Done!'
+expected_compress: "ANSI转义序列（如\\x1b[1;34m）、连续空白行、制表符"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0ee465fd64b329405e49eb921ba0799d27291c02eaed0cef8a327969a6303efb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

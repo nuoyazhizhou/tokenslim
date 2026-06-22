@@ -1,0 +1,12 @@
+gh issue view 42
+issue #42: Bug: Login fails with OAuth
+Labels: bug
+Assignees: alice
+Author: bob
+State: open
+
+Steps to reproduce:
+1. Go to login page
+2. Click OAuth button
+Expected: Login success
+Actual: Error 500

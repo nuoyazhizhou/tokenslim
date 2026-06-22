@@ -1,0 +1,15 @@
+scenario: '用户执行 svn revert -R 递归还原 src/core/ 目录，输出显示还原了目录本身及两个文件。'
+target_capability: 'SVN 递归还原命令处理'
+expected_keep: 'Reverted src/core/'
+expected_compress: 'src/core/methods.rs, src/core/types.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '58d3a868ab01b628db012efb7e27211772e77c50b99657a0ffc508e109e013e0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

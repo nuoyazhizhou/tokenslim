@@ -1,0 +1,31 @@
+{
+    "name": "kubernetes_docker",
+    "description": "Kubernetes/Docker 输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$KUBERN"
+    },
+    "keep_signals": [
+        "K8S_POD 正则匹配的行（命名空间/Pod）",
+        "DOCKER_ID 正则匹配的容器 ID",
+        "Docker CI 输出（如 'Step X/Y'）",
+        "Kubernetes CI 输出（如 'kubectl' 命令）",
+        "JSON 对象含 'message' 或 'logGroup'"
+    ],
+    "compress_targets": [
+        "容器 ID 替换为短令牌（$D）",
+        "Pod 名称/命名空间替换为令牌（$P/$PK）",
+        "JSON 结构解包（展开嵌套）"
+    ],
+    "design_intent": "Kubernetes/Docker日志脱水：保留关键事件和结构，折叠容器ID和Pod元数据，压缩为令牌字典。"
+}

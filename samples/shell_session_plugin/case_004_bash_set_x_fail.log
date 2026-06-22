@@ -1,0 +1,8 @@
++ echo 'Starting build'
+Starting build
++ gcc -o main main.c
+main.c: In function 'main':
+main.c:2:5: error: expected ';' before 'return'
+    2 |     return 0;
+      |     ^~~~~~
++ exit 1

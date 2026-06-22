@@ -1,0 +1,15 @@
+scenario: 'PHP 递归函数调用导致栈溢出，输出包含 Fatal error 和重复的堆栈帧。'
+target_capability: '错误保留与堆栈折叠'
+expected_keep: 'PHP Fatal error:  Stack overflow! in /app/recursive.php:5'
+expected_compress: '#0 /app/recursive.php(5): recurse() 的重复行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '552a2645ff1bd280f0b07dc8e6d132deacf147aeba3d1375fe3c257ca91624ff'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:44:38.183833'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

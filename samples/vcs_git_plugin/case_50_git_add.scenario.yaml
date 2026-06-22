@@ -1,0 +1,15 @@
+scenario: '用户执行 `git add` 命令，添加了三个新文件（src/new_file.rs、config/new_config.json、tests/test_new.rs），并显示暂存区状态，包含提示信息。'
+target_capability: '文件路径与状态保留'
+expected_keep: 'new file:   src/new_file.rs'
+expected_compress: "use \"git rm --cached <file>...\" to unstage"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cf352cdec9518bc3c155a115819b2cbd1307db30977beb1a941c3710a7d2351e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

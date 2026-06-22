@@ -1,0 +1,35 @@
+{
+  "name": "Makefile",
+  "slice_type": "CodeBlock",
+  "priority": 100,
+  "description": "Makefile 语法检测配置",
+  "file_extensions": ["Makefile", "makefile", "GNUmakefile", ".mk"],
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "contains", "pattern": ".PHONY:"},
+        {"pattern_type": "contains", "pattern": ".DEFAULT:"},
+        {"pattern_type": "contains", "pattern": ".SUFFIXES:"},
+        {"pattern_type": "contains", "pattern": "all:"},
+        {"pattern_type": "contains", "pattern": "clean:"},
+        {"pattern_type": "contains", "pattern": "install:"},
+        {"pattern_type": "contains", "pattern": "build:"},
+        {"pattern_type": "contains", "pattern": "test:"},
+        {"pattern_type": "contains", "pattern": "\t$(MAKE)"},
+        {"pattern_type": "contains", "pattern": "\t@$(MAKE)"},
+        {"pattern_type": "contains", "pattern": "ifeq ("},
+        {"pattern_type": "contains", "pattern": "ifdef "},
+        {"pattern_type": "contains", "pattern": "ifndef "},
+        {"pattern_type": "contains", "pattern": "else"},
+        {"pattern_type": "contains", "pattern": "endif"},
+        {"pattern_type": "contains", "pattern": "include "},
+        {"pattern_type": "contains", "pattern": "-include "},
+        {"pattern_type": "contains", "pattern": "export "},
+        {"pattern_type": "contains", "pattern": "override "},
+        {"pattern_type": "contains", "pattern": "define "},
+        {"pattern_type": "contains", "pattern": "endef"}
+      ]
+    }
+  ]
+}

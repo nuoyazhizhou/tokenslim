@@ -1,0 +1,9 @@
+> Task :app:packageDebug
+> Task :app:assembleDebug
+> Task :app:signingConfigWriterDebug
+> Task :app:validateSigningDebug
+> Task :app:signDebug
+
+Signed APK: /Users/user/project/app/build/outputs/apk/debug/app-debug.apk
+Zip aligning /Users/user/project/app/build/outputs/apk/debug/app-debug.apk
+Zip aligned APK: /Users/user/project/app/build/outputs/apk/debug/app-debug.apk

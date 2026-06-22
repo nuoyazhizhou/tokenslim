@@ -1,0 +1,15 @@
+ansible-playbook deploy.yml --check --diff
+
+PLAY [api] *********************************************************************
+
+TASK [Template config] *********************************************************
+changed: [api1]
+changed: [api2]
+
+TASK [Restart service] *********************************************************
+skipping: [api1]
+skipping: [api2]
+
+PLAY RECAP *********************************************************************
+api1                       : ok=2    changed=1    unreachable=0    failed=0    skipped=1
+api2                       : ok=2    changed=1    unreachable=0    failed=0    skipped=1

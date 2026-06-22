@@ -1,0 +1,15 @@
+scenario: 'SVN import 操作，将 src/main.rs 和 config/app.json 导入到仓库，提交后生成 revision 12345。'
+target_capability: 'SVN 命令锚点保留与路径压缩'
+expected_keep: 'svn import, Committed revision 12345.'
+expected_compress: 'Importing into https://svn.example.com/repo/trunk, Importing src/main.rs, Importing config/app.json'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b49ed237ed0a2984555b90b7dfe7eeb9c4ed26747487bf87340de0114f0f1d57'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

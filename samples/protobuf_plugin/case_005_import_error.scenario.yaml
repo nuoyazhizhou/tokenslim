@@ -1,0 +1,15 @@
+scenario: '使用 protoc 编译 proto 文件时，因缺少依赖的 money.proto 导致导入错误和类型未定义错误。'
+target_capability: '错误诊断保留与路径压缩'
+expected_keep: "error: Import \"money.proto\" was not found or had errors."
+expected_compress: 'proto/payment.proto'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0bf2d3a5b76daca1060648ec1758e57171592c4b02f80757bb26c3a85d42a9c8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:45:39.207189'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

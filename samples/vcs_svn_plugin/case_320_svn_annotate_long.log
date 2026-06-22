@@ -1,0 +1,37 @@
+svn annotate src/core/analyzer.py
+   123   alice.chen     def analyze_project(root):
+   123   alice.chen         """Analyze project structure and dependencies."""
+   123   alice.chen         diagnostics = []
+   125   bob.wang           
+   125   bob.wang           # Load VCS configuration
+   125   bob.wang           config = load_vcs_config(root)
+   125   bob.wang           if config:
+   125   bob.wang               diagnostics.append(config.validate())
+   130   charlie.li         
+   130   charlie.li         # Walk directory tree
+   130   charlie.li         for file in walk_dir(root):
+   130   charlie.li             if file.endswith('.py'):
+   130   charlie.li                 diag = check_file(file)
+   130   charlie.li                 if diag:
+   130   charlie.li                     diagnostics.append(diag)
+   137   dave.zhang         
+   137   dave.zhang         # Check for common issues
+   137   dave.zhang         MAX_DEPTH = 10
+   137   dave.zhang         if depth > MAX_DEPTH:
+   137   dave.zhang             diagnostics.append(Warning('Too deep'))
+   140   alice.chen         
+   140   alice.chen         # Find common prefixes
+   140   alice.chen         prefixes = []
+   142   bob.wang           for path in paths:
+   142   bob.wang               prefix = extract_prefix(path)
+   142   bob.wang               if prefix:
+   142   bob.wang                   prefixes.append(prefix)
+   145   charlie.li         
+   145   charlie.li         # Generate report
+   145   charlie.li         report = {
+   145   charlie.li             'diagnostics': diagnostics,
+   145   charlie.li             'prefixes': prefixes,
+   145   charlie.li             'depth': depth
+   145   charlie.li         }
+   150   dave.zhang         
+   150   dave.zhang         return report

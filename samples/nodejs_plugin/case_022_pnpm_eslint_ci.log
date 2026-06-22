@@ -1,0 +1,12 @@
+Azure Pipelines task NodeTool completed
+Run CI=true pnpm eslint src --max-warnings=0
+/home/vsts/work/1/s/src/api/auth.ts
+  12:7   error    'session' is assigned a value but never used  no-unused-vars
+  27:19  warning  Unexpected any. Specify a different type       @typescript-eslint/no-explicit-any
+
+/home/vsts/work/1/s/src/components/Button.tsx
+  4:10   error    'cx' is defined but never used                 no-unused-vars
+  29:5   error    Missing return type on function                @typescript-eslint/explicit-function-return-type
+
+3 problems (3 errors, 1 warning)
+error Command failed with exit code 1.

@@ -1,0 +1,15 @@
+scenario: '用户执行 `fossil stash` 命令查看 stash 列表，输出包含两个 stash 条目及其描述。'
+target_capability: '命令锚点保留与叙事废话压缩'
+expected_keep: 'fossil stash, (0) 2026-04-08 Work on feature-auth, (1) 2026-04-05 Bugfix for login'
+expected_compress: 'Stash changes:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f67e3fd21a01a1bfe034fef315022bd977ff096d5291ffd351fa7b135ee003d8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:12:23.958937'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

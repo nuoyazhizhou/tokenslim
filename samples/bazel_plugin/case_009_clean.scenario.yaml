@@ -1,0 +1,15 @@
+scenario: '执行 bazel clean --expunge 命令，输出只有两条 INFO 日志行，没有错误或构建摘要，测试普通 INFO 日志的压缩'
+target_capability: '普通 INFO 日志压缩'
+expected_keep: '无保留行'
+expected_compress: 'INFO: Starting clean., INFO: Output base removed.'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f6d41dc4a76fac5b52cd62a541f1800ee6d44f8634cc2f7d151137e5e4e58eb5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

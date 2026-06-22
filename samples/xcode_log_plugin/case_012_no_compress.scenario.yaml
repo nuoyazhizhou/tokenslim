@@ -1,0 +1,15 @@
+scenario: '一个不包含任何 Xcode 构建模式（如 CompileC、Linking、clang）的纯文本日志，期望原样通过，不做任何压缩。'
+target_capability: '不压缩场景（无匹配模式）'
+expected_keep: 'Plain text without xcode build patterns, No CompileC, Linking, clang patterns, Should pass through unchanged'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '878fd8f25a4b762c0f5c34fa755e9b07c65cb832ef0000e1b858039799d11d60'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:48:15.955462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

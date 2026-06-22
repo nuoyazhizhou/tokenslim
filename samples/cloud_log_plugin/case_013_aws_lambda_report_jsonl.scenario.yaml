@@ -1,0 +1,15 @@
+scenario: 'AWS Lambda 函数 doc-worker 执行失败，日志包含 START、ImportModuleError 错误和 REPORT 行，记录请求 ID、持续时间和内存使用。'
+target_capability: '云日志外壳剥离与结构化字段压缩'
+expected_keep: 'ERROR Runtime.ImportModuleError: Unable to import module ''app'': No module named app'
+expected_compress: 'timestamp, logGroup, logStream, RequestId, Version, Duration, Billed Duration, Memory Size, Max Memory Used'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6ba82a91f51901b1f23b3182123cff4e177a042c6238fc786c40d55eadca3fc9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

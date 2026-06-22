@@ -1,0 +1,15 @@
+scenario: '执行 hg merge 命令，合并变更集 12345abc，自动合并 src/utils.rs，最终合并完成并报告 3 个文件被合并。'
+target_capability: '合并操作摘要保留'
+expected_keep: 'hg merge, merging with 12345abc, 3 files merged'
+expected_compress: 'Auto-merging src/utils.rs, Merge completed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a2b8c2cf0880f87d6dc58dfc3ba021e7cf55b1c6e5faccb30dff791c1c75e38c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

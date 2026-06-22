@@ -1,0 +1,15 @@
+scenario: '一个极简的YAML文件，仅包含一个键值对''name: test''，用于测试单行YAML的压缩效果。'
+target_capability: 'YAML键值对结构保留'
+expected_keep: 'name: test'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'caac68cf0a60802dd7c446456edc70543f3a37ee19bd8a65f593037809bb11e6'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

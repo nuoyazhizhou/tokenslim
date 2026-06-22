@@ -1,0 +1,94 @@
+{
+    "name": "cloud_log",
+    "description": "主流云厂商日志外壳剥离（AWS/GCP/Azure/阿里云/OCI/腾讯云/华为云/Cloudflare），将 message/textPayload/content 等内层日志还原给专用日志插件",
+    "priority": 90,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "aws\\s+.*logs\\s+tail"
+            },
+            {
+                "type": "regex",
+                "pattern": "gcloud\\s+logging"
+            },
+            {
+                "type": "regex",
+                "pattern": "az\\s+monitor"
+            },
+            {
+                "type": "regex",
+                "pattern": "\\\"textPayload\\\""
+            },
+            {
+                "type": "regex",
+                "pattern": "\\\"logStream\\\""
+            },
+            {
+                "type": "regex",
+                "pattern": "TimeGenerated"
+            },
+            {
+                "type": "regex",
+                "pattern": "__time__"
+            },
+            {
+                "type": "regex",
+                "pattern": "oci\\s+logging"
+            },
+            {
+                "type": "regex",
+                "pattern": "tccli\\s+cls"
+            },
+            {
+                "type": "regex",
+                "pattern": "hcloud\\s+lts"
+            },
+            {
+                "type": "regex",
+                "pattern": "wrangler\\s+tail"
+            },
+            {
+                "type": "regex",
+                "pattern": "\\\"rayID\\\""
+            }
+        ],
+        "min_match_ratio": 0.1
+    },
+    "compress": {
+        "token_prefix": "$CL",
+        "unwrap_fields": [
+            "message",
+            "@message",
+            "log",
+            "msg",
+            "content",
+            "textPayload",
+            "jsonPayload.message",
+            "properties.message",
+            "LogMessage",
+            "data.message",
+            "logContent",
+            "log_content",
+            "httpRequest.requestUrl",
+            "jsonPayload.requestUrl",
+            "ClientRequestURI",
+            "EdgeResponseStatus"
+        ]
+    },
+    "keep_signals": [
+        "command_lines（命令提示行，如aws logs tail）",
+        "records中的消息文本",
+        "passthrough行（未被识别的行）",
+        "CSV输出或访问摘要（如成功渲染）"
+    ],
+    "compress_targets": [
+        "长结构化字段值截断为<TRUNCATED>（超过360字符）",
+        "示例字段（samples）压缩为摘要格式[pos:shop:price eta= rating=]",
+        "时间字段精简为'日期 时间'（去掉毫秒和时区）",
+        "资源路径缩短为前两部分+后8字符（如a/b/c...）",
+        "多余空白字符合并为单个空格"
+    ],
+    "design_intent": "云日志脱水：保留命令提示和记录结构，折叠元数据字段，压缩长值和时间。"
+}

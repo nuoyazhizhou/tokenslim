@@ -1,0 +1,15 @@
+scenario: '执行 hg log 命令查看 Mercurial 仓库的提交历史，输出包含多个变更集及其元数据（变更集ID、用户、日期、摘要）。'
+target_capability: 'hg log 输出压缩'
+expected_keep: 'changeset:   18:eeff3344aa55, user:        alice.chen, summary:     feat(vcs): Add SVN/HG/P4 parser support'
+expected_compress: 'tag:         tip, date:        Fri Apr 03 14:32:11 2026 +0800'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '99a348e75f124f02a8720ff1fa93bcc67aa44ee048349ff0fae9dc14f2ba14a1'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

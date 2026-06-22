@@ -1,0 +1,15 @@
+scenario: '用户执行 `bazel version` 命令，输出 Bazel 版本信息，包含 Build label 和 Build target，无其他日志或错误行。'
+target_capability: '版本信息保留'
+expected_keep: 'bazel version, Build label: 7.1.2, Build target: @@//src/main/java/com/google/devtools/build/lib/bazel:BazelServer'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '491a4d48cdd94ccf54946c288c08a80022282528ce19d4e60aeb971e09d5d10c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:56:32.965192'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

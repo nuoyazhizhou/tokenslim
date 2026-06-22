@@ -1,0 +1,13 @@
+Build output:
+- /app/build/assets/index.html
+- /app/build/assets/style.css
+- /app/build/assets/bundle.js
+- /app/build/assets/images/logo.svg
+- /app/build/assets/images/banner.jpg
+- /app/build/assets/fonts/roboto.woff
+Source files processed:
+1. /app/src/index.ts
+2. /app/src/App.tsx
+3. /app/src/utils/helpers.ts
+4. /app/src/hooks/useAuth.ts
+5. /app/src/components/Layout.tsx

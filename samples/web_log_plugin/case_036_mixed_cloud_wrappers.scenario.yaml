@@ -1,0 +1,15 @@
+scenario: '混合云环境下的Web访问日志，包含AWS ECS、GCP JSON、Azure CSV和原生Apache格式，展示不同云服务商的日志格式混合出现。'
+target_capability: '混合云日志格式识别与统一压缩'
+expected_keep: '500错误行、健康检查行'
+expected_compress: 'IP地址、时间戳、User-Agent'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c304789421072b3e526806d6d32f60e35139493ce910f34c3ad22f03382b1e04'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:45:32.891290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

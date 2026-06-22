@@ -1,0 +1,26 @@
+   Compiling libc v0.2.139
+   Compiling cfg-if v1.0.0
+   Compiling proc-macro2 v1.0.50
+   Compiling unicode-ident v1.0.6
+   Compiling quote v1.0.23
+   Compiling syn v1.0.107
+   Compiling serde_derive v1.0.152
+   Compiling serde v1.0.152
+   Compiling memchr v2.5.0
+   Compiling regex-syntax v0.6.28
+   Compiling aho-corasick v0.7.20
+   Compiling regex v1.7.1
+   Compiling serde_json v1.0.91
+   Compiling tokio v1.25.0
+   Compiling hyper v0.14.24
+   Compiling reqwest v0.11.14
+   Compiling clap v4.1.4
+   Compiling anyhow v1.0.68
+   Compiling thiserror v1.0.38
+   Compiling tracing v0.1.37
+   Compiling tracing-subscriber v0.3.16
+   Compiling axum v0.6.4
+   Compiling tower v0.4.13
+   Compiling tower-http v0.3.5
+   Compiling my-project v0.1.0 (/home/user/my-project)
+    Finished dev [unoptimized + debuginfo] target(s) in 45.67s

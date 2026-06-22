@@ -1,0 +1,15 @@
+scenario: 'vcs_svn_plugin 测试：svn diff --summarize 变更摘要，插件应保留状态标记和路径，压缩重复信息。'
+target_capability: 'SVN 变更摘要保留'
+expected_keep: 'M, A, src/core/text_slicer/methods.rs, src/core/dictionary_manager/mod.rs'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6ebcffcd98c223a3d0a80503f54d44d9b63d5d06002de275dc9830a1e645fe6a'
+  final_status: 'duplicate'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

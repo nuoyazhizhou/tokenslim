@@ -1,0 +1,5 @@
+/home/user/project/测试文件.js:3
+    console.log("测试");
+                   ^
+
+SyntaxError: Invalid or unexpected token

@@ -1,0 +1,15 @@
+scenario: '一段普通的文本，不是游戏引擎日志，不需要压缩。'
+target_capability: '不相关文本的保留'
+expected_keep: 'This is not game engine log, Just regular text, No compression needed'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '92c6e63dbc018146cbe3e517a5269de317c2ec07a5ff0bd23bfda72a0254fb65'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:06:56.970185'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

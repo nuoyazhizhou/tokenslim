@@ -1,0 +1,15 @@
+scenario: '日志文件中包含特殊字符（欧元符号€和汉字）的错误和警告信息，测试插件对非ASCII字符的处理能力。'
+target_capability: '特殊字符保留与压缩'
+expected_keep: '[ERROR] Invalid character: ''€'' at line 10'
+expected_compress: '[WARN] Line 15: Non-ASCII character: 漢字'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5661796d8eb4dc71ad92febd1514109e6cfedacd9fce6c89f47f1d941531c3cf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:02:18.730739'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

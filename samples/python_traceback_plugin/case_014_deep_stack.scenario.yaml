@@ -1,0 +1,15 @@
+scenario: 'python_traceback_plugin 测试：Python RecursionError 深层递归堆栈，30 层调用链测试插件对重复堆栈帧的折叠与截断能力。'
+target_capability: '深层堆栈折叠'
+expected_keep: 'RecursionError: maximum recursion depth exceeded'
+expected_compress: 'level1() 到 level30() 的重复堆栈帧'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

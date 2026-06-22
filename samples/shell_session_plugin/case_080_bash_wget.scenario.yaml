@@ -1,0 +1,15 @@
+scenario: '用户通过 Bash 使用 wget 下载 JSON 文件，然后查看文件属性和内容，并检查 wget 版本。'
+target_capability: '命令与输出保留，提示符压缩'
+expected_keep: 'wget -q https://example.com/data.json -O data.json, ls -la data.json, head -n 5 data.json'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '665bfc3b87a852bca5b3739e4c24694fa9cee66680db926811e721751d8848c5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

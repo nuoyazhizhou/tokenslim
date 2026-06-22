@@ -1,0 +1,12 @@
+bzr log
+revno: 203
+committer: alice.chen
+timestamp: 2026-04-06 14:10:00 +0800
+message:
+  feat(bzr): add status/log/diff showcase coverage
+
+revno: 202
+committer: bob.wang
+timestamp: 2026-04-05 21:35:00 +0800
+message:
+  fix(bzr): normalize timestamp line formatting

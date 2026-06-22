@@ -1,0 +1,15 @@
+scenario: 'AWS ECS 后端服务的健康检查日志，以 CSV 格式记录，包含时间戳、日志流、级别和消息，消息为 HTTP GET /health 请求的 200 OK 响应。'
+target_capability: '云日志 CSV 格式剥离与压缩'
+expected_keep: 'GET /health HTTP/1.1 200 OK'
+expected_compress: '2026-05-13T08:13:39.939000+00:00'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c8ecad4215b385344e8faaea82256b1bf0c3a8e94249a1f1c022890e2b0d52b0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '一条简单的SQL查询语句，从users表中选择所有记录。'
+target_capability: '短SQL语句完整保留'
+expected_keep: 'SELECT COUNT(*) FROM users;'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b77331a425ebcb6291c4381b4623526d633843ff0c8f261f921a7e3817d08394'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

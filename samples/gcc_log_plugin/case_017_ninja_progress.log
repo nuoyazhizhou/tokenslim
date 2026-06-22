@@ -1,0 +1,6 @@
+[1/245] Building CXX object src/core/CMakeFiles/core.dir/tokenizer.cpp.o
+[2/245] Building CXX object src/core/CMakeFiles/core.dir/parser.cpp.o
+[3/245] Building C object third_party/zlib/CMakeFiles/zlib.dir/adler32.c.o
+[120/245] Running custom command generated/schema.pb.cc
+[244/245] Linking CXX executable bin/tokenslim.exe
+[245/245] Linking CXX executable bin/tokenslim-tests.exe

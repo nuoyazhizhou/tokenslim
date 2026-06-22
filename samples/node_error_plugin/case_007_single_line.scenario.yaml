@@ -1,0 +1,15 @@
+scenario: 'Node.js 运行时抛出 ReferenceError，错误消息为 ''x is not defined''，仅包含异常类名和消息，无堆栈帧。'
+target_capability: '单行错误保留异常类名与消息'
+expected_keep: 'ReferenceError, x is not defined'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '67ca1716a2c49417bd70f0073a47b3426ce7dc407a80c792ad539509e23e3e16'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

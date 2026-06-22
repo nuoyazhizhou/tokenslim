@@ -1,0 +1,15 @@
+scenario: '用户执行 hg commit 命令，提交了 src/main.rs 和 config/app.json 两个文件，生成变更集 12345。'
+target_capability: '命令首行与变更集保留'
+expected_keep: 'hg commit, committed changeset 12345'
+expected_compress: 'committing files:, src/main.rs, config/app.json'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'dd0760ae7ef79d9dc2eb9993eea0f8a342f4d500f0c456fefcbef755563f1708'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

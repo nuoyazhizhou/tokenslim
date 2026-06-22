@@ -1,0 +1,15 @@
+scenario: 'Docker buildx 多平台构建日志，包含 buildkit 启动、元数据加载、镜像导出和推送，最终完成耗时显示。'
+target_capability: 'Docker CI 输出保留与容器 ID 压缩'
+expected_keep: 'DONE 42.3s'
+expected_compress: '#1 [internal] booting buildkit'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fc7b46ae5aa163f128d138b7bc837adb043acfc6dfba086fdaa94b4974aa0eaa'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

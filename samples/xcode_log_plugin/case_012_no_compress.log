@@ -1,0 +1,3 @@
+Plain text without xcode build patterns
+No CompileC, Linking, clang patterns
+Should pass through unchanged

@@ -1,0 +1,7 @@
+hg summarize
+Parent: abc1234 (main)
+Branch: main
+Bookmark: feature-auth
+Phase: draft
+Date: 2026-04-08 10:00:00
+Components: 150 files, 5000 revisions

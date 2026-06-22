@@ -1,0 +1,15 @@
+scenario: 'AWS CloudWatch Logs Insights 查询 Lambda 函数执行日志，表格输出含大量横线分隔符，内层消息包含 S3 下载、通用图片批处理流水线（image-resize-pipeline）等操作，模拟宽表格日志场景。'
+target_capability: '云日志外壳剥离与表格压缩'
+expected_keep: 'START RequestId, S3, 批处理'
+expected_compress: '长分隔线, timestamp 毫秒'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

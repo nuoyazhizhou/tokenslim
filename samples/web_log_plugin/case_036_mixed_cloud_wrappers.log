@@ -1,0 +1,4 @@
+2026-05-13T08:34:01.000000+00:00 ecs/backend/f6bf6a1f INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+{"provider":"gcp","timestamp":"2026-05-13T08:34:02Z","message":"10.10.0.2 - - [13/May/2026:08:34:02 +0000] \"GET /api/status HTTP/1.1\" 200 44 \"-\" \"Mozilla/5.0\""}
+2026-05-13T08:34:03Z,azure,"10.10.0.3 - - [13/May/2026:08:34:03 +0000] ""POST /api/status HTTP/1.1"" 500 75 ""-"" ""Mozilla/5.0"""
+10.10.0.4 - - [13/May/2026:08:34:04 +0000] "GET /api/status HTTP/1.1" 200 44 "-" "Mozilla/5.0"

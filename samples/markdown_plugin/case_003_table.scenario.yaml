@@ -1,0 +1,15 @@
+scenario: '一个包含表头、分隔线和两行数据的简单Markdown表格。'
+target_capability: '表格结构保留'
+expected_keep: '| Name | Age | City |, | John | 30  | NYC  |, | Jane | 25  | LA   |'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'caa42773faccec3e9b04706786f50f5e719ebe858c77cce4eebd275bf83475bb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

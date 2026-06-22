@@ -1,0 +1,12 @@
+git diff --cached
+diff --git a/src/core/dictionary_manager/mod.rs b/src/core/dictionary_manager/mod.rs
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/src/core/dictionary_manager/mod.rs
+@@ -0,0 +1,100 @@
++pub mod methods;
++pub use methods::*;
++
++// DictionaryManager module for managing dictionaries
++// with producer-consumer model

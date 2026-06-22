@@ -1,0 +1,15 @@
+scenario: '下载进度条和进度指示器使用回车符覆盖同一行，显示百分比和进度条动画。'
+target_capability: '回车重绘行压缩'
+expected_keep: 'Processing: [==========] 100%'
+expected_compress: 'Downloading: 10%... 20%... 30%... 40%... 50%... 60%... 70%... 80%... 90%... 100%'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7f817474fae574bbaa6083edbe8ec407cba61a278c60ee07ada66b7404087ead'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

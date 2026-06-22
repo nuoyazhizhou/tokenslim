@@ -1,0 +1,15 @@
+scenario: '用户在 Bash shell 中执行 find 命令搜索 /etc 目录下所有以 .conf 结尾的常规文件，并显示匹配的文件列表。'
+target_capability: '命令与输出保留'
+expected_keep: "find /etc -name \"*.conf\" -type f, /etc/resolv.conf, /etc/host.conf"
+expected_compress: 'user@linux:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '61d185cb95706e68350315f99b2e64c9ec7241e23e5a86637a4f8caca234ecfb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

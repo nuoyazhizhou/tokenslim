@@ -1,0 +1,23 @@
+git status --untracked-files=all
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   src/core/dictionary_manager/mod.rs
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/core/text_slicer/methods.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	samples/vcs/VCS_CASE_TRACKING.md
+	samples/vcs/case_247_git_status_porcelain.log
+	samples/vcs/case_248_git_status_short.log
+	samples/vcs/case_249_git_status_long.log
+	samples/vcs/case_250_git_status_ignored.log
+	.trae/documents/vcs_task_plan.md
+
+no changes added to commit (use "git add" and/or "git commit -a")

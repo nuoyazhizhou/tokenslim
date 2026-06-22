@@ -1,0 +1,15 @@
+scenario: 'Maven 构建日志中包含中文项目名称和特殊字符（如中文冒号、空格），测试构建成功场景下特殊字符的处理。'
+target_capability: '特殊字符保留'
+expected_keep: 'BUILD SUCCESS'
+expected_compress: '[INFO] 行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '59a7d4ff02f3c53db301234fcd1ed4850b5dabd8dacce24b4b8952e91b6526af'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:37:46.045812'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

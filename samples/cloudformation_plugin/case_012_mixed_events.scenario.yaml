@@ -1,0 +1,15 @@
+scenario: 'AWS CloudFormation 堆栈 payments 的更新事件序列，包含 DynamoDB 表更新成功、Lambda 函数更新失败导致回滚。'
+target_capability: '失败/回滚事件保留与重复状态折叠'
+expected_keep: 'UPDATE_FAILED, UPDATE_ROLLBACK_IN_PROGRESS, Worker AWS::Lambda::Function'
+expected_compress: '2026-05-12 16:00:00 payments AWS::CloudFormation::Stack UPDATE_IN_PROGRESS, 2026-05-12 16:00:11 Table AWS::DynamoDB::Table UPDATE_IN_PROGRESS, 2026-05-12 16:01:00 Table AWS::DynamoDB::Table UPDATE_COMPLETE'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2105a02f3aaa2fb336efeab72d44aecec9425c61859d6feb93f0c0ee6daf80ba'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:44:14.248648'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

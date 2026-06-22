@@ -1,0 +1,15 @@
+scenario: '一段不包含任何 goroutine、panic 或编译测试模式的普通文本，用于验证插件在无匹配模式时保持原样不压缩。'
+target_capability: '无匹配模式时保持原样'
+expected_keep: 'Normal text without goroutine patterns, No panic or frame patterns, Just plain content'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4d41abea2e8aa6ab6ea431a4590e4c469b7c1e98cddcf1d86512ef5959b11615'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:50:53.084758'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

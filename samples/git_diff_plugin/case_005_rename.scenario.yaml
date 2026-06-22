@@ -1,0 +1,15 @@
+scenario: 'Git diff 显示文件重命名操作，原文件 src/old_name.rs 被重命名为 src/new_name.rs，相似度 100%，无内容变更。'
+target_capability: '文件重命名检测与路径压缩'
+expected_keep: 'rename from, rename to, similarity index'
+expected_compress: 'diff --git, 文件路径前缀'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '934a2d2cbb94f263a7a9200dedde32aa2d61219f4638b46d1ae388bb0d98a186'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

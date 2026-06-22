@@ -1,0 +1,15 @@
+scenario: 'Terraform plan 检测到 AWS RDS 实例配置漂移，显示 allocated_storage 和 backup_retention_period 的变更，并提示对象在 Terraform 外部被修改。'
+target_capability: '漂移检测与资源变更保留'
+expected_keep: "~ resource \"aws_db_instance\" \"primary\" {\\n      ~ allocated_storage = 100 -> 120\\n      ~ backup_retention_period = 7 -> 14"
+expected_compress: 'Terraform will perform the following actions:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3303186809b573a0fefeda903824dd378229c7320f6b46b5dcaa2e629b145364'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:05:47.093451'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,22 @@
+gcc -c /home/user/projects/myproject/src/foo.c /home/user/projects/myproject/src/bar.c /home/user/projects/myproject/src/baz.c -Wall -O2 -std=c11
+/home/user/projects/myproject/src/foo.c:10:5: error: 'undeclared_var' undeclared (first use in this function)
+   10 |     undeclared_var = 5;
+      |     ^~~~~~~~~~~~~~
+/home/user/projects/myproject/src/foo.c:10:5: note: each undeclared identifier is reported only once for each function it appears in
+/home/user/projects/myproject/src/bar.c:20:10: error: expected ';' before '}' token
+   20 |     return 0
+      |          ^
+      |          ;
+   21 | }
+      | ~
+/home/user/projects/myproject/src/baz.c:5:5: warning: unused variable 'x' [-Wunused-variable]
+    5 |     int x;
+      |     ^
+/home/user/projects/myproject/src/baz.c:10:5: warning: unused variable 'y' [-Wunused-variable]
+   10 |     int y;
+      |     ^
+/home/user/projects/myproject/src/baz.c:15:5: warning: implicit declaration of function 'printf' [-Wimplicit-function-declaration]
+   15 |     printf("Hello\n");
+      |     ^~~~~~
+make: *** [Makefile:10: /home/user/projects/myproject/build/foo.o] Error 1
+make: *** [Makefile:11: /home/user/projects/myproject/build/bar.o] Error 1

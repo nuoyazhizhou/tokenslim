@@ -1,0 +1,8 @@
+p4 describe -s 12345
+Change 12345 by alice.chen@client on 2026/04/03 14:30:00
+
+    feat(vcs): Add VCS parsers
+
+Updated files:
+... //depot/main/src/plugins/vcs_plugin/parser.rs
+... //depot/main/src/plugins/vcs_plugin/methods.rs

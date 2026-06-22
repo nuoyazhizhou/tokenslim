@@ -1,0 +1,15 @@
+scenario: 'Buildkite CI 中运行 npm run build 构建 webpack 项目，因缺少模块 ''./charts/RevenueChart'' 导致构建失败，npm 报错退出。'
+target_capability: '错误保留与路径压缩'
+expected_keep: 'ERROR in ./src/routes/dashboard.tsx, Module not found: Error: Can''t resolve ''../charts/RevenueChart'', npm ERR! code ELIFECYCLE'
+expected_compress: 'asset main.js 3.2 MiB [emitted] [big] (name: main), asset vendors.js 6.8 MiB [emitted] [big] (name: vendors), 1560 modules'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0f5e4461de8c038127016743cedae6877c9589bea05f141f940cd22245326643'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

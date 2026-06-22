@@ -1,0 +1,15 @@
+scenario: '用户使用 p4 describe -S 命令查看一个 shelved changelist 的详细信息，包括变更描述、文件操作列表和差异内容。'
+target_capability: 'P4 changelist 描述脱水'
+expected_keep: 'Change 12345, //depot/main/src/auth/login.rs#5 edit, //depot/main/src/auth/session.rs#3 add'
+expected_compress: '2026/04/15 14:30:00, /tmp/p4-edit, @@ -10,6 +10,8 @@'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e4a77a538c5b77182428f0f42d3f1ed66059bb6e1f209460c2a84da9e3289c1d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

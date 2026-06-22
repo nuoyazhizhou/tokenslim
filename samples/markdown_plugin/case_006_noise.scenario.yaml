@@ -1,0 +1,15 @@
+scenario: '一个包含HTML注释的Markdown构建报告，展示构建状态、持续时间和结果。'
+target_capability: 'Markdown注释折叠'
+expected_keep: '# Build Report, ## Status: ✅ Success, Duration: 2m 30s'
+expected_compress: '<!-- Build Log -->'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7cc0d09935b40438f3b03aed106f9a0161188ad31b9e2d4c12309460721967c5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

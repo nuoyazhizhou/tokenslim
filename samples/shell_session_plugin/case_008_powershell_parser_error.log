@@ -1,0 +1,10 @@
+PS C:\Users\user> if (1 -eq 1) { echo "yes"
+>>
+At line:1 char:30
++ if (1 -eq 1) { echo "yes"
++                              ~
+Missing closing '}' in statement block or type definition.
+    + CategoryInfo          : ParserError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : MissingEndCurlyBrace
+
+PS C:\Users\user> 

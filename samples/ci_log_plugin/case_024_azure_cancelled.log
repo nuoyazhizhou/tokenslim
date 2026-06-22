@@ -1,0 +1,9 @@
+az pipelines runs show --id 206
+##[section]Starting: Deploy
+##[command]helm upgrade api chart/api --install
+Release "api" has been upgraded
+Waiting for deployment rollout
+##[warning]Cancellation requested by user
+The operation was canceled.
+##[section]Finishing: Deploy
+Job canceled

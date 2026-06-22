@@ -1,0 +1,29 @@
+{
+    "name": "shell_session",
+    "description": "Shell 会话脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$SHELL_"
+    },
+    "keep_signals": [
+        "命令与输出行（未明确丢弃的文本块）"
+    ],
+    "compress_targets": [
+        "shell提示符（如$ # > PS ~$）",
+        "ANSI转义序列",
+        "多空格（折叠为单个空格）",
+        "环境变量赋值行（env var=value）",
+        "robocopy/curl/tar进度行"
+    ],
+    "design_intent": "Shell会话脱水：保留命令和输出，折叠提示符和进度信息。"
+}

@@ -1,0 +1,72 @@
+git diff
+diff --git a/src/core/doctor_workspace/methods.rs b/src/core/doctor_workspace/methods.rs
+index 1a2b3c4..5d6e7f8 100644
+--- a/src/core/doctor_workspace/methods.rs
++++ b/src/core/doctor_workspace/methods.rs
+@@ -40,6 +40,11 @@ impl VcsPlugin {
+     fn classify_tool(&self, text: &str) -> Option<&str>;
++
++    /// Detect VCS tool from output text
++    fn detect_tool(&self, text: &str) -> Option<VcsTool>;
++
++    /// Apply configuration overrides
++    fn apply_overrides(&mut self, config: VcsOverrideConfig);
+ }
+
+ impl VcsPlugin {
+@@ -120,7 +125,7 @@ impl VcsPlugin {
+         for line in raw.lines() {
+             let trimmed = line.trim_end_matches('\r').trim();
+-            if trimmed.is_empty() { continue; }
++            if trimmed.is_empty() || trimmed.starts_with('#') { continue; }
+             if let Some((status, path)) = parse_simple_status_path(trimmed) {
+                 records.push(VcsRecord::File { status: Some(status), path });
+                 continue;
+@@ -1417,6 +1422,12 @@ pub fn analyze_project(root: &Path) -> Vec<Diagnostic> {
+     let mut diagnostics = Vec::new();
++
++    // VCS Plugin Config Guidance
++    if let Some(config) = load_vcs_config(root) {
++        diagnostics.push(config.validate());
++    }
++
+     for file in walk_dir(root) {
+         if let Some(diag) = check_file(&file) {
+             diagnostics.push(diag);
+diff --git a/src/plugins/vcs_plugin/parser.rs b/src/plugins/vcs_plugin/parser.rs
+index 9a8b7c6..d5e4f3a 100644
+--- a/src/plugins/vcs_plugin/parser.rs
++++ b/src/plugins/vcs_plugin/parser.rs
+@@ -1,5 +1,10 @@
+ use super::ir::{VcsDocKind, VcsDocument, VcsRecord};
+ use super::types::VcsTool;
++use std::collections::HashMap;
++
++/// Shared helper for parsing key-value pairs
++pub fn parse_kv_lines(lines: &[&str]) -> Vec<(String, String)> {
++    ...
++}
+
+ pub trait VcsParser {
+@@ -50,6 +55,15 @@ impl GitStatusParser {
+     fn parse(&self, raw: &str) -> Option<VcsDocument> {
+         let mut records = Vec::new();
+         for line in raw.lines() {
++            let trimmed = line.trim_end_matches('\r').trim();
++            if trimmed.is_empty() || trimmed.starts_with('#') { continue; }
+             if let Some((status, path)) = parse_simple_status_path(trimmed) {
+                 records.push(VcsRecord::File { status: Some(status), path });
+                 continue;
+diff --git a/src/plugins/vcs_plugin/types.rs b/src/plugins/vcs_plugin/types.rs
+index 1122334..5566778 100644
+--- a/src/plugins/vcs_plugin/types.rs
++++ b/src/plugins/vcs_plugin/types.rs
+@@ -47,6 +47,10 @@ pub const GIT_COMMANDS: &[&str] = &[
+     "status",
+     "diff",
+     "log",
++    "show",
++    "branch",
++    "merge",
++    "rebase",
+ ];

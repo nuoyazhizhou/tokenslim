@@ -1,0 +1,25 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] Building example-project 1.0.0-SNAPSHOT
+[INFO] ------------------------------------------------------------------------
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/spring-core/5.3.20/spring-core-5.3.20.pom
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/spring-core/5.3.20/spring-core-5.3.20.pom (2.5 kB at 5.2 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/spring-beans/5.3.20/spring-beans-5.3.20.pom
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/spring-beans/5.3.20/spring-beans-5.3.20.pom (2.3 kB at 4.8 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/spring-context/5.3.20/spring-context-5.3.20.pom
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/spring-context/5.3.20/spring-context-5.3.20.pom (2.8 kB at 5.5 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/spring-web/5.3.20/spring-web-5.3.20.pom
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/spring-web/5.3.20/spring-web-5.3.20.pom (2.6 kB at 5.1 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.20/spring-webmvc-5.3.20.pom
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/springframework/spring-webmvc/5.3.20/spring-webmvc-5.3.20.pom (2.4 kB at 4.9 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.13.3/jackson-databind-2.13.3.jar
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.13.3/jackson-databind-2.13.3.jar (1.5 MB at 2.3 MB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.3/jackson-core-2.13.3.jar
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/2.13.3/jackson-core-2.13.3.jar (365 kB at 1.2 MB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.13.3/jackson-annotations-2.13.3.jar
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.13.3/jackson-annotations-2.13.3.jar (75 kB at 250 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/org/slf4j/slf4j-api/1.7.36/slf4j-api-1.7.36.jar (41 kB at 135 kB/s)
+[INFO] Downloading from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11.jar
+[INFO] Downloaded from central: https://repo.maven.apache.org/maven2/ch/qos/logback/logback-classic/1.2.11/logback-classic-1.2.11.jar (290 kB at 950 kB/s)

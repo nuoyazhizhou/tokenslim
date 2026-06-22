@@ -1,0 +1,15 @@
+scenario: 'Git 仓库中执行 `git branch -v` 命令，显示本地分支列表及其最新提交哈希和提交信息，包括当前分支标记和 ahead 状态。'
+target_capability: '分支列表压缩与状态保留'
+expected_keep: 'feature/login  a1b2c3d Add login authentication'
+expected_compress: '* main           c7d8e9f Release v2.1.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'afa8ff1da2eb6bcf9fd9ae764375bbbd65667fa5a393fcdc8c63f8e71a68fe7c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

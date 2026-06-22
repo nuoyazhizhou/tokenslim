@@ -1,0 +1,3 @@
+[31;1m[ERROR][0m [36mModule A:[0m Failed to load
+[32;1m[SUCCESS][0m [36mModule B:[0m Loaded successfully
+[33;1m[WARNING][0m [36mModule C:[0m Deprecated API

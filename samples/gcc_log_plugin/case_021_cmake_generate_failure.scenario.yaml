@@ -1,0 +1,15 @@
+scenario: 'CMake 构建过程中，在生成阶段因找不到 ZLIB::ZLIB 链接目标而失败，导致 ninja 构建中止。'
+target_capability: '构建错误保留与摘要'
+expected_keep: "Target \"api\" links to target \"ZLIB::ZLIB\" but the target was not found."
+expected_compress: 'cmake --build build, [0/1] Re-running CMake..., -- Configuring done'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '47b001f19745a71d051763a6b19bf65686a441b2ce65b844d1ce64e57ca84b77'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T23:57:45.510882'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

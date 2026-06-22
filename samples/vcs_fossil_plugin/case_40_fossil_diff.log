@@ -1,0 +1,14 @@
+fossil diff
+Index: src/plugins/vcs_plugin/methods.rs
+==================================================================
+--- src/plugins/vcs_plugin/methods.rs
++++ src/plugins/vcs_plugin/methods.rs
+@@ -220,6 +220,9 @@
+ fn compact_status_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
+     match tool {
++        Some(VcsTool::Fossil) => compact_fossil_status_for_ai(raw),
++        Some(VcsTool::Darcs) => compact_darcs_status_for_ai(raw),
++
+         Some(VcsTool::Git) => compact_git_status_for_ai(raw),
+         Some(VcsTool::Svn) => compact_svn_status_for_ai(raw),
+         Some(VcsTool::Hg) => compact_hg_status_for_ai(raw),

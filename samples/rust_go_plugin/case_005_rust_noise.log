@@ -1,0 +1,10 @@
+   Compiling my_project v0.1.0 (/home/user/project)
+warning: unused variable: `temp`
+ --> src/utils.rs:20:13
+  |
+20 |         let temp = value.clone();
+  |             ^^^^ help: if this is intentional, prefix it with an underscore: `_temp`
+  |
+warning: 1 warning emitted
+
+    Finished release [optimized] target(s) in 2.53s

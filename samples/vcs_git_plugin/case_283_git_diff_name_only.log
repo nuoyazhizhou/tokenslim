@@ -1,0 +1,5 @@
+git diff --name-only
+src/main.rs
+src/lib/utils.rs
+tests/integration_test.rs
+docs/README.md

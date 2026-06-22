@@ -1,0 +1,15 @@
+scenario: 'SVN 仓库重定位操作，将工作副本从旧 URL 迁移到新 URL，输出包含命令和结果信息。'
+target_capability: '命令锚点保留与路径压缩'
+expected_keep: 'svn relocate, Relocated'
+expected_compress: '/path/to/working/copy, https://svn.example.com/new-repo'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cdfc7e3fcc5526eb04221b0001acd6cc454c4d4cb86981a667e08c8ffb2f1db0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

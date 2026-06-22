@@ -1,0 +1,15 @@
+scenario: '用户执行 ''p4 opened'' 命令，列出当前在默认 changelist 中打开的文件，包括文件路径、版本号、操作类型（edit/add）和状态。'
+target_capability: 'P4 opened 命令输出压缩'
+expected_keep: '//depot/main/src/core/doctor_workspace/methods.rs#8 edit default change'
+expected_compress: 'p4 opened'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1267f0bad4df854ea9e38ba61da7258e0c2841378aaf999860edb9bb1a1f4f84'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

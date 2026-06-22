@@ -1,0 +1,15 @@
+scenario: 'Java 主线程抛出 RuntimeException，堆栈跟踪包含 lambda 表达式和 Stream API 调用链，从 StreamProcessor 到 Main 的完整调用路径。'
+target_capability: 'Java 堆栈跟踪脱水'
+expected_keep: "Exception in thread \"main\" java.lang.RuntimeException: Stream processing failed"
+expected_compress: 'at java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:195)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ef3c25394ca7c8080549260d2eea263306569c671358e544906d92d68f2d7bdb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

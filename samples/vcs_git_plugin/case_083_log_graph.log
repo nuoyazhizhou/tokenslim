@@ -1,0 +1,24 @@
+git log --graph --oneline -n 20
+* abc1234 (HEAD -> main) Merge branch 'feature/auth'
+|\  
+| * def5678 feat: Add OAuth support
+| * ghi9012 feat: Add JWT authentication
+| * jkl3456 feat: Add user roles
+|/  
+* mno7890 feat: Add database migrations
+* pqr1234 fix: Fix connection pool
+*   stu5678 Merge branch 'feature/api'
+|\  
+| * vwx9012 feat: Add REST API endpoints
+| * yza3456 feat: Add GraphQL support
+| * bcd7890 feat: Add API documentation
+|/  
+* efg1234 feat: Add logging system
+* hij5678 fix: Fix log rotation
+*   klm9012 Merge branch 'feature/ui'
+|\  
+| * nop3456 feat: Add dashboard UI
+| * qrs7890 feat: Add user profile UI
+| * tuv1234 feat: Add settings UI
+|/  
+* wxy5678 Initial commit

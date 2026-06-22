@@ -1,0 +1,15 @@
+scenario: '用户在 Bash shell 中执行 ls -la /var/log 命令，查看 /var/log 目录的详细列表，包括文件权限、所有者、大小和日期。'
+target_capability: '命令与输出保留'
+expected_keep: 'ls -la /var/log, total 1024, -rw-r-----  1 syslog adm     15340 Jun  7 08:30 syslog'
+expected_compress: 'user@host:~$ , user@host:~$ '
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '98ceb536786ae9cc29a1d7ca330331c3fc354e601372468f24a93e4c4e8a8a01'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

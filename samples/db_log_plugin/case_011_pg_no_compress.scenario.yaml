@@ -1,0 +1,15 @@
+scenario: '一个不匹配任何 PostgreSQL 日志格式的纯文本文件，包含三行无时间戳、无数据库关键字的普通文本，用于测试插件在无匹配模式时的行为。'
+target_capability: '非匹配输入处理'
+expected_keep: '所有三行原始文本'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f790b86b954f854029b1f5f5fef319d15f4dd7d7a687895db9f1d3fc05ba5641'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:46:17.054993'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

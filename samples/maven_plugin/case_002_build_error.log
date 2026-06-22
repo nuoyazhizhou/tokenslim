@@ -1,0 +1,31 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------------< com.example:myproject >-------------------
+[INFO] Building myproject 1.0.0
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- maven-resources-plugin:3.2.0:resources (default-resources) @ myproject ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Copying 1 resource
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.10.1:compile (default-compile) @ myproject ---
+[INFO] Changes detected - recompiling the module!
+[INFO] Compiling 5 source files to /target/classes
+[ERROR] COMPILATION ERROR : 
+[ERROR] /src/main/java/com/example/App.java:[10,15] cannot find symbol
+[ERROR]   symbol:   variable nonexistent
+[ERROR]   location: class com.example.App
+[INFO] 1 error
+[INFO] 
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.156 s
+[INFO] Finished at: 2024-01-15T10:30:47+08:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.10.1:compile (default-compile) on project myproject: Compilation failure
+[ERROR] /src/main/java/com/example/App.java:[10,15] cannot find symbol
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.

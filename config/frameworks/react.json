@@ -1,0 +1,33 @@
+{
+  "name": "React/JSX",
+  "slice_type": "ReactComponent",
+  "priority": 100,
+  "description": "React/JSX 语法检测配置",
+  "rules": [
+    {
+      "type": "combo",
+      "required": [],
+      "optional": [
+        {"pattern_type": "contains", "pattern": "className="},
+        {"pattern_type": "contains", "pattern": "onClick="},
+        {"pattern_type": "contains", "pattern": "onChange="},
+        {"pattern_type": "contains", "pattern": "onSubmit="},
+        {"pattern_type": "contains", "pattern": "onMouseEnter="},
+        {"pattern_type": "contains", "pattern": "onMouseLeave="},
+        {"pattern_type": "contains", "pattern": "onFocus="},
+        {"pattern_type": "contains", "pattern": "onBlur="},
+        {"pattern_type": "contains", "pattern": "style={{"},
+        {"pattern_type": "contains", "pattern": "dangerouslySetInnerHTML="},
+        {"pattern_type": "contains", "pattern": "key="}
+      ]
+    },
+    {
+      "type": "combo",
+      "required": [
+        {"pattern_type": "contains", "pattern": "<"},
+        {"pattern_type": "contains", "pattern": "/>"}
+      ],
+      "optional": []
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+ansible-playbook harden.yml --check
+
+PLAY [linux] *******************************************************************
+
+TASK [Ensure sysctl values] ****************************************************
+ok: [host1]
+ok: [host2]
+
+TASK [Ensure packages] *********************************************************
+ok: [host1]
+ok: [host2]
+
+PLAY RECAP *********************************************************************
+host1                      : ok=2    changed=0    unreachable=0    failed=0
+host2                      : ok=2    changed=0    unreachable=0    failed=0

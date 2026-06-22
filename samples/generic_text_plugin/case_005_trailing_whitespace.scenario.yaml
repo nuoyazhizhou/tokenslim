@@ -1,0 +1,15 @@
+scenario: '一个包含行尾空格、制表符和混合空白字符的文本文件，用于测试通用文本插件对尾部空白和空白行的处理能力。'
+target_capability: '尾部空白修剪与空白行折叠'
+expected_keep: 'Line with trailing spaces, Another line with trailing whitespace, Line with mixed trailing'
+expected_compress: '行尾空格, 行尾制表符, 连续空白行'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2d5a8fb7c4003400385ca7fbda1f5cb6f0bcdd145636177e0b38914035d07bab'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:50:28.894180'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

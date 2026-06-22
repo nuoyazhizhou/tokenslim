@@ -1,0 +1,6 @@
+{
+  "error": true,
+  "code": 500,
+  "message": "Internal Server Error",
+  "stack": ["line 1", "line 2", "line 3"]
+}

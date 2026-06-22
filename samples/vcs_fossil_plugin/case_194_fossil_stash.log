@@ -1,0 +1,4 @@
+fossil stash
+Stash changes:
+(0) 2026-04-08 Work on feature-auth
+(1) 2026-04-05 Bugfix for login

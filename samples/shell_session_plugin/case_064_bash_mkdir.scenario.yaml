@@ -1,0 +1,15 @@
+scenario: '用户在Bash中创建多级目录project/src、project/tests和docs，然后列出目录内容验证创建结果。'
+target_capability: '命令与输出保留'
+expected_keep: 'mkdir -p project/src project/tests docs, ls project/, src, tests, ls docs/'
+expected_compress: 'user@host:~$'
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c1763ef8f39a536c03696b2ca83c3d27fd554414e68dc4cad4e5c6af61fa07f9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+{% if user.is_admin %}
+    <div class="admin-panel">
+        {% for user in users %}
+            <div class="user-card">
+                <h3>{{ user.name }}</h3>
+                <p>Email: {{ user.email }}</p>
+                {% if user.active %}
+                    <span class="status active">Active</span>
+                {% else %}
+                    <span class="status inactive">Inactive</span>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}

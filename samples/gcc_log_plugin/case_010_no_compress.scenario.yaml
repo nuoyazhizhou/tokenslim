@@ -1,0 +1,15 @@
+scenario: '一个包含非编译日志文件的目录，文件内容被识别为CMakeCache、README或普通文本，无GCC编译消息。'
+target_capability: '非编译日志过滤'
+expected_keep: '无'
+expected_compress: 'CMakeCache.txt: Not a GCC log file, README.md: Documentation only, test.txt: Plain text without compile messages'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '0ab50b968523d483d7bbf3066353358908c23d7220e99ef0a6d06b93c2a62cbe'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T23:57:45.510882'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,8 @@
+svn status --no-ignore
+M       src/core/text_slicer/methods.rs
+A       src/core/dictionary_manager/mod.rs
+I       target/
+I       Cargo.lock
+I       *.log
+?       samples/vcs/
+?       .trae/documents/vcs_task_plan.md

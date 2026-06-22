@@ -1,0 +1,18 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1
+collected 4 items
+
+tests/test_price.py::test_rounding[10.005-10.01] PASSED                [ 25%]
+tests/test_price.py::test_rounding[10.004-10.00] PASSED                [ 50%]
+tests/test_price.py::test_rounding[0.335-0.34] FAILED                  [ 75%]
+tests/test_price.py::test_rounding[1.115-1.12] PASSED                  [100%]
+
+=================================== FAILURES ===================================
+________________________ test_rounding[0.335-0.34] ________________________
+>       assert round_price(value) == expected
+E       AssertionError: assert 0.33 == 0.34
+tests/test_price.py:18: AssertionError
+
+=========================== short test summary info ============================
+FAILED tests/test_price.py::test_rounding[0.335-0.34] - AssertionError
+========================= 1 failed, 3 passed in 0.77s ==========================

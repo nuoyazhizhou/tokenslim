@@ -1,0 +1,15 @@
+scenario: '在Mercurial仓库中执行`hg st`命令，显示工作目录状态，包含已修改、已添加和未跟踪的文件。'
+target_capability: '文件状态摘要保留'
+expected_keep: 'M src/core/text_slicer/methods.rs, A src/core/dictionary_manager/mod.rs, ? samples/vcs/'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '49fb8b67f7fcd84f50a0882dfaf3eadd489c742427b4e0269601b059adaa4300'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

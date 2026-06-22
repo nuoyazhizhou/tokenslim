@@ -1,0 +1,13 @@
+travis_fold:start:cache
+Setting up build cache
+cache.1
+store build cache
+travis_fold:end:cache
+travis_fold:start:script
+$ pytest -q
+tests/test_deprecated.py::test_old_api PASSED
+WARNING: deprecated fixture used in tests/test_deprecated.py
+1 passed, 1 warning in 2.45s
+travis_fold:end:script
+Done. Your build exited with 0.
+Travis job succeeded

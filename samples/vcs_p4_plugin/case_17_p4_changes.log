@@ -1,0 +1,17 @@
+p4 changes
+Change 12345 on 2026/04/03 by alice.chen@alice-workstation *pending*
+	feat(vcs): Add SVN/HG/P4 parser support
+Change 12344 on 2026/04/02 by bob.wang@bob-laptop *pending*
+	fix: Resolve path dictionary collision with email addresses
+Change 12343 on 2026/04/01 by charlie.li@charlie-pc *pending*
+	refactor: Extract VcsRuleEngine from monolithic compress method
+Change 12342 on 2026/03/31 by dave.zhang@dave-workstation *pending*
+	feat: Initial VCS plugin skeleton with command whitelists
+Change 12341 on 2026/03/30 by eve.liu@eve-laptop *pending*
+	chore: Setup project structure and CI pipeline
+Change 12340 on 2026/03/29 by frank.wu@frank-pc *pending*
+	docs: Add initial design document for VCS plugin architecture
+Change 12339 on 2026/03/28 by alice.chen@alice-workstation *pending*
+	feat: Add dictionary engine for path compression
+Change 12338 on 2026/03/27 by bob.wang@bob-laptop *pending*
+	fix: Handle Windows path separators in path compressor

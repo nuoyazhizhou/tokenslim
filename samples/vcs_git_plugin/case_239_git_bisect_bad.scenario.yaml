@@ -1,0 +1,15 @@
+scenario: 'Git bisect 过程中标记一个版本为 bad，并显示剩余待测试的修订数量。'
+target_capability: 'bisect 进度行压缩'
+expected_keep: 'git bisect bad v1.0.0'
+expected_compress: 'Bisecting: 6 revisions left to test after this (roughly 3 steps)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a0f509cda1ff15641d3ac380e9b69ea7cc19eff59345c94a7464fec9a62ffe39'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,8 @@
+bazel test //services/...
+INFO: Analyzed 42 targets (12 packages loaded, 320 targets configured).
+INFO: Found 30 targets and 12 test targets...
+INFO: Elapsed time: 33.100s, Critical Path: 8.000s
+INFO: 860 processes: 700 remote cache hit, 160 linux-sandbox.
+INFO: Build completed successfully, 860 total actions
+//services/api:api_test PASSED in 4.2s
+//services/worker:worker_test PASSED in 6.1s

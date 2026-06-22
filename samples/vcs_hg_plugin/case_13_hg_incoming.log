@@ -1,0 +1,17 @@
+hg incoming
+comparing with https://hg.example.com/upstream
+searching for changes
+changeset:   22:aabbccddeeff
+user:        dave.zhang
+date:        Mon Apr 06 08:00:00 2026 +0800
+summary:     feat: Implement hg incoming parser with changeset tracking
+
+changeset:   23:112233445566
+user:        eve.liu
+date:        Mon Apr 06 09:30:00 2026 +0800
+summary:     fix: Correct branch detection in hg log parser
+
+changeset:   24:998877665544
+user:        frank.wu
+date:        Mon Apr 06 10:00:00 2026 +0800
+summary:     chore: Update test fixtures for new VCS commands

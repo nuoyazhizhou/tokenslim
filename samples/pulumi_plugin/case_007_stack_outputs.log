@@ -1,0 +1,6 @@
+pulumi stack output --stack dev
+Current stack outputs (4):
+    apiUrl          : "https://api.dev.example.com"
+    bucketName      : "assets-dev-123456"
+    workerQueueUrl  : "https://sqs.us-east-1.amazonaws.com/123/worker"
+    databaseEndpoint: "db.dev.example.com:5432"

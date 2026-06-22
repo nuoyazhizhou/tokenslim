@@ -1,0 +1,15 @@
+scenario: 'Git diff --stat 输出，显示文件变更统计：1 个文件修改，5 行新增。'
+target_capability: 'diff stat 压缩'
+expected_keep: 'src/core/text_slicer/methods.rs'
+expected_compress: '1 file changed, 5 insertions(+)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e946b701422b28c36d54a36b49edc0895f4de28f9e901ad8ffe6246309ecd1ea'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

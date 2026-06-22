@@ -1,0 +1,15 @@
+scenario: '用户执行 git stash list 查看 stash 列表，输出包含三条 stash 条目，每条有索引、分支名和提交信息。'
+target_capability: 'stash 列表保留与压缩'
+expected_keep: 'stash@{0}: WIP on master: abc1234 last commit message'
+expected_compress: 'stash@{2}: WIP on develop: ghi9012 draft feature'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3d58424ef64982d228aa721b43979c64d4c1e1a024f04c9ac69eb62d1c681bf9'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

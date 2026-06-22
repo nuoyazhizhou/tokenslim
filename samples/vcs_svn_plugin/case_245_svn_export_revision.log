@@ -1,0 +1,3 @@
+svn export -r 12340 https://svn.example.com/repo/trunk /tmp/exported-project
+Export complete.
+Exported revision 12340.

@@ -1,0 +1,15 @@
+scenario: 'Jenkins parallel构建日志，包含linux、windows、macos三个并行分支分别执行cargo test --lib，每个分支均通过732个测试，最终构建状态为SUCCESS。'
+target_capability: 'CI/CD pipeline步骤保留与详细内容压缩'
+expected_keep: '[Pipeline] Start of Pipeline, [Pipeline] parallel, Finished: SUCCESS'
+expected_compress: 'cargo test --lib, test result: ok. 732 passed'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

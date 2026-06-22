@@ -1,0 +1,2 @@
+helm version
+version.BuildInfo{Version:"v3.14.4", GitCommit:"81c902a", GitTreeState:"clean", GoVersion:"go1.21.9"}

@@ -1,0 +1,15 @@
+scenario: 'Java 应用运行过程中，多个线程抛出不同类型的异常（NullPointerException、IllegalArgumentException、RuntimeException），包含重复的异常堆栈（如 IllegalArgumentException 出现两次，NullPointerException 出现两次），需要压缩重复堆栈并保留关键异常信息。'
+target_capability: '重复异常堆栈折叠'
+expected_keep: "Exception in thread \"main\" java.lang.NullPointerException"
+expected_compress: 'at com.example.app.Worker.validate(Worker.java:55)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c7789374da9ba8862c1dbf40dd1e0078cd6f362e815c58a061c93e7c8412aed8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:32:38.280472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

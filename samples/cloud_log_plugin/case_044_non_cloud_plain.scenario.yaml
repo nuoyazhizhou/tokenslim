@@ -1,0 +1,15 @@
+scenario: '本地构建和单元测试日志，非云日志，应原样透传。'
+target_capability: '非云日志透传'
+expected_keep: 'build started for local module, running unit tests for parser, all tests passed in 1.24s'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '304dee3d5ca9fae029eef664d183ceaf2424dd9efdf8ae806cfc1ddd92445376'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

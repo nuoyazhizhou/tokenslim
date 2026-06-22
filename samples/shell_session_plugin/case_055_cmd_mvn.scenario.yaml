@@ -1,0 +1,15 @@
+scenario: 'shell_session_plugin 路由分发测试：CMD 中执行 mvn clean install，shell_session_plugin 检测到 mvn 子命令后路由到 maven_plugin 处理。'
+target_capability: '外部命令路由到mvn插件'
+expected_keep: 'mvn clean install, BUILD SUCCESS, Total time:  1.234 s'
+expected_compress: "C:\\>, [INFO] Scanning for projects..., [INFO] ------------------------------------------------------------------------"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bf2a1abb085c55b6bd1fe6c7b3ddf054ecd372505386b874fdd1519a2cb47fd0'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-09T13:54:44.661452'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

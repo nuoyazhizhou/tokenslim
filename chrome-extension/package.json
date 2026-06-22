@@ -1,0 +1,12 @@
+{
+  "name": "tokenslim-chrome",
+  "version": "0.1.0",
+  "description": "TokenSlim Browser Extension",
+  "scripts": {
+    "build": "tsc -p ./tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/chrome": "^0.0.237"
+  }
+}

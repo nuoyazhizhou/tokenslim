@@ -1,0 +1,15 @@
+scenario: '用户使用 `svn proplist -v` 查看文件 `src/main.rs` 的 SVN 属性，包括 svn:keywords 和 svn:eol-style 及其值。'
+target_capability: 'SVN 属性列表输出压缩'
+expected_keep: 'svn proplist -v src/main.rs, Properties on ''src/main.rs'':, svn:keywords, svn:eol-style'
+expected_compress: 'Author Date Id Revision, native'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fa764089145dc80eefe4c9217bcab333ddc1ed6723559661d0ec54787e1846e8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

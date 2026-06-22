@@ -1,0 +1,15 @@
+scenario: '一个简单的XML文档，包含根元素<root>，其下有三个子元素<name>、<age>和<email>，分别包含文本内容''John Doe''、''30''和''john@example.com''。'
+target_capability: 'XML标签和文本内容保留'
+expected_keep: '<root>, <name>John Doe</name>, <age>30</age>'
+expected_compress: '换行和缩进空白字符'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1762c2e9a4881977f7e49e29e0300c6ec7f12b43ab9c92176bf55c85aa14c094'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

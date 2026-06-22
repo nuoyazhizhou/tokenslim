@@ -1,0 +1,16 @@
+git stash pop
+On branch feature/login
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   src/auth/login.rs
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   src/main.rs
+	modified:   src/lib/utils.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	tests/smoke_test.rs
+Dropped refs/stash@{0} (a1b2c3d4e5f6g7h8i9j0)

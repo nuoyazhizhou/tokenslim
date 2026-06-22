@@ -1,0 +1,15 @@
+scenario: 'NPM 安装依赖时输出弃用警告、编译脚本和安装摘要，无错误发生。'
+target_capability: '错误保留与警告保留'
+expected_keep: 'npm WARN deprecated, added 120 packages, found 0 vulnerabilities'
+expected_compress: 'node-gyp@9.3.1 install, core-js@3.27.2 postinstall, 15 packages are looking for funding'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9eb00b31028fa4de6f75042c587b90558f69961db7208b468c955fb4645e23d5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

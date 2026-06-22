@@ -1,0 +1,15 @@
+scenario: 'Git 仓库的提交历史以图形化方式展示，包含分支合并、提交哈希、提交信息等，用于查看项目开发历程。'
+target_capability: '图形字符压缩与提交信息保留'
+expected_keep: '提交哈希与提交信息（如 abc1234 Merge branch ''feature/auth''）'
+expected_compress: "图形字符（如 * |\\ /）"
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '24bf426d32161d808a11f15411b5f7cfcfefd533f6c239bd6116009d8c9b10e8'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

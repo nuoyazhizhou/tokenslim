@@ -1,0 +1,6 @@
+hg config
+[ui]
+username = alice.chen
+editor = vim
+[paths]
+default = https://bitbucket.org/user/repo

@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "TokenSlim: AI Token Rehydrator",
+  "version": "0.1.0",
+  "description": "Restore compressed TokenSlim JSON blocks into human-readable logs directly in your browser.",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["http://127.0.0.1:10086/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chatgpt.com/*", "https://claude.ai/*", "file://*/*"],
+      "js": ["dist/content.js"],
+      "css": ["src/styles.css"]
+    }
+  ],
+  "icons": {
+    "128": "icons/icon128.png"
+  }
+}

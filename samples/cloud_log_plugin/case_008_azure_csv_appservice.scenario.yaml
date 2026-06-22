@@ -1,0 +1,15 @@
+scenario: 'Azure AppService CSV格式日志，包含worker启动、数据库连接超时错误和重试信息。'
+target_capability: '云日志CSV结构剥离与字段压缩'
+expected_keep: 'worker started pid=42, database connection error: timeout after 30s, retrying database connection'
+expected_compress: 'TimeGenerated, ResourceId, LogLevel, /subscriptions/000/resourceGroups/rg/providers/Microsoft.Web/sites/backend'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c87d64e8d1b39d7f7c2c3ee7ff32225740a71ec501041ccab55e0470cf458c5a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:42:03.473123'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

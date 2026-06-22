@@ -1,0 +1,15 @@
+scenario: 'Markdown 文档中包含标题和加粗文本，周围有日志行，测试插件能否保留核心结构并压缩无关日志。'
+target_capability: 'Markdown 结构保留'
+expected_keep: '# Report, **Summary:** Done'
+expected_compress: '2024-01-15 INFO Processing markdown..., 2024-01-15 INFO Complete'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '02196eb668415d869f612a174085400aa75fe5e0efc4ba8c96b05b2ab9983d8d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Linux 内核日志，记录网络接口 eth0 的链路状态变化和 IPv6 地址配置事件。'
+target_capability: '系统日志脱水'
+expected_keep: 'May  7 10:30:00 [12345.678901] eth0: link up'
+expected_compress: 'server1 kernel:'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd0828d130893a4db31620f9ecfe4c9f1596f4a42ca5588ea57ac6cc600a94c54'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:03:52.428427'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

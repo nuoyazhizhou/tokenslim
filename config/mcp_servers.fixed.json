@@ -1,0 +1,61 @@
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "C:/git_work/TokenSlim"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "<YOUR_GITHUB_TOKEN>"
+      }
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@cyanheads/git-mcp-server"
+      ]
+    },
+    "fetch": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-fetch-server"
+      ]
+    },
+    "brave-search": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@brave/brave-search-mcp-server"
+      ],
+      "env": {
+        "BRAVE_API_KEY": "<YOUR_BRAVE_API_KEY>"
+      }
+    },
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "postgresql": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://<USER>:<PASSWORD>@<HOST>:5432/<DATABASE>"
+      ]
+    }
+  }
+}

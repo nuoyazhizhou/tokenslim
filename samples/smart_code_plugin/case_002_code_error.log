@@ -1,0 +1,9 @@
+class User {
+    constructor(name) {
+        this.name = name;
+    }
+    greet() {
+        console.log(`Hello, ${this.name}!`);
+    }
+}
+SyntaxError: Unexpected token '}' at line 10

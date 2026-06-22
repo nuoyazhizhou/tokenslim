@@ -1,0 +1,15 @@
+scenario: '用户执行 ''bzr resolve'' 命令后，Bazaar 输出已解决冲突的文件列表，包含 file1.txt 和 file2.txt。'
+target_capability: '命令锚点保留与文件状态行保留'
+expected_keep: 'bzr resolve, file1.txt, file2.txt'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ccf278f3feefabcac488a5087327285879b0d524bad1c6952a38a9cb17481f49'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:09:35.268203'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

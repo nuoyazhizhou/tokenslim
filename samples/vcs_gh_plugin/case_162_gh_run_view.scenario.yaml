@@ -1,0 +1,15 @@
+scenario: '用户使用 `gh run view 12345` 查看 GitHub Actions 工作流运行详情，输出包含工作流名称、运行编号、状态、分支、事件、结论以及作业列表和耗时。'
+target_capability: '结构化数据行保留与键名压缩'
+expected_keep: 'gh run view 12345, Workflow: CI, Status:Success'
+expected_compress: 'Run: #12345 - Build and Test, Jobs: 2 jobs, build (3m24s)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ff3b11a6f908a2c1f7cba019c58905a47e3e8932e6f636b3285db74f68a98eed'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:17:26.171626'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

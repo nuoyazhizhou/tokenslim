@@ -1,0 +1,15 @@
+scenario: 'vcs_git_plugin 边界测试：git log --oneline 50条哈希碰撞记录，插件应保留提交信息，压缩重复哈希后缀。'
+target_capability: '哈希碰撞下的压缩与保留'
+expected_keep: '提交哈希（前10位）和提交信息'
+expected_compress: '重复的''f''字符（哈希后30位）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

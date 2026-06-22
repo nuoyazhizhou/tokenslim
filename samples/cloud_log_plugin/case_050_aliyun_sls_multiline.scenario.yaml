@@ -1,0 +1,15 @@
+scenario: '阿里云SLS日志服务中，多行JSON格式的Java堆栈异常日志，包含时间戳、主题、来源、日志级别和内容字段，其中ERROR级别日志包含多行SQL异常堆栈。'
+target_capability: '云日志外壳剥离与多行堆栈保留'
+expected_keep: 'java.sql.SQLException: Access denied for user ''db_user''@''localhost'''
+expected_compress: '__time__: 1717560601, __topic__: app_logs, __source__: 192.168.1.100'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bfedb20195dbe4d593a80fc17497951f820756f433621271b9ae3f37ebbdc4b0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

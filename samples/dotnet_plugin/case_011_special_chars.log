@@ -1,0 +1,4 @@
+error CS1056: Unexpected character '¥'
+error CS1056: Unexpected character '€'
+error CS1056: Unexpected character '£'
+warning CS8001: Unrecognized preprocessor directive '¬'

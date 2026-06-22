@@ -1,0 +1,25 @@
+{
+    "name": "smart_path",
+    "description": "智能路径脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$SMART_"
+    },
+    "keep_signals": [
+        "非路径文本（路径之外的文本，原样保留）"
+    ],
+    "compress_targets": [
+        "文件路径（替换为字典令牌）"
+    ],
+    "design_intent": "智能路径脱水：保留路径上下文，折叠长路径为字典令牌，压缩重复路径。"
+}

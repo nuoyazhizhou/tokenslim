@@ -1,0 +1,3 @@
+svn move oldname.txt newname.txt
+A         newname.txt
+D         oldname.txt

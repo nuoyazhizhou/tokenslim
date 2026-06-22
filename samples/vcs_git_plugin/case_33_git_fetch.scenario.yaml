@@ -1,0 +1,15 @@
+scenario: '执行 git fetch 从远程仓库拉取更新，显示远程对象计数、压缩进度和分支更新信息。'
+target_capability: 'Git fetch 输出压缩'
+expected_keep: '分支更新行（如 main -> origin/main）'
+expected_compress: '进度行（如 Enumerating objects: 25, done.）'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '028f1746223b338529c5b0ae9daf560e64c0a002b4dd04473108ae683f0dba9f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

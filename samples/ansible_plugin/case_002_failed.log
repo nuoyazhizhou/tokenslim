@@ -1,0 +1,15 @@
+ansible-playbook deploy.yml
+
+PLAY [api] *********************************************************************
+
+TASK [Render config] ***********************************************************
+ok: [api1]
+ok: [api2]
+
+TASK [Restart service] *********************************************************
+changed: [api1]
+failed: [api2] => {"changed": false, "msg": "Job for api.service failed because the control process exited with error code."}
+
+PLAY RECAP *********************************************************************
+api1                       : ok=2    changed=1    unreachable=0    failed=0
+api2                       : ok=1    changed=0    unreachable=0    failed=1

@@ -1,0 +1,4 @@
+git submodule
+Submodule path 'libs/external-lib': checked out 'abc1234'
+Submodule 'libs/external-lib' (https://github.com/user/external-lib.git)
+Submodule 'libs/utils' (https://github.com/user/utils.git)

@@ -1,0 +1,15 @@
+scenario: 'Docker Compose 构建过程中，API 服务的 cargo test 步骤失败，导致构建失败并输出错误信息。'
+target_capability: 'Docker CI 输出保留与容器 ID 压缩'
+expected_keep: 'Step 8/10 : RUN cargo test --lib, ERROR: Service ''api'' failed to build, ERROR: Encountered errors while bringing up the project.'
+expected_compress: '0f1e2d3c4b5a67890123456789abcdef'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '44b7d773292de852cc3f6554c1044677b785353d4ecb999e206ef4e804e92215'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

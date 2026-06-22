@@ -1,0 +1,15 @@
+scenario: 'SVN cleanup 命令执行成功，输出清理完成信息。'
+target_capability: '命令锚点保留'
+expected_keep: 'svn cleanup, Cleaned up., Cleanup completed.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'bc7ca623b14eb311bdcb7191df4f1f4aa43638cbea0597dd1bf445002e4928d7'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:35:42.923785'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

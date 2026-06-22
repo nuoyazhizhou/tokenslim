@@ -1,0 +1,15 @@
+scenario: 'GCC 编译过程中出现警告和错误，导致构建失败。'
+target_capability: '编译错误与警告保留'
+expected_keep: 'error: division by zero, warning: unused variable ''count'', Build failed!'
+expected_compress: 'make[1]: Entering directory, make[1]: Leaving directory, [2026-05-07 10:30:45] Starting build...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '41321dccfa2d67748abfaf6a2f854ebea229ac0c8f604d4ca6fb2b5353abd87c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T18:36:33.664786'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

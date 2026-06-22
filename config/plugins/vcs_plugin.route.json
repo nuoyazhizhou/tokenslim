@@ -1,0 +1,411 @@
+{
+  "name": "vcs",
+  "enabled": true,
+  "priority": 100,
+  "skills": [
+    "status",
+    "diff",
+    "log",
+    "review",
+    "route"
+  ],
+  "workspace_commands": {
+    "vcs:git": [
+      "git status",
+      "git diff",
+      "git log"
+    ],
+    "vcs:svn": [
+      "svn status",
+      "svn log"
+    ],
+    "vcs:hg": [
+      "hg status",
+      "hg log"
+    ],
+    "vcs:p4": [
+      "p4 opened",
+      "p4 changes"
+    ],
+    "vcs:cvs": [
+      "cvs status",
+      "cvs log"
+    ],
+    "vcs:bzr": [
+      "bzr status",
+      "bzr log"
+    ],
+    "vcs:fossil": [
+      "fossil status",
+      "fossil timeline"
+    ],
+    "vcs:darcs": [
+      "darcs whatsnew",
+      "darcs log"
+    ]
+  },
+  "route": {
+    "command_keywords": [
+      "git",
+      "svn",
+      "hg",
+      "p4",
+      "cvs",
+      "bzr",
+      "fossil",
+      "darcs",
+      "gh",
+      "glab",
+      "az",
+      "bitbucket",
+      "repo",
+      "gerrit"
+    ],
+    "route_group": "vcs"
+  },
+  "run_parse_hints": {
+    "git": {
+      "options_with_value": ["-C", "-c", "--git-dir", "--work-tree", "--namespace", "--exec-path", "--config-env"],
+      "inline_value_prefixes": ["-C", "-c", "--git-dir=", "--work-tree=", "--namespace=", "--exec-path=", "--config-env="]
+    },
+    "svn": {
+      "options_with_value": ["-r", "-c", "--revision", "--change", "--username", "--password", "--config-dir", "--config-option", "--targets", "--changelist", "--depth", "--accept", "--extensions", "--diff-cmd", "--editor-cmd", "--native-eol", "--limit", "--search", "--search-and", "--with-revprop"],
+      "inline_value_prefixes": ["-r", "-c", "--revision=", "--change=", "--username=", "--password=", "--config-dir=", "--config-option=", "--targets=", "--changelist=", "--depth=", "--accept=", "--extensions=", "--diff-cmd=", "--editor-cmd=", "--native-eol=", "--limit=", "--search=", "--search-and=", "--with-revprop="]
+    },
+    "hg": {
+      "options_with_value": ["-R", "--repository", "--cwd", "--config", "--configfile", "--encoding", "--encodingmode"],
+      "inline_value_prefixes": ["-R", "--repository=", "--cwd=", "--config=", "--configfile=", "--encoding=", "--encodingmode="]
+    },
+    "p4": {
+      "options_with_value": ["-b", "-c", "-d", "-H", "-p", "-P", "-u", "-x", "-C", "-Q", "-L", "-r", "-v", "-z"],
+      "inline_value_prefixes": ["-b", "-c", "-d", "-H", "-p", "-P", "-u", "-x", "-C", "-Q", "-L", "-r", "-v", "-z"]
+    },
+    "cvs": {
+      "options_with_value": ["-b", "-d", "-e", "-s", "-T", "-x", "-z", "--allow-root"],
+      "inline_value_prefixes": ["-b", "-d", "-e", "-s", "-T", "-x", "-z", "--allow-root="]
+    },
+    "bzr": {
+      "options_with_value": ["-d", "--directory", "--config-dir", "--transport"],
+      "inline_value_prefixes": ["-d", "--directory=", "--config-dir=", "--transport="]
+    },
+    "fossil": {
+      "options_with_value": ["-R", "--repository", "-U", "--user", "--ssl-identity", "--ssh-command", "--httptrace", "--sqltrace", "--systemtrace", "--user-override"],
+      "inline_value_prefixes": ["-R", "-U", "--repository=", "--user=", "--ssl-identity=", "--ssh-command=", "--httptrace=", "--sqltrace=", "--systemtrace=", "--user-override="]
+    },
+    "darcs": {
+      "options_with_value": ["--repo", "--repodir", "--context", "--store"],
+      "inline_value_prefixes": ["--repo=", "--repodir=", "--context=", "--store="]
+    },
+    "gh": {
+      "options_with_value": ["-R", "--repo", "--hostname", "--jq", "--json", "--template", "--cache", "--config-dir", "--shell"],
+      "inline_value_prefixes": ["-R", "--repo=", "--hostname=", "--jq=", "--json=", "--template=", "--cache=", "--config-dir=", "--shell="]
+    },
+    "glab": {
+      "options_with_value": ["-R", "--repo", "--host", "--api-host", "--token", "--output", "--fields", "--config-dir", "--shell"],
+      "inline_value_prefixes": ["-R", "--repo=", "--host=", "--api-host=", "--token=", "--output=", "--fields=", "--config-dir=", "--shell="]
+    },
+    "az": {
+      "options_with_value": ["--subscription", "--output", "--query", "--tenant", "--defaults"],
+      "inline_value_prefixes": ["--subscription=", "--output=", "--query=", "--tenant=", "--defaults="]
+    },
+    "bitbucket": {
+      "options_with_value": ["--workspace", "--server", "--output", "--token", "--profile"],
+      "inline_value_prefixes": ["--workspace=", "--server=", "--output=", "--token=", "--profile="]
+    },
+    "repo": {
+      "options_with_value": ["--color", "--event-log", "--git-trace2-event-log", "--git-trace2-event-target", "--outer-manifest-name", "--outer-manifest-path", "--repo-rev", "--repo-url", "--submanifest-path"],
+      "inline_value_prefixes": ["--color=", "--event-log=", "--git-trace2-event-log=", "--git-trace2-event-target=", "--outer-manifest-name=", "--outer-manifest-path=", "--repo-rev=", "--repo-url=", "--submanifest-path="]
+    },
+    "gerrit": {
+      "options_with_value": ["--host", "--port", "--project", "--user", "--format"],
+      "inline_value_prefixes": ["--host=", "--port=", "--project=", "--user=", "--format="]
+    }
+  },
+  "run_tool_aliases": {
+    "git": "git",
+    "gh": "git",
+    "glab": "git",
+    "az": "git",
+    "bitbucket": "git",
+    "repo": "git",
+    "gerrit": "git",
+    "svn": "svn",
+    "hg": "hg",
+    "p4": "p4",
+    "cvs": "cvs",
+    "bzr": "bzr",
+    "fossil": "fossil",
+    "darcs": "darcs"
+  },
+  "run_intents": {
+    "git": {
+      "status": "status",
+      "diff": "diff",
+      "log": "log",
+      "reflog": "log",
+      "blame": "other",
+      "show": "diff",
+      "add": "other",
+      "rm": "other",
+      "shortlog": "log",
+      "branch": "other",
+      "checkout": "other",
+      "switch": "other",
+      "merge": "other",
+      "rebase": "other",
+      "reset": "other",
+      "stash": "other",
+      "fetch": "other",
+      "pull": "log",
+      "push": "log",
+      "remote": "other",
+      "tag": "other",
+      "cherry-pick": "other",
+      "revert": "other",
+      "bisect": "other",
+      "restore": "other",
+      "clean": "other",
+      "submodule": "other",
+      "worktree": "other",
+      "grep": "other"
+    },
+    "svn": {
+      "status": "status",
+      "st": "status",
+      "diff": "diff",
+      "log": "log",
+      "info": "status",
+      "blame": "log",
+      "annotate": "log",
+      "add": "other",
+      "delete": "other",
+      "move": "other",
+      "copy": "other",
+      "commit": "log",
+      "update": "status",
+      "checkout": "other",
+      "revert": "other",
+      "merge": "log",
+      "switch": "other",
+      "resolve": "other",
+      "cleanup": "other",
+      "propget": "other",
+      "proplist": "other",
+      "list": "other",
+      "cat": "other",
+      "mkdir": "other",
+      "export": "other",
+      "import": "other",
+      "lock": "other",
+      "unlock": "other",
+      "relocate": "other",
+      "propset": "other"
+    },
+    "hg": {
+      "status": "status",
+      "st": "status",
+      "diff": "diff",
+      "log": "log",
+      "summary": "status",
+      "annotate": "log",
+      "add": "other",
+      "remove": "other",
+      "rename": "other",
+      "commit": "log",
+      "update": "status",
+      "branch": "other",
+      "pull": "log",
+      "push": "log",
+      "graft": "other",
+      "histedit": "other",
+      "rebase": "other",
+      "shelve": "other",
+      "unshelve": "other",
+      "revert": "other",
+      "cat": "other",
+      "heads": "log",
+      "outgoing": "log",
+      "incoming": "log",
+      "backout": "other",
+      "uncommit": "other",
+      "forget": "other",
+      "parents": "log",
+      "tip": "log",
+      "tag": "other",
+      "tags": "log",
+      "clone": "log",
+      "branches": "log",
+      "merge": "other",
+      "rollback": "other",
+      "phase": "other",
+      "bookmarks": "other",
+      "copy": "other",
+      "move": "other",
+      "purge": "other",
+      "archive": "other",
+      "verify": "other",
+      "identify": "other",
+      "paths": "other",
+      "config": "other",
+      "summarize": "status",
+      "transplant": "other"
+    },
+    "p4": {
+      "opened": "status",
+      "changes": "status",
+      "describe": "log",
+      "diff": "diff",
+      "branch": "other",
+      "submit": "other",
+      "sync": "status",
+      "edit": "other",
+      "add": "other",
+      "delete": "other",
+      "revert": "other",
+      "integrate": "other",
+      "resolve": "other",
+      "reconcile": "other",
+      "shelve": "other",
+      "unshelve": "other",
+      "files": "status",
+      "client": "other",
+      "fstat": "other",
+      "print": "other",
+      "filelog": "log",
+      "workspaces": "other",
+      "where": "other",
+      "info": "other",
+      "have": "status",
+      "label": "other",
+      "labels": "log",
+      "dirs": "other",
+      "users": "other",
+      "move": "other",
+      "copy": "other",
+      "branches": "other",
+      "tag": "other",
+      "passwd": "other",
+      "protect": "other",
+      "triggers": "other",
+      "depot": "other",
+      "diff2": "diff"
+    },
+    "cvs": {
+      "status": "status",
+      "diff": "diff",
+      "log": "log",
+      "annotate": "log",
+      "history": "log",
+      "add": "other",
+      "remove": "other",
+      "commit": "log",
+      "update": "status",
+      "checkout": "other",
+      "tag": "log",
+      "edit": "other",
+      "unedit": "other",
+      "release": "other"
+    },
+    "bzr": {
+      "status": "status",
+      "diff": "diff",
+      "missing": "status",
+      "log": "log",
+      "add": "other",
+      "remove": "other",
+      "commit": "log",
+      "update": "status",
+      "branch": "log",
+      "pull": "log",
+      "push": "log",
+      "merge": "log",
+      "resolve": "other",
+      "revert": "other"
+    },
+    "fossil": {
+      "status": "status",
+      "diff": "diff",
+      "changes": "status",
+      "timeline": "log",
+      "add": "other",
+      "rm": "other",
+      "commit": "log",
+      "update": "status",
+      "sync": "log",
+      "checkout": "other",
+      "merge": "log",
+      "stash": "log",
+      "undo": "log",
+      "tag": "other"
+    },
+    "darcs": {
+      "whatsnew": "status",
+      "status": "status",
+      "diff": "diff",
+      "log": "log",
+      "changes": "log",
+      "record": "log",
+      "pull": "log",
+      "push": "log",
+      "rebase": "other",
+      "add": "other",
+      "remove": "other",
+      "revert": "other",
+      "tag": "other",
+      "amend": "log",
+      "amend-record": "log",
+      "obliterate": "other"
+    },
+    "gh": {
+      "pr": "other",
+      "issue": "other",
+      "run": "other",
+      "api": "other",
+      "auth": "other",
+      "repo": "other",
+      "actions": "other",
+      "deploy": "other",
+      "secret": "other",
+      "release": "other",
+      "gist": "other",
+      "workflow": "other"
+    },
+    "glab": {
+      "mr": "other",
+      "issue": "other",
+      "repo": "other",
+      "auth": "other",
+      "ci": "other",
+      "pipeline": "other",
+      "release": "other"
+    },
+    "az": {
+      "repos": "other"
+    },
+    "bitbucket": {
+      "pr": "other",
+      "issue": "other",
+      "repo": "other"
+    },
+    "repo": {
+      "status": "status",
+      "sync": "log",
+      "upload": "log",
+      "start": "other",
+      "stage": "other",
+      "checkout": "other",
+      "forall": "other",
+      "diff": "diff",
+      "branches": "other",
+      "list": "other",
+      "init": "other"
+    },
+    "gerrit": {
+      "query": "log",
+      "ls-projects": "other",
+      "review": "other",
+      "push": "log",
+      "checkout": "status"
+    }
+  }
+}

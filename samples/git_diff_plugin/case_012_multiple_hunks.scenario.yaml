@@ -1,0 +1,15 @@
+scenario: 'Git diff 展示两个相邻的 hunk：第一个 hunk 在文件末尾添加 subtract 函数，第二个 hunk 修改 multiply 函数的参数名。'
+target_capability: '多个 hunk 的 diff 压缩'
+expected_keep: 'diff --git a/src/main.rs b/src/main.rs, @@ -1,4 +1,5 @@, @@ -3,3 +4,3 @@'
+expected_compress: "fn main() { println!(\"Hello, TokenSlim!\"); }, fn add(a: i32, b: i32) -> i32 { a + b }, fn multiply(a: i32, b: i32) -> i32 { a * b }"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4ea9ee820662f7e7e086700bc81b38f27cfcd6852f5bd099ec01b22af6e0998f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

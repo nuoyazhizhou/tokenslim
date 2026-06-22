@@ -1,0 +1,15 @@
+scenario: 'SQL查询语句中包含Unicode汉字和拉丁扩展字符（如''漢字''和''éçà''）的LIKE条件，测试特殊字符的保留能力。'
+target_capability: '特殊字符保留'
+expected_keep: 'SELECT * FROM users WHERE name LIKE ''%漢字%'' OR name LIKE ''%éçà%'';'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cff3e452aa261bf494807a3cf2c205a2df12e0054d69b91adf650735d0b312b2'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:01:23.714766'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

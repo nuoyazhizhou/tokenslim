@@ -1,0 +1,15 @@
+scenario: '一段不包含任何 webpack 或 vite 模式、无错误或警告的普通日志文本，用于验证插件在无匹配模式时保持原样不压缩。'
+target_capability: '无匹配模式时保持原样'
+expected_keep: 'This is a simple log message without any webpack or vite patterns.'
+expected_compress: ''
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8dd01f8f2adc0237c430d4124e14aaeef178566f129cb78968cde1ffd154cabd'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:47:16.207306'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

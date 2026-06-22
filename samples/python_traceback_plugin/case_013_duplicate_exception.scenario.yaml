@@ -1,0 +1,15 @@
+scenario: 'Python 应用连续抛出三次 KeyError 异常，每次异常消息不同但堆栈结构完全相同，属于重复异常场景。'
+target_capability: '重复异常折叠'
+expected_keep: "Traceback (most recent call last):, KeyError, File \"app.py\", line 10, in <module>"
+expected_compress: 'raise KeyError(''missing_key''), raise KeyError(''another_missing_key''), raise KeyError(''third_missing_key'')'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e4b850e834a058da2309487184d45b17bd958d25c53aaa33af3a3353f15621a5'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:49:19.411694'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

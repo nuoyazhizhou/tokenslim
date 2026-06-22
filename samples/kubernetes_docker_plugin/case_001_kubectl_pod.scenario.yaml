@@ -1,0 +1,15 @@
+scenario: 'Kubectl 命令输出展示两个 Pod（nginx 和 redis）的状态，包括就绪状态、运行状态、重启次数和运行时长。'
+target_capability: 'K8S Pod 状态保留'
+expected_keep: 'nginx   1/1     Running   0          5m'
+expected_compress: 'redis   1/1     Running   1          2h'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'efc87e790be5d20d596e80e849fb28d7382b74fd7896384362cdb0884d26dd5a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:35:36.869592'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

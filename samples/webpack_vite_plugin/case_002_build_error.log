@@ -1,0 +1,16 @@
+ERROR in ./src/App.jsx 12:15
+Module parse failed: Unexpected token (12:15)
+File was processed with these loaders:
+ * ./node_modules/babel-loader/lib/index.js
+You may need an additional loader to handle the result of these loaders.
+|   return (
+|     <div className="app">
+>       {users.map(user => <User key={user.id} {...user} />)}
+|     </div>
+|   );
+
+ERROR in ./src/utils/api.js 5:20
+Cannot find module '../config' or its corresponding type declarations.
+ @ ./src/App.jsx 3:0-30
+
+webpack 5.90.3 compiled with 2 errors

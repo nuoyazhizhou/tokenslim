@@ -1,0 +1,15 @@
+scenario: '一个简单的 Git diff，展示在空文件中添加一行代码的变更，包含文件路径和 hunk header。'
+target_capability: 'Git diff 脱水：保留 header 和 hunk header'
+expected_keep: "diff --git a/src/main.rs b/src/main.rs, @@ -0,0 +1 @@, +fn main() { println!(\"Hello, world!\"); }"
+expected_compress: 'index e69de29..d00491f 100644, --- a/src/main.rs, +++ b/src/main.rs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'fffbda2d82c08202202a46b85939605db0666193a89f8a68c6951df2d265f15b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:51:44.992381'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

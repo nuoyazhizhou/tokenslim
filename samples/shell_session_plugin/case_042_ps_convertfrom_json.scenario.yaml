@@ -1,0 +1,15 @@
+scenario: 'PowerShell 会话中，用户通过管道将 JSON 字符串传递给 ConvertFrom-Json 命令，并显示解析后的表格输出。'
+target_capability: '命令与输出保留'
+expected_keep: 'ConvertFrom-Json, name value, test   123'
+expected_compress: "PS C:\\> , ---- -----"
+source: 'llm'
+generated_at: '2026-06-08T15:40:55Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'b67202de902e493b992ae34dfa46b2ed8b055f4c154cd0eb83e456ea63ec83a0'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:56:39.118977'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

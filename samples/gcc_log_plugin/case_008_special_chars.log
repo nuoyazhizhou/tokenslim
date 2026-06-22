@@ -1,0 +1,9 @@
+In file included from main.c:5:
+/home/user/include/utils.h:23: note: previous declaration of 'process_data'
+main.c: In function 'main':
+main.c:45:3: warning: 'handle_event' is deprecated
+main.c:58:10: error: undefined reference to 'init_module'
+/usr/bin/ld: /tmp/ccXYZ.o: in function 'main':
+main.c:(.text+0x15f): undefined reference to 'init_module'
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:42: app] Error 1

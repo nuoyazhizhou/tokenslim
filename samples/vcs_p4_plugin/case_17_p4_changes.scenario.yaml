@@ -1,0 +1,15 @@
+scenario: 'P4 changes 命令输出，展示多个 pending changelist 的编号、作者、日期和描述。'
+target_capability: 'changelist 摘要保留'
+expected_keep: 'Change 12345, Change 12344, Change 12343'
+expected_compress: '2026/04/03, 2026/04/02, 2026/04/01'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '25e90bb8d27e467af1d16058388bdaf3961c67e883ae358e6cdb765f8810d643'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

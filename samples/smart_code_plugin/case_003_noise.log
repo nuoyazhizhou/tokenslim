@@ -1,0 +1,5 @@
+[INFO] 2024-01-15 10:30:45 Loading code
+function foo() {
+    return 42;
+}
+[DEBUG] 2024-01-15 10:30:46 Code loaded

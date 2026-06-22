@@ -1,0 +1,15 @@
+scenario: 'CVS 更新操作，展示文件状态（U、?）和新增目录忽略信息。'
+target_capability: 'CVS 状态码保留与噪音压缩'
+expected_keep: 'cvs update -d, U src/main.rs, ? docs/api_reference.md'
+expected_compress: 'cvs update: Updating src, cvs update: Updating tests, cvs update: New directory `src/auth'' - ignored'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5a5c6fb2162268bf5b5c9c98fb60acefa19c707267f71f5e75b808540b1dfef4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:10:37.840290'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

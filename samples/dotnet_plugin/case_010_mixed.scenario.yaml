@@ -1,0 +1,15 @@
+scenario: '一个 .NET 项目的构建和测试过程，包含警告、构建成功信息和测试结果。'
+target_capability: '构建日志脱水与错误保留'
+expected_keep: 'warning CS0169: The field ''User.id'' is never used'
+expected_compress: 'Build started..., Build succeeded., Running tests...'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '9cdd8760980ab580e6c04d82c2041b9136c1ae0d50c57e498024cb1adf75d9ec'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

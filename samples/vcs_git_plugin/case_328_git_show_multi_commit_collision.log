@@ -1,0 +1,12 @@
+git show
+commit aaaaaaaaaab1111111111111111111111111111111
+Author: alice.chen <alice.chen@example.com>
+Date:   Tue Apr 29 09:28:41 2026 +0800
+
+    feat: first colliding show commit
+
+commit aaaaaaaaaac2222222222222222222222222222222
+Author: bob.wang <bob.wang@example.com>
+Date:   Tue Apr 29 09:30:12 2026 +0800
+
+    feat: second colliding show commit

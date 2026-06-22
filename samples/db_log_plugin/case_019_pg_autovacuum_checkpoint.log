@@ -1,0 +1,4 @@
+2026-05-13 09:03:01.000 UTC [8111] LOG:  automatic vacuum of table "shop.public.orders": index scans: 1
+2026-05-13 09:03:02.000 UTC [8112] LOG:  checkpoint starting: time
+2026-05-13 09:03:07.000 UTC [8112] LOG:  checkpoint complete: wrote 812 buffers (5.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=4.812 s, sync=0.092 s, total=5.104 s
+2026-05-13 09:03:08.000 UTC [8113] WARNING:  terminating connection because of crash of another server process

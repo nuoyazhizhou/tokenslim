@@ -1,0 +1,15 @@
+scenario: '阿里云SLS日志服务导出的CSV格式Nginx访问日志，包含健康检查（GET /health）和错误请求（POST /api/upload 500），需要剥离CSV外壳并压缩时间戳等字段。'
+target_capability: '云日志外壳剥离与字段压缩'
+expected_keep: 'GET /health HTTP/1.1 200 12, POST /api/upload HTTP/1.1 500 42'
+expected_compress: '__time__,__source__,level,content, 1778661001, 1778661031'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '37aab7b12c0f886dad5b94fefccd3f1c33e39b5fa97b769ab72c42200b1bade4'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

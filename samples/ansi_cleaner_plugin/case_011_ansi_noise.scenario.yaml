@@ -1,0 +1,15 @@
+scenario: '一个应用程序启动过程中输出含有ANSI颜色控制码的日志，包括绿色初始化消息、黄色配置加载消息和红色错误消息，以及清屏序列。'
+target_capability: 'ANSI转义序列清理'
+expected_keep: 'Starting application..., Initializing..., Error: Missing config file'
+expected_compress: "\\x1b[J, \\x1b[H, \\x1b[32m, \\x1b[0m, \\x1b[33m, \\x1b[31m, \\x1b[K"
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f7518286ed9a4828a311ecfcdcc0241b611701c725eb5c6d68881d610bb28729'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:36:28.084693'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

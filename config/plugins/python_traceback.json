@@ -1,0 +1,49 @@
+{
+    "name": "python_traceback",
+    "description": "Python 堆栈跟踪脱水",
+    "priority": 160,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "Traceback (most recent call last):",
+                    "File \"",
+                    "in <module>",
+                    "Python ",
+                    "Error:",
+                    "Exception:"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.15
+    },
+    "compress": {
+        "token_prefix": "$PY",
+        "path_patterns": [
+            "File \"[^\"]+\", line \\d+",
+            "/site-packages/",
+            "/lib/python\\d+\\.\\d+/"
+        ],
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "keep_signals": [
+        "Traceback (most recent call last): 头部",
+        "内置异常类名（如 Exception, ValueError 等）",
+        "错误消息行（如 ValueError: invalid literal）",
+        "文件路径和行号（如 File \"...\", line ..., in ...）",
+        "异常链中的连接信息（如直接原因、上下文等）"
+    ],
+    "compress_targets": [
+        "重复的异常堆栈（超过阈值替换为 [DUPLICATE] 标记）",
+        "深层堆栈帧（超过阈值截断为 [...]）",
+        "文件路径（替换为 $PY|FL| 令牌并使用字典）",
+        "异常类型和消息（替换为 $PY|EX| 令牌并使用字典）",
+        "链式异常计数摘要（多个异常合并为 [CHAINED] 计数）"
+    ],
+    "design_intent": "Python异常脱水：保留异常类型和关键堆栈信息，折叠重复异常和深层堆栈，压缩路径和异常消息。"
+}

@@ -1,0 +1,38 @@
+hg histedit
+# Edit history between abc1234 and def5678
+#
+# Commits are listed from least to most recent
+#
+# You can reorder changesets by reordering the lines
+#
+# Commands:
+#
+#  e, edit = use commit, but stop for amending
+#  m, mess = edit commit message without changing commit content
+#  p, pick = use commit
+#  b, base = checkout changeset and apply further changesets from there
+#  d, drop = remove commit from history
+#  f, fold = use commit, but combine it with the one above
+#  r, roll = like fold, but discard this commit's description and date
+#
+
+pick abc1234 feat: Add login feature
+pick def5678 fix: Fix login bug
+pick ghi9012 feat: Add user registration
+pick jkl3456 fix: Fix registration validation
+pick mno7890 feat: Add password reset
+pick pqr1234 fix: Fix password reset email
+pick stu5678 feat: Add profile page
+pick vwx9012 fix: Fix profile image upload
+pick yza3456 feat: Add settings page
+pick bcd7890 fix: Fix settings save
+pick efg1234 feat: Add logging system
+pick hij5678 fix: Fix log rotation
+pick klm9012 feat: Add dashboard UI
+pick nop3456 fix: Fix dashboard layout
+pick qrs7890 feat: Add user profile UI
+pick tuv1234 fix: Fix profile validation
+pick wxy5678 feat: Add settings UI
+pick zab9012 fix: Fix settings form
+pick cde3456 feat: Add API endpoints
+pick fgh7890 fix: Fix API error handling

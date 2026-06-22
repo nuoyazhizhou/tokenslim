@@ -1,0 +1,20 @@
+darcs log --summary -l 3
+patch a1b2c3d4e5f67890
+Author: Alice Chen <alice@example.com>
+Date:   Fri Apr 11 14:30:00 2026 +0800
+  * Refactor main entry point
+    M ./src/main.rs +5
+
+patch b4c5d6e7f8g90123
+Author: Bob Wang <bob@example.com>
+Date:   Thu Apr 10 09:15:00 2026 +0800
+  * Add configuration loader
+    A ./src/lib/config.rs
+    M ./src/main.rs +3 -1
+
+patch c7d8e9f0a1b23456
+Author: Alice Chen <alice@example.com>
+Date:   Wed Apr 09 16:45:00 2026 +0800
+  * Initial project structure
+    A ./src/main.rs
+    A ./src/lib/utils.rs

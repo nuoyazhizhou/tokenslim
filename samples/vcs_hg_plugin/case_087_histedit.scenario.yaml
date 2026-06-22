@@ -1,0 +1,15 @@
+scenario: '用户执行 hg histedit 命令，编辑历史提交，列出了从 abc1234 到 def5678 之间的提交，并显示可用的编辑命令（pick、edit、mess 等），随后是一系列 pick 操作和提交信息。'
+target_capability: 'histedit 命令处理'
+expected_keep: 'pick abc1234 feat: Add login feature'
+expected_compress: '# Edit history between abc1234 and def5678'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '099ff84ec4988e89748f46d79143a72ee824c4c5513a0ade7164723c352d4e8e'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

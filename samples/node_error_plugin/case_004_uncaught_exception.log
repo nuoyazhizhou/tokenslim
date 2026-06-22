@@ -1,0 +1,6 @@
+Uncaught Exception: Error: Something went wrong
+    at doSomething (/home/user/project/utils.js:15:10)
+    at process (/home/user/project/index.js:20:5)
+    at Object.<anonymous> (/home/user/project/index.js:25:1)
+    at Module._compile (internal/modules/cjs/loader.js:778:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:789:10)

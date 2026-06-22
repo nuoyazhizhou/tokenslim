@@ -1,0 +1,15 @@
+scenario: '用户使用 Azure DevOps CLI 创建名为 my-new-repo 的 Git 仓库，指定项目 MyProject，成功返回仓库 URL。'
+target_capability: '创建结果保留与URL压缩'
+expected_keep: 'az repos create --name my-new-repo --project MyProject --source-control Git, ✓ Repository created: https://dev.azure.com/org/MyProject/_git/my-new-repo'
+expected_compress: '无'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a2c7c42c8fa9ca11f0357facfe05d0a227a384301858bea8a650d6a1f39d231c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:07:55.691606'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

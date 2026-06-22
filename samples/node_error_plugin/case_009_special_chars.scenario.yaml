@@ -1,0 +1,15 @@
+scenario: 'Node.js 脚本因语法错误崩溃，堆栈中包含中文文件名和路径，测试插件对特殊字符（如中文）的处理。'
+target_capability: '特殊字符路径保留'
+expected_keep: 'SyntaxError, Invalid or unexpected token, 行号3'
+expected_compress: "/home/user/project/测试文件.js, console.log(\"测试\"), ^"
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '763720c1314082adb1b279a05b58dcaf75c33a31a306617da18ba8fb74f16e23'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:39:55.895490'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

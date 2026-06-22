@@ -1,0 +1,31 @@
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running com.example.FooTest
+[INFO] Tests run: 50, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.345 s - in com.example.FooTest
+[INFO] Running com.example.BarTest
+[INFO] Tests run: 70, Failures: 3, Errors: 0, Skipped: 2, Time elapsed: 3.456 s - in com.example.BarTest
+[ERROR] Tests run: 70, Failures: 3, Errors: 0, Skipped: 2, Time elapsed: 3.456 s <<< FAILURE! - in com.example.BarTest
+[ERROR] testDivideByZero(com.example.BarTest)  Time elapsed: 0.001 s  <<< FAILURE!
+java.lang.AssertionError: Expected exception: java.lang.ArithmeticException
+	at org.junit.Assert.fail(Assert.java:88)
+	at com.example.BarTest.testDivideByZero(BarTest.java:42)
+
+[ERROR] testNullPointer(com.example.BarTest)  Time elapsed: 0.002 s  <<< FAILURE!
+java.lang.NullPointerException
+	at com.example.BarTest.testNullPointer(BarTest.java:50)
+
+[ERROR] testInvalidInput(com.example.BarTest)  Time elapsed: 0.001 s  <<< FAILURE!
+java.lang.IllegalArgumentException: Invalid input
+	at com.example.BarTest.testInvalidInput(BarTest.java:58)
+
+[INFO] 
+[INFO] Results:
+[INFO] 
+[ERROR] Failures: 
+[ERROR]   BarTest.testDivideByZero:42 Expected exception: java.lang.ArithmeticException
+[ERROR]   BarTest.testNullPointer:50 NullPointerException
+[ERROR]   BarTest.testInvalidInput:58 IllegalArgumentException: Invalid input
+[INFO] 
+[ERROR] Tests run: 120, Failures: 3, Errors: 0, Skipped: 2
+[INFO] 

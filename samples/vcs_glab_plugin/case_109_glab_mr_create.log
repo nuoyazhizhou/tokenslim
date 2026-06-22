@@ -1,0 +1,4 @@
+glab mr create --title "feat: Add new feature" --description "This is a new feature" --target-branch main --source-branch feature-xyz
+Creating merge request for feature-xyz -> main
+Merge request created: !456
+URL: https://gitlab.com/owner/repo/-/merge_requests/456

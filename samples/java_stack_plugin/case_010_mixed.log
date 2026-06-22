@@ -1,0 +1,7 @@
+2024-01-15 10:30:45 INFO  [main] Starting application...
+2024-01-15 10:30:46 DEBUG [main] Loading configuration
+Exception in thread "main" java.lang.NullPointerException
+    at com.example.app.Service.init(Service.java:34)
+    at com.example.app.App.start(App.java:56)
+    at com.example.app.App.main(App.java:23)
+2024-01-15 10:30:47 ERROR [main] Application failed to start

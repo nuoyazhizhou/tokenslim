@@ -1,0 +1,17 @@
+{
+  "name": "ERB",
+  "slice_type": "ERBTemplate",
+  "priority": 100,
+  "description": "ERB (Ruby) 模板语法检测配置",
+  "rules": [
+    {
+      "type": "any",
+      "patterns": [
+        {"pattern_type": "paired_delimiters", "pattern": "<%", "end_delimiter": "%>"},
+        {"pattern_type": "paired_delimiters", "pattern": "<%=", "end_delimiter": "%>"},
+        {"pattern_type": "paired_delimiters", "pattern": "<%-", "end_delimiter": "%>"},
+        {"pattern_type": "paired_delimiters", "pattern": "<%#", "end_delimiter": "%>"}
+      ]
+    }
+  ]
+}

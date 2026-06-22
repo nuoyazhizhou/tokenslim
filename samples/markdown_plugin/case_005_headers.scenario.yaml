@@ -1,0 +1,15 @@
+scenario: 'Markdown 文档包含从一级到六级的所有标题层级，用于测试标题结构的保留能力。'
+target_capability: '标题层级保留'
+expected_keep: '# Level 1, ## Level 2, ### Level 3'
+expected_compress: '无压缩目标'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '207a9408575bda70133694b977abed141d8a681ad9c2e0a9288f091cde6d31e3'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:36:33.523397'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

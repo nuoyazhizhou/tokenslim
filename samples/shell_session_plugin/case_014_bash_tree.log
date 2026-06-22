@@ -1,0 +1,17 @@
+user@host:~$ tree src/
+src/
+├── main.rs
+├── lib.rs
+├── config
+│   ├── mod.rs
+│   └── settings.rs
+├── plugins
+│   ├── mod.rs
+│   ├── parser.rs
+│   └── shell_session.rs
+└── utils
+    ├── helpers.rs
+    └── logger.rs
+
+3 directories, 9 files
+user@host:~$ 

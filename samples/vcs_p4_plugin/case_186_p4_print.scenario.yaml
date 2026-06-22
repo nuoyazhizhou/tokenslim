@@ -1,0 +1,15 @@
+scenario: '用户执行 p4 print 命令查看 //depot/main/src/main.rs 文件内容，输出包含 depot 路径、版本信息（#2 edit）和文件内容。'
+target_capability: 'P4 文件打印输出压缩'
+expected_keep: '//depot/main/src/main.rs, #2 - edit 2026/04/08 14:30:21 by alice, fn main()'
+expected_compress: 'p4 print //depot/main/src/main.rs, ... #2 - edit 2026/04/08 14:30:21 by alice'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a61a69c9b669bc947b3ec5b71968e95c27c2f96286dca9fe205851fa3203d70f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

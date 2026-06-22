@@ -1,0 +1,4 @@
+gerrit review 123456,1 --code-review=2 --label "Verified=1"
+Labels are now set for change 123456:
+  Code-Review+2 (alice)
+  Verified+1 (alice)

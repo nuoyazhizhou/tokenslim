@@ -1,0 +1,15 @@
+scenario: '空输入边界测试 — 输入为空，验证插件对空内容的处理'
+target_capability: '空输入边界处理'
+expected_keep: '(无 — 空输入无内容保留)'
+expected_compress: '(无 — 空输入无内容压缩)'
+source: 'manual'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T23:57:45.510882'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

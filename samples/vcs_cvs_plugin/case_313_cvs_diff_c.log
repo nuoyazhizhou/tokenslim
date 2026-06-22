@@ -1,0 +1,18 @@
+cvs diff -c
+Index: src/main.rs
+RCS file: /cvsroot/project/src/main.rs,v
+retrieving revision 1.5
+diff -c -r1.5 main.rs
+*** src/main.rs	11 Apr 2026 14:30:00 -0000	1.5
+--- src/main.rs	15 Apr 2026 10:00:00 -0000
+***************
+*** 10,15 ****
+--- 10,19 ----
+      let config = load_config();
+      println!("Config loaded");
++
++     let auth = Auth::new();
++     auth.initialize();
++
+      run_server(config);
+  }

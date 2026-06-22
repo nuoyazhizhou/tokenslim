@@ -1,0 +1,15 @@
+scenario: 'Android Gradle 构建失败，配置阶段出现 build.gradle 语法错误（compile 方法已废弃），同时有弃用警告和构建失败信息'
+target_capability: '错误保留与噪音压缩'
+expected_keep: 'FAILURE: Build failed, Could not find method compile, BUILD FAILED'
+expected_compress: 'Deprecated Gradle features, --warning-mode'
+source: 'llm'
+generated_at: '2026-06-09T08:05:12Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'ec46eaedbd5f70dcc9758b01ae1a19044b9b588594786a3db03be5785e72f481'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T00:32:02.438647'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

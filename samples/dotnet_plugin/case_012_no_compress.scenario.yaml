@@ -1,0 +1,15 @@
+scenario: '一个 .NET 构建成功，输出 ''Build succeeded.'' 以及 ''0 Warning(s)'' 和 ''0 Error(s)'' 的简洁日志。'
+target_capability: '不压缩场景'
+expected_keep: 'Build succeeded.'
+expected_compress: '0 Warning(s)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '28c542d3776f4623a96f49fb37314559ba7475fae12339b8199f550df26dfcef'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:47:41.929842'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

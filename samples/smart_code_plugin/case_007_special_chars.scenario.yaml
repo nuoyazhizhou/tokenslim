@@ -1,0 +1,15 @@
+scenario: '包含中文变量名和函数名的 JavaScript 代码片段，测试插件对非 ASCII 标识符的处理。'
+target_capability: '非 ASCII 标识符保留'
+expected_keep: 'function, const, console.log'
+expected_compress: '函数, 变量, 漢字'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '80afcfc81a43e58e8b63ffc2444c84dbba14dfbb4102e86b4dedd399064eb596'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:58:11.950828'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 `p4 dirs` 命令列出 Perforce 仓库中的目录，输出为 depot 路径列表。'
+target_capability: '路径字典压缩'
+expected_keep: '//depot/main/src/'
+expected_compress: 'p4 dirs'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '60cf8a96545893d2cd58f2b4b54d1d92c1d1c8e0a2434b0aad7b31faeddc9020'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:31:01.560316'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

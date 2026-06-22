@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.8, pytest-8.1.1, pluggy-1.5.0
+rootdir: /repo/shop
+collected 3 items
+
+tests/test_auth.py::test_login PASSED                                  [ 33%]
+tests/test_auth.py::test_logout PASSED                                 [ 66%]
+tests/test_auth.py::test_invalid_password FAILED                       [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_invalid_password _____________________________
+    def test_invalid_password():
+>       assert login("user", "wrong") is False
+E       AssertionError: assert True is False
+tests/test_auth.py:42: AssertionError
+
+=========================== short test summary info ============================
+FAILED tests/test_auth.py::test_invalid_password - AssertionError: assert True is False
+========================= 1 failed, 2 passed in 1.23s ==========================

@@ -1,0 +1,15 @@
+scenario: 'GCC 编译过程中出现未定义引用错误，链接器报错，最终 make 构建失败。'
+target_capability: '编译错误保留与路径压缩'
+expected_keep: 'undefined reference to ''init_module'', error: ld returned 1 exit status, make: *** [Makefile:42: app] Error 1'
+expected_compress: 'In file included from main.c:5:, /home/user/include/utils.h:23: note: previous declaration of ''process_data'', main.c: In function ''main'':'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'edc1e35a293032e6dbc09947f08b710991b336549c9764c10e99b66c61bdc0af'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-09T23:57:45.510882'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

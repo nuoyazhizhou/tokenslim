@@ -1,0 +1,15 @@
+scenario: '用户使用 darcs obliterate 命令删除匹配作者 alice 的 3 个补丁，并确认删除操作。'
+target_capability: 'darcs obliterate 命令处理与补丁删除确认'
+expected_keep: "darcs obliterate --match \"author alice\", Deleted 3 patches"
+expected_compress: 'About to delete 3 patches:, abc1234: Add feature A, def5678: Fix bug B, ghi9012: Update docs, Really delete these patches? (yes/no): yes'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c2fe44b05e4075c279ae7ad8f8e6612995d7bf49dfc8f22772720bc8b76f114f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T06:11:34.763692'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

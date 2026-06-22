@@ -1,0 +1,26 @@
+svn propget
+Properties on 'src/core/doctor_workspace/methods.rs':
+  svn:eol-style
+    native
+  svn:keywords
+    Id
+  svn:mime-type
+    text/plain
+
+Properties on 'src/plugins/vcs_plugin/parser.rs':
+  svn:eol-style
+    native
+  svn:keywords
+    Id
+  custom:review-status
+    approved
+
+Properties on '.':
+  svn:ignore
+    target
+    *.local.json
+    .env
+  svn:global-ignores
+    *.o
+    *.pyc
+    __pycache__

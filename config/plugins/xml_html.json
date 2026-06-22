@@ -1,0 +1,34 @@
+{
+    "name": "xml_html",
+    "description": "XML and HTML structure compaction",
+    "priority": 150,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^\\s*<[a-zA-Z]"
+            },
+            {
+                "type": "regex",
+                "pattern": "^\\s*<!DOCTYPE"
+            }
+        ],
+        "min_match_ratio": 0.3
+    },
+    "compress": {
+        "token_prefix": "$XML",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "XML/HTML标签（如 <div>）",
+        "标签属性（如 class=\"example\"）",
+        "文本内容（标签之间的文字）"
+    ],
+    "compress_targets": [
+        "标签间的空白字符（换行、缩进等）"
+    ],
+    "design_intent": "XML/HTML脱水：保留标签结构和文本内容，折叠标签间的空白字符，压缩冗余空格。"
+}

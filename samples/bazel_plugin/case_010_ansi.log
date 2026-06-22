@@ -1,0 +1,3 @@
+bazel build //app:server
+[32mINFO: Analyzed target //app:server (8 packages loaded, 200 targets configured).[0m
+[32mINFO: Build completed successfully, 210 total actions[0m

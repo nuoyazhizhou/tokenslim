@@ -1,0 +1,15 @@
+scenario: 'YAML 文档中包含含有特殊字符（如 !@#$% 和冒号）的键和值，以及多行描述和序列。'
+target_capability: '特殊字符保留与序列折叠'
+expected_keep: "title: \"Special:chars!@#$%\""
+expected_compress: "tags: - \"test\" - \"special:value\""
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4fa8708e02f4de2fa30eaffadccdab7c0ad72f18d3828408947a1c5ea0fc913d'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:50:20.312472'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

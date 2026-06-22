@@ -1,0 +1,4 @@
+timestamp,message,severityLevel,cloud_RoleName,operation_Name
+2026-05-13T08:21:00Z,"worker started",Information,backend,TimerJob
+2026-05-13T08:21:30Z,"System.TimeoutException: dependency call timed out",Error,backend,Checkout
+2026-05-13T08:21:31Z,"retry scheduled for order 91",Warning,backend,Checkout

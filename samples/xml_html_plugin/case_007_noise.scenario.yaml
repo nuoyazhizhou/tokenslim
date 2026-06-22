@@ -1,0 +1,15 @@
+scenario: '解析XML文件时，日志包含解析过程信息（如起始、完成、耗时）和XML内容，XML结构包含根标签和元素，需要压缩冗余空白但保留标签和文本。'
+target_capability: 'XML结构保留与空白压缩'
+expected_keep: "<root>, <element>value</element>, <?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+expected_compress: 'Starting XML parser..., Parsing file: data.xml, Time taken: 12ms'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'e18d50219e99323bc449075b9b3599c04520e5377c632946f004e71248a43d2c'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:49:19.850763'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

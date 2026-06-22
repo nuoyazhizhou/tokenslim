@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="e2e.flaky.checkout" tests="12" failures="6" errors="0" skipped="0" time="98.610">
+  <testcase classname="e2e.checkout.desktop" name="test_card_payment_attempt_001" time="14.031"><failure message="timeout waiting for selector #payment-success">playwright.TimeoutError: timeout 10000ms waiting for selector #payment-success after POST /api/payments returned 202</failure></testcase>
+  <testcase classname="e2e.checkout.desktop" name="test_card_payment_attempt_002" time="14.114"><failure message="timeout waiting for selector #payment-success">playwright.TimeoutError: timeout 10000ms waiting for selector #payment-success after POST /api/payments returned 202</failure></testcase>
+  <testcase classname="e2e.checkout.desktop" name="test_card_payment_attempt_003" time="13.997"><failure message="timeout waiting for selector #payment-success">playwright.TimeoutError: timeout 10000ms waiting for selector #payment-success after POST /api/payments returned 202</failure></testcase>
+  <testcase classname="e2e.checkout.mobile" name="test_wallet_payment_attempt_001" time="7.251"><failure message="wallet callback never fired">expected window.__walletCallbackInvoked to become true for session sess_20260513_a</failure></testcase>
+  <testcase classname="e2e.checkout.mobile" name="test_wallet_payment_attempt_002" time="7.184"><failure message="wallet callback never fired">expected window.__walletCallbackInvoked to become true for session sess_20260513_b</failure></testcase>
+  <testcase classname="e2e.checkout.mobile" name="test_wallet_payment_attempt_003" time="7.222"><failure message="wallet callback never fired">expected window.__walletCallbackInvoked to become true for session sess_20260513_c</failure></testcase>
+  <testcase classname="e2e.checkout.desktop" name="test_saved_card_payment_attempt_001" time="5.310"/>
+  <testcase classname="e2e.checkout.desktop" name="test_saved_card_payment_attempt_002" time="5.201"/>
+  <testcase classname="e2e.checkout.desktop" name="test_saved_card_payment_attempt_003" time="5.228"/>
+  <testcase classname="e2e.checkout.mobile" name="test_paypal_redirect_001" time="6.983"/>
+  <testcase classname="e2e.checkout.mobile" name="test_paypal_redirect_002" time="6.977"/>
+  <testcase classname="e2e.checkout.mobile" name="test_paypal_redirect_003" time="5.112"/>
+</testsuite>

@@ -1,0 +1,4 @@
+svn revert -R src/core/
+Reverted src/core/
+Reverted src/core/methods.rs
+Reverted src/core/types.rs

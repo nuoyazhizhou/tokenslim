@@ -1,0 +1,3 @@
+gh pr view
+#22   feature/new-ui    open     Add dark mode support   alice   2026-04-05  build: #1234
+#22   feature/new-ui    merged  Add dark mode support   alice   2026-04-01  merge commit: abc123

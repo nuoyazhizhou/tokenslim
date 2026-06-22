@@ -1,0 +1,35 @@
+jenkins build api-main
+[Pipeline] Start of Pipeline
+[Pipeline] parallel
+[Pipeline] { (linux)
++ cargo test --lib
+   Compiling api v0.1.0 (/home/jenkins/workspace/api-main/api)
+    Finished test [unoptimized + debuginfo] target(s) in 12.34s
+     Running unittests src/lib.rs (target/debug/deps/api-abc123)
+test handlers::test_health_check ... ok
+test handlers::test_create_user ... ok
+test handlers::test_get_user ... ok
+test db::test_connection_pool ... ok
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+[Pipeline] }
+[Pipeline] { (windows)
++ cargo test --lib
+    Finished test [unoptimized + debuginfo] target(s) in 11.87s
+     Running unittests src/lib.rs (target/debug/deps/api-abc123.exe)
+test handlers::test_health_check ... ok
+test handlers::test_create_user ... ok
+test handlers::test_get_user ... ok
+test db::test_connection_pool ... ok
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+[Pipeline] }
+[Pipeline] { (macos)
++ cargo test --lib
+    Finished test [unoptimized + debuginfo] target(s) in 13.56s
+     Running unittests src/lib.rs (target/debug/deps/api-abc123)
+test handlers::test_health_check ... ok
+test handlers::test_create_user ... ok
+test handlers::test_get_user ... ok
+test db::test_connection_pool ... ok
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+[Pipeline] }
+Finished: SUCCESS

@@ -1,0 +1,15 @@
+scenario: '包含空格和Unicode字符的路径，测试特殊字符路径的压缩处理'
+target_capability: '特殊字符路径压缩'
+expected_keep: 'Path with spaces:'
+expected_compress: '/My Documents/file.txt'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '113d9ee84e8bb4f0dc1fe64dc6f2a5f5f3f350d2d37bb21efa255dcad5bc8144'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:59:04.521223'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: 'Helm 部署状态查询，展示 release 名称、命名空间、状态、版本号、部署时间及资源列表。'
+target_capability: 'Helm 状态输出字段保留与资源行去重'
+expected_keep: 'NAME: web, NAMESPACE: prod, deployment/web 3/3 3 3 10m'
+expected_compress: 'service/web ClusterIP 10.0.0.12 <none> 80/TCP 10m'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cbccbcd7d6e2cc61abdfb51926d697c830c9c4b77ee6bc6bd6ba4f1bd10682fb'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:52:50.355538'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

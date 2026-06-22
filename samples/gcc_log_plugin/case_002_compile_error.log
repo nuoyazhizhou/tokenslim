@@ -1,0 +1,6 @@
+gcc -c main.c -o main.o
+gcc -c utils.c -o utils.o
+main.c: In function 'main':
+main.c:23:10: error: invalid type argument of '->'
+main.c:23:10: error: 'ptr' undeclared
+make: *** [main.o] Error 1

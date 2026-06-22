@@ -1,0 +1,15 @@
+scenario: 'web_log_plugin 测试：Nginx 日志混入启动信息噪声，插件应保留日志行，压缩噪声行。'
+target_capability: '噪声诊断与过滤'
+expected_keep: 'GET / HTTP/1.1, GET /about HTTP/1.1'
+expected_compress: 'Nginx started successfully, Worker process started'
+source: 'llm'
+generated_at: '2026-06-09T08:05:15Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: ''
+  final_status: ''
+  llm_invoked: false
+  llm_verified_at: ''
+  last_audit_tool: ''
+  skip: false

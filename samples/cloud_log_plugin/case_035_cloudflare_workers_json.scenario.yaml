@@ -1,0 +1,15 @@
+scenario: 'Cloudflare Workers 日志，包含健康检查和 API 请求，其中一条返回 500 错误。'
+target_capability: '云日志外壳剥离与错误保留'
+expected_keep: 'GET /health HTTP/1.1 200 OK, POST /api/render HTTP/1.1 500 Internal Server Error'
+expected_compress: 'timestamp, rayID, scriptName'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '99cc62456ed9c8f789372161968220a4f178220a22839f4a640fc46f38444089'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T04:36:28.609404'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

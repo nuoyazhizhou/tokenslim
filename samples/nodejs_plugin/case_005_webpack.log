@@ -1,0 +1,4 @@
+webpack 5.88.0 compiled with 2 warnings in 2345ms
+WARNING in ./src/utils.js
+Module Warning (from ./node_modules/some-loader/index.js):
+Something went wrong

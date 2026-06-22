@@ -1,0 +1,15 @@
+scenario: 'TeamCity构建过程中，打包步骤出现弃用清单字段警告，发布制品成功，最终构建状态为成功但带有警告。'
+target_capability: 'TeamCity警告与构建状态保留'
+expected_keep: '##teamcity[message text=''Deprecated manifest field'' status=''WARNING''], ##teamcity[buildStatus status=''SUCCESS'' text=''Build finished with warnings'']'
+expected_compress: 'Creating release archive, Publishing artifacts to internal storage, Artifacts uploaded successfully'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'cff412f80c421d4f40f3973f35a0edfa8513142b1efb7982ae578ac6dc14f265'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

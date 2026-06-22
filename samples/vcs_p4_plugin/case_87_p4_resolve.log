@@ -1,0 +1,5 @@
+p4 resolve
+//depot/main/src/main.rs - resolved using 'merge'
+//depot/main/src/utils/helper.rs - resolved using 'theirs'
+//depot/main/config/app.json - skipped (text conflict)
+3 files resolved, 1 conflict remaining.

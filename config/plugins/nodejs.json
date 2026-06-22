@@ -1,0 +1,44 @@
+{
+    "name": "nodejs",
+    "description": "Node.js 日志脱水",
+    "priority": 180,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": [
+                    "node_modules",
+                    "npm ",
+                    "yarn ",
+                    "webpack",
+                    "TypeScript",
+                    "Error:",
+                    "at Object.<anonymous>"
+                ]
+            }
+        ],
+        "min_match_ratio": 0.1
+    },
+    "compress": {
+        "token_prefix": "$NODE",
+        "path_patterns": [
+            "node_modules/[\\w@/-]+",
+            "/\\.js/:\\d+:\\d+"
+        ],
+        "dedup": {
+            "enabled": true,
+            "threshold": 1
+        }
+    },
+    "keep_signals": [
+        "Error / TypeError 行",
+        "npm ERR! 行",
+        "WARN 行"
+    ],
+    "compress_targets": [
+        "npm 下载进度折叠",
+        "node_modules 路径压缩"
+    ],
+    "design_intent": "Node.js 运行时日志脱水：保留错误和 npm 错误，折叠下载进度。"
+}

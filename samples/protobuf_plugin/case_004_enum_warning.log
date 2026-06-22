@@ -1,0 +1,3 @@
+protoc --proto_path=proto --go_out=gen proto/status.proto
+proto/status.proto:12:3: warning: Enum value "UNKNOWN" should be zero.
+proto/status.proto:18:3: warning: Field "legacy_status" is deprecated.

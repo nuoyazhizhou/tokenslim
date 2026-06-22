@@ -1,0 +1,16 @@
+gh run view 106 --log
+::group::Matrix node=18 os=ubuntu
+Run npm test
+Tests: 142 passed, 142 total
+Process completed with exit code 0
+::endgroup::
+::group::Matrix node=20 os=ubuntu
+Run npm test
+Tests: 142 passed, 142 total
+Process completed with exit code 0
+::endgroup::
+::group::Matrix node=20 os=windows
+Run npm test
+Tests: 142 passed, 142 total
+Process completed with exit code 0
+::endgroup::

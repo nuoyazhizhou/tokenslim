@@ -1,0 +1,15 @@
+scenario: 'Node.js 应用抛出异常，堆栈跟踪包含多层调用，其中部分路径包含 node_modules 目录。'
+target_capability: '堆栈跟踪压缩'
+expected_keep: 'Error: Deep call stack'
+expected_compress: 'at step3 (/app/node_modules/lib/c.js:3:10)'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2c978a6a0877d68e4fecc1e217102eb3d0b94e898adb3ebfc00f370f101a8c97'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T05:42:03.830645'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

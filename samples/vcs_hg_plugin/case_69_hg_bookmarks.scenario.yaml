@@ -1,0 +1,15 @@
+scenario: '用户执行 ''hg bookmarks'' 命令查看书签列表，输出包含当前书签（feature/current）及其变更集ID，以及两个未激活书签（bugfix/old, release/v1.0）。'
+target_capability: '书签列表压缩'
+expected_keep: 'hg bookmarks, feature/current @ 12345abc, bugfix/old'
+expected_compress: 'release/v1.0'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '691723aec25615059ecc5d452548bd1bc53542297f8015314d929075baec387f'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:27:52.212537'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,39 @@
+{
+    "name": "json",
+    "description": "JSON structure compaction",
+    "priority": 150,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^\\s*\\{.*\\}\\s*$"
+            },
+            {
+                "type": "regex",
+                "pattern": "^\\s*\\[.*\\]\\s*$"
+            }
+        ],
+        "min_match_ratio": 0.3
+    },
+    "compress": {
+        "token_prefix": "$JSON",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "{ } 对象结构",
+        "[ ] 数组结构",
+        "数字/布尔/null 值",
+        "短字符串（长度≤max_string_val_len）",
+        "键名（未启用字典化时）"
+    ],
+    "compress_targets": [
+        "长字符串（长度>max_string_val_len）替换为字典令牌",
+        "键名（启用dictionaryize_keys时）替换为字典宏",
+        "JSON文本压缩为单行紧凑格式",
+        "短JSON通过ROI门控避免膨胀"
+    ],
+    "design_intent": "JSON脱水：保留JSON结构，折叠长字符串和路径，压缩为紧凑格式并添加前缀。"
+}

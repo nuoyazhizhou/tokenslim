@@ -1,0 +1,15 @@
+scenario: '用户执行 git reset --hard HEAD~1 回退到上一个提交，输出显示当前 HEAD 指向的提交哈希和提交信息。'
+target_capability: '提交哈希与提交信息保留'
+expected_keep: 'c7d8e9f Release v2.1.0'
+expected_compress: 'git reset --hard HEAD~1'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '307531047587a3161a92692b51329610f0823f1d647d18016b7077a0c95c87bf'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

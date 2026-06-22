@@ -1,0 +1,15 @@
+scenario: 'Azure Pipelines 构建日志：运行 npm install 和 npm test，测试失败返回 HTTP 500，导致 Bash 退出码 1，最终 Job 失败。'
+target_capability: '错误保留与步骤标记'
+expected_keep: '##[section]Starting: Build, ##[error]Bash exited with code ''1''., Job failed'
+expected_compress: 'added 900 packages in 30s, ##[command]npm ci, ##[command]npm test'
+source: 'llm'
+generated_at: '2026-06-09T08:05:13Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'aa4295ff21601bbe970eca63941811f1950dc5853e08212da0ee2306840568ad'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T01:15:29.050373'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,15 @@
+scenario: '用户执行 git branch 和 git branch -a 命令，列出本地和远程分支，输出包含当前分支标记（*）和远程引用（remotes/origin/HEAD -> origin/master 等）。'
+target_capability: '分支列表压缩与远程引用简化'
+expected_keep: 'master, feature-auth, feature-ui'
+expected_compress: 'remotes/origin/HEAD -> origin/master, remotes/origin/master, remotes/upstream/master'
+source: 'llm'
+generated_at: '2026-06-09T08:05:14Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a5b97f6dd4fecf337c19b4bc5827c92b95f543f3c1e2968245e9b21e43f5652a'
+  final_status: 'valid'
+  llm_invoked: true
+  llm_verified_at: '2026-06-10T07:23:31.334130'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

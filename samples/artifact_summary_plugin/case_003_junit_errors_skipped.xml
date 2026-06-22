@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="integration.database.replica" tests="7" failures="0" errors="2" skipped="2" time="45.903">
+  <testcase classname="integration.db.test_replica" name="test_replica_catches_up_after_failover" time="18.421">
+    <error message="TimeoutError: replica lag remained above 120 seconds">Traceback (most recent call last):
+  File "/builds/app/tests/integration/db/test_replica.py", line 87, in test_replica_catches_up_after_failover
+    wait_for_replica_lag(max_seconds=120)
+TimeoutError: replica lag remained above 120 seconds for cluster pg-prod-shadow</error>
+  </testcase>
+  <testcase classname="integration.db.test_replica" name="test_read_only_transaction_route" time="8.117"/>
+  <testcase classname="integration.db.test_migration" name="test_migration_lock_released" time="10.442">
+    <error message="psycopg.OperationalError: could not acquire advisory lock">OperationalError: could not acquire advisory lock 938818 for migration 202605130944_add_billing_indexes</error>
+  </testcase>
+  <testcase classname="integration.db.test_snapshot" name="test_snapshot_export" time="0.000">
+    <skipped message="requires nightly snapshot credentials"/>
+  </testcase>
+  <testcase classname="integration.db.test_snapshot" name="test_snapshot_restore" time="0.000">
+    <skipped message="requires nightly snapshot credentials"/>
+  </testcase>
+  <testcase classname="integration.db.test_pool" name="test_pool_rebalances_after_node_restart" time="4.561"/>
+  <testcase classname="integration.db.test_pool" name="test_pool_limits_idle_connections" time="4.362"/>
+</testsuite>

@@ -1,0 +1,33 @@
+{
+    "name": "vcs_bzr",
+    "description": "Bazaar 命令输出脱水",
+    "priority": 200,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": []
+            }
+        ],
+        "min_match_ratio": 0.05
+    },
+    "compress": {
+        "token_prefix": "$VCS_BZ"
+    },
+    "keep_signals": [
+        "bzr 命令锚点行（如 bzr status, bzr log）",
+        "文件状态行（modified, added 等）",
+        "reverted 行（格式化为 ST:R）",
+        "commit 行",
+        "pull/merge/push 行",
+        "警告/错误信息（map_bzr_alert）"
+    ],
+    "compress_targets": [
+        "噪音行（如进度条、统计信息等）",
+        "空行",
+        "重复 bzr 命令锚点（只保留第一个）",
+        "长路径状态文本（映射为短格式）"
+    ],
+    "design_intent": "Bazaar脱水：保留命令锚点和文件状态，折叠噪音和空行，压缩长路径状态。"
+}
