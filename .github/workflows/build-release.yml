@@ -304,7 +304,7 @@ jobs:
           npm --version
           node --version
           echo "--- tarball manifest ---"
-          tar -tzf "$TARBALL" | grep -E '(package.json|package/)' | head -5
+          tar -tzf "$TARBALL" | grep -E '(package.json|package/)' | sed -n '1,5p'
           tar -xzOf "$TARBALL" package/package.json
           echo "--- git remote npm will verify ---"
           git config --get remote.origin.url
