@@ -101,7 +101,7 @@ cargo build --release
 
 ### SDK
 
-- **Node.js / TypeScript** — `npm i tokenslim-sdk` (소스: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
+- **Node.js / TypeScript** — `npm i tokenslim` (소스: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
 - **Python** — [`sdk/python/tokenslim_sdk.py`](./sdk/python/tokenslim_sdk.py) (단일 파일 클라이언트)
 - **Java 11+** — [`sdk/java/TokenSlimClient.java`](./sdk/java/TokenSlimClient.java)
 
@@ -159,7 +159,7 @@ print(decompress(compressed, mode="ai-export"))
 
 ```javascript
 // Node.js
-const { compress, decompress } = require("tokenslim-sdk");
+const { compress, decompress } = require("tokenslim");
 const compressed = compress(fs.readFileSync("build.log", "utf8"));
 console.log(decompress(compressed, { mode: "ai-export" }));
 ```
@@ -192,7 +192,7 @@ TokenSlim은 실제 LLM 트래픽을 지배하는 입력을 다루는 **60+ 플�
 | Chrome | `chrome-extension/` | Stable |
 | JetBrains | `jetbrains-plugin/` | Stable |
 | Python SDK | `crates/tokenslim-py/` | Stable |
-| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim-sdk@0.1.0`) | Stable |
+| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.1.0`) | Stable |
 | Java SDK | `sdk/java/` | Stable |
 
 ## 아키텍처

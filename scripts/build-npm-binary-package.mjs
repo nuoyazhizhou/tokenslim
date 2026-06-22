@@ -117,32 +117,25 @@ async function main() {
     process.stderr.write(`copied ${from} → ${to}\n`);
   }
 
-  // 2. Stage the plugin configs.
+  // 2. Stage the complete config directory (plugins/ + frameworks/ +
+  // languages/ + root .toml/.json files).
   //
-  // The workflow passes `--config-dir config/plugins` (we only ship
-  // plugin configs in the binary, not `frameworks/` / `languages/` /
-  // root .toml files which are dev-tree-only).  We must preserve the
-  // `plugins/` basename so the staged tree is `pkgRoot/config/plugins/`
-  // — both the README (packages/cli-binary-linux-x64-gnu/README.md
-  // §"What's inside") and the runtime plugin loader
-  // (src/core/plugin_config_loader/mod.rs::find_config_dir, which only
-  // searches `config/plugins/` not `config/`) assume that layout.  An
-  // earlier revision used `copyDirContents(args.configDir, configDir)`
-  // here, which flattened the 67 plugin .json files directly under
-  // `pkgRoot/config/` — the resulting tgz had `package/config/*.json`
-  // and the runtime's `find_config_dir` returned the default fallback
-  // path that didn't exist on disk, so every installed binary loaded
-  // zero plugins.  This commit adds the `plugins/` segment back.
+  // The workflow passes `--config-dir config` and we copy the entire
+  // tree into `pkgRoot/config/`, preserving the directory structure.
+  // The runtime plugin loader
+  // (src/core/plugin_config_loader/mod.rs::find_config_dir) searches
+  // `config/plugins/` for plugin .json files, while frameworks/ and
+  // languages/ are used by other subsystems.  Root .toml files
+  // (plugins.toml, project_insight.toml, etc.) are also needed at
+  // runtime.  An earlier revision only shipped `config/plugins/` and
+  // treated frameworks/ + languages/ + root toml as "dev-tree-only",
+  // but they are in fact needed by the installed binary.
   const configDir = path.join(pkgRoot, "config");
   await rimraf(configDir);
   if (args.configDir) {
-    const stagedConfigDir = path.join(
-      configDir,
-      path.basename(args.configDir),
-    );
-    await copyDirContents(args.configDir, stagedConfigDir);
+    await copyDirContents(args.configDir, configDir);
     process.stderr.write(
-      `copied ${args.configDir} → ${stagedConfigDir}\n`,
+      `copied ${args.configDir} → ${configDir}\n`,
     );
   }
 

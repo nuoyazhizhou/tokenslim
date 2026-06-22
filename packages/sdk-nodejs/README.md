@@ -1,6 +1,6 @@
-# tokenslim-sdk
+# tokenslim
 
-[![npm version](https://img.shields.io/npm/v/tokenslim-sdk.svg)](https://www.npmjs.com/package/tokenslim-sdk)
+[![npm version](https://img.shields.io/npm/v/tokenslim.svg)](https://www.npmjs.com/package/tokenslim)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 Node.js / TypeScript SDK for [TokenSlim](https://github.com/nuoyazhizhou/tokenslim) — a high-performance Rust compression engine for LLM inputs.
@@ -10,11 +10,11 @@ Save **50%–95% tokens** on VCS logs, build output, runtime traces, and structu
 ## Install
 
 ```bash
-npm install tokenslim-sdk
+npm install tokenslim
 # or
-pnpm add tokenslim-sdk
+pnpm add tokenslim
 # or
-yarn add tokenslim-sdk
+yarn add tokenslim
 ```
 
 Requires Node.js **>= 18**.
@@ -33,7 +33,7 @@ docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
 ## Quickstart (10 lines)
 
 ```ts
-import { TokenSlimClient } from 'tokenslim-sdk';
+import { TokenSlimClient } from 'tokenslim';
 
 const client = new TokenSlimClient();              // default http://127.0.0.1:10086
 if (await client.isHealthy()) {
@@ -98,7 +98,7 @@ Returns server metadata.
 Thrown on network or non-2xx responses. Has `.statusCode` and `.cause` fields.
 
 ```ts
-import { TokenSlimClient, TokenSlimError } from 'tokenslim-sdk';
+import { TokenSlimClient, TokenSlimError } from 'tokenslim';
 
 try {
     await client.compress(text);

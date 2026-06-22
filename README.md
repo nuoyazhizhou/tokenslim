@@ -77,13 +77,13 @@ LLM API cost is dominated by input token count. TokenSlim cuts that by 50–95%:
 
 ```bash
 # Project-local
-npm install tokenslim-sdk
+npm install tokenslim
 
 # Or globally so `tokenslim` / `tokenslim-server` are on PATH
-npm install -g tokenslim-sdk
+npm install -g tokenslim
 ```
 
-`tokenslim-sdk` ships 6 platform-specific `optionalDependencies` (`@tokenslim/cli-binary-linux-x64-gnu`, `…-linux-arm64-gnu`, `…-darwin-x64`, `…-darwin-arm64`, `…-windows-x64`, `…-windows-arm64`). npm/pnpm/yarn automatically installs the one matching your OS + CPU, pulling the `tokenslim` + `tokenslim-server` binaries and 60+ plugin configs into `node_modules/`. A small Node wrapper at `bin/tokenslim.js` then forwards each call to the real binary.
+`tokenslim` ships 6 platform-specific `optionalDependencies` (`@tokenslim/cli-binary-linux-x64-gnu`, `…-linux-arm64-gnu`, `…-darwin-x64`, `…-darwin-arm64`, `…-windows-x64`, `…-windows-arm64`). npm/pnpm/yarn automatically installs the one matching your OS + CPU, pulling the `tokenslim` + `tokenslim-server` binaries and 60+ plugin configs into `node_modules/`. A small Node wrapper at `bin/tokenslim.js` then forwards each call to the real binary.
 
 If network access is unavailable and the optional package fails to install, the `postinstall` script transparently falls back to downloading from GitHub Releases. If that also fails, the install still succeeds — only the CLI commands become unavailable; the JS SDK keeps working as a REST client.
 
@@ -115,7 +115,7 @@ Most users only need `RUST_LOG=info` (or `debug` for verbose tracing). The LLM-a
 
 ### SDKs
 
-- **Node.js / TypeScript** — `npm i tokenslim-sdk` (source: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/)). Ships the `tokenslim` + `tokenslim-server` binaries as `optionalDependencies` — see [Installation](#installation) above.
+- **Node.js / TypeScript** — `npm i tokenslim` (source: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/)). Ships the `tokenslim` + `tokenslim-server` binaries as `optionalDependencies` — see [Installation](#installation) above.
 - **Python** — see [`sdk/python/tokenslim_sdk.py`](./sdk/python/tokenslim_sdk.py) (single-file client)
 - **Java 11+** — see [`sdk/java/TokenSlimClient.java`](./sdk/java/TokenSlimClient.java)
 
@@ -173,7 +173,7 @@ print(decompress(compressed, mode="ai-export"))
 
 ```javascript
 // Node.js
-const { compress, decompress } = require("tokenslim-sdk");
+const { compress, decompress } = require("tokenslim");
 const compressed = compress(fs.readFileSync("build.log", "utf8"));
 console.log(decompress(compressed, { mode: "ai-export" }));
 ```
@@ -206,7 +206,7 @@ Browse the full registry at [`config/plugins/`](./config/plugins/), or run:
 | Chrome | `chrome-extension/` | Stable |
 | JetBrains | `jetbrains-plugin/` | Stable |
 | Python SDK | `crates/tokenslim-py/` | Stable |
-| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim-sdk@0.1.0` — includes the CLI binaries) | Stable |
+| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.2.7` — includes the CLI binaries) | Stable |
 | Java SDK | `sdk/java/` | Stable |
 
 ## Architecture

@@ -2,9 +2,9 @@
 // scripts/bump-version.mjs
 //
 // One-shot version bumper for a TokenSlim release.  Updates every place
-// where a release version is pinned so the `tokenslim-sdk` package and
+// where a release version is pinned so the `tokenslim` package and
 // the 6 platform binary packages stay in lockstep, and keeps the
-// `optionalDependencies` block of `tokenslim-sdk` pointing at the same
+// `optionalDependencies` block of `tokenslim` pointing at the same
 // version of each binary package.
 //
 // Files updated (all paths are relative to the repo root):

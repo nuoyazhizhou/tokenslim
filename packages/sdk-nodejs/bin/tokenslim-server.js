@@ -54,7 +54,7 @@ function main() {
         `tokenslim-server: native binary not found for ${key}.`,
         ``,
         `Fix:`,
-        `  1. npm install tokenslim-sdk    (avoid --ignore-optional)`,
+        `  1. npm install tokenslim    (avoid --ignore-optional)`,
         `  2. cargo install tokenslim-server --locked`,
         `  3. Download from https://github.com/nuoyazhizhou/tokenslim/releases`,
         ``,

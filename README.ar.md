@@ -103,7 +103,7 @@ cargo build --release
 
 ### SDKs
 
-- **Node.js / TypeScript** — `npm i tokenslim-sdk` (المصدر: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
+- **Node.js / TypeScript** — `npm i tokenslim` (المصدر: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
 - **Python** — انظر [`sdk/python/tokenslim_sdk.py`](./sdk/python/tokenslim_sdk.py) (عميل ملف واحد)
 - **Java 11+** — انظر [`sdk/java/TokenSlimClient.java`](./sdk/java/TokenSlimClient.java)
 
@@ -161,7 +161,7 @@ print(decompress(compressed, mode="ai-export"))
 
 ```javascript
 // Node.js
-const { compress, decompress } = require("tokenslim-sdk");
+const { compress, decompress } = require("tokenslim");
 const compressed = compress(fs.readFileSync("build.log", "utf8"));
 console.log(decompress(compressed, { mode: "ai-export" }));
 ```
@@ -194,7 +194,7 @@ String report = client.decompress(compressed, "ai-export");
 | Chrome | `chrome-extension/` | Stable |
 | JetBrains | `jetbrains-plugin/` | Stable |
 | Python SDK | `crates/tokenslim-py/` | Stable |
-| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim-sdk@0.1.0`) | Stable |
+| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.1.0`) | Stable |
 | Java SDK | `sdk/java/` | Stable |
 
 ## البنية المعمارية

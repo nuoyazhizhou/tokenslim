@@ -42,7 +42,7 @@ TokenSlim/
 ├── chrome-extension/             # Chrome 浏览器扩展（TypeScript）
 ├── sdk/                          # 多语言 SDK
 │   ├── python/tokenslim_sdk.py
-│   ├── nodejs/tokenslim-sdk.js
+│   ├── nodejs/tokenslim.js
 │   └── java/TokenSlimClient.java
 │
 ├── samples/                      # 测试样本（按插件分类）
@@ -311,7 +311,7 @@ tokenslim --preset ai -- <command>           # AI 预设模式
 | SDK     | 文件                            | 核心类/函数       |
 | ------- | ------------------------------- | ----------------- |
 | Python  | `sdk/python/tokenslim_sdk.py`   | `TokenSlimClient` |
-| Node.js | `sdk/nodejs/tokenslim-sdk.js`   | `TokenSlimClient` |
+| Node.js | `sdk/nodejs/tokenslim.js`   | `TokenSlimClient` |
 | Java    | `sdk/java/TokenSlimClient.java` | `TokenSlimClient` |
 
 ---

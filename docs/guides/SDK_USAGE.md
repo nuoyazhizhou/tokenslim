@@ -6,7 +6,7 @@ TokenSlim 提供三套语言 SDK，调用同一个 HTTP API。底层是 Rust 写
 
 | 语言 | 包 | 状态 | 协议 |
 |---|---|---|---|
-| Node.js / TypeScript | `tokenslim-sdk` (npm) | ✅ 已发布 0.1.0 | REST/JSON |
+| Node.js / TypeScript | `tokenslim` (npm) | ✅ 已发布 0.1.0 | REST/JSON |
 | Python | `tokenslim_sdk.py` (单文件) | ✅ 可用 | REST/JSON |
 | Java 11+ | `TokenSlimClient` (单文件) | ✅ 可用 | REST/JSON |
 
@@ -39,7 +39,7 @@ curl http://127.0.0.1:10086/health
 ### 安装
 
 ```bash
-npm install tokenslim-sdk
+npm install tokenslim
 ```
 
 > 完整包位置：[packages/sdk-nodejs/](../../packages/sdk-nodejs/)
@@ -47,7 +47,7 @@ npm install tokenslim-sdk
 ### 最小例子
 
 ```ts
-import { TokenSlimClient } from 'tokenslim-sdk';
+import { TokenSlimClient } from 'tokenslim';
 
 const client = new TokenSlimClient();     // default: 127.0.0.1:10086
 if (await client.isHealthy()) {
@@ -63,7 +63,7 @@ import {
     TokenSlimClient,
     TokenSlimError,
     type CompressResponse,
-} from 'tokenslim-sdk';
+} from 'tokenslim';
 
 const client = new TokenSlimClient({
     host: '127.0.0.1',
@@ -92,7 +92,7 @@ const info = await client.describe();
 ### 错误处理
 
 ```ts
-import { TokenSlimError } from 'tokenslim-sdk';
+import { TokenSlimError } from 'tokenslim';
 
 try {
     await client.compress(text);
@@ -107,7 +107,7 @@ try {
 
 ```ts
 import OpenAI from 'openai';
-import { TokenSlimClient } from 'tokenslim-sdk';
+import { TokenSlimClient } from 'tokenslim';
 
 const slim = new TokenSlimClient();
 const openai = new OpenAI();
@@ -138,7 +138,7 @@ curl -O https://raw.githubusercontent.com/nuoyazhizhou/tokenslim/main/sdk/python
 或待 PyPI 上线后：
 
 ```bash
-pip install tokenslim-sdk
+pip install tokenslim
 ```
 
 ### 最小例子

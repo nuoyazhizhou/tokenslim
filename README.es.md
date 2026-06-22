@@ -101,7 +101,7 @@ La mayoría de usuarios solo necesitan `RUST_LOG=info` (o `debug` para trazado v
 
 ### SDKs
 
-- **Node.js / TypeScript** — `npm i tokenslim-sdk` (fuente: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
+- **Node.js / TypeScript** — `npm i tokenslim` (fuente: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
 - **Python** — ver [`sdk/python/tokenslim_sdk.py`](./sdk/python/tokenslim_sdk.py) (cliente de un solo archivo)
 - **Java 11+** — ver [`sdk/java/TokenSlimClient.java`](./sdk/java/TokenSlimClient.java)
 
@@ -159,7 +159,7 @@ print(decompress(compressed, mode="ai-export"))
 
 ```javascript
 // Node.js
-const { compress, decompress } = require("tokenslim-sdk");
+const { compress, decompress } = require("tokenslim");
 const compressed = compress(fs.readFileSync("build.log", "utf8"));
 console.log(decompress(compressed, { mode: "ai-export" }));
 ```
@@ -192,7 +192,7 @@ Explora el registro completo en [`config/plugins/`](./config/plugins/), o ejecut
 | Chrome | `chrome-extension/` | Stable |
 | JetBrains | `jetbrains-plugin/` | Stable |
 | Python SDK | `crates/tokenslim-py/` | Stable |
-| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim-sdk@0.1.0`) | Stable |
+| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.1.0`) | Stable |
 | Java SDK | `sdk/java/` | Stable |
 
 ## Arquitectura

@@ -105,7 +105,7 @@ cargo build --release
 ### SDK
 
 - **Python** — `pip install tokenslim`（来自 `crates/tokenslim-py`）
-- **Node.js** — `npm i tokenslim-sdk`（见 `sdk/nodejs/`）
+- **Node.js** — `npm i tokenslim`（见 `sdk/nodejs/`）
 - **Java** — `sdk/java/`
 
 ## 🛠️ 使用方式
@@ -160,7 +160,7 @@ print(decompress(compressed, mode="ai-export"))
 
 ```javascript
 // Node.js
-const { compress, decompress } = require("tokenslim-sdk");
+const { compress, decompress } = require("tokenslim");
 const compressed = compress(fs.readFileSync("build.log", "utf8"));
 console.log(decompress(compressed, { mode: "ai-export" }));
 ```

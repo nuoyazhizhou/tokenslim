@@ -13,7 +13,7 @@ Please upgrade to **0.2.6+** by running:
 ```bash
 npm install -g @tokenslim/cli-binary-<your-platform>
 # or, via the unified SDK:
-npm install -g tokenslim-sdk
+npm install -g tokenslim
 ```
 
 ## Reporting a Vulnerability

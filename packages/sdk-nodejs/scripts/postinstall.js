@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // packages/sdk-nodejs/scripts/postinstall.js
 //
-// npm `postinstall` hook. Runs after `npm install tokenslim-sdk`.
+// npm `postinstall` hook. Runs after `npm install tokenslim`.
 //
 // What we do, in order:
 //   1. If the matching @tokenslim/cli-binary-* optional package is already
@@ -21,7 +21,7 @@ const path = require("node:path");
 const https = require("node:https");
 
 const PKG_VERSION = require("../package.json").version;
-const PACKAGE_NAME = "tokenslim-sdk";
+const PACKAGE_NAME = "tokenslim";
 
 // Map (platform, arch) → optional-dependency package name.
 const PLATFORM_PKG = {

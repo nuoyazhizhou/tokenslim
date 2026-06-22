@@ -73,7 +73,7 @@ cat /tmp/gitlog.slim.json
 
 ```ts
 // 在代码里：
-import { TokenSlimClient } from 'tokenslim-sdk';
+import { TokenSlimClient } from 'tokenslim';
 const slim = new TokenSlimClient();
 const r = await slim.compress(rawGitLog, { plugin_hint: 'vcs_git_plugin' });
 const prompt = `以下是压缩后的 git log（节省 ${(100 - r.ratio * 100).toFixed(1)}% token）：\n${r.compressed}\n\n请按 semver 规范生成 changelog。`;
@@ -232,7 +232,7 @@ tokenslim run powershell -File scripts/audit_all_case_metrics.ps1 -RequireSemant
 
 | 入口 | 文档 |
 |---|---|
-| Node.js / TypeScript | [packages/sdk-nodejs/](../../packages/sdk-nodejs/) · npm: `tokenslim-sdk` |
+| Node.js / TypeScript | [packages/sdk-nodejs/](../../packages/sdk-nodejs/) · npm: `tokenslim` |
 | Python | [sdk/python/tokenslim_sdk.py](../../sdk/python/tokenslim_sdk.py) |
 | Java | [sdk/java/TokenSlimClient.java](../../sdk/java/TokenSlimClient.java) |
 | VSCode 扩展 | [vscode-extension/](../../vscode-extension/) |

@@ -74,7 +74,7 @@ export interface TokenSlimClientOptions {
  *
  * @example
  * ```ts
- * import { TokenSlimClient } from 'tokenslim-sdk';
+ * import { TokenSlimClient } from 'tokenslim';
  *
  * const client = new TokenSlimClient();
  * if (await client.isHealthy()) {

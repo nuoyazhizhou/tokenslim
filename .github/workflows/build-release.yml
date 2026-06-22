@@ -156,7 +156,7 @@ jobs:
           node scripts/build-npm-binary-package.mjs \
             --platform "${{ matrix.label }}" \
             --bin-dir artifacts/bin \
-            --config-dir config/plugins \
+            --config-dir config \
             | tee artifacts/tarball_path.txt
 
       - name: Upload tarball artifact
@@ -338,12 +338,12 @@ jobs:
             --tag latest
 
   # ---------------------------------------------------------------------
-  # Stage 4: publish the JS-only `tokenslim-sdk` package.  It has no
+  # Stage 4: publish the JS-only `tokenslim` package.  It has no
   # native binaries; npm install pulls the matching @tokenslim/cli-binary-*
   # optional dep on each platform automatically.
   # ---------------------------------------------------------------------
   publish-sdk:
-    name: npm publish tokenslim-sdk
+    name: npm publish tokenslim
     needs: publish-platforms
     runs-on: ubuntu-22.04
     timeout-minutes: 10

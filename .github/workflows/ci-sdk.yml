@@ -12,7 +12,7 @@ on:
 
 jobs:
   build:
-    name: Build tokenslim-sdk
+    name: Build tokenslim
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

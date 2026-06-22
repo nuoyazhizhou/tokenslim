@@ -14,13 +14,13 @@ TokenSlim 把冗长的 VCS / 构建 / 测试 / 数据库日志压缩成更短的
 
 ```bash
 # 装到当前项目
-npm install tokenslim-sdk
+npm install tokenslim
 
 # 或者全局装，让 `tokenslim` / `tokenslim-server` 命令直接可用
-npm install -g tokenslim-sdk
+npm install -g tokenslim
 ```
 
-`tokenslim-sdk` 包内置 6 个平台二进制作为 `optionalDependencies`：
+`tokenslim` 包内置 6 个平台二进制作为 `optionalDependencies`：
 
 - `@tokenslim/cli-binary-linux-x64-gnu` / `linux-arm64-gnu`
 - `@tokenslim/cli-binary-darwin-x64` / `darwin-arm64`
@@ -103,11 +103,11 @@ curl http://127.0.0.1:10086/health
 ### Node.js / TypeScript
 
 ```bash
-npm install tokenslim-sdk
+npm install tokenslim
 ```
 
 ```ts
-import { TokenSlimClient } from 'tokenslim-sdk';
+import { TokenSlimClient } from 'tokenslim';
 
 const c = new TokenSlimClient();
 const r = await c.compress(longLog);
@@ -117,7 +117,7 @@ console.log(`${r.original_tokens} → ${r.compressed_tokens} tokens`);
 ### Python
 
 ```bash
-pip install tokenslim-sdk   # 暂无 PyPI 包，先用 sdk/python/tokenslim_sdk.py
+pip install tokenslim   # 暂无 PyPI 包，先用 sdk/python/tokenslim_sdk.py
 ```
 
 ```python
@@ -140,7 +140,7 @@ print(f"{r['original_tokens']} → {r['compressed_tokens']} tokens")
 
 ```ts
 import OpenAI from 'openai';
-import { TokenSlimClient } from 'tokenslim-sdk';
+import { TokenSlimClient } from 'tokenslim';
 
 const slim = new TokenSlimClient();
 const openai = new OpenAI();

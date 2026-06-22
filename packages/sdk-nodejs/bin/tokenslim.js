@@ -78,7 +78,7 @@ function main() {
         ``,
         `Fix:`,
         pkg
-          ? `  1. Re-run: npm install tokenslim-sdk    (avoid --ignore-optional)`
+          ? `  1. Re-run: npm install tokenslim    (avoid --ignore-optional)`
           : `  1. Use a supported platform, OR`,
         `  2. Install Rust and run: cargo install tokenslim --locked`,
         `  3. Or download from https://github.com/nuoyazhizhou/tokenslim/releases`,
