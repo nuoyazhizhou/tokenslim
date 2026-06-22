@@ -21,6 +21,7 @@
         "clean": "rimraf dist",
         "prepublishOnly": "npm run clean && npm run build",
         "postinstall": "node scripts/postinstall.js",
+        "preuninstall": "node scripts/preuninstall.js",
         "test": "node --test dist/__tests__/*.test.js"
     },
     "keywords": [
