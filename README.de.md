@@ -322,6 +322,15 @@ TokenSlim folgt einer geschichteten Pipeline:
 
 Siehe `docs/development/ARCHITECTURE.md` für das vollständige Design.
 
+## Quality Gates & Audit-Pipeline
+
+TokenSlim bewahrt null semantischen Verlust und hohe Zuverlässigkeit durch eine strenge, datengesteuerte 4-Schritte-Audit-Pipeline. Jede Änderung an Parsern oder Regeln muss diese automatisierten Qualitätskontrollen passieren:
+
+1. **Sample Quality Gate (`audit_sample_case_quality.py`)**: Überprüft, ob Rohdaten (z. B. CI-Protokolle, Stacktraces) realistisch sind, richtig gekennzeichnet wurden und einen hohen diagnostischen Wert haben, bevor das Testen beginnt.
+2. **Semantic Fidelity & Metrics Gate (`audit_case_metrics.py`)**: Vergleicht Originaleingaben mit ihren komprimierten Ausgaben. Es setzt strenge Richtlinien (wie Anchor Guard und Anti-Amnesia) durch, um sicherzustellen, dass sich das Komprimierungsverhältnis verbessert, ohne dass kritischer Fehlerkontext verloren geht. Bestandene Fälle werden kryptografisch "eingefroren".
+3. **Global Health Check (`audit_all_case_metrics.py`)**: Läuft gleichzeitig über alle 60+ Plugins und fungiert als finales CI-Gate. Der Build schlägt fehl, wenn ein einzelnes Plugin eine Komprimierungsregression einführt oder die semantische Genauigkeit verletzt.
+4. **Capability Matrix Sync (`generate_plugin_capability_index.py`)**: Baut den globalen Plugin-Routing-Index basierend auf den eingefrorenen Fällen automatisch neu auf und stellt sicher, dass der dynamische Router immer perfekt mit den tatsächlich getesteten Funktionen synchronisiert ist.
+
 ## Beitragen
 
 Beiträge sind willkommen. Bitte öffne zuerst ein Issue, um größere Änderungen zu diskutieren; kleine Korrekturen und neue Plugin-Konfigurationen können direkt in einen PR gehen.

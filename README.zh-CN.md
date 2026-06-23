@@ -263,6 +263,61 @@ tokenslim-server
 # 监听 127.0.0.1:<port>，见 /health, /compress, /decompress
 ```
 
+#### Web UI
+
+Sidecar 内置一个单页 Web UI，方便手动压缩日志、实时 tail。
+默认从二进制同目录下的 `webui/` 目录提供静态资源；如果该目录不存在，
+sidecar 仍然正常提供 HTTP API，只是不渲染 UI（不会在 `/` 返回 404）。
+
+![TokenSlim Web UI — 简体中文首页](docs/webui-screenshots/01-home-zh.png)
+
+##### 启动
+
+```bash
+# 源码运行（仓库自带 webui/ 目录）
+cargo run --release --bin tokenslim-server
+
+# 已安装的二进制 — 指向自定义 webui 根目录
+TOKENSLIM_WEBUI_DIR=/opt/tokenslim/webui tokenslim-server
+
+# 自定义端口与绑定地址
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# 本地调试时关闭鉴权（默认：环境变量未设置即为关闭）
+# TOKENSLIM_API_KEY=changeme tokenslim-server
+```
+
+浏览器打开 <http://127.0.0.1:10086/> 即可使用。UI 只是一个轻量前端，
+实际压缩/还原仍走与 CLI 完全一致的 `/compress`、`/decompress`、
+`/plugins`、`/metrics` 等 JSON 接口。
+
+##### 环境变量
+
+| 变量名                    | 默认值         | 说明                                                      |
+| ------------------------- | -------------- | --------------------------------------------------------- |
+| `TOKENSLIM_HOST`          | `127.0.0.1`    | 绑定地址。                                                |
+| `TOKENSLIM_PORT`          | `10086`        | TCP 端口。                                                |
+| `TOKENSLIM_WEBUI_DIR`     | `webui`        | 静态 SPA 目录；目录缺失时禁用 UI。                        |
+| `TOKENSLIM_API_KEY`       | _未设置_       | 设置后要求 `Authorization: Bearer <key>`。                |
+| `TOKENSLIM_CONFIG_PATH`   | _未设置_       | 热加载配置文件路径。                                      |
+| `RUST_LOG`                | `info`         | 标准 env-log 过滤（`debug`、`info`、`warn` ...）。        |
+
+##### 功能要点
+
+- 拖拽日志文件到左侧面板，或直接粘贴。
+- 右侧面板可在 **JSON**、**双列 diff**、**AI 导出** 三种视图间切换。
+- 勾选 `SSE 流式` 后 `/compress` 以 Server-Sent Events 推送进度，
+  超大输入也不会阻塞 UI。
+- 历史记录侧边栏用 `localStorage` 保留最近几次压缩；
+  插件命中列表展示本次输入被哪些族匹配上。
+
+![TokenSlim Web UI — 英文界面，压缩结果](docs/webui-screenshots/02-compress-en.png)
+![TokenSlim Web UI — 双列 diff 视图](docs/webui-screenshots/03-diff-view.png)
+![TokenSlim Web UI — AI 导出视图](docs/webui-screenshots/04-ai-export.png)
+
+E2E 测试（`tests/server_webui_e2e.rs`）覆盖了静态资源加载和
+`/compress` 往返，可用 `cargo test --test server_webui_e2e` 跑一遍。
+
 ### SDK
 
 ```python
@@ -321,6 +376,15 @@ TokenSlim 走分层流水线：
 5. **AI Export / Signal** — 为 LLM 消费而设计的上下文感知后处理。
 
 完整设计见 `docs/development/ARCHITECTURE.md`。
+
+## 质量门禁与审计流水线
+
+为了保证“零语义丢失”和极致的可靠性，TokenSlim 采用了一套严格的 4 步数据驱动审计流水线。任何解析器或规则的修改都必须完整通过以下质量门禁：
+
+1. **物理用例质量门禁 (`audit_sample_case_quality.py`)**：在测试前，校验原始输入数据（如 CI 日志、堆栈报错）的真实性、标签分类准确度以及是否具备诊断价值，防止“假数据”污染。
+2. **压缩语义与冻结门禁 (`audit_case_metrics.py`)**：逐字节对比压缩前后的结果，严格执行防遗忘（Anti-Amnesia）和锚点保护等准则。确保在压缩率提升的同时，绝不丢失任何关键的报错上下文。通过测试的用例会被哈希“冻结”。
+3. **全局健康大盘审查 (`audit_all_case_metrics.py`)**：最终的 CI 关卡，聚合所有 60+ 插件的健康状态。任何一个插件出现退步（Regression）或语义破坏，都会直接熔断发布流水线。
+4. **能力地图自动同步 (`generate_plugin_capability_index.py`)**：基于已冻结的成功用例，自动重构全局插件路由索引，确保动态路由器（Router）与实际测试过的能力完全保持同步。
 
 ## 🤝 贡献
 

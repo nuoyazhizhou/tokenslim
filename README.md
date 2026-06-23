@@ -276,6 +276,64 @@ tokenslim-server
 # Listens on 127.0.0.1:<port>, see /health, /compress, /decompress
 ```
 
+#### Web UI
+
+The sidecar ships a built-in single-page UI for interactive compression
+and live log tailing. By default it tries to serve files from the
+`webui/` directory next to the binary; if that directory is missing
+the sidecar keeps running with the HTTP API only (no 404 noise on `/`).
+
+![TokenSlim Web UI — home (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### Run
+
+```bash
+# from a source checkout (webui/ is in the repo)
+cargo run --release --bin tokenslim-server
+
+# from an installed binary — point at a custom webui root if needed
+TOKENSLIM_WEBUI_DIR=/opt/tokenslim/webui tokenslim-server
+
+# pick a port and bind address
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# disable auth while poking around locally (default: off when env var unset)
+# TOKENSLIM_API_KEY=changeme tokenslim-server
+```
+
+Open <http://127.0.0.1:10086/> in a browser. The same `/compress`,
+`/decompress`, `/plugins` and `/metrics` endpoints that the CLI uses
+are exposed under the JSON API — the UI is just a thin client on top.
+
+##### Environment variables
+
+| Variable                 | Default        | Description                                              |
+| ------------------------ | -------------- | -------------------------------------------------------- |
+| `TOKENSLIM_HOST`         | `127.0.0.1`    | Bind address.                                            |
+| `TOKENSLIM_PORT`         | `10086`        | TCP port.                                                |
+| `TOKENSLIM_WEBUI_DIR`    | `webui`        | Directory of static SPA files; missing dir = UI disabled.|
+| `TOKENSLIM_API_KEY`      | _unset_        | When set, requires `Authorization: Bearer <key>`.        |
+| `TOKENSLIM_CONFIG_PATH`  | _unset_        | Hot-reload config file path.                             |
+| `RUST_LOG`               | `info`         | Standard env-log filter (`debug`, `info`, `warn`, ...).  |
+
+##### Features
+
+- Drop a file onto the left pane, or paste a log dump.
+- Switch between **JSON**, **side-by-side diff** and **AI export** views
+  in the right pane.
+- `SSE 流式` checkbox streams `/compress` progress as Server-Sent Events
+  so very large inputs do not block the UI.
+- The history sidebar keeps the last few compressions in `localStorage`;
+  the plugin-hit list shows which families matched the input.
+
+![TokenSlim Web UI — English, compression result](docs/webui-screenshots/02-compress-en.png)
+![TokenSlim Web UI — side-by-side diff](docs/webui-screenshots/03-diff-view.png)
+![TokenSlim Web UI — AI export view](docs/webui-screenshots/04-ai-export.png)
+
+A E2E test (`tests/server_webui_e2e.rs`) covers the static asset
+loading and the `/compress` round-trip; run it with
+`cargo test --test server_webui_e2e`.
+
 ### SDK
 
 ```python
@@ -334,6 +392,15 @@ TokenSlim follows a layered pipeline:
 5. **AI Export / Signal** — context-aware post-processing for LLM consumption.
 
 See `docs/development/ARCHITECTURE.md` for the full design.
+
+## Quality Gates & Auditing Pipeline
+
+TokenSlim maintains zero semantic loss and high reliability through a strict, 4-step data-driven auditing pipeline. Every parser or rule change must pass these automated quality gates:
+
+1. **Sample Quality Gate (`audit_sample_case_quality.py`)**: Validates that raw input cases (e.g., CI logs, stack traces) are realistic, correctly labeled, and have high diagnostic value before testing begins.
+2. **Semantic Fidelity & Metrics Gate (`audit_case_metrics.py`)**: Compares original inputs against their compressed outputs. It enforces strict policies (like Anchor Guard and Anti-Amnesia) to ensure the compression ratio improves without losing any critical error context. Passing cases are cryptographically "frozen".
+3. **Global Health Check (`audit_all_case_metrics.py`)**: Runs concurrently across all 60+ plugins, acting as the final CI gate. It fails the build if any single plugin introduces a compression regression or violates semantic fidelity.
+4. **Capability Matrix Sync (`generate_plugin_capability_index.py`)**: Automatically rebuilds the global plugin routing index based on the frozen cases, ensuring the dynamic router is always perfectly synced with the actual tested capabilities.
 
 ## Contributing
 

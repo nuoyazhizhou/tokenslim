@@ -322,6 +322,15 @@ TokenSlim sigue un pipeline en capas:
 
 Ver `docs/development/ARCHITECTURE.md` para el diseño completo.
 
+## Puertas de Calidad y Pipeline de Auditoría
+
+TokenSlim mantiene cero pérdida semántica y alta confiabilidad a través de un estricto pipeline de auditoría de 4 pasos basado en datos. Cada cambio de parser o regla debe pasar estas puertas de calidad automatizadas:
+
+1. **Puerta de Calidad de Muestra (`audit_sample_case_quality.py`)**: Valida que los casos de entrada en bruto (ej. registros de CI, seguimientos de pila) sean realistas, estén correctamente etiquetados y tengan un alto valor de diagnóstico antes de que comiencen las pruebas.
+2. **Fidelidad Semántica y Puerta de Métricas (`audit_case_metrics.py`)**: Compara las entradas originales con sus salidas comprimidas. Aplica políticas estrictas (como Anchor Guard y Anti-Amnesia) para asegurar que la tasa de compresión mejore sin perder ningún contexto de error crítico. Los casos aprobados se "congelan" criptográficamente.
+3. **Control de Salud Global (`audit_all_case_metrics.py`)**: Se ejecuta simultáneamente en los más de 60 complementos, actuando como la puerta final de CI. Falla la compilación si un solo complemento introduce una regresión de compresión o viola la fidelidad semántica.
+4. **Sincronización de Matriz de Capacidades (`generate_plugin_capability_index.py`)**: Reconstruye automáticamente el índice global de enrutamiento de complementos en función de los casos congelados, asegurando que el enrutador dinámico esté siempre perfectamente sincronizado con las capacidades reales probadas.
+
 ## Contribuir
 
 Las contribuciones son bienvenidas. Por favor, abre primero un issue para discutir cambios mayores; las correcciones pequeñas y nuevas configs de plugins pueden ir directamente a un PR.
