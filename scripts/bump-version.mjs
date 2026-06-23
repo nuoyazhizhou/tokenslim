@@ -16,14 +16,13 @@
 //   - packages/cli-binary-windows-x64/package.json
 //   - packages/cli-binary-windows-arm64/package.json
 //   - Cargo.toml                           (root crate version)
+//   - crates/plugin-interface/Cargo.toml   (interface crate)
+//   - crates/tokenslim-py/Cargo.toml       (Python binding crate)
+//   - crates/tokenslim-py/pyproject.toml   (Python SDK config)
 //   - packages/sdk-nodejs/package-lock.json  (regenerated via `npm install` to
 //                                            keep the @tokenslim/cli-binary-*
 //                                            pins in sync — otherwise the next
 //                                            `npm ci` EUSAGEs on the drift)
-//
-// Files NOT touched:
-//   - crates/tokenslim-py/Cargo.toml        (Python binding, separate track)
-//   - crates/plugin-interface/Cargo.toml   (interface crate, separate track)
 //
 // Usage:
 //   node scripts/bump-version.mjs 0.2.0
@@ -63,7 +62,12 @@ const NPM_PACKAGE_FILES = [
   "packages/cli-binary-windows-arm64/package.json",
 ];
 
-const CARGO_TOML = "Cargo.toml";
+const TOML_FILES = [
+  "Cargo.toml",
+  "crates/plugin-interface/Cargo.toml",
+  "crates/tokenslim-py/Cargo.toml",
+  "crates/tokenslim-py/pyproject.toml",
+];
 
 function parseArgs(argv) {
   const out = { version: null, dryRun: false, commit: false, check: false };
@@ -143,7 +147,7 @@ function updateTomlVersion(text, newVersion) {
     }
   }
   if (!replaced) {
-    throw new Error(`no \`version = "..."\` line found in Cargo.toml`);
+    throw new Error(`no \`version = "..."\` line found in TOML file`);
   }
   return lines.join("\n");
 }
@@ -188,19 +192,19 @@ async function bumpNpmPackage(relPath, newVersion) {
   return { relPath, oldVersion, newVersion, changed: true };
 }
 
-async function bumpCargoToml(newVersion) {
-  const abs = path.join(REPO_ROOT, CARGO_TOML);
+async function bumpTomlFile(relPath, newVersion) {
+  const abs = path.join(REPO_ROOT, relPath);
   const text = await fs.readFile(abs, "utf8");
   const oldMatch = text.match(/^\s*version\s*=\s*"([^"]+)"/m);
   const oldVersion = oldMatch ? oldMatch[1] : null;
   if (oldVersion === newVersion) {
-    return { relPath: CARGO_TOML, oldVersion, newVersion, changed: false };
+    return { relPath, oldVersion, newVersion, changed: false };
   }
   if (!args.dryRun) {
     const newText = updateTomlVersion(text, newVersion);
     await fs.writeFile(abs, newText, "utf8");
   }
-  return { relPath: CARGO_TOML, oldVersion, newVersion, changed: true };
+  return { relPath, oldVersion, newVersion, changed: true };
 }
 
 async function regenerateSdkLockfile() {
@@ -273,12 +277,12 @@ async function readNpmPackageVersion(relPath) {
   return m[1];
 }
 
-async function readCargoTomlVersion() {
-  const abs = path.join(REPO_ROOT, CARGO_TOML);
+async function readTomlFileVersion(relPath) {
+  const abs = path.join(REPO_ROOT, relPath);
   const text = await fs.readFile(abs, "utf8");
   const m = text.match(/^\s*version\s*=\s*"([^"]+)"/m);
   if (!m) {
-    throw new Error(`no \`version = "..."\` line found in ${CARGO_TOML}`);
+    throw new Error(`no \`version = "..."\` line found in ${relPath}`);
   }
   return m[1];
 }
@@ -291,7 +295,9 @@ async function runCheck(expected) {
   for (const f of NPM_PACKAGE_FILES) {
     rows.push({ relPath: f, current: await readNpmPackageVersion(f) });
   }
-  rows.push({ relPath: CARGO_TOML, current: await readCargoTomlVersion() });
+  for (const f of TOML_FILES) {
+    rows.push({ relPath: f, current: await readTomlFileVersion(f) });
+  }
 
   const drifting = rows.filter((r) => r.current !== expected);
   const width = Math.max(...rows.map((r) => r.relPath.length));
@@ -331,9 +337,12 @@ const npmResults = [];
 for (const f of NPM_PACKAGE_FILES) {
   npmResults.push(await bumpNpmPackage(f, args.version));
 }
-const cargoResult = await bumpCargoToml(args.version);
+const tomlResults = [];
+for (const f of TOML_FILES) {
+  tomlResults.push(await bumpTomlFile(f, args.version));
+}
 
-const all = [...npmResults, cargoResult];
+const all = [...npmResults, ...tomlResults];
 const anyChanged = all.some((r) => r.changed);
 
 process.stdout.write(

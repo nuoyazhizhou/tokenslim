@@ -1,6 +1,6 @@
 [package]
 name = "plugin-interface"
-version = "0.1.0"
+version = "0.3.1"
 edition = "2021"
 description= "Stable plugin interface for TokenSlim with FFI safety"
 license = "MIT"
