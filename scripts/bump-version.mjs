@@ -149,7 +149,13 @@ function updateTomlVersion(text, newVersion) {
   if (!replaced) {
     throw new Error(`no \`version = "..."\` line found in TOML file`);
   }
-  return lines.join("\n");
+  
+  // Also update plugin-interface version if it exists in a workspace dependency block
+  const fullText = lines.join("\n");
+  return fullText.replace(
+    /(plugin-interface\s*=\s*\{\s*path\s*=\s*"[^"]+",\s*version\s*=\s*")[^"]+("\s*\})/,
+    `$1${newVersion}$2`
+  );
 }
 
 async function bumpNpmPackage(relPath, newVersion) {

@@ -1,6 +1,6 @@
 [package]
 name = "tokenslim"
-version = "0.3.1"
+version = "0.3.2"
 edition = "2021"
 
 [workspace]
@@ -19,7 +19,7 @@ log = "0.4"
 rayon = "1.8"
 memmap2 = "0.9"
 crossbeam-channel = "0.5"
-plugin-interface = { path = "./crates/plugin-interface", version = "0.1.0" }
+plugin-interface = { path = "./crates/plugin-interface", version = "0.3.2" }
 pyo3 = { version = "0.28.2", features = ["extension-module"] }
 
 [dependencies]

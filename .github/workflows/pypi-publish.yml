@@ -28,7 +28,6 @@ jobs:
       - name: Build wheels
         uses: PyO3/maturin-action@v1
         with:
-          target: all
           args: --release --out dist
           sdist: ${{ matrix.os == 'ubuntu-latest' }} # Only build sdist once on Linux
           working-directory: crates/tokenslim-py
