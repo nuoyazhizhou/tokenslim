@@ -99,6 +99,10 @@ fn should_show_quick_usage(argv: &[String], stdin_is_terminal: bool) -> bool {
     if argv.len() == 2 && (argv[1] == "--help" || argv[1] == "-h") {
         return true;
     }
+    // `-v` / `--verbose` 单独使用且无 position args 时，不应进入 pipeline 阻塞 stdin
+    if argv.len() == 2 && (argv[1] == "-v" || argv[1] == "--verbose") {
+        return true;
+    }
     argv.len() <= 1 && stdin_is_terminal
 }
 
@@ -173,6 +177,28 @@ fn render_global_usage(program: &str) -> String {
         t("cli_help_common_examples"),
         capability_summary
     )
+}
+
+fn intercept_version_request(argv: &[String]) -> Option<String> {
+    // 跳过 argv[0] 和全局开关，只看 position args
+    const GLOBAL_FLAGS: &[&str] = &["--dry-run", "-v", "--verbose"];
+    let position_args: Vec<&String> = argv
+        .iter()
+        .skip(1)
+        .filter(|a| !GLOBAL_FLAGS.contains(&a.as_str()))
+        .collect();
+    if position_args.len() != 1 {
+        return None;
+    }
+    let first = position_args[0];
+    if first == "-V" || first == "--version" || first.eq_ignore_ascii_case("version") {
+        let program = argv
+            .first()
+            .map(|s| program_name_from_argv0(s))
+            .unwrap_or_else(|| "tokenslim".to_string());
+        return Some(format!("{} {}", program, env!("CARGO_PKG_VERSION")));
+    }
+    None
 }
 
 fn intercept_help_request(argv: &[String], program: &str) -> Option<String> {
@@ -4864,6 +4890,71 @@ mod tests {
     }
 
     #[test]
+    fn should_show_quick_usage_for_verbose_flag_alone() {
+        // `-v` / `--verbose` 单独使用且无 position args 时，
+        // 不应进入 pipeline 阻塞 stdin，应直接输出 global usage
+        assert!(should_show_quick_usage(
+            &["tokenslim.exe".to_string(), "-v".to_string()],
+            true
+        ));
+        assert!(should_show_quick_usage(
+            &["tokenslim.exe".to_string(), "--verbose".to_string()],
+            true
+        ));
+        // 有其他 args 时不应拦截
+        assert!(!should_show_quick_usage(
+            &[
+                "tokenslim.exe".to_string(),
+                "-v".to_string(),
+                "git".to_string(),
+                "status".to_string(),
+            ],
+            true
+        ));
+    }
+
+    #[test]
+    fn intercept_version_request_handles_dash_capital_v() {
+        let argv = vec!["tokenslim.exe".to_string(), "-V".to_string()];
+        let out = intercept_version_request(&argv);
+        assert!(out.is_some(), "-V should produce version output");
+        let text = out.unwrap();
+        assert!(text.starts_with("tokenslim.exe "), "got: {text}");
+        assert!(text.contains(env!("CARGO_PKG_VERSION")), "got: {text}");
+    }
+
+    #[test]
+    fn intercept_version_request_handles_long_version_flag() {
+        let argv = vec!["tokenslim.exe".to_string(), "--version".to_string()];
+        let out = intercept_version_request(&argv);
+        assert!(out.is_some(), "--version should produce version output");
+    }
+
+    #[test]
+    fn intercept_version_request_handles_position_version_subcommand() {
+        let argv = vec!["tokenslim.exe".to_string(), "version".to_string()];
+        let out = intercept_version_request(&argv);
+        assert!(out.is_some(), "`version` should produce version output");
+    }
+
+    #[test]
+    fn intercept_version_request_ignores_non_version_input() {
+        let argv = vec!["tokenslim.exe".to_string(), "git".to_string(), "status".to_string()];
+        assert!(intercept_version_request(&argv).is_none());
+    }
+
+    #[test]
+    fn intercept_version_request_skips_global_flags() {
+        // `tokenslim -v version` 等价于 `tokenslim version`
+        let argv = vec![
+            "tokenslim.exe".to_string(),
+            "-v".to_string(),
+            "version".to_string(),
+        ];
+        assert!(intercept_version_request(&argv).is_some());
+    }
+
+    #[test]
     fn should_show_quick_usage_for_empty_interactive() {
         let argv = vec!["tokenslim.exe".to_string()];
         assert!(should_show_quick_usage(&argv, true));
@@ -8656,6 +8747,11 @@ pub fn run_cli() -> Result<(), CliError> {
         .first()
         .map(|s| program_name_from_argv0(s))
         .unwrap_or_else(|| "tokenslim".to_string());
+
+    if let Some(version_text) = intercept_version_request(&argv) {
+        println!("{}", version_text);
+        return Ok(());
+    }
 
     if let Some(help_text) = intercept_help_request(&argv, &program) {
         println!("{}", help_text);
