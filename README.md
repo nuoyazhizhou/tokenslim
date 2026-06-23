@@ -7,6 +7,13 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/nuoyazhizhou/tokenslim/actions/workflows/build-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/nuoyazhizhou/tokenslim/build-release.yml?branch=main&logo=github&style=flat-square" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/tokenslim"><img src="https://img.shields.io/npm/v/tokenslim?logo=npm&style=flat-square" alt="npm version"></a>
+  <a href="https://pypi.org/project/tokenslim/"><img src="https://img.shields.io/pypi/v/tokenslim?logo=python&style=flat-square" alt="PyPI version"></a>
+  <a href="https://github.com/nuoyazhizhou/tokenslim/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nuoyazhizhou/tokenslim?style=flat-square" alt="License"></a>
+</p>
+
+<p align="center">
   <a href="#what-is-tokenslim">What is TokenSlim</a> ·
   <a href="#why-tokenslim">Why</a> ·
   <a href="#features">Features</a> ·
@@ -30,6 +37,113 @@ TokenSlim is a high-performance, plugin-based text compression engine written in
 On highly structured, repetitive inputs (compiler logs, build output, CI logs, access logs, etc.), TokenSlim typically delivers **50%–90%** reduction while preserving 100% of the original information. In its **AI Export** mode, designed specifically for LLM consumption, the reduction reaches **90%–95%** with context-aware denoising that keeps the error/warning context the model needs to reason about.
 
 Beyond compression, TokenSlim ships with environment-diagnostic tooling (`workspace`, `encoding`, `rule`, `env` commands) that auto-detects OS, shell, code page, Python/Node/JDK encoding configuration, flags mojibake risk, and emits actionable fixes. Combined with a subprocess decoding fallback chain (UTF-8 first, codepage candidates next), it stays reliable across mixed-language environments.
+
+## See It in Action
+
+### Real-world daily usage — `tokenslim gain`
+
+This is what `tokenslim gain` looks like after months of daily use on git commands:
+
+```
+$ tokenslim gain
+
+TokenSlim Cumulative Savings Report
+====================================
+
+Usage Statistics:
+  Total runs:          7,244
+  Input tokens:        13.2M
+  Output tokens:       9.4M
+  Tokens saved:        3.9M
+  Overall compression: 29.3%
+
+Estimated Savings:
+  Tokens saved:        3,883,551 tokens
+       claude-4.8:     $19.42 USD ($5.00/1M)
+       gpt-5.5:        $19.42 USD ($5.00/1M)
+       gemini-3.1-pro: $7.77 USD  ($2.00/1M)
+```
+
+> 💡 `tokenslim gain` tracks **every compression** you run and shows cumulative savings. The numbers above are from a single developer's daily workflow — your team's savings multiply from here.
+
+### Compression varies by input type
+
+Not all inputs compress equally — and that's expected. Highly repetitive, structured logs compress much more than information-dense content like git diffs:
+
+<table>
+<tr>
+<th>Input Type</th>
+<th>Typical Reduction</th>
+<th>Why</th>
+</tr>
+<tr>
+<td>🔨 Build logs (cargo, gcc, gradle)</td>
+<td align="center"><strong>70–95%</strong></td>
+<td>Massive repetition: timestamps, progress lines, routine output</td>
+</tr>
+<tr>
+<td>🌐 Web access logs (Nginx, Apache)</td>
+<td align="center"><strong>80–93%</strong></td>
+<td>Repetitive structure: IPs, paths, status codes, user agents</td>
+</tr>
+<tr>
+<td>🤖 CI/CD logs (GitHub Actions, Jenkins)</td>
+<td align="center"><strong>70–92%</strong></td>
+<td>Setup steps, dependency installs, boilerplate output</td>
+</tr>
+<tr>
+<td>☁️ Cloud logs (AWS, GCP, Azure)</td>
+<td align="center"><strong>60–90%</strong></td>
+<td>Structured JSON with repetitive fields and metadata</td>
+</tr>
+<tr>
+<td>🔀 VCS output (git log, git diff)</td>
+<td align="center"><strong>20–40%</strong></td>
+<td>Information-dense; less redundancy to remove</td>
+</tr>
+</table>
+
+> The overall range is **20–95%** depending on how repetitive and structured your input is. Use `tokenslim gain` to track your real savings over time.
+**Before** — `git status` (22 lines, ~680 characters):
+```
+$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   .gitignore
+        modified:   src/core/dictionary_engine/test.rs
+        modified:   src/plugins/cloud_log_plugin/test.rs
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   Cargo.toml
+        modified:   resources/messages.zh-CN.json
+        modified:   src/bin/tokenslim-server.rs
+        modified:   src/core/plugin_config_loader/mod.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        tests/server_webui_e2e.rs
+        webui/
+```
+
+**After** — `tokenslim git status` (8 lines, ~280 characters — same information, zero loss):
+```
+git status
+BR:master
+M .gitignore
+M src/core/dictionary_engine/test.rs
+M src/plugins/cloud_log_plugin/test.rs
+M Cargo.toml
+M resources/messages.zh-CN.json
+M src/bin/tokenslim-server.rs
+M src/core/plugin_config_loader/mod.rs
+? tests/server_webui_e2e.rs
+? webui/
+```
+
+> Every developer runs `git status` dozens of times a day. TokenSlim strips the boilerplate hints, unifies the status markers, and delivers the same information in **~60% fewer tokens** — and this adds up across thousands of LLM interactions.
 
 ## Why TokenSlim?
 

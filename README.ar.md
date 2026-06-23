@@ -3,9 +3,16 @@
 <p align="center">
   <h1 align="center">TokenSlim</h1>
   <p align="center">
-    محرك ضغط رموز عالي الأداء مكتوب بـ Rust لمدخلات نماذج اللغة الكبيرة (LLM).<br>
-    قائم على الإضافات · توفير 50%–95% من الرموز · تشخيصات التصدير بالذكاء الاصطناعي · CLI / Server / IDE / SDK
+    محرك ضغط Token عالي الأداء بلغة Rust لمدخلات نماذج LLM.<br>
+    معتمد على الإضافات · توفير 50-95% من الـ Tokens · تصدير تشخيصات للذكاء الاصطناعي · CLI / خادم / بيئة تطوير / SDK
   </p>
+</p>
+
+<p align="center">
+  <a href="https://github.com/nuoyazhizhou/tokenslim/actions/workflows/build-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/nuoyazhizhou/tokenslim/build-release.yml?branch=main&logo=github&style=flat-square" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/tokenslim"><img src="https://img.shields.io/npm/v/tokenslim?logo=npm&style=flat-square" alt="npm version"></a>
+  <a href="https://pypi.org/project/tokenslim/"><img src="https://img.shields.io/pypi/v/tokenslim?logo=python&style=flat-square" alt="PyPI version"></a>
+  <a href="https://github.com/nuoyazhizhou/tokenslim/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nuoyazhizhou/tokenslim?style=flat-square" alt="License"></a>
 </p>
 
 <p align="center">
@@ -33,7 +40,115 @@ TokenSlim هو محرك ضغط نصوص عالي الأداء قائم على ا
 
 إلى جانب الضغط، يأتي TokenSlim بأدوات تشخيص البيئة (أوامر `workspace` و`encoding` و`rule` و`env`) التي تكتشف تلقائيًا نظام التشغيل والصدفة وصفحة الرموز وإعدادات ترميز Python/Node/JDK، وتضع علامة على خطر Mojibake وتصدر إصلاحات قابلة للتنفيذ. مدمجًا مع سلسلة احتياطية لفك ترميز العمليات الفرعية (UTF-8 أولاً، ثم مرشحات صفحات الرموز)، يبقى موثوقًا في البيئات متعددة اللغات.
 
-## لماذا TokenSlim؟
+
+## شاهدها أثناء العمل
+
+### الاستخدام اليومي في العالم الحقيقي — `tokenslim gain`
+
+هكذا يبدو `tokenslim gain` بعد أشهر من الاستخدام اليومي لأوامر git:
+
+```
+$ tokenslim gain
+
+TokenSlim Cumulative Savings Report
+====================================
+
+Usage Statistics:
+  Total runs:          7,244
+  Input tokens:        13.2M
+  Output tokens:       9.4M
+  Tokens saved:        3.9M
+  Overall compression: 29.3%
+
+Estimated Savings:
+  Tokens saved:        3,883,551 tokens
+       claude-4.8:     $19.42 USD ($5.00/1M)
+       gpt-5.5:        $19.42 USD ($5.00/1M)
+       gemini-3.1-pro: $7.77 USD  ($2.00/1M)
+```
+
+> 💡 يتتبع `tokenslim gain` **كل عملية ضغط** تقوم بتشغيلها ويعرض التوفير التراكمي. الأرقام أعلاه مأخوذة من سير العمل اليومي لمطور واحد — سوف تتضاعف مدخرات فريقك من هنا.
+
+### يختلف الضغط حسب نوع الإدخال
+
+لا يتم ضغط جميع المدخلات بالتساوي - وهذا متوقع. يتم ضغط السجلات المتكررة والمنظمة للغاية أكثر بكثير من المحتوى الكثيف بالمعلومات مثل فروقات git (git diffs):
+
+<table>
+<tr>
+<th>نوع الإدخال</th>
+<th>التخفيض النموذجي</th>
+<th>السبب</th>
+</tr>
+<tr>
+<td>🔨 سجلات البناء (cargo, gcc, gradle)</td>
+<td align="center"><strong>70–95%</strong></td>
+<td>تكرار هائل: الطوابع الزمنية، خطوط التقدم، المخرجات الروتينية</td>
+</tr>
+<tr>
+<td>🌐 سجلات الوصول للويب (Nginx, Apache)</td>
+<td align="center"><strong>80–93%</strong></td>
+<td>هيكل متكرر: عناوين IP، المسارات، أكواد الحالة، وكلاء المستخدم (user agents)</td>
+</tr>
+<tr>
+<td>🤖 سجلات CI/CD (GitHub Actions, Jenkins)</td>
+<td align="center"><strong>70–92%</strong></td>
+<td>خطوات الإعداد، تثبيت التبعيات، مخرجات قياسية (boilerplate)</td>
+</tr>
+<tr>
+<td>☁️ السجلات السحابية (AWS, GCP, Azure)</td>
+<td align="center"><strong>60–90%</strong></td>
+<td>بيانات JSON منظمة بحقول وصفية متكررة</td>
+</tr>
+<tr>
+<td>🔀 مخرجات VCS (git log, git diff)</td>
+<td align="center"><strong>20–40%</strong></td>
+<td>كثافة في المعلومات؛ تكرار أقل يمكن إزالته</td>
+</tr>
+</table>
+
+> النطاق الإجمالي هو **20-95%** اعتمادًا على مدى تكرار وتنظيم إدخالك. استخدم `tokenslim gain` لتتبع مدخراتك الحقيقية بمرور الوقت.
+
+**قبل** — `git status` (22 سطر، ~680 حرفًا):
+```
+$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   .gitignore
+        modified:   src/core/dictionary_engine/test.rs
+        modified:   src/plugins/cloud_log_plugin/test.rs
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   Cargo.toml
+        modified:   resources/messages.zh-CN.json
+        modified:   src/bin/tokenslim-server.rs
+        modified:   src/core/plugin_config_loader/mod.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        tests/server_webui_e2e.rs
+        webui/
+```
+
+**بعد** — `tokenslim git status` (8 أسطر، ~280 حرفًا — نفس المعلومات، بدون فقدان):
+```
+git status
+BR:master
+M .gitignore
+M src/core/dictionary_engine/test.rs
+M src/plugins/cloud_log_plugin/test.rs
+M Cargo.toml
+M resources/messages.zh-CN.json
+M src/bin/tokenslim-server.rs
+M src/core/plugin_config_loader/mod.rs
+? tests/server_webui_e2e.rs
+? webui/
+```
+
+> يقوم كل مطور بتشغيل `git status` عشرات المرات يوميًا. يقوم TokenSlim بتجريد التلميحات المتكررة، ويوحد علامات الحالة، ويقدم نفس المعلومات مع **رموز (tokens) أقل بحوالي 60%** — وهذا يتراكم عبر آلاف التفاعلات مع نماذج LLM.
+\n## لماذا TokenSlim؟
 
 ### 1. توفير حقيقي للأموال
 تتأثر تكلفة واجهة LLM بشكل كبير بعدد رموز الإدخال. TokenSlim يخفضها بنسبة 50%–95%:

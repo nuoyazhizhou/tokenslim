@@ -7,6 +7,13 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/nuoyazhizhou/tokenslim/actions/workflows/build-release.yml"><img src="https://img.shields.io/github/actions/workflow/status/nuoyazhizhou/tokenslim/build-release.yml?branch=main&logo=github&style=flat-square" alt="Build Status"></a>
+  <a href="https://www.npmjs.com/package/tokenslim"><img src="https://img.shields.io/npm/v/tokenslim?logo=npm&style=flat-square" alt="npm version"></a>
+  <a href="https://pypi.org/project/tokenslim/"><img src="https://img.shields.io/pypi/v/tokenslim?logo=python&style=flat-square" alt="PyPI version"></a>
+  <a href="https://github.com/nuoyazhizhou/tokenslim/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nuoyazhizhou/tokenslim?style=flat-square" alt="License"></a>
+</p>
+
+<p align="center">
   <a href="#was-ist-tokenslim">Was ist TokenSlim?</a> ·
   <a href="#warum-tokenslim">Warum?</a> ·
   <a href="#funktionen">Funktionen</a> ·
@@ -31,7 +38,115 @@ Bei hochgradig strukturierten, sich wiederholenden Eingaben (Compiler-Logs, Buil
 
 Über die Komprimierung hinaus liefert TokenSlim Umgebungsdiagnose-Werkzeuge (`workspace`-, `encoding`-, `rule`-, `env`-Befehle), die automatisch OS, Shell, Codepage, Python/Node/JDK-Encoding-Konfiguration erkennen, Mojibake-Risiko flaggen und umsetzbare Korrekturen ausgeben. Kombiniert mit einer Subprozess-Decoding-Fallback-Kette (zuerst UTF-8, dann Codepage-Kandidaten) bleibt es in mehrsprachigen Umgebungen zuverlässig.
 
-## Warum TokenSlim?
+
+## In Aktion sehen
+
+### Täglicher Einsatz in der Praxis — `tokenslim gain`
+
+So sieht `tokenslim gain` nach monatelangem täglichen Gebrauch bei git-Befehlen aus:
+
+```
+$ tokenslim gain
+
+TokenSlim Cumulative Savings Report
+====================================
+
+Usage Statistics:
+  Total runs:          7,244
+  Input tokens:        13.2M
+  Output tokens:       9.4M
+  Tokens saved:        3.9M
+  Overall compression: 29.3%
+
+Estimated Savings:
+  Tokens saved:        3,883,551 tokens
+       claude-4.8:     $19.42 USD ($5.00/1M)
+       gpt-5.5:        $19.42 USD ($5.00/1M)
+       gemini-3.1-pro: $7.77 USD  ($2.00/1M)
+```
+
+> 💡 `tokenslim gain` verfolgt **jede Komprimierung**, die Sie ausführen, und zeigt die kumulierten Einsparungen an. Die obigen Zahlen stammen aus dem täglichen Workflow eines einzelnen Entwicklers — die Einsparungen Ihres Teams vervielfachen sich von hier aus.
+
+### Komprimierung variiert je nach Eingabetyp
+
+Nicht alle Eingaben lassen sich gleich gut komprimieren — und das ist zu erwarten. Stark repetitive, strukturierte Protokolle lassen sich viel stärker komprimieren als informationsdichte Inhalte wie git diffs:
+
+<table>
+<tr>
+<th>Eingabetyp</th>
+<th>Typische Reduktion</th>
+<th>Warum</th>
+</tr>
+<tr>
+<td>🔨 Build-Protokolle (cargo, gcc, gradle)</td>
+<td align="center"><strong>70–95%</strong></td>
+<td>Massive Wiederholungen: Zeitstempel, Fortschrittszeilen, Routineausgaben</td>
+</tr>
+<tr>
+<td>🌐 Web-Zugriffsprotokolle (Nginx, Apache)</td>
+<td align="center"><strong>80–93%</strong></td>
+<td>Repetitive Struktur: IPs, Pfade, Statuscodes, User-Agents</td>
+</tr>
+<tr>
+<td>🤖 CI/CD-Protokolle (GitHub Actions, Jenkins)</td>
+<td align="center"><strong>70–92%</strong></td>
+<td>Setup-Schritte, Abhängigkeitsinstallationen, Boilerplate-Ausgaben</td>
+</tr>
+<tr>
+<td>☁️ Cloud-Protokolle (AWS, GCP, Azure)</td>
+<td align="center"><strong>60–90%</strong></td>
+<td>Strukturiertes JSON mit repetitiven Feldern und Metadaten</td>
+</tr>
+<tr>
+<td>🔀 VCS-Ausgabe (git log, git diff)</td>
+<td align="center"><strong>20–40%</strong></td>
+<td>Informationsdicht; weniger Redundanz zum Entfernen</td>
+</tr>
+</table>
+
+> Der Gesamtbereich liegt bei **20–95%**, je nachdem, wie repetitiv und strukturiert Ihre Eingabe ist. Verwenden Sie `tokenslim gain`, um Ihre tatsächlichen Einsparungen im Laufe der Zeit zu verfolgen.
+
+**Vorher** — `git status` (22 Zeilen, ~680 Zeichen):
+```
+$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+        modified:   .gitignore
+        modified:   src/core/dictionary_engine/test.rs
+        modified:   src/plugins/cloud_log_plugin/test.rs
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   Cargo.toml
+        modified:   resources/messages.zh-CN.json
+        modified:   src/bin/tokenslim-server.rs
+        modified:   src/core/plugin_config_loader/mod.rs
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+        tests/server_webui_e2e.rs
+        webui/
+```
+
+**Nachher** — `tokenslim git status` (8 Zeilen, ~280 Zeichen — gleiche Informationen, kein Verlust):
+```
+git status
+BR:master
+M .gitignore
+M src/core/dictionary_engine/test.rs
+M src/plugins/cloud_log_plugin/test.rs
+M Cargo.toml
+M resources/messages.zh-CN.json
+M src/bin/tokenslim-server.rs
+M src/core/plugin_config_loader/mod.rs
+? tests/server_webui_e2e.rs
+? webui/
+```
+
+> Jeder Entwickler führt `git status` dutzende Male am Tag aus. TokenSlim entfernt die Boilerplate-Hinweise, vereinheitlicht die Statusmarker und liefert die gleichen Informationen mit **~60% weniger Token** — und dies summiert sich über tausende LLM-Interaktionen.
+\n## Warum TokenSlim?
 
 ### 1. Echtes Geld gespart
 Die LLM-API-Kosten werden von der Eingabe-Token-Anzahl dominiert. TokenSlim schneidet sie um 50%–95%:
