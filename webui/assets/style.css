@@ -1,0 +1,451 @@
+/* TokenSlim Web UI - 极简暗色主题 */
+:root {
+    --bg: #0f1419;
+    --bg-elev: #1a2028;
+    --bg-pane: #15191e;
+    --border: #2a3340;
+    --text: #e6edf3;
+    --text-dim: #8b96a3;
+    --accent: #4fc3f7;
+    --accent-hover: #29b6f6;
+    --success: #66bb6a;
+    --warn: #ffa726;
+    --err: #ef5350;
+    --diff-add: rgba(102, 187, 106, 0.18);
+    --diff-del: rgba(239, 83, 80, 0.18);
+    --font-mono: ui-monospace, "Cascadia Code", Consolas, "Courier New", monospace;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr 240px;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+        "header header header"
+        "main   main   sidebar";
+}
+
+header {
+    grid-area: header;
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+header .logo {
+    color: var(--accent);
+    margin-right: 0.75rem;
+}
+
+header .subtitle {
+    color: var(--text-dim);
+    font-weight: 400;
+    font-size: 0.9rem;
+}
+
+header .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+}
+
+header .toolbar label {
+    color: var(--text-dim);
+}
+
+header select {
+    background: var(--bg-pane);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+}
+
+header .stats {
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+}
+
+main {
+    grid-area: main;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    overflow: hidden;
+}
+
+.pane {
+    background: var(--bg-pane);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.pane-header {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-elev);
+}
+
+.pane-header h2 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pane-header .actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+button {
+    background: var(--bg-pane);
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.35rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.15s;
+}
+
+button:hover {
+    background: var(--bg-elev);
+    border-color: var(--accent);
+}
+
+button.primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+    font-weight: 600;
+}
+
+button.primary:hover {
+    background: var(--accent-hover);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.drop-zone {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+}
+
+.drop-zone textarea {
+    width: 100%;
+    height: 100%;
+    background: var(--bg-pane);
+    color: var(--text);
+    border: none;
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    resize: none;
+    outline: none;
+}
+
+.drop-zone.dragover .drop-overlay {
+    display: flex;
+}
+
+.drop-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(79, 195, 247, 0.15);
+    border: 2px dashed var(--accent);
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    color: var(--accent);
+    pointer-events: none;
+}
+
+.controls {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    background: var(--bg-elev);
+}
+
+.controls label {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--text-dim);
+    cursor: pointer;
+}
+
+.controls .size-info {
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    margin-left: auto;
+}
+
+.output-container {
+    flex: 1;
+    position: relative;
+    overflow: auto;
+}
+
+.output-view {
+    display: none;
+    width: 100%;
+    height: 100%;
+    padding: 1rem;
+    overflow: auto;
+}
+
+.output-view.active {
+    display: block;
+}
+
+#output-json {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+#output-ai {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+
+.diff-view {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+}
+
+.diff-view .diff-line {
+    padding: 0.1rem 0.5rem;
+    line-height: 1.5;
+}
+
+.diff-view .diff-line.add {
+    background: var(--diff-add);
+}
+
+.diff-view .diff-line.del {
+    background: var(--diff-del);
+}
+
+.diff-view .diff-line.same {
+    color: var(--text-dim);
+}
+
+.diff-view .diff-line .marker {
+    display: inline-block;
+    width: 1ch;
+    color: var(--text-dim);
+}
+
+/* Side-by-side diff grid */
+.diff-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.diff-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.diff-cell {
+    display: flex;
+    align-items: flex-start;
+    padding: 0.1rem 0.5rem;
+    line-height: 1.5;
+    min-height: 1.4em;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.diff-cell+.diff-cell {
+    border-left: 1px solid var(--border);
+}
+
+.diff-cell .marker {
+    display: inline-block;
+    width: 1.2ch;
+    color: var(--text-dim);
+    flex-shrink: 0;
+}
+
+.diff-cell .content {
+    flex: 1;
+}
+
+.diff-cell.add {
+    background: var(--diff-add);
+}
+
+.diff-cell.del {
+    background: var(--diff-del);
+}
+
+.diff-cell.same {
+    color: var(--text-dim);
+}
+
+.diff-cell.pad {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.output-stats {
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    display: flex;
+    gap: 1.5rem;
+}
+
+.output-stats .ratio {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.sidebar {
+    grid-area: sidebar;
+    background: var(--bg-elev);
+    border-left: 1px solid var(--border);
+    overflow-y: auto;
+}
+
+.sidebar-section {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-section h3 {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
+.history-list,
+.plugin-list {
+    list-style: none;
+    font-size: 0.8rem;
+}
+
+.history-list li,
+.plugin-list li {
+    padding: 0.4rem 0.5rem;
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+    transition: background 0.15s;
+}
+
+.history-list li:hover,
+.plugin-list li:hover {
+    background: var(--bg-pane);
+    color: var(--text);
+}
+
+.history-list .ts {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0.7;
+}
+
+.history-list .empty,
+.plugin-list .empty {
+    color: var(--text-dim);
+    font-style: italic;
+    cursor: default;
+}
+
+.history-list .empty:hover,
+.plugin-list .empty:hover {
+    background: transparent;
+}
+
+.plugin-list .hit {
+    color: var(--accent);
+}
+
+.toast {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-elev);
+    color: var(--text);
+    padding: 0.75rem 1.25rem;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    display: none;
+    z-index: 100;
+}
+
+.toast.show {
+    display: block;
+    animation: toastIn 0.25s ease-out;
+}
+
+.toast.error {
+    border-color: var(--err);
+}
+
+@keyframes toastIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}

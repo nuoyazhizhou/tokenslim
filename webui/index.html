@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TokenSlim Web UI</title>
+  <link rel="stylesheet" href="/assets/style.css" />
+</head>
+<body>
+  <header>
+    <h1>
+      <span class="logo">TokenSlim</span>
+      <span class="subtitle" data-i18n="ui.subtitle">日志压缩 / 反向还原</span>
+    </h1>
+    <div class="toolbar">
+      <label>
+        <span data-i18n="ui.lang">语言</span>:
+        <select id="lang-select">
+          <option value="zh-CN">简体中文</option>
+          <option value="en">English</option>
+        </select>
+      </label>
+      <span class="stats" id="server-stats"></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="pane input-pane">
+      <div class="pane-header">
+        <h2 data-i18n="ui.input">输入</h2>
+        <div class="actions">
+          <input type="file" id="file-input" accept=".log,.txt,.json,.yaml,.out" hidden />
+          <button id="btn-upload" data-i18n="ui.upload">上传文件</button>
+          <button id="btn-sample" data-i18n="ui.sample">示例</button>
+          <button id="btn-clear" data-i18n="ui.clear">清空</button>
+        </div>
+      </div>
+      <div id="drop-zone" class="drop-zone">
+        <textarea
+          id="input-text"
+          spellcheck="false"
+          placeholder="粘贴日志 / 命令输出，或拖拽文件到此处..."
+        ></textarea>
+        <div class="drop-overlay" data-i18n="ui.drop">松开鼠标以上传</div>
+      </div>
+      <div class="controls">
+        <label>
+          <input type="checkbox" id="opt-reorder" />
+          <span data-i18n="ui.reorder">启用重排</span>
+        </label>
+        <label>
+          <input type="checkbox" id="opt-ai-export" />
+          <span data-i18n="ui.ai_export">AI 导出格式</span>
+        </label>
+        <label>
+          <input type="checkbox" id="opt-stream" />
+          <span data-i18n="ui.stream">SSE 流式</span>
+        </label>
+        <span class="size-info" id="input-size">0 B</span>
+        <button id="btn-compress" class="primary" data-i18n="ui.compress">压缩</button>
+        <button id="btn-decompress" data-i18n="ui.decompress">反向还原</button>
+        <button id="btn-tail" data-i18n="ui.tail">实时 tail</button>
+      </div>
+    </section>
+
+    <section class="pane output-pane">
+      <div class="pane-header">
+        <h2 data-i18n="ui.output">输出</h2>
+        <div class="actions">
+          <button id="btn-copy" data-i18n="ui.copy">复制</button>
+          <button id="btn-download" data-i18n="ui.download">下载</button>
+          <button id="btn-toggle-view" data-i18n="ui.toggle_view">切换 diff 视图</button>
+        </div>
+      </div>
+      <div class="output-container">
+        <pre id="output-json" class="output-view active"></pre>
+        <div id="output-diff" class="output-view diff-view"></div>
+        <div id="output-ai" class="output-view"></div>
+      </div>
+      <div class="output-stats" id="output-stats"></div>
+    </section>
+  </main>
+
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <h3 data-i18n="ui.history">历史记录</h3>
+      <ul id="history-list" class="history-list"></ul>
+    </div>
+    <div class="sidebar-section">
+      <h3 data-i18n="ui.plugins">插件命中</h3>
+      <ul id="plugin-list" class="plugin-list"></ul>
+    </div>
+  </aside>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

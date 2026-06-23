@@ -23,9 +23,10 @@ plugin-interface = { path = "./crates/plugin-interface", version = "0.3.2" }
 pyo3 = { version = "0.28.2", features = ["extension-module"] }
 
 [dependencies]
-axum = "0.8.8"
+axum = { version = "0.8.8", features = ["ws"] }
 tokio = { version = "1.36", features = ["full"] }
-tower-http = { version = "0.6.8", features = ["cors", "trace"] }
+tokio-stream = "0.1"
+tower-http = { version = "0.6.8", features = ["cors", "trace", "fs"] }
 notify = "7.0"
 clap = { version = "4.0", features = ["derive"] }
 thiserror = "2.0.18"
