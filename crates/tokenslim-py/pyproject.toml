@@ -1,0 +1,25 @@
+[build-system]
+requires = ["maturin>=1.5,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "tokenslim"
+version = "0.3.0"
+description = "High-performance Rust token compression engine for LLM inputs."
+readme = "../../README.md"
+authors = [{ name = "nuoyazhizhou" }]
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/nuoyazhizhou/tokenslim"
+Repository = "https://github.com/nuoyazhizhou/tokenslim.git"
+
+[tool.maturin]
+features = ["pyo3/extension-module"]
+module-name = "tokenslim"
