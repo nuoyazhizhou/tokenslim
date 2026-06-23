@@ -147,7 +147,7 @@ mod tests {
                 "GCP JSONL multiline traceback",
             ),
             (
-                "case_050_aliyun_csv_multiline",
+                "case_052_aliyun_csv_multiline",
                 "Aliyun SLS CSV multiline traceback",
             ),
             (

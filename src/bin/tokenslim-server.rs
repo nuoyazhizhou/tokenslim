@@ -1,18 +1,20 @@
 use axum::{
-    extract::State,
+    extract::{State, WebSocketUpgrade},
     http::{HeaderMap, StatusCode},
-    response::{IntoResponse, Response},
+    response::{sse::Event as SseEvent, IntoResponse, Response, Sse},
     routing::{get, post},
     Json, Router,
 };
 use notify::{Event, RecursiveMode, Watcher};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::convert::Infallible;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::SystemTime;
+use tokio_stream::wrappers::ReceiverStream;
 use tokenslim::cli::get_plugins;
 use tokenslim::core::compression_pipeline::{
     CompressionOutput, CompressionPipeline, PipelineConfig,
@@ -22,6 +24,7 @@ use tokenslim::core::rehydration_pipeline::{RehydrationConfig, RehydrationPipeli
 use tokenslim::core::tracking::{Tracker, TrackingEvent};
 use tokenslim::utils::i18n::{t, t1, t_en, t_zh};
 use tower_http::cors::{Any, CorsLayer};
+use tower_http::services::ServeDir;
 
 // 健康检查响应
 #[derive(Serialize)]
@@ -327,7 +330,7 @@ async fn main() {
         .allow_headers(Any);
 
     // 构建路由
-    let app = Router::new()
+    let mut app = Router::new()
         .route("/health", get(health_handler))
         .route("/metrics", get(metrics_handler))
         .route("/metrics/detail", get(metrics_detail_handler))
@@ -335,10 +338,25 @@ async fn main() {
         .route("/stats/daily", get(stats_daily_handler))
         .route("/stats/by-filter", get(stats_by_filter_handler))
         .route("/compress", post(compress_handler))
+        .route("/compress/stream", post(compress_stream_handler))
         .route("/decompress", post(decompress_handler))
+        .route("/ws/tail", get(tail_ws_handler))
         .route("/reload", post(reload_config_handler))
+        .route("/plugins", get(plugins_handler))
         .layer(cors)
         .with_state(shared_state);
+
+    // 解析 Web UI 静态目录（由环境变量覆盖，默认为仓库内 webui/）
+    let webui_dir = std::env::var("TOKENSLIM_WEBUI_DIR").unwrap_or_else(|_| "webui".to_string());
+    let webui_path = PathBuf::from(&webui_dir);
+    if webui_path.is_dir() {
+        let serve = ServeDir::new(&webui_path).append_index_html_on_directories(true);
+        // fallback: API 路由未命中时由 ServeDir 接住 GET 请求，提供静态文件
+        app = app.fallback_service(serve);
+        log::info!("{}", t1("server_webui_enabled", webui_path.display().to_string()));
+    } else {
+        log::warn!("{}", t1("server_webui_disabled", webui_path.display().to_string()));
+    }
 
     // 启动服务器
     let host = std::env::var("TOKENSLIM_HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
@@ -368,12 +386,18 @@ async fn main() {
 
 async fn health_handler(State(state): State<Arc<AppState>>) -> Json<HealthResponse> {
     let uptime = state.start_time.elapsed().unwrap_or_default().as_secs();
-
     Json(HealthResponse {
         status: "UP".to_string(),
         version: env!("CARGO_PKG_VERSION").to_string(),
         uptime_seconds: uptime,
     })
+}
+
+// 列出当前 server 注册的所有插件名（供 Web UI 侧边栏展示）
+async fn plugins_handler() -> Json<serde_json::Value> {
+    let plugins = get_plugins();
+    let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
+    Json(serde_json::json!({ "plugins": names, "count": names.len() }))
 }
 
 // Metrics 端点（Prometheus 风格）
@@ -811,6 +835,249 @@ async fn compress_handler(
         Err(e) => {
             log::error!("{}", t1("server_compression_failed", format!("{e:?}")));
             Err(ApiError::internal())
+        }
+    }
+}
+
+// SSE 流式压缩：先推送 start 状态，然后在后台线程完成压缩后推送 done/error
+async fn compress_stream_handler(
+    State(state): State<Arc<AppState>>,
+    headers: HeaderMap,
+    Json(payload): Json<CompressRequest>,
+) -> Result<Sse<ReceiverStream<Result<SseEvent, Infallible>>>, ApiError> {
+    check_auth(&headers, &state.api_key)?;
+
+    {
+        let mut stats = state.stats.write().map_err(|_| ApiError::internal())?;
+        stats.total_requests += 1;
+        stats.total_compressions += 1;
+        stats.total_bytes_in += payload.text.len() as u64;
+    }
+
+    let (tx, rx) = tokio::sync::mpsc::channel::<Result<SseEvent, Infallible>>(8);
+    let state = Arc::clone(&state);
+    let reorder = payload.reorder;
+    let ai_export = payload.ai_export;
+    let text = payload.text;
+    let input_len = text.len();
+
+    tokio::spawn(async move {
+        let start_data = serde_json::json!({ "stage": "start" }).to_string();
+        let _ = tx
+            .send(Ok(SseEvent::default().event("status").data(start_data)))
+            .await;
+
+        let state_for_blocking = Arc::clone(&state);
+        let result: Result<Result<CompressionOutput, String>, tokio::task::JoinError> =
+            tokio::task::spawn_blocking(move || {
+                let mut pipeline = match state_for_blocking.pipeline_mutex.lock() {
+                    Ok(p) => p,
+                    Err(_) => return Err("failed to lock pipeline".to_string()),
+                };
+                pipeline.config.reorder_config.enabled = reorder;
+                match pipeline.compress_str(&text) {
+                    Ok(out) => Ok(out),
+                    Err(e) => Err(format!("{e:?}")),
+                }
+            })
+            .await;
+
+        match result {
+            Ok(Ok(output)) => {
+                let output_size = serde_json::to_string(&output).unwrap_or_default().len() as u64;
+                if let Ok(mut stats) = state.stats.write() {
+                    stats.total_bytes_out += output_size;
+                }
+                if let Some(ref tracker) = state.tracker {
+                    if let Ok(t) = tracker.lock() {
+                        let event = TrackingEvent::new(
+                            "server_compress_stream",
+                            None,
+                            input_len,
+                            output_size as usize,
+                            0,
+                        );
+                        let _ = t.record(&event);
+                    }
+                }
+
+                let done_payload = if ai_export {
+                    let rehydrator = RehydrationPipeline::new(
+                        output.dictionary.clone(),
+                        get_plugins(),
+                        RehydrationConfig::default(),
+                    );
+                    match rehydrator.rehydrate_for_ai(&output) {
+                        Ok(ai_text) => serde_json::json!({
+                            "output": output,
+                            "ai_text": ai_text,
+                        }),
+                        Err(e) => {
+                            let err_data = serde_json::json!({ "stage": "error", "message": format!("{e:?}") }).to_string();
+                            let _ = tx.send(Ok(SseEvent::default().event("error").data(err_data))).await;
+                            return;
+                        }
+                    }
+                } else {
+                    serde_json::json!({ "output": output })
+                };
+                let done_data = serde_json::json!({ "stage": "done", "payload": done_payload }).to_string();
+                let _ = tx.send(Ok(SseEvent::default().event("done").data(done_data))).await;
+            }
+            Ok(Err(msg)) => {
+                log::error!("{}", t1("server_compression_failed", msg.clone()));
+                let err_data = serde_json::json!({ "stage": "error", "message": msg }).to_string();
+                let _ = tx.send(Ok(SseEvent::default().event("error").data(err_data))).await;
+            }
+            Err(_) => {
+                let err_data = serde_json::json!({ "stage": "error", "message": "compression task panicked" }).to_string();
+                let _ = tx.send(Ok(SseEvent::default().event("error").data(err_data))).await;
+            }
+        }
+    });
+
+    Ok(Sse::new(ReceiverStream::new(rx)))
+}
+
+// WebSocket 实时日志 tail：客户端先发 {"path":"...","interval_ms":1000,"compress":true}
+async fn tail_ws_handler(
+    ws: WebSocketUpgrade,
+    State(state): State<Arc<AppState>>,
+) -> Response {
+    ws.on_upgrade(move |socket| tail_socket_handler(socket, state))
+}
+
+#[derive(Deserialize, Debug)]
+struct TailRequest {
+    path: String,
+    #[serde(default = "default_interval_ms")]
+    interval_ms: u64,
+    #[serde(default = "default_compress")]
+    compress: bool,
+}
+
+fn default_interval_ms() -> u64 { 1000 }
+fn default_compress() -> bool { true }
+
+async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Arc<AppState>) {
+    use axum::extract::ws::{Message, Utf8Bytes};
+
+    fn text_msg(s: impl Into<Utf8Bytes>) -> Message {
+        Message::Text(s.into())
+    }
+
+    // 等待客户端第一条配置消息
+    let req = match socket.recv().await {
+        Some(Ok(Message::Text(text))) => {
+            match serde_json::from_str::<TailRequest>(&text) {
+                Ok(r) => r,
+                Err(e) => {
+                    let _ = socket.send(text_msg(format!("{{\"error\":\"invalid request: {e}\"}}"))).await;
+                    return;
+                }
+            }
+        }
+        _ => {
+            let _ = socket.send(text_msg("{\"error\":\"expected JSON text message\"}".to_string())).await;
+            return;
+        }
+    };
+
+    // 路径安全校验：限制在当前工作目录内
+    let base = match std::env::current_dir() {
+        Ok(d) => d,
+        Err(_) => {
+            let _ = socket.send(text_msg("{\"error\":\"cannot get cwd\"}".to_string())).await;
+            return;
+        }
+    };
+    let target = base.join(&req.path);
+    let Ok(canonical_base) = base.canonicalize() else {
+        let _ = socket.send(text_msg("{\"error\":\"cannot canonicalize cwd\"}".to_string())).await;
+        return;
+    };
+    let Ok(canonical_target) = target.canonicalize() else {
+        let _ = socket.send(text_msg(format!("{{\"error\":\"path not found: {}\"}}", req.path))).await;
+        return;
+    };
+    if !canonical_target.starts_with(&canonical_base) {
+        let _ = socket.send(text_msg("{\"error\":\"path outside cwd\"}".to_string())).await;
+        return;
+    }
+    if !canonical_target.is_file() {
+        let _ = socket.send(text_msg("{\"error\":\"not a regular file\"}".to_string())).await;
+        return;
+    }
+
+    // 打开文件并定位到末尾
+    let file = match tokio::fs::File::open(&canonical_target).await {
+        Ok(f) => f,
+        Err(e) => {
+            let _ = socket.send(text_msg(format!("{{\"error\":\"open failed: {e}\"}}"))).await;
+            return;
+        }
+    };
+    let mut reader = tokio::io::BufReader::new(file);
+    if let Err(e) = tokio::io::AsyncSeekExt::seek(&mut reader, std::io::SeekFrom::End(0)).await {
+        let _ = socket.send(text_msg(format!("{{\"error\":\"seek failed: {e}\"}}"))).await;
+        return;
+    }
+
+    let mut interval = tokio::time::interval(tokio::time::Duration::from_millis(req.interval_ms.max(100)));
+    interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
+
+    loop {
+        interval.tick().await;
+
+        // 读取新增内容
+        let mut chunk = String::new();
+        let mut limited = false;
+        loop {
+            let mut line = String::new();
+            match tokio::io::AsyncBufReadExt::read_line(&mut reader, &mut line).await {
+                Ok(0) => break,
+                Ok(_) => {
+                    if chunk.len() + line.len() > 64 * 1024 {
+                        limited = true;
+                        break;
+                    }
+                    chunk.push_str(&line);
+                }
+                Err(e) => {
+                    let _ = socket.send(text_msg(format!("{{\"error\":\"read failed: {e}\"}}"))).await;
+                    return;
+                }
+            }
+        }
+        if chunk.is_empty() && !limited {
+            continue;
+        }
+
+        let payload = if req.compress {
+            let state_for_blocking = Arc::clone(&state);
+            let result: Result<Result<String, String>, tokio::task::JoinError> =
+                tokio::task::spawn_blocking(move || {
+                    let mut pipeline = match state_for_blocking.pipeline_mutex.lock() {
+                        Ok(p) => p,
+                        Err(_) => return Err("failed to lock pipeline".to_string()),
+                    };
+                    match pipeline.compress_str(&chunk) {
+                        Ok(out) => Ok(serde_json::to_string(&out).unwrap_or_default()),
+                        Err(e) => Err(format!("{e:?}")),
+                    }
+                })
+                .await;
+            match result {
+                Ok(Ok(json)) => format!("{{\"compressed\":true,\"output\":{json},\"truncated\":{limited}}}"),
+                Ok(Err(msg)) => format!("{{\"error\":\"{msg}\"}}"),
+                Err(_) => "{\"error\":\"compression task panicked\"}".to_string(),
+            }
+        } else {
+            serde_json::json!({ "compressed": false, "text": chunk, "truncated": limited }).to_string()
+        };
+
+        if socket.send(text_msg(payload)).await.is_err() {
+            break;
         }
     }
 }

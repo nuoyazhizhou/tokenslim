@@ -98,7 +98,7 @@ mod tests {
     #[test]
     fn unwraps_aliyun_csv_multiline_case() {
         let plugin = CloudLogPlugin::new();
-        let raw = read_sample_log("cloud_log_plugin", "case_050_aliyun_csv_multiline");
+        let raw = read_sample_log("cloud_log_plugin", "case_052_aliyun_csv_multiline");
         let out = compress_to_string(&plugin, &raw, SliceType::LogBlock);
         assert!(
             out.contains("$CL|META|providers=aliyun") || out.contains("__topic__"),
