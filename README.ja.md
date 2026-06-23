@@ -214,6 +214,29 @@ cargo build --release
 - **Chrome** — `chrome-extension/` を参照
 - **JetBrains** — `jetbrains-plugin/` を参照
 
+
+#### Web UI
+
+サイドカーには、インタラクティブな圧縮とライブログの tail が可能なシングルページ UI が組み込まれています。すべてのフロントエンド静的アセットは**バイナリ実行ファイルに直接コンパイルされています**。npm や pip 経由でインストールした場合でも、どのディレクトリからでもゼロ設定でそのまま動作します。
+
+![TokenSlim Web UI — ホーム (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### 起動
+
+```bash
+# 任意のディレクトリから実行（内嵌 Web UI を自動的に提供）
+tokenslim-server
+
+# フロントエンド開発モード（ホットリロード用に物理ディレクトリから提供）
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
+
+# ポートとバインド・アドレスを指定
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# ローカルでのテスト時に認証を無効化（デフォルト: 環境変数が未設定の場合はオフ）
+# TOKENSLIM_API_KEY=changeme tokenslim-server
+```
+
 ### SDK
 
 - **Node.js / TypeScript** — `npm i tokenslim`（ソース：[`packages/sdk-nodejs/`](./packages/sdk-nodejs/)）
@@ -261,6 +284,29 @@ tokenslim hooks uninstall
 ```bash
 tokenslim-server
 # 127.0.0.1:<port> でリッスン、/health、/compress、/decompress を提供
+```
+
+
+#### Web UI
+
+サイドカーには、インタラクティブな圧縮とライブログの tail が可能なシングルページ UI が組み込まれています。すべてのフロントエンド静的アセットは**バイナリ実行ファイルに直接コンパイルされています**。npm や pip 経由でインストールした場合でも、どのディレクトリからでもゼロ設定でそのまま動作します。
+
+![TokenSlim Web UI — ホーム (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### 起動
+
+```bash
+# 任意のディレクトリから実行（内嵌 Web UI を自動的に提供）
+tokenslim-server
+
+# フロントエンド開発モード（ホットリロード用に物理ディレクトリから提供）
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
+
+# ポートとバインド・アドレスを指定
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# ローカルでのテスト時に認証を無効化（デフォルト: 環境変数が未設定の場合はオフ）
+# TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 
 ### SDK

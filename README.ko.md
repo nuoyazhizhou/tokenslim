@@ -214,6 +214,29 @@ cargo build --release
 - **Chrome** — `chrome-extension/` 참조
 - **JetBrains** — `jetbrains-plugin/` 참조
 
+
+#### Web UI
+
+사이드카에는 대화형 압축 및 실시간 로그 테일링을 위한 단일 페이지 UI가 내장되어 있습니다. 모든 프론트엔드 정적 리소스는 **바이너리 실행 파일에 직접 컴파일되어 있습니다**. npm이나 pip를 통해 설치하더라도 어떤 디렉토리에서든 추가 설정 없이 바로 실행할 수 있습니다.
+
+![TokenSlim Web UI — 홈 (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### 실행
+
+```bash
+# 모든 디렉토리에서 실행 (내장된 Web UI 자동 제공)
+tokenslim-server
+
+# 프론트엔드 개발 모드 (핫 리로드를 위해 물리적 디렉토리에서 제공)
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
+
+# 포트 및 바인딩 주소 선택
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# 로컬 테스트 시 인증 비활성화 (기본값: 환경 변수가 설정되지 않은 경우 꺼짐)
+# TOKENSLIM_API_KEY=changeme tokenslim-server
+```
+
 ### SDK
 
 - **Node.js / TypeScript** — `npm i tokenslim` (소스: [`packages/sdk-nodejs/`](./packages/sdk-nodejs/))
@@ -261,6 +284,29 @@ tokenslim hooks uninstall
 ```bash
 tokenslim-server
 # 127.0.0.1:<port>에서 리슨, /health, /compress, /decompress 제공
+```
+
+
+#### Web UI
+
+사이드카에는 대화형 압축 및 실시간 로그 테일링을 위한 단일 페이지 UI가 내장되어 있습니다. 모든 프론트엔드 정적 리소스는 **바이너리 실행 파일에 직접 컴파일되어 있습니다**. npm이나 pip를 통해 설치하더라도 어떤 디렉토리에서든 추가 설정 없이 바로 실행할 수 있습니다.
+
+![TokenSlim Web UI — 홈 (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### 실행
+
+```bash
+# 모든 디렉토리에서 실행 (내장된 Web UI 자동 제공)
+tokenslim-server
+
+# 프론트엔드 개발 모드 (핫 리로드를 위해 물리적 디렉토리에서 제공)
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
+
+# 포트 및 바인딩 주소 선택
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# 로컬 테스트 시 인증 비활성화 (기본값: 환경 변수가 설정되지 않은 경우 꺼짐)
+# TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 
 ### SDK

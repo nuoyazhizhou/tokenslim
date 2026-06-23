@@ -265,6 +265,29 @@ tokenslim-server
 # يستمع على 127.0.0.1:<port>، يعرض /health و/compress و/decompress
 ```
 
+
+#### واجهة المستخدم (Web UI)
+
+يأتي الـ sidecar مزودًا بواجهة مستخدم مدمجة من صفحة واحدة للضغط التفاعلي ومتابعة السجلات الحية. تم **تجميع جميع الأصول الثابتة للواجهة الأمامية مباشرة في الملف التنفيذي الثنائي**. سواء تم تثبيته عبر npm أو pip، فإنه يعمل فورًا من أي دليل بدون أي إعدادات إضافية.
+
+![TokenSlim Web UI — الرئيسية (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### التشغيل
+
+```bash
+# التشغيل من أي دليل (يخدم واجهة المستخدم المدمجة تلقائيًا)
+tokenslim-server
+
+# وضع تطوير الواجهة الأمامية (يخدم من دليل فعلي للتحديث المباشر)
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
+
+# اختيار المنفذ وعنوان الربط
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# تعطيل المصادقة أثناء الاختبار المحلي (الافتراضي: معطل إذا لم يتم تعيين متغير البيئة)
+# TOKENSLIM_API_KEY=changeme tokenslim-server
+```
+
 ### SDK
 
 ```python

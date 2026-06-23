@@ -266,19 +266,18 @@ tokenslim-server
 #### Web UI
 
 Sidecar 内置一个单页 Web UI，方便手动压缩日志、实时 tail。
-默认从二进制同目录下的 `webui/` 目录提供静态资源；如果该目录不存在，
-sidecar 仍然正常提供 HTTP API，只是不渲染 UI（不会在 `/` 返回 404）。
+所有的前端静态资源都已经**直接编译内嵌到二进制可执行文件里**，无论通过 npm 还是 pip 安装，无论在什么目录下启动都能做到零配置“开箱即用”。
 
 ![TokenSlim Web UI — 简体中文首页](docs/webui-screenshots/01-home-zh.png)
 
 ##### 启动
 
 ```bash
-# 源码运行（仓库自带 webui/ 目录）
-cargo run --release --bin tokenslim-server
+# 任意目录直接运行（自动读取内嵌 WebUI）
+tokenslim-server
 
-# 已安装的二进制 — 指向自定义 webui 根目录
-TOKENSLIM_WEBUI_DIR=/opt/tokenslim/webui tokenslim-server
+# 本地前端开发模式（从物理目录读取以便支持热加载）
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
 
 # 自定义端口与绑定地址
 TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server

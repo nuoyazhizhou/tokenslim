@@ -279,25 +279,23 @@ tokenslim-server
 #### Web UI
 
 The sidecar ships a built-in single-page UI for interactive compression
-and live log tailing. By default it tries to serve files from the
-`webui/` directory next to the binary; if that directory is missing
-the sidecar keeps running with the HTTP API only (no 404 noise on `/`).
+and live log tailing. All frontend static assets are **compiled directly into the binary executable**. Whether installed via npm or pip, it runs out-of-the-box from any directory with zero configuration.
 
 ![TokenSlim Web UI — home (zh-CN)](docs/webui-screenshots/01-home-zh.png)
 
 ##### Run
 
 ```bash
-# from a source checkout (webui/ is in the repo)
-cargo run --release --bin tokenslim-server
+# Run from any directory (serves the embedded Web UI automatically)
+tokenslim-server
 
-# from an installed binary — point at a custom webui root if needed
-TOKENSLIM_WEBUI_DIR=/opt/tokenslim/webui tokenslim-server
+# Frontend dev mode (serves from a physical directory for hot-reloading)
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
 
-# pick a port and bind address
+# Pick a port and bind address
 TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 
-# disable auth while poking around locally (default: off when env var unset)
+# Disable auth while poking around locally (default: off when env var unset)
 # TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 

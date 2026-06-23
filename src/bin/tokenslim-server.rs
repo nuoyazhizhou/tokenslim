@@ -25,7 +25,13 @@ use tokenslim::core::tracking::{Tracker, TrackingEvent};
 use tokenslim::utils::i18n::{t, t1, t_en, t_zh};
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
+use axum::http::Uri;
+use axum::http::header;
+use rust_embed::RustEmbed;
 
+#[derive(RustEmbed)]
+#[folder = "webui/"]
+struct WebUiAsset;
 // 健康检查响应
 #[derive(Serialize)]
 struct HealthResponse {
@@ -346,16 +352,21 @@ async fn main() {
         .layer(cors)
         .with_state(shared_state);
 
-    // 解析 Web UI 静态目录（由环境变量覆盖，默认为仓库内 webui/）
-    let webui_dir = std::env::var("TOKENSLIM_WEBUI_DIR").unwrap_or_else(|_| "webui".to_string());
-    let webui_path = PathBuf::from(&webui_dir);
-    if webui_path.is_dir() {
-        let serve = ServeDir::new(&webui_path).append_index_html_on_directories(true);
-        // fallback: API 路由未命中时由 ServeDir 接住 GET 请求，提供静态文件
-        app = app.fallback_service(serve);
-        log::info!("{}", t1("server_webui_enabled", webui_path.display().to_string()));
+    // 解析 Web UI 静态目录（如果用户显式指定了 TOKENSLIM_WEBUI_DIR 且存在，则从该目录提供，方便开发）
+    // 否则直接使用内嵌的静态资源
+    if let Ok(webui_dir) = std::env::var("TOKENSLIM_WEBUI_DIR") {
+        let webui_path = PathBuf::from(&webui_dir);
+        if webui_path.is_dir() {
+            let serve = ServeDir::new(&webui_path).append_index_html_on_directories(true);
+            app = app.fallback_service(serve);
+            log::info!("{}", t1("server_webui_enabled", webui_path.display().to_string()));
+        } else {
+            app = app.fallback(get(static_handler));
+            log::info!("{}", t1("server_webui_enabled", "embedded".to_string()));
+        }
     } else {
-        log::warn!("{}", t1("server_webui_disabled", webui_path.display().to_string()));
+        app = app.fallback(get(static_handler));
+        log::info!("{}", t1("server_webui_enabled", "embedded".to_string()));
     }
 
     // 启动服务器
@@ -1115,6 +1126,29 @@ async fn decompress_handler(
         Err(e) => {
             log::error!("{}", t1("server_decompression_failed", format!("{e:?}")));
             Err(ApiError::internal())
+        }
+    }
+}
+
+async fn static_handler(uri: Uri) -> impl IntoResponse {
+    let mut path = uri.path().trim_start_matches('/').to_string();
+    if path.is_empty() {
+        path = "index.html".to_string();
+    }
+    match WebUiAsset::get(&path) {
+        Some(content) => {
+            let mime = mime_guess::from_path(&path).first_or_octet_stream();
+            ([(header::CONTENT_TYPE, mime.as_ref())], content.data).into_response()
+        }
+        None => {
+            if path != "index.html" {
+                // SPA fallback for client-side routing
+                if let Some(content) = WebUiAsset::get("index.html") {
+                    let mime = mime_guess::from_path("index.html").first_or_octet_stream();
+                    return ([(header::CONTENT_TYPE, mime.as_ref())], content.data).into_response();
+                }
+            }
+            (StatusCode::NOT_FOUND, "404 Not Found").into_response()
         }
     }
 }

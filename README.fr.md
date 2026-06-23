@@ -263,6 +263,29 @@ tokenslim-server
 # Écoute sur 127.0.0.1:<port>, expose /health, /compress, /decompress
 ```
 
+
+#### Web UI
+
+Le sidecar intègre une interface utilisateur d'une seule page pour la compression interactive et le suivi en direct des journaux. Toutes les ressources statiques du frontend sont **compilées directement dans l'exécutable binaire**. Qu'il soit installé via npm ou pip, il fonctionne clé en main depuis n'importe quel répertoire sans aucune configuration.
+
+![TokenSlim Web UI — accueil (zh-CN)](docs/webui-screenshots/01-home-zh.png)
+
+##### Exécuter
+
+```bash
+# Exécuter depuis n'importe quel répertoire (sert automatiquement la Web UI intégrée)
+tokenslim-server
+
+# Mode de développement frontend (sert depuis un répertoire physique pour le hot-reloading)
+TOKENSLIM_WEBUI_DIR=./webui tokenslim-server
+
+# Choisir le port et l'adresse de liaison
+TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
+
+# Désactiver l'authentification pour les tests locaux (par défaut : désactivé si non défini)
+# TOKENSLIM_API_KEY=changeme tokenslim-server
+```
+
 ### SDK
 
 ```python
