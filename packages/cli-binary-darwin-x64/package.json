@@ -1,6 +1,6 @@
 {
     "name": "@tokenslim/cli-binary-darwin-x64",
-    "version": "0.3.4",
+    "version": "0.3.5",
     "description": "Prebuilt TokenSlim CLI + server binaries (macOS x64, Intel).",
     "private": true,
     "license": "MIT",
