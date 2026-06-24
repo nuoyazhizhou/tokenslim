@@ -7,11 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > **Legend**: `+` Added · `~` Changed · `-` Removed · `!` Fixed · `^` Security
 >
-> **Range covered**: v0.2.6 → v0.3.3 → HEAD. 0.2.6 / 0.3.0 are scaffold releases (no user-facing changes).
+> **Range covered**: v0.2.6 → v0.3.6 → HEAD. 0.2.6 / 0.3.0 are scaffold releases (no user-facing changes).
 
 ---
 
-## [Unreleased] — MCP Server, CLI split, experimental gate (since 0.3.3)
+## [0.3.6] — 2026-06-24 (vcs_git unmerged fix + MCP server)
 
 ### Added
 - **`tokenslim-mcp-server`** — a built-in [Model Context Protocol](https://modelcontextprotocol.io) server under `mcp-server/`. Exposes `compress` / `decompress` / `smart-compress` / `stats` / `compress-file` tools and `config` / `plugins` resources so any MCP-compatible agent (Claude Code, Cursor, Windsurf, Qoder, OpenCode) can drive TokenSlim through the standard protocol. See `mcp-server/README.md`.
@@ -25,6 +25,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - **`crossbeam-channel` dependency** — workspace + member entries dropped; no module referenced it after the CLI refactor.
+
+### Fixed
+- **`vcs_git_plugin` lost unmerged-path conflicts** — `git status` output containing the "Unmerged paths:" section was previously compressed into an empty file. `VcsRecord::File.status` now stores a two-character git porcelain v1 code (`UU` / `AU` / `UA` / `DU` / `UD`) instead of a single `char`, so the five distinct conflict flavours (both modified, added-by-us, added-by-them, deleted-by-us, deleted-by-them) all survive the round-trip. Adds a physical sample (`case_330_git_status_unmerged`) and a regression test (`git_status_preserves_unmerged_paths`); 4-step audit pipeline (case_quality → case_metrics → all_metrics → capability_index) reports `semantic_gate_passed=88/88` for vcs_git.
 
 ---
 
@@ -124,7 +127,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Concept commit: 50-line Python script that grepped `Error:` lines and reported count.
 
-[Unreleased]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.6...HEAD
+[0.3.6]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.3...v0.3.6
 [0.3.3]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.0...v0.3.1
