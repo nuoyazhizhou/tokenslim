@@ -357,12 +357,36 @@ tokenslim explain-plugin --explain-command "cargo build"
 |---|---|---|
 | CLI | `src/bin/tokenslim-server.rs`, `src/cli/` | 稳定 |
 | REST Server | `src/bin/tokenslim-server.rs` | 稳定 |
+| MCP Server | `mcp-server/` | Beta |
 | VS Code | `vscode-extension/` | 稳定 |
 | Chrome | `chrome-extension/` | 稳定 |
 | JetBrains | `jetbrains-plugin/` | 稳定 |
 | Python SDK | `crates/tokenslim-py/` | 稳定 |
 | Node.js SDK | `sdk/nodejs/` | 稳定 |
 | Java SDK | `sdk/java/` | 稳定 |
+
+### MCP Server（AI Agent 集成）
+
+TokenSlim 内置了一个 [MCP (Model Context Protocol)](https://modelcontextprotocol.io) 服务器，让所有支持 MCP 的 AI Agent（Claude Code、Cursor、Windsurf、Qoder、OpenCode 等）能够通过标准协议直接调用压缩与解压能力。
+
+```bash
+cd mcp-server && npm install && npm run build
+```
+
+然后将以下内容加入你的 Agent 的 MCP 配置（以 Cursor `.cursor/mcp.json` 为例）：
+
+```json
+{
+  "mcpServers": {
+    "tokenslim": {
+      "command": "node",
+      "args": ["/path/to/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+> 📖 完整安装指南、工具参数说明与各 Agent 配置示例：[`mcp-server/README.md`](./mcp-server/README.md)
 
 ## 🏗 架构
 

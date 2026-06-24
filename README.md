@@ -372,12 +372,36 @@ tokenslim explain-plugin --explain-command "cargo build"
 |---|---|---|
 | CLI | `src/bin/tokenslim-server.rs`, `src/cli/` | Stable |
 | REST Server | `src/bin/tokenslim-server.rs` | Stable |
+| MCP Server | `mcp-server/` | Beta |
 | VS Code | `vscode-extension/` | Stable |
 | Chrome | `chrome-extension/` | Stable |
 | JetBrains | `jetbrains-plugin/` | Stable |
 | Python SDK | `crates/tokenslim-py/` | Stable |
 | Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.2.7` — includes the CLI binaries) | Stable |
 | Java SDK | `sdk/java/` | Stable |
+
+### MCP Server (AI Agent integration)
+
+TokenSlim ships a built-in [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server that lets any MCP-compatible AI agent — Claude Code, Cursor, Windsurf, Qoder, OpenCode, and more — call compression tools directly through the standard protocol.
+
+```bash
+cd mcp-server && npm install && npm run build
+```
+
+Then add to your agent's MCP config (example for Cursor `.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "tokenslim": {
+      "command": "node",
+      "args": ["/path/to/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+> 📖 Full setup guide, tool reference, and agent config examples: [`mcp-server/README.md`](./mcp-server/README.md)
 
 ## Architecture
 
