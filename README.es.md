@@ -309,6 +309,26 @@ String compressed = client.compress(logText);
 String report = client.decompress(compressed, "ai-export");
 ```
 
+## Reordenamiento de logs (Log Reordering)
+
+![Log Reordering: BEFORE vs AFTER](docs/webui-screenshots/reorder-before-after.png)
+
+Las herramientas de build paralelo (`make -jN`, `ninja`, Bazel, MSBuild, …) entrelazan los logs de varios objetivos en un orden **no determinista** que rompe cualquier diff / caché / comparación de regresión. TokenSlim incluye un **reordenador global determinista** que procesa el log en streaming, rastrea el objetivo de build activo y emite las líneas en un orden estable agrupado por objetivo.
+
+```bash
+# Integrado: el flag --reorder fuerza el reordenador y cae a modo serie
+tokenslim -i build.log -o output.json --reorder
+
+# Herramienta autónoma: diff log→log puro (Jenkins / CI) sin pipeline completo
+cargo build --release --bin log_reorder
+./target/release/log_reorder -i messy_build.log -o sorted_build.log --deterministic -n -p
+#   --deterministic  : agrupa líneas por módulo / objetivo de build
+#   -n  (--normalize) : ordena flags desordenados, enmascara direcciones & hashes
+#   -p  (--shorten-paths) : acorta /home/userA/workspace/... a los últimos 3 segmentos
+```
+
+El mismo motor está expuesto vía `POST /compress` (campo `reorder: true`), la casilla «Habilitar reorden» de la WebUI y los SDK de Python / Node.
+
 ## Plugins
 
 TokenSlim incluye **60+ plugins** cubriendo las entradas que dominan el tráfico real de LLM. Cada plugin es data-driven (config JSON / TOML bajo `config/plugins/`) y el dispatch es por ruta, por lo que añadir un nuevo formato de fuente es, en la mayoría de los casos, un cambio solo de configuración.

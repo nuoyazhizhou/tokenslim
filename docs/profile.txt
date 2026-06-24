@@ -1,0 +1,4 @@
+==== Global Profiler Dump ====
+slice_paragraph_flush_time, count: 981, total_ms: 76, avg_ms: 0.08
+slice_paragraph_push_time, count: 1302519, total_ms: 19, avg_ms: 0.00
+==============================

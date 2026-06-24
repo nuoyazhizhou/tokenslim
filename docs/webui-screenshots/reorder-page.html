@@ -1,0 +1,122 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><style>
+  :root {
+    --bg: #0d1117; --fg: #c9d1d9; --muted: #8b949e; --line: #30363d;
+    --err: #f85149; --warn: #d29922; --accent: #58a6ff;
+  }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--fg);
+                font-family: 'Cascadia Code', 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+                font-size: 12px; line-height: 1.45; }
+  .header { padding: 18px 24px 12px; border-bottom: 1px solid var(--line); background: #161b22; }
+  .header h1 { margin: 0; font-size: 18px; font-weight: 600; color: #f0f6fc; }
+  .header .sub { color: var(--muted); margin-top: 6px; font-size: 12px; }
+  .header .stats { color: var(--accent); margin-top: 6px; font-size: 12px; }
+  .header .stats b { color: #f0f6fc; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .pane { padding: 14px 18px; border-right: 1px solid var(--line); overflow: hidden; }
+  .pane:last-child { border-right: none; background: #0a0e14; }
+  .pane h2 { margin: 0 0 8px 0; font-size: 13px; color: #f0f6fc; font-weight: 600;
+              display: flex; justify-content: space-between; }
+  .pane h2 .tag { font-size: 11px; padding: 1px 8px; border-radius: 3px;
+                    background: #21262d; color: var(--muted); font-weight: 400; }
+  .pane h2 .tag.bad { background: #4c1f1f; color: #ff7b72; }
+  .pane h2 .tag.good { background: #1f4c2e; color: #56d364; }
+  pre { margin: 0; white-space: pre; overflow: hidden; color: #c9d1d9; }
+  .err { color: var(--err); }
+  .warn { color: var(--warn); }
+  .footer { padding: 10px 24px; border-top: 1px solid var(--line); background: #161b22;
+             color: var(--muted); font-size: 11px; display: flex; justify-content: space-between; }
+  .footer code { background: #0a0e14; padding: 1px 6px; border-radius: 3px; color: #f0f6fc; }
+</style></head>
+<body>
+  <div class="header">
+    <h1>TokenSlim — Log Reordering: BEFORE vs AFTER</h1>
+    <div class="sub">Parallel build (<code>make -j4</code>) log diff demonstration</div>
+    <div class="stats">
+      <b>BEFORE</b>: 483 lines · 56,855 bytes · 4-way interleaved targets<br>
+      <b>AFTER </b>: 483 lines · 52,179 bytes · grouped by build target, paths shortened, addresses masked
+    </div>
+  </div>
+  <div class="grid">
+    <div class="pane">
+      <h2><span>BEFORE — raw interleaved log</span><span class="tag bad">NON-DETERMINISTIC</span></h2>
+      <pre><span class="err">[    0s] g++ -Wall -O2 -std=c++17 -g -L/usr/lib/x86_64-linux-gnu -c render/texture.o.cpp -o render/texture.o.o</span>
+<span class="err">[    1s] g++ -DVERSION=4.2.0 -Wall -fPIC -L./lib -DBUILD_ID=0xa3f7c19d -c core/buffer.o.cpp -o core/buffer.o.o</span>
+<span class="err">[    2s] g++ -I./third_party/boost -O2 -DVERSION=4.2.0 -Wall -g -c render/canvas.o.cpp -o render/canvas.o.o</span>
+<span class="err">[    3s] g++ -L./lib -L/usr/lib/x86_64-linux-gnu -O2 -DBUILD_ID=0xa3f7c19d -g -c net/socket.o.cpp -o net/socket.o.o</span>
+<span class="err">[    4s] g++ -fPIC -DVERSION=4.2.0 -L./lib -I./third_party/boost -g -c render/shader.o.cpp -o render/shader.o.o</span>
+<span class="err">[    5s] g++ -L/usr/lib/x86_64-linux-gnu -std=c++17 -O2 -Wextra -I./third_party/boost -c db/query.o.cpp -o db/query.o.o</span>
+<span class="err">[    6s] g++ -std=c++17 -Wextra -g -I./include -Wall -c net/tls.o.cpp -o net/tls.o.o</span>
+<span class="err">[    7s] g++ -I./third_party/boost -Wall -I./include -fPIC -std=c++17 -c core/string.o.cpp -o core/string.o.o</span>
+<span class="err">[    8s] g++ -DVERSION=4.2.0 -I/home/jenkins/workspace/project-A/src/core -L./lib -Wall -I./third_party/boost -c core/utils.o.cpp -o core/utils.o.o</span>
+<span class="err">[    9s] g++ -L./lib -std=c++17 -fPIC -L/usr/lib/x86_64-linux-gnu -I./include -c core/string.o.cpp -o core/string.o.o</span>
+<span class="err">[   10s] g++ -g -DVERSION=4.2.0 -Wall -O2 -DBUILD_ID=0xa3f7c19d -c render/canvas.o.cpp -o render/canvas.o.o</span>
+<span class="err">[   11s] g++ -Wall -g -DBUILD_ID=0xa3f7c19d -I./third_party/boost -std=c++17 -c net/http.o.cpp -o net/http.o.o</span>
+<span class="err">[   12s] g++ -fPIC -I./include -Wextra -DVERSION=4.2.0 -L/usr/lib/x86_64-linux-gnu -c db/query.o.cpp -o db/query.o.o</span>
+<span class="err">[   13s] g++ -fPIC -std=c++17 -DBUILD_ID=0xa3f7c19d -Wall -Wextra -c net/socket.o.cpp -o net/socket.o.o</span>
+<span class="err">[   14s] g++ -DVERSION=4.2.0 -g -Wextra -I/home/jenkins/workspace/project-A/src/core -I./third_party/boost -c db/cache.o.cpp -o db/cache.o.o</span>
+<span class="err">[   15s] g++ -fPIC -DVERSION=4.2.0 -L./lib -g -I./include -c net/http.o.cpp -o net/http.o.o</span>
+<span class="err">[   16s] g++ -g -O2 -I./include -I./third_party/boost -std=c++17 -c core/utils.o.cpp -o core/utils.o.o</span>
+<span class="err">[   17s] g++ -g -L/usr/lib/x86_64-linux-gnu -I./include -DBUILD_ID=0xa3f7c19d -I/home/jenkins/workspace/project-A/src/core -c core/string.o.cpp -o core/string.o.o</span>
+<span class="err">[   18s] g++ -fPIC -I/home/jenkins/workspace/project-A/src/core -Wextra -std=c++17 -DBUILD_ID=0xa3f7c19d -c db/connection.o.cpp -o db/connection.o.o</span>
+<span class="err">[   19s] g++ -DVERSION=4.2.0 -L./lib -DBUILD_ID=0xa3f7c19d -std=c++17 -I./third_party/boost -c net/socket.o.cpp -o net/socket.o.o</span>
+<span class="err">[   20s] g++ -I./third_party/boost -I./include -g -Wextra -L./lib -c render/canvas.o.cpp -o render/canvas.o.o</span>
+<span class="err">[   21s] g++ -Wall -O2 -DBUILD_ID=0xa3f7c19d -Wextra -L/usr/lib/x86_64-linux-gnu -c db/query.o.cpp -o db/query.o.o</span>
+<span class="err">[   22s] g++ -I./third_party/boost -L/usr/lib/x86_64-linux-gnu -Wall -DBUILD_ID=0xa3f7c19d -DVERSION=4.2.0 -c render/texture.o.cpp -o render/texture.o.o</span>
+<span class="err">[   23s] g++ -I/home/jenkins/workspace/project-A/src/core -L./lib -std=c++17 -DVERSION=4.2.0 -O2 -c render/canvas.o.cpp -o render/canvas.o.o</span>
+<span class="err">[   24s] g++ -DVERSION=4.2.0 -Wall -fPIC -L./lib -std=c++17 -c render/texture.o.cpp -o render/texture.o.o</span>
+<span class="err">[   25s] g++ -I./include -Wall -std=c++17 -I./third_party/boost -Wextra -c render/texture.o.cpp -o render/texture.o.o</span>
+<span class="err">[   26s] g++ -O2 -DVERSION=4.2.0 -std=c++17 -L./lib -Wextra -c db/query.o.cpp -o db/query.o.o</span>
+<span class="err">[   27s] g++ -Wall -fPIC -std=c++17 -L./lib -g -c db/cache.o.cpp -o db/cache.o.o</span>
+<span class="err">[   28s] g++ -I./include -Wextra -L./lib -fPIC -O2 -c core/buffer.o.cpp -o core/buffer.o.o</span>
+<span class="err">[   29s] g++ -I./include -I/home/jenkins/workspace/project-A/src/core -O2 -Wall -DBUILD_ID=0xa3f7c19d -c render/canvas.o.cpp -o render/canvas.o.o</span>
+<span class="err">[   30s] g++ -g -O2 -DBUILD_ID=0xa3f7c19d -L/usr/lib/x86_64-linux-gnu -Wall -c net/http.o.cpp -o net/http.o.o</span>
+<span class="err">[   31s] g++ -DVERSION=4.2.0 -I/home/jenkins/workspace/project-A/src/core -Wall -L./lib -Wextra -c core/string.o.cpp -o core/string.o.o</span>
+<span class="err">[   32s] g++ -fPIC -I/home/jenkins/workspace/project-A/src/core -L./lib -Wextra -std=c++17 -c core/buffer.o.cpp -o core/buffer.o.o</span>
+<span class="err">[   33s] g++ -L/usr/lib/x86_64-linux-gnu -I./third_party/boost -g -L./lib -fPIC -c db/cache.o.cpp -o db/cache.o.o</span>
+<span class="err">[   34s] g++ -std=c++17 -I./third_party/boost -fPIC -I./include -I/home/jenkins/workspace/project-A/src/core -c render/shader.o.cpp -o render/shader.o.o</span></pre>
+    </div>
+    <div class="pane">
+      <h2><span>AFTER — <code>log_reorder --deterministic -n -p</code></span><span class="tag good">GROUPED + NORMALIZED</span></h2>
+      <pre><span class="err">[ 1s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -DVERSION=4.2.0 -L./lib -Wall -fPIC</span>
+<span class="err">[ 28s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I./include -L./lib -O2 -Wextra -fPIC</span>
+<span class="err">[ 32s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I.../project-A/src/core -L./lib -Wextra -fPIC -std=c++17</span>
+<span class="err">[ 53s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -L./lib -O2 -Wall -Wextra -fPIC</span>
+<span class="err">[ 68s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I./third_party/boost -I.../project-A/src/core -L./lib -fPIC</span>
+<span class="err">[ 74s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -I./include -I./third_party/boost -O2 -Wextra</span>
+<span class="err">[ 87s] g++ -g -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I./third_party/boost -Wextra -fPIC</span>
+<span class="err">[ 100s] g++ -g -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -DVERSION=4.2.0 -I.../project-A/src/core -std=c++17</span>
+<span class="err">[ 111s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I./third_party/boost -L./lib -L/usr/lib/x86_64-linux-gnu -O2 -fPIC</span>
+<span class="err">[ 147s] g++ -g -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -L/usr/lib/x86_64-linux-gnu -Wall -std=c++17</span>
+<span class="err">[ 184s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I./include -I.../project-A/src/core -L./lib -L/usr/lib/x86_64-linux-gnu -Wall</span>
+<span class="err">core/buffer.o.cpp:279:12: warning: unused variable &#x27;temp_buf&#x27; [-Wunused-variable]</span>
+<span class="err">[ 190s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I./include -O2 -fPIC -std=c++17</span>
+<span class="err">[ 192s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -I./third_party/boost -L/usr/lib/x86_64-linux-gnu -Wall -Wextra</span>
+<span class="err">[ 203s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I./include -I./third_party/boost -Wall -Wextra -std=c++17</span>
+<span class="err">[ 213s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -I./include -I./third_party/boost -I.../project-A/src/core -L./lib</span>
+<span class="err">[ 223s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -L./lib -Wall -Wextra -std=c++17</span>
+<span class="err">[ 226s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I.../project-A/src/core -L./lib -L/usr/lib/x86_64-linux-gnu -Wall</span>
+<span class="err">[ 238s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -L./lib -L/usr/lib/x86_64-linux-gnu -O2 -fPIC</span>
+<span class="err">[ 246s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I./third_party/boost -L/usr/lib/x86_64-linux-gnu -Wall -Wextra -fPIC</span>
+<span class="err">[ 247s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -L./lib -O2 -Wall -fPIC</span>
+<span class="err">[ 286s] g++ -g -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -I./include -I.../project-A/src/core -L/usr/lib/x86_64-linux-gnu</span>
+<span class="err">[ 287s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -L./lib -O2 -Wall -Wextra -std=c++17</span>
+<span class="err">core/buffer.o.cpp:348:12: warning: unused variable &#x27;temp_buf&#x27; [-Wunused-variable]</span>
+<span class="err">[ 289s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I.../project-A/src/core -L/usr/lib/x86_64-linux-gnu -O2 -Wextra</span>
+<span class="err">[ 301s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -I.../project-A/src/core -O2 -Wextra -std=c++17</span>
+<span class="err">[ 313s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I./include -L./lib -O2 -Wextra</span>
+<span class="err">[ 327s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I.../project-A/src/core -L/usr/lib/x86_64-linux-gnu -O2 -Wextra -fPIC</span>
+<span class="err">[ 335s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -DVERSION=4.2.0 -I.../project-A/src/core -Wall -Wextra</span>
+<span class="err">[ 346s] g++ -g -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -DVERSION=4.2.0 -I./include -L./lib</span>
+<span class="err">[ 348s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -L./lib -L/usr/lib/x86_64-linux-gnu -Wall -fPIC -std=c++17</span>
+<span class="err">[ 350s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DVERSION=4.2.0 -I./include -L/usr/lib/x86_64-linux-gnu -O2 -fPIC</span>
+<span class="err">[ 356s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -DVERSION=4.2.0 -I./include -I./third_party/boost -fPIC</span>
+<span class="err">[ 357s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -DBUILD_ID=0x[ADDR] -I./include -L./lib -Wall -fPIC</span>
+<span class="err">[ 369s] g++ -c core/buffer.o.cpp -o core/buffer.o.o -I./include -I./third_party/boost -L./lib -L/usr/lib/x86_64-linux-gnu -Wall -fPIC</span></pre>
+    </div>
+  </div>
+  <div class="footer">
+    <span><code>log_reorder -i in.log -o out.log --deterministic -n -p</code></span>
+    <span>Two identical builds → byte-identical output · ready for Beyond Compare</span>
+  </div>
+</body></html>

@@ -305,14 +305,14 @@ are exposed under the JSON API — the UI is just a thin client on top.
 
 ##### Environment variables
 
-| Variable                 | Default        | Description                                              |
-| ------------------------ | -------------- | -------------------------------------------------------- |
-| `TOKENSLIM_HOST`         | `127.0.0.1`    | Bind address.                                            |
-| `TOKENSLIM_PORT`         | `10086`        | TCP port.                                                |
-| `TOKENSLIM_WEBUI_DIR`    | `webui`        | Directory of static SPA files; missing dir = UI disabled.|
-| `TOKENSLIM_API_KEY`      | _unset_        | When set, requires `Authorization: Bearer <key>`.        |
-| `TOKENSLIM_CONFIG_PATH`  | _unset_        | Hot-reload config file path.                             |
-| `RUST_LOG`               | `info`         | Standard env-log filter (`debug`, `info`, `warn`, ...).  |
+| Variable                | Default     | Description                                               |
+| ----------------------- | ----------- | --------------------------------------------------------- |
+| `TOKENSLIM_HOST`        | `127.0.0.1` | Bind address.                                             |
+| `TOKENSLIM_PORT`        | `10086`     | TCP port.                                                 |
+| `TOKENSLIM_WEBUI_DIR`   | `webui`     | Directory of static SPA files; missing dir = UI disabled. |
+| `TOKENSLIM_API_KEY`     | _unset_     | When set, requires `Authorization: Bearer <key>`.         |
+| `TOKENSLIM_CONFIG_PATH` | _unset_     | Hot-reload config file path.                              |
+| `RUST_LOG`              | `info`      | Standard env-log filter (`debug`, `info`, `warn`, ...).   |
 
 ##### Features
 
@@ -355,6 +355,26 @@ String compressed = client.compress(logText);
 String report = client.decompress(compressed, "ai-export");
 ```
 
+## Log Reordering
+
+![Log Reordering: BEFORE vs AFTER](docs/webui-screenshots/reorder-before-after.png)
+
+Parallel build tools (`make -jN`, `ninja`, Bazel, MSBuild, …) interleave logs from multiple targets in an order that is *non-deterministic* and that breaks every diff / cache / regression comparison. TokenSlim ships a **deterministic global reorderer** that streams through the log, tracks the active build target, and emits lines in a stable target-grouped order.
+
+```bash
+# Built-in: the --reorder flag forces the reorderer and falls back to serial mode.
+tokenslim -i build.log -o output.json --reorder
+
+# Standalone tool: for pure log-to-log diff (Jenkins / CI envs) without the full pipeline.
+cargo build --release --bin log_reorder
+./target/release/log_reorder -i messy_build.log -o sorted_build.log --deterministic -n -p
+#   --deterministic  : group lines by module / build target
+#   -n  (--normalize) : sort out-of-order flags, redact addresses & random hashes
+#   -p  (--shorten-paths) : collapse /home/userA/workspace/... to last 3 segments
+```
+
+The same engine is exposed via `POST /compress` (request field `reorder: true`), the WebUI checkbox "Enable reorder", and the Python / Node SDKs.
+
 ## Plugins
 
 TokenSlim ships with **60+ plugins** covering the inputs that dominate real LLM traffic. Each plugin is data-driven (JSON / TOML config under `config/plugins/`) and dispatch is route-based, so adding a new source format is a config-only change in most cases.
@@ -378,7 +398,7 @@ tokenslim explain-plugin --explain-command "cargo build"
 | JetBrains | `jetbrains-plugin/` | Stable |
 | Python SDK | `crates/tokenslim-py/` | Stable |
 | Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.2.7` — includes the CLI binaries) | Stable |
-| Java SDK | `sdk/java/` | Stable |
+| Java SDK    | `sdk/java/`                                                                 | Stable |
 
 ### MCP Server (AI Agent integration)
 

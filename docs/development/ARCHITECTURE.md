@@ -13,9 +13,9 @@ TokenSlim 是一款由 Rust 编写的高性能、插件化 AI 文本输入压缩
 | 指标         | 数值                                                                      |
 | ------------ | ------------------------------------------------------------------------- |
 | 语言         | Rust 2021                                                                 |
-| 插件目录总数 | 55（含 14 个专用 VCS 插件、1 个统一 VCS 插件、40 个 non-VCS 插件）        |
+| 插件目录总数 | 58（含 14 个专用 VCS 插件、1 个统一 VCS 插件、43 个 non-VCS 插件）        |
 | VCS 插件     | 14（Git/SVN/Hg/P4/CVS/Bzr/Fossil/Darcs/GH/GLab/AZ/Bitbucket/Repo/Gerrit） |
-| non-VCS 插件 | 40                                                                        |
+| non-VCS 插件 | 43                                                                        |
 | IDE 扩展     | 3（VS Code / JetBrains / Chrome）                                         |
 | SDK          | 3（Python / Node.js / Java）                                              |
 | 吞吐量       | ~400 MB/s                                                                 |
@@ -31,7 +31,7 @@ TokenSlim/
 │   ├── lib.rs                    # 库入口
 │   ├── cli/                      # CLI 命令解析与路由
 │   ├── core/                     # 核心引擎（30+ 模块）
-│   ├── plugins/                  # 55 个插件目录
+│   ├── plugins/                  # 58 个插件目录
 │   └── bin/                      # 独立二进制（server、bench 等）
 │
 ├── crates/                       # 子 crate
@@ -233,23 +233,28 @@ src/plugins/<plugin_name>/
 | kubernetes_docker_plugin | `kubernetes_docker_plugin/` | K8s/Docker 输出                    |
 | db_log_plugin            | `db_log_plugin/`            | 数据库日志（MySQL/PG/Mongo/Redis） |
 
-#### 其他插件（13 个）
+#### 其他插件（18 个）
 
-| 插件                   | 目录                      | 覆盖场景          |
-| ---------------------- | ------------------------- | ----------------- |
-| ansi_cleaner_plugin    | `ansi_cleaner_plugin/`    | ANSI 转义序列净化 |
-| noise_filter_plugin    | `noise_filter_plugin/`    | 噪音过滤          |
-| smart_code_plugin      | `smart_code_plugin/`      | 代码智能压缩      |
-| smart_path_plugin      | `smart_path_plugin/`      | 智能路径压缩      |
-| static_rule_plugin     | `static_rule_plugin/`     | 静态规则引擎      |
-| template_driven_plugin | `template_driven_plugin/` | 模板驱动压缩      |
-| git_diff_plugin        | `git_diff_plugin/`        | Git Diff 专用压缩 |
-| generic_text_plugin    | `generic_text_plugin/`    | 通用文本压缩      |
-| syslog_plugin          | `syslog_plugin/`          | Syslog 日志压缩   |
-| spring_boot_plugin     | `spring_boot_plugin/`     | Spring Boot 日志  |
-| php_ruby_plugin        | `php_ruby_plugin/`        | PHP/Ruby 输出     |
-| unity_unreal_plugin    | `unity_unreal_plugin/`    | Unity/Unreal 日志 |
-| pytest_plugin          | `pytest_plugin/`          | Pytest 输出       |
+| 插件                    | 目录                       | 覆盖场景                             |
+| ----------------------- | -------------------------- | ------------------------------------ |
+| ansi_cleaner_plugin     | `ansi_cleaner_plugin/`     | ANSI 转义序列净化                    |
+| noise_filter_plugin     | `noise_filter_plugin/`     | 噪音过滤                             |
+| smart_code_plugin       | `smart_code_plugin/`       | 代码智能压缩                         |
+| smart_path_plugin       | `smart_path_plugin/`       | 智能路径压缩                         |
+| static_rule_plugin      | `static_rule_plugin/`      | 静态规则引擎                         |
+| template_driven_plugin  | `template_driven_plugin/`  | 模板驱动压缩                         |
+| git_diff_plugin         | `git_diff_plugin/`         | Git Diff 专用压缩                    |
+| generic_text_plugin     | `generic_text_plugin/`     | 通用文本压缩                         |
+| syslog_plugin           | `syslog_plugin/`           | Syslog 日志压缩                      |
+| spring_boot_plugin      | `spring_boot_plugin/`      | Spring Boot 日志                     |
+| php_ruby_plugin         | `php_ruby_plugin/`         | PHP/Ruby 输出                        |
+| unity_unreal_plugin     | `unity_unreal_plugin/`     | Unity/Unreal 日志                    |
+| pytest_plugin           | `pytest_plugin/`           | Pytest 输出                          |
+| web_log_plugin          | `web_log_plugin/`          | Web 访问日志（Nginx/Apache）         |
+| ci_log_plugin           | `ci_log_plugin/`           | CI 平台日志（GH Actions/GitLab CI）  |
+| cloud_log_plugin        | `cloud_log_plugin/`        | 云平台日志（CloudWatch/Stackdriver） |
+| xcode_log_plugin        | `xcode_log_plugin/`        | Xcode 构建与测试日志                 |
+| artifact_summary_plugin | `artifact_summary_plugin/` | 构建产物摘要（产物清单/校验和）      |
 
 ---
 
@@ -311,7 +316,7 @@ tokenslim --preset ai -- <command>           # AI 预设模式
 | SDK     | 文件                            | 核心类/函数       |
 | ------- | ------------------------------- | ----------------- |
 | Python  | `sdk/python/tokenslim_sdk.py`   | `TokenSlimClient` |
-| Node.js | `sdk/nodejs/tokenslim.js`   | `TokenSlimClient` |
+| Node.js | `sdk/nodejs/tokenslim.js`       | `TokenSlimClient` |
 | Java    | `sdk/java/TokenSlimClient.java` | `TokenSlimClient` |
 
 ---
@@ -355,16 +360,16 @@ tokenslim --preset ai -- <command>           # AI 预设模式
 
 ## 十、相关文档
 
-| 文档                    | 位置                                           | 说明               |
-| ----------------------- | ---------------------------------------------- | ------------------ |
-| 使用手册                | `../guides/USER_GUIDE.md`                      | 常用命令与审计入口 |
-| 开发手册                | `DEVELOPER_GUIDE.md`                           | 接手流程与验证命令 |
-| Compression Protocol V1 | `../../CLAUDE.md`                              | 压缩协议宪法       |
-| 插件开发指南            | `../design/PLUGIN_DEVELOPMENT_GUIDE.md`        | 详细的插件开发教程 |
-| 插件架构分析            | `../design/PLUGIN_ARCHITECTURE_ANALYSIS.md`    | 插件分工原则       |
-| 文档组织规范            | `../../DOCS_ORGANIZATION.md`                   | 文档管理规则       |
-| 功能路线图              | `../plans/FEATURE_ROADMAP.md`                  | 功能开发计划       |
-| 当前实现状态            | `../reports/IMPLEMENTATION_STATUS.md`          | P1-P4 状态         |
+| 文档                    | 位置                                        | 说明               |
+| ----------------------- | ------------------------------------------- | ------------------ |
+| 使用手册                | `../guides/USER_GUIDE.md`                   | 常用命令与审计入口 |
+| 开发手册                | `DEVELOPER_GUIDE.md`                        | 接手流程与验证命令 |
+| Compression Protocol V1 | `../../CLAUDE.md`                           | 压缩协议宪法       |
+| 插件开发指南            | `../design/PLUGIN_DEVELOPMENT_GUIDE.md`     | 详细的插件开发教程 |
+| 插件架构分析            | `../design/PLUGIN_ARCHITECTURE_ANALYSIS.md` | 插件分工原则       |
+| 文档组织规范            | `../../DOCS_ORGANIZATION.md`                | 文档管理规则       |
+| 功能路线图              | `../plans/FEATURE_ROADMAP.md`               | 功能开发计划       |
+| 当前实现状态            | `../reports/IMPLEMENTATION_STATUS.md`       | P1-P4 状态         |
 
 ---
 
