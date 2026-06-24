@@ -96,6 +96,7 @@ mod tests {
             ("case_083", "log_graph", "log"),
             ("case_084", "reflog_long", "log"),
             ("case_329", "git_help", "other"),
+            ("case_330", "git_status_unmerged", "status"),
             ("case_tree", "diff_name_only", "diff"),
             ("case_tree", "status", "status"),
         ];

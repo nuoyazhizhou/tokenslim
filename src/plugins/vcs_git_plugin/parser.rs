@@ -17,7 +17,7 @@ pub enum VcsRecord {
     Section(String),
     Branch(String),
     File {
-        status: Option<char>,
+        status: Option<String>,
         path: String,
     },
     LabeledFile {
@@ -394,7 +394,7 @@ pub fn looks_like_vcs_path(path: &str) -> bool {
         || lower.ends_with(".txt")
 }
 
-pub fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
+pub fn parse_simple_status_path(line: &str) -> Option<(String, String)> {
     let t = line.trim();
     // 格式 1：XY path（porcelain 双字符，如 " M src/file.rs" 或 "A  src/file.rs"）
     if t.len() > 3 && t.as_bytes()[2] == b' ' {
@@ -407,7 +407,7 @@ pub fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
         };
         let path = t[3..].trim().to_string();
         if looks_like_vcs_path(&path) {
-            return Some((status, path));
+            return Some((status.to_string(), path));
         }
     }
     // 格式 2：X path（单字符状态 + 空格 + 路径，如 "M src/file.rs"）
@@ -415,7 +415,7 @@ pub fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
         let status = t.as_bytes()[0] as char;
         let path = t[2..].trim().to_string();
         if looks_like_vcs_path(&path) {
-            return Some((status, path));
+            return Some((status.to_string(), path));
         }
     }
     None
@@ -545,6 +545,7 @@ impl VcsParser for GitStatusParser {
         let mut in_untracked = false;
         let mut in_ignored = false;
         let mut in_changes = false;
+        let mut in_unmerged = false;
 
         for line in raw.lines() {
             let trimmed = line.trim();
@@ -576,18 +577,21 @@ impl VcsParser for GitStatusParser {
                 in_untracked = false;
                 in_ignored = false;
                 in_changes = true;
+                in_unmerged = false;
                 continue;
             }
             if trimmed == "Untracked files:" {
                 in_untracked = true;
                 in_ignored = false;
                 in_changes = false;
+                in_unmerged = false;
                 continue;
             }
             if trimmed == "Ignored files:" {
                 in_untracked = false;
                 in_ignored = true;
                 in_changes = false;
+                in_unmerged = false;
                 continue;
             }
             if trimmed.starts_with("(use \"")
@@ -598,35 +602,35 @@ impl VcsParser for GitStatusParser {
             }
             if let Some(path) = trimmed.strip_prefix("modified:") {
                 records.push(VcsRecord::File {
-                    status: Some('M'),
+                    status: Some("M".to_string()),
                     path: path.trim().to_string(),
                 });
                 continue;
             }
             if let Some(path) = trimmed.strip_prefix("new file:") {
                 records.push(VcsRecord::File {
-                    status: Some('A'),
+                    status: Some("A".to_string()),
                     path: path.trim().to_string(),
                 });
                 continue;
             }
             if let Some(path) = trimmed.strip_prefix("deleted:") {
                 records.push(VcsRecord::File {
-                    status: Some('D'),
+                    status: Some("D".to_string()),
                     path: path.trim().to_string(),
                 });
                 continue;
             }
             if let Some(path) = trimmed.strip_prefix("renamed:") {
                 records.push(VcsRecord::File {
-                    status: Some('R'),
+                    status: Some("R".to_string()),
                     path: path.trim().to_string(),
                 });
                 continue;
             }
             if let Some(path) = trimmed.strip_prefix("copied:") {
                 records.push(VcsRecord::File {
-                    status: Some('C'),
+                    status: Some("C".to_string()),
                     path: path.trim().to_string(),
                 });
                 continue;
@@ -639,26 +643,60 @@ impl VcsParser for GitStatusParser {
                 in_untracked = false;
                 in_ignored = false;
                 in_changes = true;
+                in_unmerged = false;
+                continue;
+            }
+            // --- git status 在 merge/rebase/cherry-pick 冲突时的 Unmerged paths 区块
+            // 章节内含 both modified: / added by us: / added by them: / deleted by us: / deleted by them:
+            // 五种冲突标记，必须全部按 U=Unmerged 状态保留（压缩协议符号表）
+            if trimmed == "Unmerged paths:" {
+                in_untracked = false;
+                in_ignored = false;
+                in_changes = false;
+                in_unmerged = true;
                 continue;
             }
             if in_ignored {
                 records.push(VcsRecord::File {
-                    status: Some('I'),
+                    status: Some("I".to_string()),
                     path: trimmed.to_string(),
                 });
                 continue;
             }
             if in_untracked {
                 records.push(VcsRecord::File {
-                    status: Some('?'),
+                    status: Some("?".to_string()),
                     path: trimmed.to_string(),
                 });
+                continue;
+            }
+            if in_unmerged {
+                // Unmerged 区块的 5 种冲突标记 → git porcelain v1 双字符状态码
+                // (LLM 期望: 必须保留冲突类型区分, 不能合并为单一 U)
+                // both modified: UU, added by us: AU, added by them: UA
+                // deleted by us: DU, deleted by them: UD
+                let conflict_status_map = [
+                    ("both modified:", "UU"),
+                    ("added by us:", "AU"),
+                    ("added by them:", "UA"),
+                    ("deleted by us:", "DU"),
+                    ("deleted by them:", "UD"),
+                ];
+                for (prefix, status_code) in &conflict_status_map {
+                    if let Some(path) = trimmed.strip_prefix(prefix) {
+                        records.push(VcsRecord::File {
+                            status: Some(status_code.to_string()),
+                            path: path.trim().to_string(),
+                        });
+                        break;
+                    }
+                }
                 continue;
             }
             if in_changes {
                 if let Some(path) = trimmed.strip_prefix("both modified:") {
                     records.push(VcsRecord::File {
-                        status: Some('M'),
+                        status: Some("M".to_string()),
                         path: path.trim().to_string(),
                     });
                     continue;
@@ -1042,7 +1080,7 @@ impl VcsParser for GitDiffParser {
                     if let Some(status) = parts[0].chars().next() {
                         if status.is_ascii_uppercase() {
                             records.push(VcsRecord::File {
-                                status: Some(status),
+                                status: Some(status.to_string()),
                                 path: parts[1].to_string(),
                             });
                             continue;
@@ -1050,7 +1088,7 @@ impl VcsParser for GitDiffParser {
                     }
                 } else if parts.len() == 3 && parts[0].starts_with('R') {
                     records.push(VcsRecord::File {
-                        status: Some('R'),
+                        status: Some("R".to_string()),
                         path: format!("{} -> {}", parts[1], parts[2]),
                     });
                     continue;
@@ -1167,7 +1205,7 @@ impl VcsParser for GitAddParser {
                 if let Some(p) = path.strip_suffix('\'') {
                     if seen.insert(('A', p.to_string())) {
                         records.push(VcsRecord::File {
-                            status: Some('A'),
+                            status: Some("A".to_string()),
                             path: p.to_string(),
                         });
                     }
@@ -1177,7 +1215,7 @@ impl VcsParser for GitAddParser {
             if let Some(path) = t.strip_prefix("Adding file: ") {
                 if seen.insert(('A', path.to_string())) {
                     records.push(VcsRecord::File {
-                        status: Some('A'),
+                        status: Some("A".to_string()),
                         path: path.to_string(),
                     });
                 }
@@ -1186,7 +1224,7 @@ impl VcsParser for GitAddParser {
             if let Some(path) = t.strip_prefix("new file:") {
                 if seen.insert(('A', path.trim().to_string())) {
                     records.push(VcsRecord::File {
-                        status: Some('A'),
+                        status: Some("A".to_string()),
                         path: path.trim().to_string(),
                     });
                 }
@@ -1218,7 +1256,7 @@ impl VcsParser for GitRmParser {
                 if let Some(path) = rest.strip_suffix('\'') {
                     if seen.insert(('D', path.to_string())) {
                         records.push(VcsRecord::File {
-                            status: Some('D'),
+                            status: Some("D".to_string()),
                             path: path.to_string(),
                         });
                     }
@@ -1230,7 +1268,7 @@ impl VcsParser for GitRmParser {
                 if let Some(path) = rest.strip_suffix('\'') {
                     if seen.insert(('D', path.to_string())) {
                         records.push(VcsRecord::File {
-                            status: Some('D'),
+                            status: Some("D".to_string()),
                             path: path.to_string(),
                         });
                     }
@@ -1241,7 +1279,7 @@ impl VcsParser for GitRmParser {
             if let Some(path) = t.strip_prefix("deleted:") {
                 if seen.insert(('D', path.trim().to_string())) {
                     records.push(VcsRecord::File {
-                        status: Some('D'),
+                        status: Some("D".to_string()),
                         path: path.trim().to_string(),
                     });
                 }

@@ -1,0 +1,15 @@
+scenario: 'Git仓库在 merge/rebase/cherry-pick 过程中产生冲突，git status 同时展示已暂存变更、未暂存变更、Unmerged paths 中的5种冲突标记 (both modified / added by us / added by them / deleted by us / deleted by them)、以及未跟踪文件。'
+target_capability: 'git status 冲突状态保留 (Unmerged paths 区块 + 5种冲突标记 + 同步保留其他章节)'
+expected_keep: 'On branch main, new file:   src/core/new_feature.rs, modified:   src/cli/methods.rs, both modified:   src/core/parser.rs, added by us:     src/core/new_module.rs, added by them:   src/core/their_module.rs, deleted by us:   src/legacy/old_module.rs, deleted by them: src/legacy/their_old_module.rs, tmp/draft.txt'
+expected_compress: "use \"git restore --staged <file>...\" to unstage, use \"git add <file>...\" to mark resolution, use \"git restore <file>...\" to discard changes in working directory, use \"git add <file>...\" to update what will be committed, use \"git add <file>...\" to include in what will be committed, Your branch is up to date with .origin/main., no changes added to commit"
+source: 'llm'
+generated_at: '2026-06-24T00:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'acd3b7f1a709b69f5822040541ffdcf6eaf9de946f9fe7aa5e0fc5d32aaabf30'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-06-24T17:49:19.913754'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,889 @@
+{
+    "track": "vcs_git_plugin",
+    "version": "20260624-175436",
+    "generated_at": "2026-06-24T17:54:39.132013",
+    "report_path": "target/vcs_git_compact_showcase_report.txt",
+    "case_count": 88,
+    "cases": [
+        {
+            "case_id": "case_23_git_status",
+            "original_lines": 47,
+            "original_bytes": 1730,
+            "compact_lines": 36,
+            "compact_bytes": 1218,
+            "compression_pct": 29.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_24_git_diff",
+            "original_lines": 72,
+            "original_bytes": 2676,
+            "compact_lines": 61,
+            "compact_bytes": 2020,
+            "compression_pct": 24.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_25_git_log",
+            "original_lines": 68,
+            "original_bytes": 2284,
+            "compact_lines": 5,
+            "compact_bytes": 1596,
+            "compression_pct": 30.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_26_git_show",
+            "original_lines": 31,
+            "original_bytes": 1059,
+            "compact_lines": 21,
+            "compact_bytes": 727,
+            "compression_pct": 31.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_30_git_checkout",
+            "original_lines": 4,
+            "original_bytes": 143,
+            "compact_lines": 4,
+            "compact_bytes": 62,
+            "compression_pct": 56.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_31_git_checkout_file",
+            "original_lines": 7,
+            "original_bytes": 173,
+            "compact_lines": 6,
+            "compact_bytes": 172,
+            "compression_pct": 0.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_32_git_stash",
+            "original_lines": 6,
+            "original_bytes": 232,
+            "compact_lines": 5,
+            "compact_bytes": 170,
+            "compression_pct": 26.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_33_git_fetch",
+            "original_lines": 11,
+            "original_bytes": 495,
+            "compact_lines": 5,
+            "compact_bytes": 210,
+            "compression_pct": 57.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_34_git_push",
+            "original_lines": 9,
+            "original_bytes": 378,
+            "compact_lines": 5,
+            "compact_bytes": 209,
+            "compression_pct": 44.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_44_git_merge",
+            "original_lines": 5,
+            "original_bytes": 184,
+            "compact_lines": 5,
+            "compact_bytes": 157,
+            "compression_pct": 14.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_45_git_rebase",
+            "original_lines": 6,
+            "original_bytes": 210,
+            "compact_lines": 6,
+            "compact_bytes": 163,
+            "compression_pct": 22.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_46_git_reset",
+            "original_lines": 2,
+            "original_bytes": 41,
+            "compact_lines": 2,
+            "compact_bytes": 20,
+            "compression_pct": 51.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_47_git_cherry_pick",
+            "original_lines": 13,
+            "original_bytes": 521,
+            "compact_lines": 7,
+            "compact_bytes": 317,
+            "compression_pct": 39.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_48_git_revert",
+            "original_lines": 12,
+            "original_bytes": 420,
+            "compact_lines": 10,
+            "compact_bytes": 381,
+            "compression_pct": 9.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_49_git_pull",
+            "original_lines": 9,
+            "original_bytes": 235,
+            "compact_lines": 8,
+            "compact_bytes": 229,
+            "compression_pct": 2.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_50_git_add",
+            "original_lines": 9,
+            "original_bytes": 257,
+            "compact_lines": 4,
+            "compact_bytes": 70,
+            "compression_pct": 72.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_51_git_rm",
+            "original_lines": 5,
+            "original_bytes": 122,
+            "compact_lines": 3,
+            "compact_bytes": 49,
+            "compression_pct": 59.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_52_git_restore",
+            "original_lines": 4,
+            "original_bytes": 110,
+            "compact_lines": 4,
+            "compact_bytes": 90,
+            "compression_pct": 18.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_53_git_switch",
+            "original_lines": 4,
+            "original_bytes": 142,
+            "compact_lines": 4,
+            "compact_bytes": 58,
+            "compression_pct": 59.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_54_git_tag",
+            "original_lines": 10,
+            "original_bytes": 108,
+            "compact_lines": 9,
+            "compact_bytes": 97,
+            "compression_pct": 10.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_55_git_bisect",
+            "original_lines": 3,
+            "original_bytes": 78,
+            "compact_lines": 3,
+            "compact_bytes": 58,
+            "compression_pct": 25.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_56_git_clean",
+            "original_lines": 7,
+            "original_bytes": 196,
+            "compact_lines": 6,
+            "compact_bytes": 98,
+            "compression_pct": 50.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_57_git_submodule",
+            "original_lines": 4,
+            "original_bytes": 203,
+            "compact_lines": 4,
+            "compact_bytes": 150,
+            "compression_pct": 26.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_081_merge_conflict",
+            "original_lines": 7,
+            "original_bytes": 287,
+            "compact_lines": 6,
+            "compact_bytes": 224,
+            "compression_pct": 22.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_082_rebase_interactive",
+            "original_lines": 39,
+            "original_bytes": 1729,
+            "compact_lines": 12,
+            "compact_bytes": 466,
+            "compression_pct": 73.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_083_log_graph",
+            "original_lines": 24,
+            "original_bytes": 719,
+            "compact_lines": 12,
+            "compact_bytes": 439,
+            "compression_pct": 38.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_084_reflog_long",
+            "original_lines": 51,
+            "original_bytes": 2749,
+            "compact_lines": 21,
+            "compact_bytes": 1023,
+            "compression_pct": 62.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_128_git_remote",
+            "original_lines": 5,
+            "original_bytes": 217,
+            "compact_lines": 5,
+            "compact_bytes": 201,
+            "compression_pct": 7.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_129_git_branch",
+            "original_lines": 11,
+            "original_bytes": 218,
+            "compact_lines": 10,
+            "compact_bytes": 188,
+            "compression_pct": 13.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_130_git_tag_list",
+            "original_lines": 7,
+            "original_bytes": 71,
+            "compact_lines": 6,
+            "compact_bytes": 63,
+            "compression_pct": 11.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_131_git_stash_list",
+            "original_lines": 4,
+            "original_bytes": 183,
+            "compact_lines": 4,
+            "compact_bytes": 183,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_163_git_blame",
+            "original_lines": 8,
+            "original_bytes": 400,
+            "compact_lines": 8,
+            "compact_bytes": 234,
+            "compression_pct": 41.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_164_git_rebase_i",
+            "original_lines": 17,
+            "original_bytes": 568,
+            "compact_lines": 4,
+            "compact_bytes": 106,
+            "compression_pct": 81.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_165_git_worktree",
+            "original_lines": 4,
+            "original_bytes": 107,
+            "compact_lines": 4,
+            "compact_bytes": 107,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_166_git_reflog",
+            "original_lines": 6,
+            "original_bytes": 259,
+            "compact_lines": 6,
+            "compact_bytes": 217,
+            "compression_pct": 16.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_167_git_grep",
+            "original_lines": 4,
+            "original_bytes": 178,
+            "compact_lines": 4,
+            "compact_bytes": 178,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_168_git_log_oneline",
+            "original_lines": 6,
+            "original_bytes": 152,
+            "compact_lines": 6,
+            "compact_bytes": 152,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_169_git_diff_stat",
+            "original_lines": 5,
+            "original_bytes": 145,
+            "compact_lines": 5,
+            "compact_bytes": 114,
+            "compression_pct": 21.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_170_git_shortlog",
+            "original_lines": 12,
+            "original_bytes": 238,
+            "compact_lines": 4,
+            "compact_bytes": 197,
+            "compression_pct": 17.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_237_git_log_oneline_short",
+            "original_lines": 11,
+            "original_bytes": 343,
+            "compact_lines": 11,
+            "compact_bytes": 343,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_238_git_log_graph",
+            "original_lines": 6,
+            "original_bytes": 207,
+            "compact_lines": 6,
+            "compact_bytes": 197,
+            "compression_pct": 4.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_239_git_bisect_bad",
+            "original_lines": 2,
+            "original_bytes": 86,
+            "compact_lines": 2,
+            "compact_bytes": 86,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_240_git_bisect_good",
+            "original_lines": 3,
+            "original_bytes": 124,
+            "compact_lines": 3,
+            "compact_bytes": 124,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_241_git_clean_fd",
+            "original_lines": 4,
+            "original_bytes": 90,
+            "compact_lines": 4,
+            "compact_bytes": 69,
+            "compression_pct": 23.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_246_git_status_branch",
+            "original_lines": 4,
+            "original_bytes": 67,
+            "compact_lines": 4,
+            "compact_bytes": 49,
+            "compression_pct": 26.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_247_git_status_porcelain",
+            "original_lines": 5,
+            "original_bytes": 147,
+            "compact_lines": 5,
+            "compact_bytes": 143,
+            "compression_pct": 2.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_248_git_status_short",
+            "original_lines": 5,
+            "original_bytes": 138,
+            "compact_lines": 5,
+            "compact_bytes": 134,
+            "compression_pct": 2.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_249_git_status_long",
+            "original_lines": 19,
+            "original_bytes": 612,
+            "compact_lines": 6,
+            "compact_bytes": 146,
+            "compression_pct": 76.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_250_git_status_ignored",
+            "original_lines": 23,
+            "original_bytes": 660,
+            "compact_lines": 9,
+            "compact_bytes": 180,
+            "compression_pct": 72.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_251_git_status_untracked_all",
+            "original_lines": 23,
+            "original_bytes": 824,
+            "compact_lines": 10,
+            "compact_bytes": 362,
+            "compression_pct": 56.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_252_git_log_oneline_n20",
+            "original_lines": 20,
+            "original_bytes": 923,
+            "compact_lines": 20,
+            "compact_bytes": 923,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_253_git_log_stat",
+            "original_lines": 22,
+            "original_bytes": 762,
+            "compact_lines": 11,
+            "compact_bytes": 591,
+            "compression_pct": 22.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_254_git_log_patch",
+            "original_lines": 84,
+            "original_bytes": 2230,
+            "compact_lines": 3,
+            "compact_bytes": 305,
+            "compression_pct": 86.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_255_git_log_graph",
+            "original_lines": 30,
+            "original_bytes": 786,
+            "compact_lines": 4,
+            "compact_bytes": 227,
+            "compression_pct": 71.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_256_git_log_all",
+            "original_lines": 30,
+            "original_bytes": 822,
+            "compact_lines": 6,
+            "compact_bytes": 479,
+            "compression_pct": 41.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_257_git_diff_cached",
+            "original_lines": 12,
+            "original_bytes": 348,
+            "compact_lines": 9,
+            "compact_bytes": 227,
+            "compression_pct": 34.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_258_git_diff_head",
+            "original_lines": 18,
+            "original_bytes": 506,
+            "compact_lines": 14,
+            "compact_bytes": 351,
+            "compression_pct": 30.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_259_git_diff_stat",
+            "original_lines": 3,
+            "original_bytes": 89,
+            "compact_lines": 3,
+            "compact_bytes": 71,
+            "compression_pct": 20.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_260_git_diff_word_diff",
+            "original_lines": 18,
+            "original_bytes": 513,
+            "compact_lines": 14,
+            "compact_bytes": 358,
+            "compression_pct": 30.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_261_git_diff_branches",
+            "original_lines": 30,
+            "original_bytes": 850,
+            "compact_lines": 22,
+            "compact_bytes": 573,
+            "compression_pct": 32.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_283_git_diff_name_only",
+            "original_lines": 5,
+            "original_bytes": 91,
+            "compact_lines": 5,
+            "compact_bytes": 90,
+            "compression_pct": 1.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_284_git_diff_name_status",
+            "original_lines": 6,
+            "original_bytes": 158,
+            "compact_lines": 6,
+            "compact_bytes": 157,
+            "compression_pct": 0.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_285_git_stash_show",
+            "original_lines": 5,
+            "original_bytes": 185,
+            "compact_lines": 5,
+            "compact_bytes": 153,
+            "compression_pct": 17.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_286_git_stash_pop",
+            "original_lines": 16,
+            "original_bytes": 516,
+            "compact_lines": 7,
+            "compact_bytes": 151,
+            "compression_pct": 70.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_287_git_branch_v",
+            "original_lines": 5,
+            "original_bytes": 213,
+            "compact_lines": 5,
+            "compact_bytes": 206,
+            "compression_pct": 3.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_288_git_branch_d",
+            "original_lines": 2,
+            "original_bytes": 90,
+            "compact_lines": 2,
+            "compact_bytes": 89,
+            "compression_pct": 1.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_289_git_branch_D",
+            "original_lines": 2,
+            "original_bytes": 86,
+            "compact_lines": 2,
+            "compact_bytes": 85,
+            "compression_pct": 1.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_290_git_add_p",
+            "original_lines": 16,
+            "original_bytes": 384,
+            "compact_lines": 7,
+            "compact_bytes": 136,
+            "compression_pct": 64.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_291_git_reset_hard",
+            "original_lines": 2,
+            "original_bytes": 62,
+            "compact_lines": 2,
+            "compact_bytes": 61,
+            "compression_pct": 1.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_292_git_reset_soft",
+            "original_lines": 1,
+            "original_bytes": 24,
+            "compact_lines": 1,
+            "compact_bytes": 24,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_293_git_reset_mixed",
+            "original_lines": 5,
+            "original_bytes": 112,
+            "compact_lines": 4,
+            "compact_bytes": 81,
+            "compression_pct": 27.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_294_git_checkout_b",
+            "original_lines": 2,
+            "original_bytes": 75,
+            "compact_lines": 2,
+            "compact_bytes": 51,
+            "compression_pct": 32.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_295_git_cherry_pick_continue",
+            "original_lines": 5,
+            "original_bytes": 206,
+            "compact_lines": 2,
+            "compact_bytes": 77,
+            "compression_pct": 62.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_296_git_cherry_pick_abort",
+            "original_lines": 1,
+            "original_bytes": 24,
+            "compact_lines": 1,
+            "compact_bytes": 24,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_297_git_rebase_continue",
+            "original_lines": 3,
+            "original_bytes": 83,
+            "compact_lines": 3,
+            "compact_bytes": 68,
+            "compression_pct": 18.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_298_git_rebase_abort",
+            "original_lines": 1,
+            "original_bytes": 19,
+            "compact_lines": 1,
+            "compact_bytes": 18,
+            "compression_pct": 5.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_299_git_rebase_skip",
+            "original_lines": 2,
+            "original_bytes": 49,
+            "compact_lines": 2,
+            "compact_bytes": 41,
+            "compression_pct": 16.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_300_git_merge_abort",
+            "original_lines": 1,
+            "original_bytes": 18,
+            "compact_lines": 1,
+            "compact_bytes": 17,
+            "compression_pct": 5.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_323_git_log_parentheses",
+            "original_lines": 12,
+            "original_bytes": 440,
+            "compact_lines": 3,
+            "compact_bytes": 248,
+            "compression_pct": 43.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_324_git_log_oneline_full_hash_collision",
+            "original_lines": 4,
+            "original_bytes": 245,
+            "compact_lines": 4,
+            "compact_bytes": 150,
+            "compression_pct": 38.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_325_git_reflog_with_hash_collision",
+            "original_lines": 4,
+            "original_bytes": 218,
+            "compact_lines": 4,
+            "compact_bytes": 123,
+            "compression_pct": 43.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_326_git_log_oneline_heavy_collision",
+            "original_lines": 51,
+            "original_bytes": 3316,
+            "compact_lines": 51,
+            "compact_bytes": 1864,
+            "compression_pct": 43.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_327_git_blame_hash_collision",
+            "original_lines": 4,
+            "original_bytes": 277,
+            "compact_lines": 4,
+            "compact_bytes": 136,
+            "compression_pct": 50.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_328_git_show_multi_commit_collision",
+            "original_lines": 12,
+            "original_bytes": 351,
+            "compact_lines": 3,
+            "compact_bytes": 163,
+            "compression_pct": 53.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_329_git_help",
+            "original_lines": 32,
+            "original_bytes": 1476,
+            "compact_lines": 31,
+            "compact_bytes": 1400,
+            "compression_pct": 5.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_330_git_status_unmerged",
+            "original_lines": 30,
+            "original_bytes": 946,
+            "compact_lines": 14,
+            "compact_bytes": 303,
+            "compression_pct": 68.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_tree_diff_name_only",
+            "original_lines": 8,
+            "original_bytes": 244,
+            "compact_lines": 8,
+            "compact_bytes": 235,
+            "compression_pct": 3.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_tree_status",
+            "original_lines": 17,
+            "original_bytes": 659,
+            "compact_lines": 17,
+            "compact_bytes": 659,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        }
+    ]
+}
