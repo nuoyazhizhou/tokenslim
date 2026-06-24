@@ -4,8 +4,8 @@
 
 目的：替换主仓 benchmarks/ 和 tests/data/ 下含真实 Alibaba Cloud AccessKey
 ID 与 Secret（已脱敏为 ***REDACTED***，具体值不写入仓库任何位置）以及
-公司内部关键字 (A97/A98/W98/WiiM/wiimu/Linkplay/ios_muzoplayer/Firmware_build/...)
-的文件。所有生成的内容完全模拟合成，**不**包含任何真实凭证、内部 URL、用户名、
+其他公司内部识别符（黑名单详见 BLACKLIST 常量，不在 docstring 列出以免反向索引）。
+所有生成的内容完全模拟合成，**不**包含任何真实凭证、内部 URL、用户名、
 Gerrit 仓库、芯片型号、产品代号等。
 
 使用：
@@ -36,7 +36,7 @@ SAFE_FLAGS = ["-O2", "-Wall", "-Wextra", "-g", "-std=c++17",
               "-L./lib_a", "-L./lib_b", "-L./lib_c",
               "-fPIC", "-DVERSION=4.2.0"]
 
-# 分支 (替代 Firmware_build / Firmware_build_a98 / master)
+# 分支（不直接列举被替代的旧字面以免反向索引）
 SAFE_BRANCHES = ["dev", "main", "release/v1", "release/v2",
                  "feature/x", "feature/y", "fix/a", "fix/b"]
 # 产品/平台/组件/仓库/分支 等命名空间合并在 SAFE_BRANCHES 一个池子, 避免命名空间膨胀。
@@ -57,7 +57,7 @@ SAFE_HASH_POOL = [
     "ace0feba", "f00baa00", "beeface0", "d00dfeed", "b0cadb00", "d00db00b",
 ]
 
-SAFE_HEX_CHARS = "0246789abcdef"  # 排除 1/3/5 减少 a113/a98 等子串误生成
+SAFE_HEX_CHARS = "0246789abcdef"  # 排除部分数字字符减少与 FORBIDDEN 列表的子串碰撞
 
 
 def random_hex(n: int) -> str:
@@ -725,7 +725,7 @@ FIXTURES = [
     ("tests/data/gcc_build_utf8.txt",             30 * 1024 * 1024, lambda w: gen_jenkins_pipeline(w, fail=False, utf8=True)),
     ("tests/data/gcc_coverity_success-1.txt",     18 * 1024 * 1024, gen_coverity_log),
     ("tests/data/gcc_coverity_success-2.txt",     17 * 1024 * 1024, gen_coverity_log),
-    # ---------- 第二批:含 A97/A98/W98/WiiM/wiimu/Linkplay/ios_muzoplayer/Firmware_build 关键字的 13 个文件 ----------
+    # ---------- 第二批:含 BLACKLIST 黑名单关键字的 13 个文件 ----------
     ("benchmarks/input_128kb.txt",                128 * 1024,      gen_input_128kb),
     ("tests/data/android_build_success.txt",      2950 * 1024,     lambda w: gen_android_build(w, fail=False)),
     ("tests/data/android_build_failure.txt",      2984 * 1024,     lambda w: gen_android_build(w, fail=True)),
@@ -751,17 +751,13 @@ def main() -> int:
     root = Path(args.root).resolve()
     print(f"[regen] root={root} seed={args.seed}")
 
-    # 安全检查:这些文件绝对不能含真实凭据/真实内部关键字模式
+    # 安全检查:这些字面不能出现在生成内容中。运行时按字面匹配,
+    # 不在注释/docstring 中列举具体字符串以免反向索引。
     FORBIDDEN = (
-        # 阿里云 AccessKey
         "LTAI", "B47toYER", "AKID",
-        # 内部域名 / Gerrit 仓库
         "sh.linkplay.com", "gerrit@linkplay", "linkplay",
-        # 芯片型号 (新/旧)
         "A97", "A98", "W98", "a113", "9d0c6bb6", "axg_s420_a6432_k54",
-        # 产品代号
         "WiiM", "wiimu", "ios_muzoplayer",
-        # 固件构建分支
         "Firmware_build", "Firmware_build_a98",
     )
 
