@@ -1,0 +1,12 @@
+{
+    "case_id": "case_021_azure_appinsights_exception_jsonl",
+    "case_file": "case_021_azure_appinsights_exception_jsonl.log",
+    "original_lines": 2,
+    "original_bytes": 635,
+    "compact_lines": 5,
+    "compact_bytes": 487,
+    "compression_pct": 23.3,
+    "compact_hash": "6d8897adaafc2c8bed8290b487690bc9d12ddac572ed983ff5dcc103e22c867f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

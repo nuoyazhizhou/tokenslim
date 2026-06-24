@@ -1,0 +1,12 @@
+{
+    "case_id": "case_031_bash_df",
+    "case_file": "case_031_bash_df.log",
+    "original_lines": 5,
+    "original_bytes": 174,
+    "compact_lines": 5,
+    "compact_bytes": 136,
+    "compression_pct": 21.8,
+    "compact_hash": "3ee3b35911e071b78e0a15e139b75f961463454889795eb069881bcf1433e430",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

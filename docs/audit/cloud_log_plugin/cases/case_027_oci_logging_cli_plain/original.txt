@@ -1,0 +1,6 @@
+oci logging log-entry list --log-group-id ocid1.loggroup.oc1..backend
+2026-05-13T08:32:01.000Z INFO ocid1.log.oc1..backend INFO:     10.1.2.1:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:32:11.000Z INFO ocid1.log.oc1..backend INFO:     10.1.2.2:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:32:21.000Z INFO ocid1.log.oc1..backend INFO:     10.1.2.3:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:32:31.000Z INFO ocid1.log.oc1..backend INFO:     10.1.2.2:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:32:45.000Z ERROR ocid1.log.oc1..backend ERROR:    10.1.2.3:0 - "POST /api/documents HTTP/1.1" 500 Internal Server Error

@@ -1,0 +1,809 @@
+{
+    "track": "shell_session_plugin",
+    "version": "all_20260624-175500",
+    "generated_at": "2026-06-24T17:55:06.096463",
+    "report_path": "target\\shell_session_plugin_compact_showcase_report.txt",
+    "case_count": 80,
+    "cases": [
+        {
+            "case_id": "case_001_bash_success",
+            "original_lines": 7,
+            "original_bytes": 155,
+            "compact_lines": 7,
+            "compact_bytes": 155,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_002_bash_command_not_found",
+            "original_lines": 5,
+            "original_bytes": 127,
+            "compact_lines": 5,
+            "compact_bytes": 127,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_003_bash_pipefail",
+            "original_lines": 6,
+            "original_bytes": 164,
+            "compact_lines": 6,
+            "compact_bytes": 164,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_004_bash_set_x_fail",
+            "original_lines": 8,
+            "original_bytes": 186,
+            "compact_lines": 8,
+            "compact_bytes": 186,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_005_zsh_glob_no_match",
+            "original_lines": 5,
+            "original_bytes": 124,
+            "compact_lines": 5,
+            "compact_bytes": 122,
+            "compression_pct": 1.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_006_fish_syntax",
+            "original_lines": 3,
+            "original_bytes": 90,
+            "compact_lines": 3,
+            "compact_bytes": 90,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_007_powershell_success_table",
+            "original_lines": 9,
+            "original_bytes": 426,
+            "compact_lines": 9,
+            "compact_bytes": 307,
+            "compression_pct": 27.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_008_powershell_parser_error",
+            "original_lines": 10,
+            "original_bytes": 342,
+            "compact_lines": 10,
+            "compact_bytes": 342,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_009_powershell_parameter_binding_exception",
+            "original_lines": 9,
+            "original_bytes": 482,
+            "compact_lines": 9,
+            "compact_bytes": 482,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_010_cmd_errorlevel",
+            "original_lines": 7,
+            "original_bytes": 131,
+            "compact_lines": 7,
+            "compact_bytes": 131,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_011_cmd_path_not_found",
+            "original_lines": 4,
+            "original_bytes": 91,
+            "compact_lines": 4,
+            "compact_bytes": 91,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_012_windows_dir_listing",
+            "original_lines": 13,
+            "original_bytes": 354,
+            "compact_lines": 11,
+            "compact_bytes": 205,
+            "compression_pct": 42.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_013_bash_ls_posix",
+            "original_lines": 9,
+            "original_bytes": 382,
+            "compact_lines": 9,
+            "compact_bytes": 336,
+            "compression_pct": 12.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_014_bash_tree",
+            "original_lines": 17,
+            "original_bytes": 349,
+            "compact_lines": 17,
+            "compact_bytes": 334,
+            "compression_pct": 4.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_015_bash_env_secrets",
+            "original_lines": 9,
+            "original_bytes": 325,
+            "compact_lines": 9,
+            "compact_bytes": 262,
+            "compression_pct": 19.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_016_bash_find_grep",
+            "original_lines": 5,
+            "original_bytes": 243,
+            "compact_lines": 5,
+            "compact_bytes": 240,
+            "compression_pct": 1.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_017_bash_curl_tar",
+            "original_lines": 8,
+            "original_bytes": 421,
+            "compact_lines": 8,
+            "compact_bytes": 383,
+            "compression_pct": 9.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_018_powershell_get_childitem",
+            "original_lines": 18,
+            "original_bytes": 665,
+            "compact_lines": 18,
+            "compact_bytes": 649,
+            "compression_pct": 2.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_019_powershell_invoke_webrequest",
+            "original_lines": 10,
+            "original_bytes": 282,
+            "compact_lines": 10,
+            "compact_bytes": 274,
+            "compression_pct": 2.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_020_cmd_xcopy",
+            "original_lines": 6,
+            "original_bytes": 131,
+            "compact_lines": 5,
+            "compact_bytes": 110,
+            "compression_pct": 16.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_021_cmd_robocopy",
+            "original_lines": 33,
+            "original_bytes": 1368,
+            "compact_lines": 31,
+            "compact_bytes": 1196,
+            "compression_pct": 12.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_022_ci_set_x_trace",
+            "original_lines": 43,
+            "original_bytes": 1758,
+            "compact_lines": 43,
+            "compact_bytes": 1715,
+            "compression_pct": 2.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_023_bash_cp_mv",
+            "original_lines": 5,
+            "original_bytes": 138,
+            "compact_lines": 5,
+            "compact_bytes": 135,
+            "compression_pct": 2.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_024_bash_rm_rf",
+            "original_lines": 9,
+            "original_bytes": 235,
+            "compact_lines": 9,
+            "compact_bytes": 235,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_025_bash_chmod_chown",
+            "original_lines": 3,
+            "original_bytes": 94,
+            "compact_lines": 3,
+            "compact_bytes": 93,
+            "compression_pct": 1.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_026_bash_find",
+            "original_lines": 5,
+            "original_bytes": 114,
+            "compact_lines": 5,
+            "compact_bytes": 111,
+            "compression_pct": 2.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_027_bash_grep_awk",
+            "original_lines": 4,
+            "original_bytes": 120,
+            "compact_lines": 4,
+            "compact_bytes": 118,
+            "compression_pct": 1.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_028_bash_ps",
+            "original_lines": 4,
+            "original_bytes": 256,
+            "compact_lines": 4,
+            "compact_bytes": 217,
+            "compression_pct": 15.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_029_bash_top",
+            "original_lines": 7,
+            "original_bytes": 433,
+            "compact_lines": 7,
+            "compact_bytes": 428,
+            "compression_pct": 1.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_030_bash_systemctl",
+            "original_lines": 5,
+            "original_bytes": 275,
+            "compact_lines": 5,
+            "compact_bytes": 272,
+            "compression_pct": 1.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_031_bash_df",
+            "original_lines": 5,
+            "original_bytes": 174,
+            "compact_lines": 5,
+            "compact_bytes": 136,
+            "compression_pct": 21.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_032_bash_du",
+            "original_lines": 4,
+            "original_bytes": 98,
+            "compact_lines": 4,
+            "compact_bytes": 90,
+            "compression_pct": 8.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_033_bash_netstat",
+            "original_lines": 6,
+            "original_bytes": 330,
+            "compact_lines": 6,
+            "compact_bytes": 326,
+            "compression_pct": 1.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_034_bash_ping",
+            "original_lines": 10,
+            "original_bytes": 445,
+            "compact_lines": 10,
+            "compact_bytes": 437,
+            "compression_pct": 1.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_035_bash_tar",
+            "original_lines": 6,
+            "original_bytes": 168,
+            "compact_lines": 3,
+            "compact_bytes": 99,
+            "compression_pct": 41.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_036_bash_rsync",
+            "original_lines": 9,
+            "original_bytes": 220,
+            "compact_lines": 9,
+            "compact_bytes": 213,
+            "compression_pct": 3.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_037_bash_redirection",
+            "original_lines": 4,
+            "original_bytes": 144,
+            "compact_lines": 4,
+            "compact_bytes": 142,
+            "compression_pct": 1.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_038_bash_env_prefix",
+            "original_lines": 6,
+            "original_bytes": 125,
+            "compact_lines": 6,
+            "compact_bytes": 125,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_039_ps_get_process",
+            "original_lines": 9,
+            "original_bytes": 401,
+            "compact_lines": 9,
+            "compact_bytes": 277,
+            "compression_pct": 30.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_040_ps_copy_item",
+            "original_lines": 11,
+            "original_bytes": 360,
+            "compact_lines": 11,
+            "compact_bytes": 360,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_041_ps_where_object",
+            "original_lines": 8,
+            "original_bytes": 284,
+            "compact_lines": 8,
+            "compact_bytes": 278,
+            "compression_pct": 2.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_042_ps_convertfrom_json",
+            "original_lines": 7,
+            "original_bytes": 109,
+            "compact_lines": 7,
+            "compact_bytes": 104,
+            "compression_pct": 4.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_043_cmd_copy",
+            "original_lines": 13,
+            "original_bytes": 359,
+            "compact_lines": 11,
+            "compact_bytes": 221,
+            "compression_pct": 38.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_044_cmd_where",
+            "original_lines": 4,
+            "original_bytes": 113,
+            "compact_lines": 4,
+            "compact_bytes": 111,
+            "compression_pct": 1.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_045_cmd_type",
+            "original_lines": 13,
+            "original_bytes": 192,
+            "compact_lines": 13,
+            "compact_bytes": 192,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_046_cmd_findstr",
+            "original_lines": 4,
+            "original_bytes": 127,
+            "compact_lines": 4,
+            "compact_bytes": 125,
+            "compression_pct": 1.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_047_cmd_dir_s",
+            "original_lines": 15,
+            "original_bytes": 425,
+            "compact_lines": 13,
+            "compact_bytes": 240,
+            "compression_pct": 43.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_048_bash_permission_denied",
+            "original_lines": 5,
+            "original_bytes": 108,
+            "compact_lines": 5,
+            "compact_bytes": 105,
+            "compression_pct": 2.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_049_bash_syntax_error",
+            "original_lines": 3,
+            "original_bytes": 105,
+            "compact_lines": 3,
+            "compact_bytes": 104,
+            "compression_pct": 1.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_050_ps_command_not_found",
+            "original_lines": 10,
+            "original_bytes": 488,
+            "compact_lines": 10,
+            "compact_bytes": 480,
+            "compression_pct": 1.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_051_cmd_not_recognized",
+            "original_lines": 4,
+            "original_bytes": 117,
+            "compact_lines": 4,
+            "compact_bytes": 115,
+            "compression_pct": 1.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_052_bash_git",
+            "original_lines": 11,
+            "original_bytes": 374,
+            "compact_lines": 11,
+            "compact_bytes": 365,
+            "compression_pct": 2.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_053_ps_cargo",
+            "original_lines": 11,
+            "original_bytes": 354,
+            "compact_lines": 11,
+            "compact_bytes": 345,
+            "compression_pct": 2.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_054_bash_kubectl",
+            "original_lines": 4,
+            "original_bytes": 185,
+            "compact_lines": 4,
+            "compact_bytes": 183,
+            "compression_pct": 1.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_055_cmd_mvn",
+            "original_lines": 9,
+            "original_bytes": 398,
+            "compact_lines": 9,
+            "compact_bytes": 391,
+            "compression_pct": 1.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_056_bash_docker",
+            "original_lines": 4,
+            "original_bytes": 279,
+            "compact_lines": 4,
+            "compact_bytes": 277,
+            "compression_pct": 0.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_057_bash_npm",
+            "original_lines": 6,
+            "original_bytes": 128,
+            "compact_lines": 6,
+            "compact_bytes": 124,
+            "compression_pct": 3.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_058_bash_pytest",
+            "original_lines": 10,
+            "original_bytes": 404,
+            "compact_lines": 10,
+            "compact_bytes": 396,
+            "compression_pct": 2.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_059_bash_terraform",
+            "original_lines": 15,
+            "original_bytes": 450,
+            "compact_lines": 15,
+            "compact_bytes": 437,
+            "compression_pct": 2.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_060_ps_helm",
+            "original_lines": 4,
+            "original_bytes": 286,
+            "compact_lines": 4,
+            "compact_bytes": 284,
+            "compression_pct": 0.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_061_bash_sed_sort",
+            "original_lines": 5,
+            "original_bytes": 118,
+            "compact_lines": 5,
+            "compact_bytes": 115,
+            "compression_pct": 2.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_062_bash_jobs_kill",
+            "original_lines": 4,
+            "original_bytes": 101,
+            "compact_lines": 4,
+            "compact_bytes": 99,
+            "compression_pct": 2.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_063_bash_ll_alias",
+            "original_lines": 7,
+            "original_bytes": 229,
+            "compact_lines": 7,
+            "compact_bytes": 224,
+            "compression_pct": 2.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_064_bash_mkdir",
+            "original_lines": 6,
+            "original_bytes": 123,
+            "compact_lines": 6,
+            "compact_bytes": 123,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_065_bash_rmdir",
+            "original_lines": 7,
+            "original_bytes": 124,
+            "compact_lines": 7,
+            "compact_bytes": 124,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_066_bash_touch",
+            "original_lines": 7,
+            "original_bytes": 286,
+            "compact_lines": 7,
+            "compact_bytes": 286,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_067_bash_ripgrep",
+            "original_lines": 11,
+            "original_bytes": 318,
+            "compact_lines": 11,
+            "compact_bytes": 318,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_068_bash_tail",
+            "original_lines": 7,
+            "original_bytes": 455,
+            "compact_lines": 7,
+            "compact_bytes": 455,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_069_bash_wc",
+            "original_lines": 9,
+            "original_bytes": 214,
+            "compact_lines": 9,
+            "compact_bytes": 214,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_070_bash_zip",
+            "original_lines": 9,
+            "original_bytes": 348,
+            "compact_lines": 5,
+            "compact_bytes": 169,
+            "compression_pct": 51.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_071_bash_unzip",
+            "original_lines": 13,
+            "original_bytes": 361,
+            "compact_lines": 9,
+            "compact_bytes": 179,
+            "compression_pct": 50.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_072_bash_service",
+            "original_lines": 20,
+            "original_bytes": 917,
+            "compact_lines": 20,
+            "compact_bytes": 917,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_073_bash_mount",
+            "original_lines": 8,
+            "original_bytes": 336,
+            "compact_lines": 8,
+            "compact_bytes": 336,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_074_bash_scp",
+            "original_lines": 9,
+            "original_bytes": 528,
+            "compact_lines": 9,
+            "compact_bytes": 528,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_075_cmd_ipconfig",
+            "original_lines": 25,
+            "original_bytes": 980,
+            "compact_lines": 25,
+            "compact_bytes": 980,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_076_bash_ifconfig",
+            "original_lines": 15,
+            "original_bytes": 737,
+            "compact_lines": 15,
+            "compact_bytes": 737,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_077_bash_ip",
+            "original_lines": 11,
+            "original_bytes": 599,
+            "compact_lines": 11,
+            "compact_bytes": 599,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_078_bash_ss",
+            "original_lines": 15,
+            "original_bytes": 995,
+            "compact_lines": 15,
+            "compact_bytes": 995,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_079_ps_remove_item",
+            "original_lines": 18,
+            "original_bytes": 728,
+            "compact_lines": 18,
+            "compact_bytes": 728,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_080_bash_wget",
+            "original_lines": 12,
+            "original_bytes": 339,
+            "compact_lines": 12,
+            "compact_bytes": 339,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        }
+    ]
+}

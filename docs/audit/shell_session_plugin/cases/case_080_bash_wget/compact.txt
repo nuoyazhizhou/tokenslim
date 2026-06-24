@@ -1,0 +1,12 @@
+user@host:~$ wget -q https://example.com/data.json -O data.json
+user@host:~$ ls -la data.json
+-rw-r--r-- 1 user user 4096 Oct 10 10:00 data.json
+user@host:~$ head -n 5 data.json
+{
+  "id": 1,
+  "name": "sample",
+  "version": "1.0.0",
+  "active": true
+user@host:~$ wget --version | head -n 1
+GNU Wget 1.21.4 built on linux-gnu.
+user@host:~$

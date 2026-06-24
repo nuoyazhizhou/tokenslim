@@ -1,0 +1,11 @@
+user@linux:~$ ping -c 3 google.com
+PING google.com (142.250.190.46) 56(84) bytes of data.
+64 bytes from 142.250.190.46: icmp_seq=1 ttl=115 time=10.5 ms
+64 bytes from 142.250.190.46: icmp_seq=2 ttl=115 time=11.2 ms
+64 bytes from 142.250.190.46: icmp_seq=3 ttl=115 time=10.8 ms
+
+--- google.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 10.5/10.83/11.2/0.28 ms
+user@linux:~$ 
+

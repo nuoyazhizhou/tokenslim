@@ -1,0 +1,12 @@
+{
+    "case_id": "case_005_aws_jsonl_message",
+    "case_file": "case_005_aws_jsonl_message.log",
+    "original_lines": 3,
+    "original_bytes": 595,
+    "compact_lines": 4,
+    "compact_bytes": 346,
+    "compression_pct": 41.8,
+    "compact_hash": "7d09102ec0bcc711fe7e25a51f47f825899159d1e1ac942ce7549c3769022af2",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

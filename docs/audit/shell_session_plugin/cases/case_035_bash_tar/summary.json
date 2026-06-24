@@ -1,0 +1,12 @@
+{
+    "case_id": "case_035_bash_tar",
+    "case_file": "case_035_bash_tar.log",
+    "original_lines": 6,
+    "original_bytes": 168,
+    "compact_lines": 3,
+    "compact_bytes": 99,
+    "compression_pct": 41.1,
+    "compact_hash": "2b38560fa664143774860fbf5e113edbb8686f4ab41a0c047fc71437ed28f0be",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

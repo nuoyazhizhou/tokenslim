@@ -1,0 +1,12 @@
+{
+    "case_id": "case_042_ps_convertfrom_json",
+    "case_file": "case_042_ps_convertfrom_json.log",
+    "original_lines": 7,
+    "original_bytes": 109,
+    "compact_lines": 7,
+    "compact_bytes": 104,
+    "compression_pct": 4.6,
+    "compact_hash": "801b530e312afb211abdee29b14a04c9cbe929112a725715731c145b754512c2",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

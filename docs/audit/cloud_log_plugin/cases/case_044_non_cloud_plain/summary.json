@@ -1,0 +1,12 @@
+{
+    "case_id": "case_044_non_cloud_plain",
+    "case_file": "case_044_non_cloud_plain.log",
+    "original_lines": 3,
+    "original_bytes": 87,
+    "compact_lines": 3,
+    "compact_bytes": 87,
+    "compression_pct": 0.0,
+    "compact_hash": "5c83fad2a210f5770ca41bb5d2a31b27b6231a0a3307732cbc805412e28b7528",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

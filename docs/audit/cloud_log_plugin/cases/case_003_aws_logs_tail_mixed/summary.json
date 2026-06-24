@@ -1,0 +1,12 @@
+{
+    "case_id": "case_003_aws_logs_tail_mixed",
+    "case_file": "case_003_aws_logs_tail_mixed.log",
+    "original_lines": 8,
+    "original_bytes": 968,
+    "compact_lines": 4,
+    "compact_bytes": 642,
+    "compression_pct": 33.7,
+    "compact_hash": "a7abfd8a8ed9176f1fb086ad60b5e1e07159a5c4f9ccdb960a93f33fc57224e4",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

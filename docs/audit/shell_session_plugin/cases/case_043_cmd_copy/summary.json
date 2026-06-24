@@ -1,0 +1,12 @@
+{
+    "case_id": "case_043_cmd_copy",
+    "case_file": "case_043_cmd_copy.log",
+    "original_lines": 13,
+    "original_bytes": 359,
+    "compact_lines": 11,
+    "compact_bytes": 221,
+    "compression_pct": 38.4,
+    "compact_hash": "5bbc7e0966ef12e04d9b6e867146fc410ddecc2c92eb7bddde00641222408f44",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

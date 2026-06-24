@@ -1,0 +1,12 @@
+{
+    "case_id": "case_028_bash_ps",
+    "case_file": "case_028_bash_ps.log",
+    "original_lines": 4,
+    "original_bytes": 256,
+    "compact_lines": 4,
+    "compact_bytes": 217,
+    "compression_pct": 15.2,
+    "compact_hash": "5db7cbfeec95964268736f294b6dbfa07b9704fabed2a45742b177c13e1c5133",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_042_oci_logging_table",
+    "case_file": "case_042_oci_logging_table.log",
+    "original_lines": 6,
+    "original_bytes": 511,
+    "compact_lines": 6,
+    "compact_bytes": 511,
+    "compression_pct": 0.0,
+    "compact_hash": "2d588d54339dc64cbff0196917ced58e9e4fa70244198043f7cb4acfd3ca4fb7",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

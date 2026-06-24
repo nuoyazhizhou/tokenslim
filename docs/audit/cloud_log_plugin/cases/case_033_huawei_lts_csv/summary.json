@@ -1,0 +1,12 @@
+{
+    "case_id": "case_033_huawei_lts_csv",
+    "case_file": "case_033_huawei_lts_csv.log",
+    "original_lines": 7,
+    "original_bytes": 628,
+    "compact_lines": 7,
+    "compact_bytes": 628,
+    "compression_pct": 0.0,
+    "compact_hash": "f163233acfca15af0e42c13561979b5f6e79871ca04ebbe50a245d15324699d5",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

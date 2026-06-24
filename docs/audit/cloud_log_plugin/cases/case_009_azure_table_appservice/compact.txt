@@ -1,0 +1,4 @@
+$CL|META|providers=azure|sources=|records=3
+$CL|REC|t=2026-05-13 08:13:39|lvl=INFO|msg=worker started pid=42
+!$CL|REC|t=2026-05-13 08:13:41|lvl=ERROR|msg=database connection error: timeout after 30s
+$CL|REC|t=2026-05-13 08:13:45|lvl=INFO|msg=retrying database connection

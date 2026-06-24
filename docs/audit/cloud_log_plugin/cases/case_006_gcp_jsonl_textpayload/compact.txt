@@ -1,0 +1,4 @@
+$CL|META|providers=gcp|sources=projects/cloud-document/run.goog|records=3
+$CL|REC|t=2026-05-13 08:13:39|lvl=INFO|src=projects/cloud-document/run.goog|msg=worker started pid=42
+!$CL|REC|t=2026-05-13 08:13:41|lvl=ERROR|src=projects/cloud-document/run.goog|msg=database connection error: timeout after 30s
+$CL|REC|t=2026-05-13 08:13:45|lvl=INFO|src=projects/cloud-document/run.goog|msg=retrying database connection

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_063_bash_ll_alias",
+    "case_file": "case_063_bash_ll_alias.log",
+    "original_lines": 7,
+    "original_bytes": 229,
+    "compact_lines": 7,
+    "compact_bytes": 224,
+    "compression_pct": 2.2,
+    "compact_hash": "61f6612c599098296d5c3136da418618290507fb8cfdabe4c9810b0021084eca",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

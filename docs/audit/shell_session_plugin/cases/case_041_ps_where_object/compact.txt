@@ -1,0 +1,9 @@
+PS C:\> Get-Service | Where-Object {$_.Status -eq 'Running'} | Select-Object -First 2
+
+Status   Name               DisplayName
+------   ----               -----------
+Running  AudioEndpointBu... Windows Audio Endpoint Builder
+Running  Audiosrv           Windows Audio
+
+PS C:\> 
+

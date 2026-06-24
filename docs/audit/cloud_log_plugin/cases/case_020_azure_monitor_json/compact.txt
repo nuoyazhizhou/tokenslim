@@ -1,0 +1,2 @@
+$CL|WEB_HEALTH|provider=azure|2026-05-13 08:27:01..2026-05-13 08:27:31|source=/subscriptions/prod|GET /health|200 OK|hits=2|ips=10.2.0.4:1,10.2.0.5:1|level=INFO
+!$CL|WEB_ACCESS|provider=azure|2026-05-13 08:27:45..2026-05-13 08:27:45|source=/subscriptions/prod|POST /api/documents|500 Internal Server Error|hits=1|ips=10.2.0.6:1|level=ERROR

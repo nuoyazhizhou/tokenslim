@@ -1,0 +1,642 @@
+{
+    "target_families": [],
+    "covered": [],
+    "missing": [],
+    "covered_count": 0,
+    "missing_count": 0,
+    "target_count": 0,
+    "case_to_families": {
+        "case_081_merge_conflict.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_082_rebase_interactive.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_083_log_graph.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_084_reflog_long.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_128_git_remote.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_129_git_branch.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_130_git_tag_list.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_131_git_stash_list.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_163_git_blame.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_164_git_rebase_i.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_165_git_worktree.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_166_git_reflog.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_167_git_grep.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_168_git_log_oneline.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_169_git_diff_stat.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_170_git_shortlog.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_237_git_log_oneline_short.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_238_git_log_graph.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_239_git_bisect_bad.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_23_git_status.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_240_git_bisect_good.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_241_git_clean_fd.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_246_git_status_branch.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_247_git_status_porcelain.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_248_git_status_short.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_249_git_status_long.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_24_git_diff.log": {
+            "families": [],
+            "tokens": [
+                "fn",
+                "if",
+                "trimmed.starts_with('#')",
+                "}",
+                "diagnostics.push(config.validate())",
+                "let",
+                "\"show\",",
+                "\"branch\",",
+                "\"merge\",",
+                "\"rebase\","
+            ],
+            "command_lines": [
+                "/// Detect VCS tool from output text",
+                "fn detect_tool(&self, text: &str) -> Option<VcsTool>;",
+                "/// Apply configuration overrides",
+                "fn apply_overrides(&mut self, config: VcsOverrideConfig);",
+                "if trimmed.is_empty() || trimmed.starts_with('#') { continue; }",
+                "// VCS Plugin Config Guidance",
+                "if let Some(config) = load_vcs_config(root) {",
+                "diagnostics.push(config.validate());",
+                "}",
+                "...",
+                "let trimmed = line.trim_end_matches('\\r').trim();",
+                "if trimmed.is_empty() || trimmed.starts_with('#') { continue; }",
+                "\"show\",",
+                "\"branch\",",
+                "\"merge\",",
+                "\"rebase\","
+            ],
+            "aliases": {}
+        },
+        "case_250_git_status_ignored.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_251_git_status_untracked_all.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_252_git_log_oneline_n20.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_253_git_log_stat.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_254_git_log_patch.log": {
+            "families": [],
+            "tokens": [
+                "path_sender:",
+                "macro_sender:",
+                "dict:",
+                "pub",
+                "let",
+                "thread::spawn(move",
+                "{",
+                "})",
+                "self",
+                "path_sender,",
+                "macro_sender,",
+                "}",
+                "self.path_sender.send(path).unwrap()",
+                "self.macro_sender.send(macro).unwrap()",
+                "vec::new()"
+            ],
+            "command_lines": [
+                "path_sender: Sender<String>,",
+                "macro_sender: Sender<String>,",
+                "dict: HashMap<String, String>,",
+                "pub fn new() -> Self {",
+                "let (path_sender, path_receiver) = unbounded();",
+                "let (macro_sender, macro_receiver) = unbounded();",
+                "// Start worker thread",
+                "thread::spawn(move || {",
+                "// Process paths and macros",
+                "});",
+                "Self {",
+                "path_sender,",
+                "macro_sender,",
+                "dict: HashMap::new(),",
+                "}",
+                "}",
+                "pub fn add_path(&self, path: String) {",
+                "self.path_sender.send(path).unwrap();",
+                "}",
+                "pub fn add_macro(&self, macro: String) {",
+                "self.macro_sender.send(macro).unwrap();",
+                "}",
+                "// Parallel processing implementation",
+                "Vec::new()"
+            ],
+            "aliases": {}
+        },
+        "case_255_git_log_graph.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_256_git_log_all.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_257_git_diff_cached.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_258_git_diff_head.log": {
+            "families": [],
+            "tokens": [
+                "vec::new()"
+            ],
+            "command_lines": [
+                "// Parallel processing implementation",
+                "Vec::new()"
+            ],
+            "aliases": {}
+        },
+        "case_259_git_diff_stat.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_25_git_log.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_260_git_diff_word_diff.log": {
+            "families": [],
+            "tokens": [
+                "vec::new()"
+            ],
+            "command_lines": [
+                "// Parallel processing implementation",
+                "Vec::new()"
+            ],
+            "aliases": {}
+        },
+        "case_261_git_diff_branches.log": {
+            "families": [],
+            "tokens": [
+                "vec::new()"
+            ],
+            "command_lines": [
+                "// Parallel processing implementation",
+                "Vec::new()"
+            ],
+            "aliases": {}
+        },
+        "case_26_git_show.log": {
+            "families": [],
+            "tokens": [
+                "if",
+                "results.push(diagnostic::projecttype(project))",
+                "}",
+                "const"
+            ],
+            "command_lines": [
+                "// Auto-detect project type",
+                "if let Some(project) = self.detect_project_type() {",
+                "results.push(Diagnostic::ProjectType(project));",
+                "}",
+                "const MAX_DEPTH: usize = 10;"
+            ],
+            "aliases": {}
+        },
+        "case_283_git_diff_name_only.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_284_git_diff_name_status.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_285_git_stash_show.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_286_git_stash_pop.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_287_git_branch_v.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_288_git_branch_d.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_289_git_branch_D.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_290_git_add_p.log": {
+            "families": [],
+            "tokens": [
+                "let",
+                "feature.initialize()"
+            ],
+            "command_lines": [
+                "// New feature initialization",
+                "let feature = Feature::new(\"auth\");",
+                "feature.initialize();"
+            ],
+            "aliases": {}
+        },
+        "case_291_git_reset_hard.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_292_git_reset_soft.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_293_git_reset_mixed.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_294_git_checkout_b.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_295_git_cherry_pick_continue.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_296_git_cherry_pick_abort.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_297_git_rebase_continue.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_298_git_rebase_abort.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_299_git_rebase_skip.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_300_git_merge_abort.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_30_git_checkout.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_31_git_checkout_file.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_323_git_log_parentheses.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_324_git_log_oneline_full_hash_collision.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_325_git_reflog_with_hash_collision.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_326_git_log_oneline_heavy_collision.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_327_git_blame_hash_collision.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_328_git_show_multi_commit_collision.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_329_git_help.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_32_git_stash.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_330_git_status_unmerged.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_33_git_fetch.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_34_git_push.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_44_git_merge.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_45_git_rebase.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_46_git_reset.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_47_git_cherry_pick.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_48_git_revert.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_49_git_pull.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_50_git_add.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_51_git_rm.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_52_git_restore.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_53_git_switch.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_54_git_tag.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_55_git_bisect.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_56_git_clean.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_57_git_submodule.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_tree_diff_name_only.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        },
+        "case_tree_status.log": {
+            "families": [],
+            "tokens": [],
+            "command_lines": [],
+            "aliases": {}
+        }
+    },
+    "family_to_cases": {},
+    "family_to_aliases": {}
+}

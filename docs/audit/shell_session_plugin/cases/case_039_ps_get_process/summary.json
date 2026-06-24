@@ -1,0 +1,12 @@
+{
+    "case_id": "case_039_ps_get_process",
+    "case_file": "case_039_ps_get_process.log",
+    "original_lines": 9,
+    "original_bytes": 401,
+    "compact_lines": 9,
+    "compact_bytes": 277,
+    "compression_pct": 30.9,
+    "compact_hash": "2475577aa51de31ab371cfefb5433096b4f17b98c818e2c42071b9a08aa693db",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

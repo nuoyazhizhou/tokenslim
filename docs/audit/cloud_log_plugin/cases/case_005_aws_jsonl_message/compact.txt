@@ -1,0 +1,4 @@
+$CL|META|providers=aws|sources=ecs/backend/f6bf6a1f|records=3
+$CL|REC|t=2026-05-13 08:13:39|src=ecs/backend/f6bf6a1f|msg=worker started pid=42
+!$CL|REC|t=2026-05-13 08:13:41|lvl=ERROR|src=ecs/backend/f6bf6a1f|msg=database connection error: timeout after 30s
+$CL|REC|t=2026-05-13 08:13:45|src=ecs/backend/f6bf6a1f|msg=retrying database connection

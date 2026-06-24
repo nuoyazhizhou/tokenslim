@@ -1,0 +1,12 @@
+{
+    "case_id": "case_026_bash_find",
+    "case_file": "case_026_bash_find.log",
+    "original_lines": 5,
+    "original_bytes": 114,
+    "compact_lines": 5,
+    "compact_bytes": 111,
+    "compression_pct": 2.6,
+    "compact_hash": "251635671a43cd86036e5c3bde756dd0af46c6664eee3a7d7540444321db7cc0",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

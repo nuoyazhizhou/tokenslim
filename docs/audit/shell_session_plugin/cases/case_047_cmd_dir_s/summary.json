@@ -1,0 +1,12 @@
+{
+    "case_id": "case_047_cmd_dir_s",
+    "case_file": "case_047_cmd_dir_s.log",
+    "original_lines": 15,
+    "original_bytes": 425,
+    "compact_lines": 13,
+    "compact_bytes": 240,
+    "compression_pct": 43.5,
+    "compact_hash": "6808e1ddcc1be3cda1506d4ad6369876ef96cb4342503cfc427b5a96c7d7b56b",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

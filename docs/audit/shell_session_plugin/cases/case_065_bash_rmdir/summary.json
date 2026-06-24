@@ -1,0 +1,12 @@
+{
+    "case_id": "case_065_bash_rmdir",
+    "case_file": "case_065_bash_rmdir.log",
+    "original_lines": 7,
+    "original_bytes": 124,
+    "compact_lines": 7,
+    "compact_bytes": 124,
+    "compression_pct": 0.0,
+    "compact_hash": "2e1048d159a07b31d885f0e8180c98fbdbb55e86b8dba90691b85cb643e1df69",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

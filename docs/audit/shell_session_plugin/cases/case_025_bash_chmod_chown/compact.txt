@@ -1,0 +1,4 @@
+root@linux:/# chown root:root /etc/shadow
+root@linux:/# chmod 600 /etc/shadow
+root@linux:/# 
+

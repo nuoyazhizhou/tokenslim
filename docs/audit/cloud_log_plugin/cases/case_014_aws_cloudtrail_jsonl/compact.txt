@@ -1,0 +1,4 @@
+$CL|META|providers=aws|sources=111111111111_CloudTrail_us-east-1|records=3
+$CL|REC|t=2026-05-13 08:21:10|lvl=INFO|src=111111111111_CloudTrail_us-east-1|msg=ConsoleLogin user=alice sourceIPAddress=203.0.113.10 responseElements.ConsoleLogin=Success
+!$CL|REC|t=2026-05-13 08:21:22|lvl=ERROR|src=111111111111_CloudTrail_us-east-1|msg=AuthorizeSecurityGroupIngress user=bob errorCode=UnauthorizedOperation errorMessage=not authorized
+$CL|REC|t=2026-05-13 08:21:40|lvl=INFO|src=111111111111_CloudTrail_us-east-1|msg=CreateLogStream user=deploy requestParameters.logGroupName=/ecs/backend

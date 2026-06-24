@@ -1,0 +1,12 @@
+{
+    "case_id": "case_019_gcp_gke_plain",
+    "case_file": "case_019_gcp_gke_plain.log",
+    "original_lines": 6,
+    "original_bytes": 705,
+    "compact_lines": 3,
+    "compact_bytes": 450,
+    "compression_pct": 36.2,
+    "compact_hash": "8d0bc77324520139a94cc8b908df6dc4646ec3f975f69a1cf401fadc3f4e80bb",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_050_ps_command_not_found",
+    "case_file": "case_050_ps_command_not_found.log",
+    "original_lines": 10,
+    "original_bytes": 488,
+    "compact_lines": 10,
+    "compact_bytes": 480,
+    "compression_pct": 1.6,
+    "compact_hash": "5bb282c8917dd67cfdb90de625a154096f795bd0a34b7aeec607d9c3b2f72515",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

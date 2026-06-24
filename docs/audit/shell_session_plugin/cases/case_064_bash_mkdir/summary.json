@@ -1,0 +1,12 @@
+{
+    "case_id": "case_064_bash_mkdir",
+    "case_file": "case_064_bash_mkdir.log",
+    "original_lines": 6,
+    "original_bytes": 123,
+    "compact_lines": 6,
+    "compact_bytes": 123,
+    "compression_pct": 0.0,
+    "compact_hash": "d0c0cb5fe939fbc6ba169005373d4d3af236d4b04c31f3542dba6cff58b40a91",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

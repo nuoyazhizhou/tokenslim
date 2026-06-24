@@ -1,0 +1,10 @@
+user@host:~$ unzip archive.zip -d ./extracted
+Archive:  archive.zip
+  [... extracted 5 files ...]
+user@host:~$ ls extracted/project/
+main.py
+README.md
+tests
+utils.py
+user@host:~$
+

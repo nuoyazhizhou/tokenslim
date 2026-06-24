@@ -1,0 +1,12 @@
+{
+    "case_id": "case_015_aws_alb_access_jsonl",
+    "case_file": "case_015_aws_alb_access_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 639,
+    "compact_lines": 2,
+    "compact_bytes": 332,
+    "compression_pct": 48.0,
+    "compact_hash": "689f9ba56be1cc6b77f646ab5da1d0c371db0afc1af90e4303401a1ae479e1e7",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_025_bash_chmod_chown",
+    "case_file": "case_025_bash_chmod_chown.log",
+    "original_lines": 3,
+    "original_bytes": 94,
+    "compact_lines": 3,
+    "compact_bytes": 93,
+    "compression_pct": 1.1,
+    "compact_hash": "c6bca9244a19ed96256a37d95069236475ad103c759bea52e6b589b330020422",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

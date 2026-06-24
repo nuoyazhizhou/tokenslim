@@ -1,0 +1,12 @@
+{
+    "case_id": "case_054_bash_kubectl",
+    "case_file": "case_054_bash_kubectl.log",
+    "original_lines": 4,
+    "original_bytes": 185,
+    "compact_lines": 4,
+    "compact_bytes": 183,
+    "compression_pct": 1.1,
+    "compact_hash": "2a13e031c8fe58035e2f19437b3dd68a2f4ca77f61fe4c08c9c2e8c40451c56c",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_016_aws_vpc_flow_jsonl",
+    "case_file": "case_016_aws_vpc_flow_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 591,
+    "compact_lines": 4,
+    "compact_bytes": 479,
+    "compression_pct": 19.0,
+    "compact_hash": "fed5591d0449d733d3289aebbd8d9caf357f5f5f1ea32aa7bd8ea44a9fd2cc5b",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

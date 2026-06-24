@@ -1,0 +1,12 @@
+{
+    "case_id": "case_033_bash_netstat",
+    "case_file": "case_033_bash_netstat.log",
+    "original_lines": 6,
+    "original_bytes": 330,
+    "compact_lines": 6,
+    "compact_bytes": 326,
+    "compression_pct": 1.2,
+    "compact_hash": "7028c3a42894ec5c38b826773d30392079ab0565e08f6edabcbf02e185137eb0",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

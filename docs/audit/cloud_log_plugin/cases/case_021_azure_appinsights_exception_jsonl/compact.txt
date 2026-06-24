@@ -1,0 +1,5 @@
+$CL|META|providers=azure|sources=/subscriptions/backend|records=2
+!$CL|REC|t=2026-05-13 08:28:01|lvl=Error|src=/subscriptions/backend|msg=System.NullReferenceException: Object reference not set to an instance of an object.
+   at Backend.Controllers.DocumentController.Get(String id) in /src/DocumentController.cs:line 88
+   at lambda_method(Closure, Object, Object[])
+$CL|REC|t=2026-05-13 08:28:07|lvl=Information|src=/subscriptions/backend|msg=Request finished HTTP/1.1 GET /health 200

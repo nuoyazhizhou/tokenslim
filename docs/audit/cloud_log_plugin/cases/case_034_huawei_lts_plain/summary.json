@@ -1,0 +1,12 @@
+{
+    "case_id": "case_034_huawei_lts_plain",
+    "case_file": "case_034_huawei_lts_plain.log",
+    "original_lines": 6,
+    "original_bytes": 591,
+    "compact_lines": 3,
+    "compact_bytes": 410,
+    "compression_pct": 30.6,
+    "compact_hash": "03d3273a42c5db401478bddcefdd96cc13fac79a5c42a5d8eaa119ca51931a2d",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

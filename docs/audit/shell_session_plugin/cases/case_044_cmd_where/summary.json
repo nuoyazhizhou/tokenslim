@@ -1,0 +1,12 @@
+{
+    "case_id": "case_044_cmd_where",
+    "case_file": "case_044_cmd_where.log",
+    "original_lines": 4,
+    "original_bytes": 113,
+    "compact_lines": 4,
+    "compact_bytes": 111,
+    "compression_pct": 1.8,
+    "compact_hash": "c9ebe627d2007fde7cf995801990cf03d10b4b6d10c0911ac9237df956c01d5f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

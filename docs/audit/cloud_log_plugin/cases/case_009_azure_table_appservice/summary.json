@@ -1,0 +1,12 @@
+{
+    "case_id": "case_009_azure_table_appservice",
+    "case_file": "case_009_azure_table_appservice.log",
+    "original_lines": 5,
+    "original_bytes": 455,
+    "compact_lines": 4,
+    "compact_bytes": 271,
+    "compression_pct": 40.4,
+    "compact_hash": "56d1447b1276691e74c6c5846b921d9dd94a94567ecbfc5417ffef6b149380fc",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

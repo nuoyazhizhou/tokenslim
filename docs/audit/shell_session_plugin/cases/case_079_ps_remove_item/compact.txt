@@ -1,0 +1,19 @@
+PS C:\Users\user> Get-ChildItem .\tmp | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+PS C:\Users\user> Get-ChildItem .
+
+
+    Directory: C:\Users\user
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d-----          6/7/2026   8:00 AM                Documents
+d-----          6/7/2026   8:00 AM                Downloads
+d-----          6/7/2026   8:00 AM                Pictures
+-a----          6/7/2026   8:00 AM           1024 notes.txt
+-a----          6/7/2026   8:00 AM           2048 todo.md
+
+
+PS C:\Users\user> Remove-Item .\old.log -WhatIf
+What if: Performing the operation "Remove File" on target "Item: C:\Users\user\old.log".
+PS C:\Users\user>
+

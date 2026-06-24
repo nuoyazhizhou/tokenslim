@@ -1,0 +1,806 @@
+{
+    "track": "shell_session_plugin",
+    "updated_at": "2026-06-24T17:55:06.240640",
+    "cases": [
+        {
+            "case_id": "case_001_bash_success",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "2fa42bbc2d4c0542e179b2647a0869de90b4b013c395a9b1bb46d11356afa0de",
+            "original_hash": "025ad68a1473065f43ed1da8d6f84d878dee058cb53aa2c039457f0d28b59411",
+            "original_bytes": 155,
+            "compact_bytes": 155,
+            "frozen_at": "2026-06-07T15:54:36.179718"
+        },
+        {
+            "case_id": "case_002_bash_command_not_found",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "2a7d22acfb046ac602bdbfd62598f86ef451b1c172abf7807a0afc7fa4dd3e29",
+            "original_hash": "f8907456acb81b81d7637bdea52ffee55bbb11a8880bfa9341816bc2edfe07d1",
+            "original_bytes": 127,
+            "compact_bytes": 127,
+            "frozen_at": "2026-06-07T15:54:41.922539"
+        },
+        {
+            "case_id": "case_003_bash_pipefail",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "c559bded65e360275947cc9da75a12288d7eb2b03562dfd6b44bcfa6d6e833c8",
+            "original_hash": "a304220683ac8a1e9fbca3589984defb04e5485b9d5ece6b00835c0b7dbc4225",
+            "original_bytes": 164,
+            "compact_bytes": 164,
+            "frozen_at": "2026-06-07T15:54:48.945272"
+        },
+        {
+            "case_id": "case_004_bash_set_x_fail",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "73e7302e110ba3172e683a21a10a2d21feaab84ca235c8ab21ce3ef2f5f6901c",
+            "original_hash": "aa4d239f708d13c0bad68de96df251947e71ce24609ff195443131d716b2e6bd",
+            "original_bytes": 186,
+            "compact_bytes": 186,
+            "frozen_at": "2026-06-07T15:54:57.065941"
+        },
+        {
+            "case_id": "case_005_zsh_glob_no_match",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "57e5bc87e4e914b8781cd7ccb97db4a095bc9c61c2ec4c1799266e82bd8763d9",
+            "original_hash": "f6a02a2f49813552bfe9507d65826db84b5336be21d3a56f63f8e83fe2eba508",
+            "original_bytes": 69,
+            "compact_bytes": 69,
+            "frozen_at": "2026-06-07T15:55:03.620178"
+        },
+        {
+            "case_id": "case_006_fish_syntax",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "df6035edb41ce2b0f4bde2fa54a638b2e6a1f7acd0146fd71f0b32bf186901ce",
+            "original_hash": "44d18e77c73e0ca0e81adc7663ebf7a47404bc40163a4ba2e333e84190d46271",
+            "original_bytes": 90,
+            "compact_bytes": 90,
+            "frozen_at": "2026-06-07T15:55:09.131371"
+        },
+        {
+            "case_id": "case_007_powershell_success_table",
+            "version": "review-080",
+            "compression_pct": 27.9,
+            "compact_hash": "c89e6da96f6b87d7c8910bf38f5614df939d8eef3302ae6cbb3fd699f574264d",
+            "original_hash": "40eb4455ee93454b3745ec400e4961a144dd0cec7d93dc5f4890a6cfa83997ae",
+            "original_bytes": 426,
+            "compact_bytes": 307,
+            "frozen_at": "2026-06-07T15:55:28.166161"
+        },
+        {
+            "case_id": "case_008_powershell_parser_error",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "8c8d56e06a931709c02b1568b5a2c065e51b0872c1d0de8352c0f9675376f840",
+            "original_hash": "3677fde0a4b894a17f53863b93bee454c962b6532060668d09445c9f834b5f2e",
+            "original_bytes": 342,
+            "compact_bytes": 342,
+            "frozen_at": "2026-06-07T15:55:38.294726"
+        },
+        {
+            "case_id": "case_009_powershell_parameter_binding_exception",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "b3d591f93a6a5d35873c124f37cc8583ff5e311ba5a942a3c1fd5cdceed94216",
+            "original_hash": "d8730d3de615dcbb97a6505abe493612bc2d6e008ed95d3b3049c9687e92697e",
+            "original_bytes": 482,
+            "compact_bytes": 482,
+            "frozen_at": "2026-06-07T15:55:49.511480"
+        },
+        {
+            "case_id": "case_010_cmd_errorlevel",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "26bde6978619e6cec65281a6711eb36898630d4ff267ebaf78e7826bd67952f3",
+            "original_hash": "60f3c76d7623a6b607b8ec7c175c7af53d7ad29d3ad3ac1e002b810b29be73c7",
+            "original_bytes": 131,
+            "compact_bytes": 131,
+            "frozen_at": "2026-06-07T15:55:56.720984"
+        },
+        {
+            "case_id": "case_011_cmd_path_not_found",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "b9f30135fadf3d1a29720c2a8dc75f5dd25d5169e5fbf33780a2f64b47350cec",
+            "original_hash": "7b28886bfb734db0a79f419ab32599ff0e1d3f2a12434a9b8052b041eff8af16",
+            "original_bytes": 91,
+            "compact_bytes": 91,
+            "frozen_at": "2026-06-07T15:56:01.313610"
+        },
+        {
+            "case_id": "case_012_windows_dir_listing",
+            "version": "review-080",
+            "compression_pct": 42.1,
+            "compact_hash": "5cbb8f1b8d015986c8630f71c106d6659bd15e4d3d91246eebd5645dbeced43f",
+            "original_hash": "93d264e7589ff9ab51966d9a7fdf48dfb423203d3f9ce80db4b6eab501e23ef5",
+            "original_bytes": 354,
+            "compact_bytes": 205,
+            "frozen_at": "2026-06-07T15:56:19.222868"
+        },
+        {
+            "case_id": "case_013_bash_ls_posix",
+            "version": "review-080",
+            "compression_pct": 12.0,
+            "compact_hash": "bbab987c0355e2149be1801e515ee0bbccc159619435b6139002794212a2c177",
+            "original_hash": "98ceb536786ae9cc29a1d7ca330331c3fc354e601372468f24a93e4c4e8a8a01",
+            "original_bytes": 382,
+            "compact_bytes": 336,
+            "frozen_at": "2026-06-07T15:56:26.737852"
+        },
+        {
+            "case_id": "case_014_bash_tree",
+            "version": "review-080",
+            "compression_pct": 4.3,
+            "compact_hash": "be37cf3fb61d04786af9b7d2cf6b212b48f4a5322ab5b8da790031f2d8f4d329",
+            "original_hash": "7d936db2bd7410af0eed9713e5c40eff6034fb5afd5a7b7a546763ca33849035",
+            "original_bytes": 349,
+            "compact_bytes": 334,
+            "frozen_at": "2026-06-07T15:56:45.687246"
+        },
+        {
+            "case_id": "case_015_bash_env_secrets",
+            "version": "review-080",
+            "compression_pct": 19.4,
+            "compact_hash": "f2318b4c4a1571eecdd958ebb1d7b85c96af8eb2ca22c01eea3e56256ee3cd52",
+            "original_hash": "3b51252d49c5bea453818e39ad4a78cd903de99f2c306ee3ba56468a18c04242",
+            "original_bytes": 325,
+            "compact_bytes": 262,
+            "frozen_at": "2026-06-07T15:57:31.822129"
+        },
+        {
+            "case_id": "case_016_bash_find_grep",
+            "version": "review-080",
+            "compression_pct": 1.2,
+            "compact_hash": "7706455fd812ef510a9a9d6f75f7319c8032d197dd345219529b4cce7211acc8",
+            "original_hash": "dad6e967ffa6c46780ddaa070ebbc80b9d839b41669d9236f8686bff8a3c803a",
+            "original_bytes": 243,
+            "compact_bytes": 240,
+            "frozen_at": "2026-06-07T15:57:40.292731"
+        },
+        {
+            "case_id": "case_017_bash_curl_tar",
+            "version": "review-080",
+            "compression_pct": 9.0,
+            "compact_hash": "cf196e3f0ac7c32a0ff978d65dd923e38e7579dd45f7267b72d618f766d5716b",
+            "original_hash": "eb91711f7c22ece6194311987dde62a9d58c6c3043b5a627c2eef0f7a4ce7d47",
+            "original_bytes": 421,
+            "compact_bytes": 383,
+            "frozen_at": "2026-06-07T15:57:55.989042"
+        },
+        {
+            "case_id": "case_018_powershell_get_childitem",
+            "version": "review-080",
+            "compression_pct": 2.4,
+            "compact_hash": "c4894aeb91b4f91e22ac43fe9f45ec0ee6c25cb2c735d11c8fea174bfc4516bb",
+            "original_hash": "0fe156a3a1429c6a52cf64f21176931c676a888a6d76366c3c692ac4ef931b7d",
+            "original_bytes": 665,
+            "compact_bytes": 649,
+            "frozen_at": "2026-06-07T15:58:17.373212"
+        },
+        {
+            "case_id": "case_019_powershell_invoke_webrequest",
+            "version": "review-080",
+            "compression_pct": 2.8,
+            "compact_hash": "d18be98851eccb3043a3912f5b94fe803f8d3a99310af557dfdac8e953a4ceb9",
+            "original_hash": "b4272ec2157cfd17db55797ae21f20221a1247ef03827a15545146c09c69053a",
+            "original_bytes": 282,
+            "compact_bytes": 274,
+            "frozen_at": "2026-06-07T15:58:32.325145"
+        },
+        {
+            "case_id": "case_020_cmd_xcopy",
+            "version": "review-080",
+            "compression_pct": 16.0,
+            "compact_hash": "eef57d3d35421ab4ca6ea3ef54e725efd2daaec401ff90568b6920bc6aa292ea",
+            "original_hash": "e22ba5da6d954de707ed9d93cf364cf5c903b64dccb86c9db97b91b010d3c113",
+            "original_bytes": 131,
+            "compact_bytes": 110,
+            "frozen_at": "2026-06-07T15:58:44.261469"
+        },
+        {
+            "case_id": "case_021_cmd_robocopy",
+            "version": "review-080",
+            "compression_pct": 12.6,
+            "compact_hash": "5fafb522510a03935d5c17cc7a676162181c7313182bd7120b3fbd693a0f970a",
+            "original_hash": "c24378006608f9845573a58baa907b7637eb95ac28c4f6d9994e8c9e1d2ed340",
+            "original_bytes": 1368,
+            "compact_bytes": 1196,
+            "frozen_at": "2026-06-07T15:58:58.274329"
+        },
+        {
+            "case_id": "case_022_ci_set_x_trace",
+            "version": "review-080",
+            "compression_pct": 2.4,
+            "compact_hash": "2b50c4ab6bb2e6081acfdefe02a5992b88286fce9206cecc2192cb47d4b5e147",
+            "original_hash": "be9ffccdb0ab1dde931c042dc6781feac71ae1fb8ffb581a9bd514d0843cc7aa",
+            "original_bytes": 1758,
+            "compact_bytes": 1715,
+            "frozen_at": "2026-06-07T15:59:34.296492"
+        },
+        {
+            "case_id": "case_023_bash_cp_mv",
+            "version": "review-080",
+            "compression_pct": 2.2,
+            "compact_hash": "356a1701402c46cf9d925a224fc67faf83abc13551c5661b43d703907218a025",
+            "original_hash": "ab1865fcb357938daf2afac357ec0554bcbcc3c19724e93314828de038ed4bab",
+            "original_bytes": 138,
+            "compact_bytes": 135,
+            "frozen_at": "2026-06-07T15:59:46.293934"
+        },
+        {
+            "case_id": "case_024_bash_rm_rf",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "b2737ba0e613bb1d9d0a4fa91d9d576e9a6373de792b4bf478e6ccfdfc158cb5",
+            "original_hash": "fd77697d155dc567cbdd168660af7b4fcc1e3205af1b4e7f4a581fa25cf47a26",
+            "original_bytes": 235,
+            "compact_bytes": 235,
+            "frozen_at": "2026-06-07T15:59:51.021968"
+        },
+        {
+            "case_id": "case_025_bash_chmod_chown",
+            "version": "review-080",
+            "compression_pct": 1.1,
+            "compact_hash": "c6bca9244a19ed96256a37d95069236475ad103c759bea52e6b589b330020422",
+            "original_hash": "1fc32df937eda20f2273bd100d9afe7ceed04aab894b2ac3129203ab1bfcfccf",
+            "original_bytes": 94,
+            "compact_bytes": 93,
+            "frozen_at": "2026-06-07T16:00:01.120849"
+        },
+        {
+            "case_id": "case_026_bash_find",
+            "version": "review-080",
+            "compression_pct": 2.6,
+            "compact_hash": "251635671a43cd86036e5c3bde756dd0af46c6664eee3a7d7540444321db7cc0",
+            "original_hash": "61d185cb95706e68350315f99b2e64c9ec7241e23e5a86637a4f8caca234ecfb",
+            "original_bytes": 114,
+            "compact_bytes": 111,
+            "frozen_at": "2026-06-07T16:00:09.266244"
+        },
+        {
+            "case_id": "case_027_bash_grep_awk",
+            "version": "review-080",
+            "compression_pct": 1.7,
+            "compact_hash": "4477cfd8dbed00618ccbb8e671e49343093077e920ded555faeaa1bb763edc7c",
+            "original_hash": "3fe2731f6af4e0dfa1299e86e63ef30871a1192049aa5a02aade90f03191f9f9",
+            "original_bytes": 120,
+            "compact_bytes": 118,
+            "frozen_at": "2026-06-07T16:00:18.182108"
+        },
+        {
+            "case_id": "case_028_bash_ps",
+            "version": "review-080",
+            "compression_pct": 15.2,
+            "compact_hash": "5db7cbfeec95964268736f294b6dbfa07b9704fabed2a45742b177c13e1c5133",
+            "original_hash": "cc9b5bfafbc81415dffe719825eb1af206a1a3915d6706e48dbcf12c8628287d",
+            "original_bytes": 256,
+            "compact_bytes": 217,
+            "frozen_at": "2026-06-07T16:00:38.057638"
+        },
+        {
+            "case_id": "case_029_bash_top",
+            "version": "review-080",
+            "compression_pct": 1.2,
+            "compact_hash": "f5c9c4aa72b9e2cff78f2f45d1993c0b0260e5ce6fb7172b567239c32724d1e4",
+            "original_hash": "ac26f485376b8705583364ee6b679486c839464226668a5bbc3f10c19404a8ae",
+            "original_bytes": 433,
+            "compact_bytes": 428,
+            "frozen_at": "2026-06-07T16:00:54.022953"
+        },
+        {
+            "case_id": "case_030_bash_systemctl",
+            "version": "review-080",
+            "compression_pct": 1.1,
+            "compact_hash": "3022451f60fb47bb1efc6848a31c8e766ad0197f6d6427b4ff7883a3207bf8c0",
+            "original_hash": "b41b2c24c522ceca77b9eede35967d5a3576e10aedd9d7f544a82b263bc0e40c",
+            "original_bytes": 275,
+            "compact_bytes": 272,
+            "frozen_at": "2026-06-07T16:01:05.413376"
+        },
+        {
+            "case_id": "case_031_bash_df",
+            "version": "review-080",
+            "compression_pct": 21.8,
+            "compact_hash": "3ee3b35911e071b78e0a15e139b75f961463454889795eb069881bcf1433e430",
+            "original_hash": "31a2af3229e8c8d7e88971d23614034f3b1335a579aefcd193bf37510409224b",
+            "original_bytes": 174,
+            "compact_bytes": 136,
+            "frozen_at": "2026-06-07T16:01:18.856648"
+        },
+        {
+            "case_id": "case_032_bash_du",
+            "version": "review-080",
+            "compression_pct": 8.2,
+            "compact_hash": "1105905ce61390c05155e735ff940accc583f7d7c20dec4b053e51402e194485",
+            "original_hash": "09dd3cc679841356a8a27cea5ba68e72027e958c64ef4a3ebdef8ab5e2f508cf",
+            "original_bytes": 98,
+            "compact_bytes": 90,
+            "frozen_at": "2026-06-07T16:01:29.326709"
+        },
+        {
+            "case_id": "case_033_bash_netstat",
+            "version": "review-080",
+            "compression_pct": 1.2,
+            "compact_hash": "7028c3a42894ec5c38b826773d30392079ab0565e08f6edabcbf02e185137eb0",
+            "original_hash": "81af506b2b3abeebdf0ba630cb215d5679d2ca38b27055263db1c5b217c5d962",
+            "original_bytes": 330,
+            "compact_bytes": 326,
+            "frozen_at": "2026-06-07T16:01:39.281543"
+        },
+        {
+            "case_id": "case_034_bash_ping",
+            "version": "review-080",
+            "compression_pct": 1.8,
+            "compact_hash": "e630adc0ae710ad6d43c4e4eb93c1d36e9087f841289b4c051e964adcacb4aa1",
+            "original_hash": "c1ae3e2fb468309d6f4f5638efecc977ef43917a9445f490027c014d8a09228c",
+            "original_bytes": 445,
+            "compact_bytes": 437,
+            "frozen_at": "2026-06-07T16:01:48.076675"
+        },
+        {
+            "case_id": "case_035_bash_tar",
+            "version": "review-080",
+            "compression_pct": 41.1,
+            "compact_hash": "2b38560fa664143774860fbf5e113edbb8686f4ab41a0c047fc71437ed28f0be",
+            "original_hash": "6ab36ad3be1823611814a185d4b8fec0f7d671ac8d136e8296f1aebfb12fe7c2",
+            "original_bytes": 168,
+            "compact_bytes": 99,
+            "frozen_at": "2026-06-07T16:02:17.064664"
+        },
+        {
+            "case_id": "case_036_bash_rsync",
+            "version": "review-080",
+            "compression_pct": 3.2,
+            "compact_hash": "aa8b6508e004a00a081f09d3e91af061c786421f00b6afb20c03c02db1df059f",
+            "original_hash": "b8a1a394cf7de2d131de8372ec9ebce4e3913ed6f4d507ff47dee677f7fce01c",
+            "original_bytes": 220,
+            "compact_bytes": 213,
+            "frozen_at": "2026-06-07T16:02:23.786653"
+        },
+        {
+            "case_id": "case_037_bash_redirection",
+            "version": "review-080",
+            "compression_pct": 1.4,
+            "compact_hash": "1d5a5ecffb503ae8c847443daac8a4e4b27a9e158d5b02e94e6441a7dde6c378",
+            "original_hash": "3cd6de3b1998d8bc0fb45665da2a0970b911f8fdfc65a8e1d917ba1305e11be6",
+            "original_bytes": 144,
+            "compact_bytes": 142,
+            "frozen_at": "2026-06-07T16:02:32.129860"
+        },
+        {
+            "case_id": "case_038_bash_env_prefix",
+            "version": "review-080",
+            "compression_pct": 1.4,
+            "compact_hash": "01248d7dbeb46da98d139ea86acc69bd7ac28aeecf4606b9522610060b50a71d",
+            "original_hash": "7f8f08b6abefda22e5f504c7c1d70cdb365f3c0090283b1897254d76235dc346",
+            "original_bytes": 73,
+            "compact_bytes": 72,
+            "frozen_at": "2026-06-07T16:02:39.194397"
+        },
+        {
+            "case_id": "case_039_ps_get_process",
+            "version": "review-080",
+            "compression_pct": 30.9,
+            "compact_hash": "2475577aa51de31ab371cfefb5433096b4f17b98c818e2c42071b9a08aa693db",
+            "original_hash": "90344e388821c18d6ec22c4828c9c098a4209f04b5c83dc0562f243603c9d70d",
+            "original_bytes": 401,
+            "compact_bytes": 277,
+            "frozen_at": "2026-06-07T16:02:46.106514"
+        },
+        {
+            "case_id": "case_040_ps_copy_item",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "02365ccddc391c28dfc68950eb4d16454cc4099a5e5f86f5661e988fd3ce93cc",
+            "original_hash": "6b1639c4fca5f3677a4f16747128ee36a2904c2dfcc4cafd0e0001f29f4c49b4",
+            "original_bytes": 79,
+            "compact_bytes": 79,
+            "frozen_at": "2026-06-07T16:02:52.190916"
+        },
+        {
+            "case_id": "case_041_ps_where_object",
+            "version": "review-080",
+            "compression_pct": 2.1,
+            "compact_hash": "b2c8e72232e0ddeaa2a475b53efaf33fcb8f1422ab47767b0972c908496eb52d",
+            "original_hash": "e2eb37e67f68a9310ace5182db84829eeb19508c76345aeecf3e3d370595a2b6",
+            "original_bytes": 284,
+            "compact_bytes": 278,
+            "frozen_at": "2026-06-07T16:03:01.092653"
+        },
+        {
+            "case_id": "case_042_ps_convertfrom_json",
+            "version": "review-080",
+            "compression_pct": 4.6,
+            "compact_hash": "801b530e312afb211abdee29b14a04c9cbe929112a725715731c145b754512c2",
+            "original_hash": "b67202de902e493b992ae34dfa46b2ed8b055f4c154cd0eb83e456ea63ec83a0",
+            "original_bytes": 109,
+            "compact_bytes": 104,
+            "frozen_at": "2026-06-07T16:14:47.707588"
+        },
+        {
+            "case_id": "case_043_cmd_copy",
+            "version": "review-080",
+            "compression_pct": 1.6,
+            "compact_hash": "561f924059ad7f729c8d7c8a2a1f939939db2948dfbae76ce7eb348897e3db85",
+            "original_hash": "7f9fb00c01b861baf5c98f0c98e1ea69b52bcf56d50a6a35e0d895367ed681c9",
+            "original_bytes": 63,
+            "compact_bytes": 62,
+            "frozen_at": "2026-06-07T16:08:21.069359"
+        },
+        {
+            "case_id": "case_044_cmd_where",
+            "version": "review-080",
+            "compression_pct": 1.8,
+            "compact_hash": "c9ebe627d2007fde7cf995801990cf03d10b4b6d10c0911ac9237df956c01d5f",
+            "original_hash": "0fe0fe79d977f591db2bc58c13d012e57e8f6c13b183e8e0bc64f045299e7ba6",
+            "original_bytes": 113,
+            "compact_bytes": 111,
+            "frozen_at": "2026-06-07T16:08:56.746684"
+        },
+        {
+            "case_id": "case_045_cmd_type",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "9c6180e555bb26a08e1affbcc7e4ce865325e63e8afa444fdcf8227a093d085a",
+            "original_hash": "1ef3d5b9f230c4dfc32c7d058cf98d19c0a44bb46bdd2f4723a857479e029d15",
+            "original_bytes": 192,
+            "compact_bytes": 192,
+            "frozen_at": "2026-06-07T16:09:46.173641"
+        },
+        {
+            "case_id": "case_046_cmd_findstr",
+            "version": "review-080",
+            "compression_pct": 1.6,
+            "compact_hash": "0ed46b40049327b2a1a555081fd5d449099508d9c9a89389c3b03d86cb7fbdcd",
+            "original_hash": "ed36a7c49f645dd0ed0df1f675a45dcfb0270dcc54e7816bd4a41693c92e43f9",
+            "original_bytes": 127,
+            "compact_bytes": 125,
+            "frozen_at": "2026-06-07T16:10:16.531973"
+        },
+        {
+            "case_id": "case_047_cmd_dir_s",
+            "version": "review-080",
+            "compression_pct": 43.5,
+            "compact_hash": "6808e1ddcc1be3cda1506d4ad6369876ef96cb4342503cfc427b5a96c7d7b56b",
+            "original_hash": "3818da5766f2592ad8fd890ee4407a6554bd892af2171e67da108b1f014af608",
+            "original_bytes": 425,
+            "compact_bytes": 240,
+            "frozen_at": "2026-06-07T16:10:34.432344"
+        },
+        {
+            "case_id": "case_048_bash_permission_denied",
+            "version": "review-080",
+            "compression_pct": 2.8,
+            "compact_hash": "92d36497394ea6d6913fa69f9f8f72d8cd7ba5757900cd970af476df4200f73a",
+            "original_hash": "5f5369d2afd2fb81cce337f2a4a48ea31652035def80f0584f5568101fbfadd2",
+            "original_bytes": 108,
+            "compact_bytes": 105,
+            "frozen_at": "2026-06-07T16:10:59.891330"
+        },
+        {
+            "case_id": "case_049_bash_syntax_error",
+            "version": "review-080",
+            "compression_pct": 1.0,
+            "compact_hash": "3d8909d313d3e400a5527e44065a212d6339717fe867c75b7a0da8da214e00ea",
+            "original_hash": "f20d2e3726a37304093ef60d5e7260e078aa8308f3444cab311b9e9ba11183f2",
+            "original_bytes": 105,
+            "compact_bytes": 104,
+            "frozen_at": "2026-06-07T16:11:23.848722"
+        },
+        {
+            "case_id": "case_050_ps_command_not_found",
+            "version": "review-080",
+            "compression_pct": 1.6,
+            "compact_hash": "5bb282c8917dd67cfdb90de625a154096f795bd0a34b7aeec607d9c3b2f72515",
+            "original_hash": "1656de35c4ffdb1cb0b3594973ffbb42562c84f0606810fd8ac2f76b455ab5e0",
+            "original_bytes": 488,
+            "compact_bytes": 480,
+            "frozen_at": "2026-06-07T16:11:46.557916"
+        },
+        {
+            "case_id": "case_051_cmd_not_recognized",
+            "version": "review-080",
+            "compression_pct": 1.7,
+            "compact_hash": "f8d7f5c079c54cf9dbf9088eafd225e78acd2a14c67612e222a30a89ec6b79bb",
+            "original_hash": "ed468fb68e574c3206bc35074267c132fad5836442e6edfec021a5fbea7f7859",
+            "original_bytes": 117,
+            "compact_bytes": 115,
+            "frozen_at": "2026-06-07T16:11:59.155987"
+        },
+        {
+            "case_id": "case_052_bash_git",
+            "version": "review-080",
+            "compression_pct": 2.4,
+            "compact_hash": "216ece6711b18b15f7a2837e6824ab46ef6fb6d4ce90dcd700f77843424ffa69",
+            "original_hash": "fe343571fbf90aab9bb135dcd0bb452d4df1a2d2c550aeed48144ac95e6ece98",
+            "original_bytes": 374,
+            "compact_bytes": 365,
+            "frozen_at": "2026-06-07T16:12:13.601574"
+        },
+        {
+            "case_id": "case_053_ps_cargo",
+            "version": "review-080",
+            "compression_pct": 2.5,
+            "compact_hash": "17908855c6a4095c9f38e6ceb7ccd29f01d0bdf4118ce79e2ee21c4bddd2b904",
+            "original_hash": "227f36b4054f64b4e2243c1e15c025a9f88cc19e7c375751770d1b658087befc",
+            "original_bytes": 354,
+            "compact_bytes": 345,
+            "frozen_at": "2026-06-07T16:12:25.474794"
+        },
+        {
+            "case_id": "case_054_bash_kubectl",
+            "version": "review-080",
+            "compression_pct": 1.1,
+            "compact_hash": "2a13e031c8fe58035e2f19437b3dd68a2f4ca77f61fe4c08c9c2e8c40451c56c",
+            "original_hash": "768c0a41d3613fccbe486ad1a4a4219c6cf46670fb0c409fcc0e7dcf4f271f01",
+            "original_bytes": 185,
+            "compact_bytes": 183,
+            "frozen_at": "2026-06-07T16:12:33.736790"
+        },
+        {
+            "case_id": "case_055_cmd_mvn",
+            "version": "review-080",
+            "compression_pct": 1.8,
+            "compact_hash": "771b2ec1212d467bb83efe7f53ed0b3634cc2ca6480395345e443443a113e147",
+            "original_hash": "bf2a1abb085c55b6bd1fe6c7b3ddf054ecd372505386b874fdd1519a2cb47fd0",
+            "original_bytes": 398,
+            "compact_bytes": 391,
+            "frozen_at": "2026-06-07T16:12:47.267407"
+        },
+        {
+            "case_id": "case_056_bash_docker",
+            "version": "review-080",
+            "compression_pct": 0.7,
+            "compact_hash": "1e568d93e9833344566322393bd3f8c754619d3965d02980a339dffc8c13bbd1",
+            "original_hash": "f3bcc83cfa4d2e99fbf03c38b00309a780db36a9700b5a9a72353ced0d171bda",
+            "original_bytes": 279,
+            "compact_bytes": 277,
+            "frozen_at": "2026-06-07T16:12:55.890028"
+        },
+        {
+            "case_id": "case_057_bash_npm",
+            "version": "review-080",
+            "compression_pct": 3.1,
+            "compact_hash": "8cd24bb80a1d25a0890e4f36f90c6781ee61a5f0051fee082c536159b8282a82",
+            "original_hash": "828f8e8b97e4f14519090d8a6be099963c61a3c9ee207fc518c6604488e94da1",
+            "original_bytes": 128,
+            "compact_bytes": 124,
+            "frozen_at": "2026-06-07T16:13:06.328281"
+        },
+        {
+            "case_id": "case_058_bash_pytest",
+            "version": "review-080",
+            "compression_pct": 2.0,
+            "compact_hash": "09d6a14d2d69e2bd551596bbfc0ed613d2d80c1594058fa503d13e92a866a466",
+            "original_hash": "33eb73baecfb1d967bfd8d5404434a8e4cdb4a01294388e590911758388845bd",
+            "original_bytes": 404,
+            "compact_bytes": 396,
+            "frozen_at": "2026-06-07T16:13:20.665792"
+        },
+        {
+            "case_id": "case_059_bash_terraform",
+            "version": "review-080",
+            "compression_pct": 2.9,
+            "compact_hash": "52066b9db560eb7ace0afc632bc74a5a38fbd3e0b9ba5db895b031465613d82b",
+            "original_hash": "aae061e85c01ce73e679d27f2cbdaff333f55ff892fc7a2b1f637c402b26ff73",
+            "original_bytes": 450,
+            "compact_bytes": 437,
+            "frozen_at": "2026-06-07T16:13:44.944176"
+        },
+        {
+            "case_id": "case_060_ps_helm",
+            "version": "review-080",
+            "compression_pct": 0.7,
+            "compact_hash": "de33d19080f8c238db7ac4a348e579d457bd1744a549fd997d07e82abb5c9620",
+            "original_hash": "ee0168aaaaac7b2d76fcaefe7ec1bfb7e684dd07deb599520bad933027f118fb",
+            "original_bytes": 286,
+            "compact_bytes": 284,
+            "frozen_at": "2026-06-07T16:15:01.141221"
+        },
+        {
+            "case_id": "case_061_bash_sed_sort",
+            "version": "review-080",
+            "compression_pct": 2.5,
+            "compact_hash": "8450ba9fe44409a8cfa4b82662766eb7c5d0572fad8db490de98a4ed7c0b7ddd",
+            "original_hash": "1cbfdf281bfb54b87bb99d382a5e833e245bf1d232319a3ef7ca6411160dd0b7",
+            "original_bytes": 118,
+            "compact_bytes": 115,
+            "frozen_at": "2026-06-07T16:15:08.492553"
+        },
+        {
+            "case_id": "case_062_bash_jobs_kill",
+            "version": "review-080",
+            "compression_pct": 2.0,
+            "compact_hash": "0879591becb8fdc44f8f46d654d499334b6bb32b9bea7621c15bdcf50953668c",
+            "original_hash": "33fdfab64cf4b30195d289eac643e96c6863176168782d8d9536279dbc77b090",
+            "original_bytes": 101,
+            "compact_bytes": 99,
+            "frozen_at": "2026-06-07T16:15:17.614394"
+        },
+        {
+            "case_id": "case_063_bash_ll_alias",
+            "version": "review-080",
+            "compression_pct": 2.2,
+            "compact_hash": "61f6612c599098296d5c3136da418618290507fb8cfdabe4c9810b0021084eca",
+            "original_hash": "2e5b331b49c723ca5d330a9799e7035a27784625163ec5f94e73ec8ff81603d7",
+            "original_bytes": 229,
+            "compact_bytes": 224,
+            "frozen_at": "2026-06-07T16:15:34.057636"
+        },
+        {
+            "case_id": "case_064_bash_mkdir",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "d0c0cb5fe939fbc6ba169005373d4d3af236d4b04c31f3542dba6cff58b40a91",
+            "original_hash": "dad18f81f34cfdd722ab2676908497832d11337a119982473354902371cf21bf",
+            "original_bytes": 123,
+            "compact_bytes": 123,
+            "frozen_at": "2026-06-07T16:15:42.591698"
+        },
+        {
+            "case_id": "case_065_bash_rmdir",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "2e1048d159a07b31d885f0e8180c98fbdbb55e86b8dba90691b85cb643e1df69",
+            "original_hash": "8cf4125234a285f4b81773aeb64af725438439a883ede76baab8d8a689f4ab1e",
+            "original_bytes": 124,
+            "compact_bytes": 124,
+            "frozen_at": "2026-06-07T16:15:51.098338"
+        },
+        {
+            "case_id": "case_066_bash_touch",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "473ad19246d3a174904fcf20d37ea532cdc2d5231da1b3c46dc2335fa519ed01",
+            "original_hash": "b82bef673d6b130996909d8efff20821d98f009319be644ef5f56396f4fc938c",
+            "original_bytes": 286,
+            "compact_bytes": 286,
+            "frozen_at": "2026-06-07T16:16:03.353729"
+        },
+        {
+            "case_id": "case_067_bash_ripgrep",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "bc77c8a14da783986b06d97555ac5db8a0a119b186600982f76c7c20b7d077ac",
+            "original_hash": "da9cd4cfbc9f64c2ca0958d57003e154758ebf0e78ab4a905cc9929ae540161c",
+            "original_bytes": 318,
+            "compact_bytes": 318,
+            "frozen_at": "2026-06-07T16:16:10.652140"
+        },
+        {
+            "case_id": "case_068_bash_tail",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "716dd591054584f5a5dbdaba05d11827f9766f92a8bb79375e2dc9cba599e08f",
+            "original_hash": "3d4d9f132d2f82468f27ad6650c349a0227ff19b5b41d4eeae57da3c890280f0",
+            "original_bytes": 455,
+            "compact_bytes": 455,
+            "frozen_at": "2026-06-07T16:16:21.161533"
+        },
+        {
+            "case_id": "case_069_bash_wc",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "5bb79c6503ee0d4a33f9b341e71c03754fe0ce688ac7dc918dcc279d8d192778",
+            "original_hash": "945f0e17584c3d4af7053ee122a0c64e2a83abb998525f16edb761b2219ba597",
+            "original_bytes": 214,
+            "compact_bytes": 214,
+            "frozen_at": "2026-06-07T16:16:27.548170"
+        },
+        {
+            "case_id": "case_070_bash_zip",
+            "version": "review-080",
+            "compression_pct": 51.4,
+            "compact_hash": "f81d8be9afc02dbf008dbbf6e4f8ead8cd6e20a4596af39a63333f1ba001b930",
+            "original_hash": "e81c81b95c5e5d784495d97dc9679e76116945d68d84e9c80ee80bdc62c467a6",
+            "original_bytes": 348,
+            "compact_bytes": 169,
+            "frozen_at": "2026-06-07T16:16:46.409545"
+        },
+        {
+            "case_id": "case_071_bash_unzip",
+            "version": "review-080",
+            "compression_pct": 50.4,
+            "compact_hash": "1706c762a6eb99711faebb63a0e0575c4beb66308651ef6096f8945a7619bbd3",
+            "original_hash": "349b45908bfac5f63c90698d6ca16da5741ad8a79f63d767a7d8b66c9b627521",
+            "original_bytes": 361,
+            "compact_bytes": 179,
+            "frozen_at": "2026-06-07T16:16:56.447028"
+        },
+        {
+            "case_id": "case_072_bash_service",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "eab0018c899529f641d9d02fea99bbf48b2b3226928473cb728f6495453b54b2",
+            "original_hash": "87ce8a2b67e605f6da90ae2d3454ebebe72558907cb337baa1f1cea3abd35372",
+            "original_bytes": 917,
+            "compact_bytes": 917,
+            "frozen_at": "2026-06-07T16:17:02.168790"
+        },
+        {
+            "case_id": "case_073_bash_mount",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "8dea0f05684dc63cc92b64637fbc2c5a58ed677a909eeec993aa92ebaded081f",
+            "original_hash": "5c52be6d9aac42262cfd51ccf561ed128ddac3b695228d964cdf121001951342",
+            "original_bytes": 336,
+            "compact_bytes": 336,
+            "frozen_at": "2026-06-07T16:17:08.108927"
+        },
+        {
+            "case_id": "case_074_bash_scp",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "eadcc021937ddd20157a3e7a74f8335ed6c6f2a1e5659f8cba0953831a35beeb",
+            "original_hash": "d78f457d9a0b756f35c88f21917074d9b5c08c2f8f47851b0247ed6b6c8116eb",
+            "original_bytes": 528,
+            "compact_bytes": 528,
+            "frozen_at": "2026-06-07T16:17:22.945935"
+        },
+        {
+            "case_id": "case_075_cmd_ipconfig",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "5fb0142b6a507f987b9ced647f586b8031d0d481c714117987116ad6ed08f462",
+            "original_hash": "b2d88487856632c5f9843d8b552ec3247134beb445c0ab26735311138067e911",
+            "original_bytes": 980,
+            "compact_bytes": 980,
+            "frozen_at": "2026-06-07T16:17:44.967909"
+        },
+        {
+            "case_id": "case_076_bash_ifconfig",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "848dc58c44a97903e95ea6eb864795ea30811a7346c3a67431acdf7e8fe78477",
+            "original_hash": "350aee222466e9ab7f8ad80b77835fb124c6b5087155bead2c10296c234ee655",
+            "original_bytes": 737,
+            "compact_bytes": 737,
+            "frozen_at": "2026-06-07T16:17:51.108668"
+        },
+        {
+            "case_id": "case_077_bash_ip",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "820d20432bd81e25455e89370471eb4f7694f720d4872309fdb37aaf38e2477c",
+            "original_hash": "ffb9bb6cd874b79c3333aad6b4a231b165f3191348e38ac8e2e73beca96d59a0",
+            "original_bytes": 599,
+            "compact_bytes": 599,
+            "frozen_at": "2026-06-07T16:17:59.063741"
+        },
+        {
+            "case_id": "case_078_bash_ss",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "05dd41baf866a1db5e7d1359a18f3493b9023fe73368e2f87a20e41cf0dbd5e2",
+            "original_hash": "2ad771c32e7be105b6b09f2aa00bb44b9aa5103592659f0d165aebb704114d14",
+            "original_bytes": 995,
+            "compact_bytes": 995,
+            "frozen_at": "2026-06-07T16:18:03.685236"
+        },
+        {
+            "case_id": "case_079_ps_remove_item",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "d54052767984b7e96a51a936a4e8c0d67673c70441fbe567153d4d954481bb0c",
+            "original_hash": "57815a7d72c8656013b8aa8c3a6df376cb69f87959cb7d14ea1a0a9ac2d21b34",
+            "original_bytes": 728,
+            "compact_bytes": 728,
+            "frozen_at": "2026-06-07T16:18:08.130897"
+        },
+        {
+            "case_id": "case_080_bash_wget",
+            "version": "review-080",
+            "compression_pct": 0.0,
+            "compact_hash": "665bfc3b87a852bca5b3739e4c24694fa9cee66680db926811e721751d8848c5",
+            "original_hash": "812fd07054567ab595f9d8e81ef8cf4b61831f0113cbfb6dda4655b6e0f45ccf",
+            "original_bytes": 339,
+            "compact_bytes": 339,
+            "frozen_at": "2026-06-07T16:18:14.523566"
+        }
+    ]
+}

@@ -1,0 +1,2440 @@
+$CL|META|providers=cloud|sources=|records=1625
+$CL|REC|t=1775437264228|msg=START RequestId: b2c3d4e5-f6a7-8901-bcde-f23456789012 Version: $LATEST
+$CL|REC|t=1775437264238|msg=[2026-04-06 01:01:04,238] INFO: 下载 S3 -> 本地: s3://sample-batch-processor/input/docs-manifest-2026-04-06.json  ->  /tmp/docs-manifest-2026-04-06.json
+$CL|REC|t=1775437264258|msg=[2026-04-06 01:01:04,258] INFO: 加载清单 200 个文档来源，类别: [manual, report, spec, contract, faq]
+$CL|REC|t=1775437264278|msg=[2026-04-06 01:01:04,278] INFO: 启动批处理进程：python doc_indexer.py --input /tmp/docs-manifest-2026-04-06.json --output-index sample-search-prod --parser auto --max-concurrency 6 --request-timeout 60 --chunk-size 1024 --chunk-overlap 128 --log-level INFO --db-host db-primary.example.local --db-port 3306 --db-name sample_app --db-user app --db-pass REDACTED --on-conflict upsert
+$CL|REC|t=1775437266228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 1/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437266308|msg=[2026-04-06 01:01:06,080] INFO: [worker stdout] [2026-04-06 01:01:06,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437266448|msg=[2026-04-06 01:01:06,220] INFO: [worker stdout] [2026-04-06 01:01:06,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437266508|msg=[2026-04-06 01:01:06,280] INFO: [worker stdout] [2026-04-06 01:01:06,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437266628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 2/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437266708|msg=[2026-04-06 01:01:06,480] INFO: [worker stdout] [2026-04-06 01:01:06,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437266848|msg=[2026-04-06 01:01:06,620] INFO: [worker stdout] [2026-04-06 01:01:06,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437266908|msg=[2026-04-06 01:01:06,680] INFO: [worker stdout] [2026-04-06 01:01:06,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437267028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 3/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437267108|msg=[2026-04-06 01:01:06,880] INFO: [worker stdout] [2026-04-06 01:01:06,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437267248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437267308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437267428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 4/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437267508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437267648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437267708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437267828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 5/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437267908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437268048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437268108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437268228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 6/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437268308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437268448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437268508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437268628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 7/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437268708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437268848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437268908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437269028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 8/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437269108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437269248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437269308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437269428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 9/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437269508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437269648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437269708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437269828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 10/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437269908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437270048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437270108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437270228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 11/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437270308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437270448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437270508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437270628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 12/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437270708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437270848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437270908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437271028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 13/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437271108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437271248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437271308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437271428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 14/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437271508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437271648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437271708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437271828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 15/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437271908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437272048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437272108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437272228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 16/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437272308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437272448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437272508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437272628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 17/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437272708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437272848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437272908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437273028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 18/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437273108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437273248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437273308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437273428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 19/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437273508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437273648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437273708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437273828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 20/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437273908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437274048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437274108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437274228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 21/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437274308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437274448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437274508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437274628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 22/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437274708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437274848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437274908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437275028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 23/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437275108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437275248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437275308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437275428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 24/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437275508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437275648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437275708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437275828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 25/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437275908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437276048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437276108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437276228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 26/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437276308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437276448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437276508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437276628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 27/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437276708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437276848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437276908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437277028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 28/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437277108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437277248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437277308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437277428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 29/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437277508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437277648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437277708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437277828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 30/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437277908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437278048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437278108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437278228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 31/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437278308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437278448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437278508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437278628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 32/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437278708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437278848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437278908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437279028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 33/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437279108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437279248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437279308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437279428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 34/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437279508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437279648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437279708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437279828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 35/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437279908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437280048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437280108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437280228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 36/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437280308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437280448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437280508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437280628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 37/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437280708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437280848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437280908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437281028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 38/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437281108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437281248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437281308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437281428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 39/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437281508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437281648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437281708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437281828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 40/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437281908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437282048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437282108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437282228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 41/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437282308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437282448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437282508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437282628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 42/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437282708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437282848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437282908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437283028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 43/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437283108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437283248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437283308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437283428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 44/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437283508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437283648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437283708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437283828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 45/200 | shard=shard-0 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437283908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437284048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437284108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437284228|msg=[2026-04-06 01:01:06,000] INFO: [worker stdout] [2026-04-06 01:01:06,000] INFO: [进度] 46/200 | shard=shard-0 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437284308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437284448|msg=[2026-04-06 01:01:07,220] INFO: [worker stdout] [2026-04-06 01:01:07,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437284508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437284628|msg=[2026-04-06 01:01:06,400] INFO: [worker stdout] [2026-04-06 01:01:06,400] INFO: [进度] 47/200 | shard=shard-0 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437284708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437284848|msg=[2026-04-06 01:01:07,620] INFO: [worker stdout] [2026-04-06 01:01:07,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437284908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437285028|msg=[2026-04-06 01:01:06,800] INFO: [worker stdout] [2026-04-06 01:01:06,800] INFO: [进度] 48/200 | shard=shard-0 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437285108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437285248|msg=[2026-04-06 01:01:07,020] INFO: [worker stdout] [2026-04-06 01:01:07,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437285308|msg=[2026-04-06 01:01:07,080] INFO: [worker stdout] [2026-04-06 01:01:07,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437285428|msg=[2026-04-06 01:01:06,200] INFO: [worker stdout] [2026-04-06 01:01:06,200] INFO: [进度] 49/200 | shard=shard-0 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437285508|msg=[2026-04-06 01:01:07,280] INFO: [worker stdout] [2026-04-06 01:01:07,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437285648|msg=[2026-04-06 01:01:07,420] INFO: [worker stdout] [2026-04-06 01:01:07,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437285708|msg=[2026-04-06 01:01:07,480] INFO: [worker stdout] [2026-04-06 01:01:07,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437285828|msg=[2026-04-06 01:01:06,600] INFO: [worker stdout] [2026-04-06 01:01:06,600] INFO: [进度] 50/200 | shard=shard-0 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437285908|msg=[2026-04-06 01:01:07,680] INFO: [worker stdout] [2026-04-06 01:01:07,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437286048|msg=[2026-04-06 01:01:07,820] INFO: [worker stdout] [2026-04-06 01:01:07,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437286108|msg=[2026-04-06 01:01:07,880] INFO: [worker stdout] [2026-04-06 01:01:07,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437296228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 51/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437296308|msg=[2026-04-06 01:01:14,080] INFO: [worker stdout] [2026-04-06 01:01:14,080] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437296448|msg=[2026-04-06 01:01:14,220] INFO: [worker stdout] [2026-04-06 01:01:14,220] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437296508|msg=[2026-04-06 01:01:14,280] INFO: [worker stdout] [2026-04-06 01:01:14,280] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437296628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 52/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437296708|msg=[2026-04-06 01:01:14,480] INFO: [worker stdout] [2026-04-06 01:01:14,480] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437296848|msg=[2026-04-06 01:01:14,620] INFO: [worker stdout] [2026-04-06 01:01:14,620] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437296908|msg=[2026-04-06 01:01:14,680] INFO: [worker stdout] [2026-04-06 01:01:14,680] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437297028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 53/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437297108|msg=[2026-04-06 01:01:14,880] INFO: [worker stdout] [2026-04-06 01:01:14,880] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437297248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437297308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437297428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 54/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437297508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437297648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437297708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437297828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 55/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437297908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437298048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437298108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437298228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 56/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437298308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437298448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437298508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437298628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 57/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437298708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437298848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437298908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437299028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 58/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437299108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437299248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437299308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437299428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 59/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437299508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437299648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437299708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437299828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 60/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437299908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437300048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437300108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437300228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 61/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437300308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437300448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437300508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437300628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 62/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437300708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437300848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437300908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437301028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 63/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437301108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437301248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437301308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437301428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 64/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437301508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437301648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437301708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437301828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 65/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437301908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437302048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437302108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437302228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 66/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437302308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437302448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437302508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437302628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 67/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437302708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437302848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437302908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437303028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 68/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437303108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437303248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437303308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437303428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 69/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437303508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437303648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437303708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437303828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 70/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437303908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437304048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437304108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437304228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 71/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437304308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437304448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437304508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437304628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 72/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437304708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437304848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437304908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437305028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 73/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437305108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437305248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437305308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437305428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 74/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437305508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437305648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437305708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437305828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 75/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437305908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437306048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437306108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437306228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 76/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437306308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437306448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437306508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437306548|msg=[2026-04-06 01:01:15,320] INFO: [worker stdout] [2026-04-06 01:01:15,320] INFO: WARN | doc=doc-0004.pdf | reason=ocr_low_conf | detail=page=3 confidence=0.42
+$CL|REC|t=1775437306628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 77/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437306708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437306848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437306908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437307028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 78/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437307108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437307248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437307308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437307428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 79/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437307508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437307648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437307708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437307828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 80/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437307908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437308048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437308108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437308228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 81/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437308308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437308448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437308508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437308628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 82/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437308708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437308848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437308908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437309028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 83/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437309108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437309248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437309308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437309428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 84/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437309508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437309648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437309708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437309828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 85/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437309908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437310048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437310108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437310228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 86/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437310308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437310448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437310508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437310628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 87/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437310708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437310848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437310908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437311028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 88/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437311108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437311248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437311308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437311428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 89/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437311508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437311648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437311708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437311828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 90/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437311908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437312048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437312108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437312228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 91/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437312308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437312448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437312508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437312628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 92/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437312708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437312848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437312908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437313028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 93/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437313108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437313248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437313308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437313428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 94/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437313508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437313648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437313708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437313828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 95/200 | shard=shard-1 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437313908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437314048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437314108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437314228|msg=[2026-04-06 01:01:14,000] INFO: [worker stdout] [2026-04-06 01:01:14,000] INFO: [进度] 96/200 | shard=shard-1 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437314308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437314448|msg=[2026-04-06 01:01:15,220] INFO: [worker stdout] [2026-04-06 01:01:15,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437314508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437314628|msg=[2026-04-06 01:01:14,400] INFO: [worker stdout] [2026-04-06 01:01:14,400] INFO: [进度] 97/200 | shard=shard-1 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437314708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437314848|msg=[2026-04-06 01:01:15,620] INFO: [worker stdout] [2026-04-06 01:01:15,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437314908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437315028|msg=[2026-04-06 01:01:14,800] INFO: [worker stdout] [2026-04-06 01:01:14,800] INFO: [进度] 98/200 | shard=shard-1 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437315108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437315248|msg=[2026-04-06 01:01:15,020] INFO: [worker stdout] [2026-04-06 01:01:15,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437315308|msg=[2026-04-06 01:01:15,080] INFO: [worker stdout] [2026-04-06 01:01:15,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437315428|msg=[2026-04-06 01:01:14,200] INFO: [worker stdout] [2026-04-06 01:01:14,200] INFO: [进度] 99/200 | shard=shard-1 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437315508|msg=[2026-04-06 01:01:15,280] INFO: [worker stdout] [2026-04-06 01:01:15,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437315648|msg=[2026-04-06 01:01:15,420] INFO: [worker stdout] [2026-04-06 01:01:15,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437315708|msg=[2026-04-06 01:01:15,480] INFO: [worker stdout] [2026-04-06 01:01:15,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437315828|msg=[2026-04-06 01:01:14,600] INFO: [worker stdout] [2026-04-06 01:01:14,600] INFO: [进度] 100/200 | shard=shard-1 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437315908|msg=[2026-04-06 01:01:15,680] INFO: [worker stdout] [2026-04-06 01:01:15,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437316048|msg=[2026-04-06 01:01:15,820] INFO: [worker stdout] [2026-04-06 01:01:15,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437316108|msg=[2026-04-06 01:01:15,880] INFO: [worker stdout] [2026-04-06 01:01:15,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437326228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 101/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437326308|msg=[2026-04-06 01:01:22,080] INFO: [worker stdout] [2026-04-06 01:01:22,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437326448|msg=[2026-04-06 01:01:22,220] INFO: [worker stdout] [2026-04-06 01:01:22,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437326508|msg=[2026-04-06 01:01:22,280] INFO: [worker stdout] [2026-04-06 01:01:22,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437326628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 102/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437326708|msg=[2026-04-06 01:01:22,480] INFO: [worker stdout] [2026-04-06 01:01:22,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437326848|msg=[2026-04-06 01:01:22,620] INFO: [worker stdout] [2026-04-06 01:01:22,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437326908|msg=[2026-04-06 01:01:22,680] INFO: [worker stdout] [2026-04-06 01:01:22,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437327028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 103/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437327108|msg=[2026-04-06 01:01:22,880] INFO: [worker stdout] [2026-04-06 01:01:22,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437327248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437327308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437327428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 104/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437327508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437327648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437327708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437327828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 105/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437327908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437328048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437328108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437328228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 106/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437328308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437328448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437328508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437328628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 107/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437328708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437328848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437328908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437329028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 108/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437329108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437329248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437329308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437329428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 109/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437329508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437329648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437329708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437329828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 110/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437329908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437330048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437330108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437330228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 111/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437330308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437330448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437330508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437330628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 112/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437330708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437330848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437330908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437331028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 113/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437331108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437331248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437331308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437331428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 114/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437331508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437331648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437331708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437331828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 115/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437331908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437332048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437332108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437332228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 116/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437332308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437332448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437332508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437332628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 117/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437332708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437332848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437332908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437333028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 118/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437333108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437333248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437333308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437333428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 119/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437333508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437333648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437333708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437333828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 120/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437333908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437334048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437334108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437334228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 121/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437334308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437334448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437334508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437334628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 122/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437334708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437334848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437334908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437335028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 123/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437335108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437335248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437335308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437335428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 124/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437335508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437335648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437335708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437335828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 125/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437335908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437336048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437336108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437336228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 126/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437336308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437336448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437336508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437336628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 127/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437336708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437336848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437336908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437337028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 128/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437337108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437337248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437337308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437337428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 129/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437337508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437337648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437337708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437337828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 130/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437337908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437338048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437338108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437338228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 131/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437338308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437338448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437338508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437338628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 132/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437338708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437338848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437338908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437339028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 133/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437339108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437339248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437339308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437339428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 134/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437339508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437339648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437339708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437339828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 135/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437339908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437340048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437340108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437340228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 136/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437340308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437340448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437340508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437340628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 137/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437340708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437340848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437340908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437341028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 138/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437341108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437341248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437341308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437341428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 139/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437341508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437341648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437341708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437341828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 140/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437341908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437342048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437342108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437342228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 141/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437342308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437342448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437342508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437342628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 142/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437342708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437342848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437342908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437343028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 143/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437343108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437343248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437343308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437343428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 144/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437343508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437343648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437343708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437343828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 145/200 | shard=shard-2 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437343908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437344048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437344108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437344228|msg=[2026-04-06 01:01:22,000] INFO: [worker stdout] [2026-04-06 01:01:22,000] INFO: [进度] 146/200 | shard=shard-2 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437344308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437344448|msg=[2026-04-06 01:01:23,220] INFO: [worker stdout] [2026-04-06 01:01:23,220] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437344508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437344628|msg=[2026-04-06 01:01:22,400] INFO: [worker stdout] [2026-04-06 01:01:22,400] INFO: [进度] 147/200 | shard=shard-2 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437344708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437344848|msg=[2026-04-06 01:01:23,620] INFO: [worker stdout] [2026-04-06 01:01:23,620] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437344908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437345028|msg=[2026-04-06 01:01:22,800] INFO: [worker stdout] [2026-04-06 01:01:22,800] INFO: [进度] 148/200 | shard=shard-2 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437345108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437345248|msg=[2026-04-06 01:01:23,020] INFO: [worker stdout] [2026-04-06 01:01:23,020] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437345308|msg=[2026-04-06 01:01:23,080] INFO: [worker stdout] [2026-04-06 01:01:23,080] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437345428|msg=[2026-04-06 01:01:22,200] INFO: [worker stdout] [2026-04-06 01:01:22,200] INFO: [进度] 149/200 | shard=shard-2 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437345508|msg=[2026-04-06 01:01:23,280] INFO: [worker stdout] [2026-04-06 01:01:23,280] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437345648|msg=[2026-04-06 01:01:23,420] INFO: [worker stdout] [2026-04-06 01:01:23,420] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437345708|msg=[2026-04-06 01:01:23,480] INFO: [worker stdout] [2026-04-06 01:01:23,480] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437345828|msg=[2026-04-06 01:01:22,600] INFO: [worker stdout] [2026-04-06 01:01:22,600] INFO: [进度] 150/200 | shard=shard-2 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437345908|msg=[2026-04-06 01:01:23,680] INFO: [worker stdout] [2026-04-06 01:01:23,680] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437346048|msg=[2026-04-06 01:01:23,820] INFO: [worker stdout] [2026-04-06 01:01:23,820] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437346108|msg=[2026-04-06 01:01:23,880] INFO: [worker stdout] [2026-04-06 01:01:23,880] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437356228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 151/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437356308|msg=[2026-04-06 01:01:30,080] INFO: [worker stdout] [2026-04-06 01:01:30,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437356448|msg=[2026-04-06 01:01:30,220] INFO: [worker stdout] [2026-04-06 01:01:30,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437356508|msg=[2026-04-06 01:01:30,280] INFO: [worker stdout] [2026-04-06 01:01:30,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437356628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 152/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437356708|msg=[2026-04-06 01:01:30,480] INFO: [worker stdout] [2026-04-06 01:01:30,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437356848|msg=[2026-04-06 01:01:30,620] INFO: [worker stdout] [2026-04-06 01:01:30,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437356908|msg=[2026-04-06 01:01:30,680] INFO: [worker stdout] [2026-04-06 01:01:30,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437357028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 153/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437357108|msg=[2026-04-06 01:01:30,880] INFO: [worker stdout] [2026-04-06 01:01:30,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437357248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437357308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437357428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 154/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437357508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437357648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437357708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437357828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 155/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437357908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437358048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437358108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437358228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 156/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437358308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437358448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437358508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437358628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 157/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437358708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437358848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437358908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437359028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 158/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437359108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437359248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437359308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437359428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 159/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437359508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437359648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437359708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437359828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 160/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437359908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437360048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437360108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437360228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 161/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437360308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437360448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437360508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437360628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 162/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437360708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437360848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437360908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437361028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 163/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437361108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437361248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437361308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437361428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 164/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437361508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437361648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437361708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437361828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 165/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437361908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437362048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437362108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437362228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 166/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437362308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437362448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437362508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437362628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 167/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437362708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437362848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437362908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437363028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 168/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437363108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437363248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437363308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437363428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 169/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437363508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437363648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437363708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437363828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 170/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437363908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437364048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437364108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437364228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 171/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437364308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437364448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437364508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437364628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 172/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437364708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437364848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437364908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437365028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 173/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437365108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437365248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437365308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437365428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 174/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437365508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437365648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437365708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437365828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 175/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437365908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437366048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437366108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437366228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 176/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437366308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437366448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437366508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437366628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 177/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437366708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437366848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437366908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437367028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 178/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437367108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437367248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437367308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437367428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 179/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437367508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437367648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437367708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437367828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 180/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437367908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437368048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437368108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437368228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 181/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437368308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437368448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437368508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437368628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 182/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437368708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437368848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437368908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437369028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 183/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437369108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437369248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437369308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437369428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 184/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437369508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437369648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437369708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437369828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 185/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437369908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437370048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437370108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437370228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 186/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437370308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437370448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437370508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437370628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 187/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437370708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437370848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437370908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437371028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 188/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437371108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437371248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437371308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437371428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 189/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437371508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437371648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437371708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437371828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 190/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437371908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437372048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437372108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437372228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 191/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437372308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437372448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437372508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+!$CL|REC|t=1775437372578|msg=[2026-04-06 01:01:31,350] INFO: [worker stdout] [2026-04-06 01:01:31,350] INFO: ERROR | doc=doc-0005.pdf | reason=index_throttle | detail=429 Too Many Requests will retry 1/3
+$CL|REC|t=1775437372928|msg=[2026-04-06 01:01:31,700] INFO: [worker stdout] [2026-04-06 01:01:31,700] INFO: 重试成功 | doc=doc-0005.pdf | ms=350 | chunks_indexed=184
+$CL|REC|t=1775437372628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 192/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437372708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437372848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437372908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437373028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 193/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437373108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437373248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437373308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437373428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 194/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437373508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437373648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437373708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437373828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 195/200 | shard=shard-3 | category=report | doc=doc-0003.pdf
+$CL|REC|t=1775437373908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0003.pdf | pages=8 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437374048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0003.pdf | chunks=92 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437374108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0003.pdf | ms=280 | chunks_indexed=92
+$CL|REC|t=1775437374228|msg=[2026-04-06 01:01:30,000] INFO: [worker stdout] [2026-04-06 01:01:30,000] INFO: [进度] 196/200 | shard=shard-3 | category=spec | doc=doc-0004.pdf
+$CL|REC|t=1775437374308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 解析中 | doc=doc-0004.pdf | pages=24 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437374448|msg=[2026-04-06 01:01:31,220] INFO: [worker stdout] [2026-04-06 01:01:31,220] INFO: 索引中 | doc=doc-0004.pdf | chunks=312 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437374508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 完成 | doc=doc-0004.pdf | ms=280 | chunks_indexed=312
+$CL|REC|t=1775437374628|msg=[2026-04-06 01:01:30,400] INFO: [worker stdout] [2026-04-06 01:01:30,400] INFO: [进度] 197/200 | shard=shard-3 | category=contract | doc=doc-0005.pdf
+$CL|REC|t=1775437374708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 解析中 | doc=doc-0005.pdf | pages=16 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437374848|msg=[2026-04-06 01:01:31,620] INFO: [worker stdout] [2026-04-06 01:01:31,620] INFO: 索引中 | doc=doc-0005.pdf | chunks=184 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437374908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 完成 | doc=doc-0005.pdf | ms=280 | chunks_indexed=184
+$CL|REC|t=1775437375028|msg=[2026-04-06 01:01:30,800] INFO: [worker stdout] [2026-04-06 01:01:30,800] INFO: [进度] 198/200 | shard=shard-3 | category=faq | doc=doc-0006.pdf
+$CL|REC|t=1775437375108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 解析中 | doc=doc-0006.pdf | pages=4 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437375248|msg=[2026-04-06 01:01:31,020] INFO: [worker stdout] [2026-04-06 01:01:31,020] INFO: 索引中 | doc=doc-0006.pdf | chunks=48 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437375308|msg=[2026-04-06 01:01:31,080] INFO: [worker stdout] [2026-04-06 01:01:31,080] INFO: 完成 | doc=doc-0006.pdf | ms=280 | chunks_indexed=48
+$CL|REC|t=1775437375428|msg=[2026-04-06 01:01:30,200] INFO: [worker stdout] [2026-04-06 01:01:30,200] INFO: [进度] 199/200 | shard=shard-3 | category=manual | doc=doc-0001.pdf
+$CL|REC|t=1775437375508|msg=[2026-04-06 01:01:31,280] INFO: [worker stdout] [2026-04-06 01:01:31,280] INFO: 解析中 | doc=doc-0001.pdf | pages=12 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437375648|msg=[2026-04-06 01:01:31,420] INFO: [worker stdout] [2026-04-06 01:01:31,420] INFO: 索引中 | doc=doc-0001.pdf | chunks=148 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437375708|msg=[2026-04-06 01:01:31,480] INFO: [worker stdout] [2026-04-06 01:01:31,480] INFO: 完成 | doc=doc-0001.pdf | ms=280 | chunks_indexed=148
+$CL|REC|t=1775437375828|msg=[2026-04-06 01:01:30,600] INFO: [worker stdout] [2026-04-06 01:01:30,600] INFO: [进度] 200/200 | shard=shard-3 | category=manual | doc=doc-0002.pdf
+$CL|REC|t=1775437375908|msg=[2026-04-06 01:01:31,680] INFO: [worker stdout] [2026-04-06 01:01:31,680] INFO: 解析中 | doc=doc-0002.pdf | pages=18 | parser=pdfplumber | size_bytes=524288
+$CL|REC|t=1775437376048|msg=[2026-04-06 01:01:31,820] INFO: [worker stdout] [2026-04-06 01:01:31,820] INFO: 索引中 | doc=doc-0002.pdf | chunks=226 | embedding_model=text-emb-3s | index=sample-search-prod
+$CL|REC|t=1775437376108|msg=[2026-04-06 01:01:31,880] INFO: [worker stdout] [2026-04-06 01:01:31,880] INFO: 完成 | doc=doc-0002.pdf | ms=280 | chunks_indexed=226
+$CL|REC|t=1775437414228|msg=[2026-04-06 01:03:01,000] INFO: 心跳检查 (checkpoint 1/4) processed=50 failed=0 throughput=15.2 docs/s
+$CL|REC|t=1775437444228|msg=[2026-04-06 01:03:02,000] INFO: 心跳检查 (checkpoint 2/4) processed=100 failed=0 throughput=15.2 docs/s
+$CL|REC|t=1775437474228|msg=[2026-04-06 01:03:03,000] INFO: 心跳检查 (checkpoint 3/4) processed=150 failed=0 throughput=15.2 docs/s
+$CL|REC|t=1775437504228|msg=[2026-04-06 01:03:04,000] INFO: 心跳检查 (checkpoint 4/4) processed=200 failed=0 throughput=15.2 docs/s
+$CL|REC|t=1775437564228|msg=[2026-04-06 01:06:04,228] INFO: 批处理完成 summary=docs=200 chunks=2896 failed=0 elapsed=282000ms
+$CL|REC|t=1775437564728|msg=END RequestId: b2c3d4e5-f6a7-8901-bcde-f23456789012
+$CL|REC|t=1775437564728|msg=REPORT RequestId: b2c3d4e5-f6a7-8901-bcde-f23456789012 Duration: 282312.50 ms Billed Duration: 283000 ms Memory Size: 1024 MB Max Memory Used: 768 MB Init Duration: 1142.83 ms
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"

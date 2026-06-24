@@ -1,0 +1,12 @@
+{
+    "case_id": "case_062_bash_jobs_kill",
+    "case_file": "case_062_bash_jobs_kill.log",
+    "original_lines": 4,
+    "original_bytes": 101,
+    "compact_lines": 4,
+    "compact_bytes": 99,
+    "compression_pct": 2.0,
+    "compact_hash": "0879591becb8fdc44f8f46d654d499334b6bb32b9bea7621c15bdcf50953668c",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

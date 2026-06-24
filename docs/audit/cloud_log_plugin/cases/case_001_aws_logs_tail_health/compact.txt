@@ -1,0 +1,2 @@
+Testu@66d01df8f117:~$ aws --profile "$AWS_PROFILE" logs tail /ecs/cloud-document/backend --region "$AWS_REGION" --since 20m
+$CL|WEB_HEALTH|provider=aws|2026-05-13 08:13:39..2026-05-13 08:14:40|source=ecs/backend/f6bf6a1f|GET /health|200 OK|hits=6|ips=10.0.0.231:3,10.0.1.94:3|level=INFO

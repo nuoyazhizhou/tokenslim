@@ -1,0 +1,12 @@
+{
+    "case_id": "case_022_azure_containerapps_plain",
+    "case_file": "case_022_azure_containerapps_plain.log",
+    "original_lines": 4,
+    "original_bytes": 627,
+    "compact_lines": 3,
+    "compact_bytes": 447,
+    "compression_pct": 28.7,
+    "compact_hash": "b4d929b237c834f0d25dd76cb39b33deb50b1222e80a9ee4a3a3abc7f36317b3",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

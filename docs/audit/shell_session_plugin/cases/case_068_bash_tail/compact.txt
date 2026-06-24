@@ -1,0 +1,8 @@
+user@host:~$ tail -n 5 /var/log/syslog
+Oct 10 10:00:00 host systemd[1]: Started Daily apt download activities.
+Oct 10 10:00:01 host CRON[12345]: pam_unix(cron:session): session opened
+Oct 10 10:00:01 host CRON[12345]: (root) CMD (test -x /usr/sbin/anacron)
+Oct 10 10:00:02 host kernel: [12345.678] usb 1-1: new high-speed USB device
+Oct 10 10:00:03 host sshd[678]: Accepted publickey for admin from 10.0.0.5
+user@host:~$ tail -f /var/log/nginx/access.log
+

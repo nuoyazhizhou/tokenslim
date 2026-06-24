@@ -1,0 +1,3 @@
+user@cloudshell:~$ gcloud logging read 'resource.type="k8s_container"' --limit 3
+$CL|WEB_HEALTH|provider=gcp|2026-05-13 08:26:01..2026-05-13 08:26:31|source=projects/cloud-document/stdout|GET /health|200 OK|hits=4|ips=10.4.0.11:1,10.4.0.12:2,10.4.0.13:1|level=INFO
+!$CL|WEB_ACCESS|provider=gcp|2026-05-13 08:26:42..2026-05-13 08:26:42|source=projects/cloud-document/stderr|GET /api/orders|500 Internal Server Error|hits=1|ips=10.4.0.13:1|level=ERROR

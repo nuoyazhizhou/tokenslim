@@ -1,0 +1,6 @@
+user@host:~$ zip -r archive.zip project/
+  [... extracted 5 files ...]
+user@host:~$ ls -la archive.zip
+-rw-r--r-- 1 user user 8192 Oct 10 10:00 archive.zip
+user@host:~$
+

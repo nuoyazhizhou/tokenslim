@@ -1,0 +1,726 @@
+{
+    "track": "shell_session_plugin",
+    "updated_at": "2026-06-24T17:55:06.256144",
+    "cases": [
+        {
+            "case_id": "case_001_bash_success",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "2fa42bbc2d4c0542e179b2647a0869de90b4b013c395a9b1bb46d11356afa0de",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256037"
+        },
+        {
+            "case_id": "case_002_bash_command_not_found",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "2a7d22acfb046ac602bdbfd62598f86ef451b1c172abf7807a0afc7fa4dd3e29",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256038"
+        },
+        {
+            "case_id": "case_003_bash_pipefail",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "c559bded65e360275947cc9da75a12288d7eb2b03562dfd6b44bcfa6d6e833c8",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256040"
+        },
+        {
+            "case_id": "case_004_bash_set_x_fail",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "73e7302e110ba3172e683a21a10a2d21feaab84ca235c8ab21ce3ef2f5f6901c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256041"
+        },
+        {
+            "case_id": "case_005_zsh_glob_no_match",
+            "status": "auditing",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.6,
+            "compact_hash": "e66e73559484c46ef44d7bb29851347a5ff2920639d3be932b61e0cf6fe504bb",
+            "note": "Frozen case changed; re-audit required.",
+            "updated_at": "2026-06-24T17:55:06.256125"
+        },
+        {
+            "case_id": "case_006_fish_syntax",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "df6035edb41ce2b0f4bde2fa54a638b2e6a1f7acd0146fd71f0b32bf186901ce",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256044"
+        },
+        {
+            "case_id": "case_007_powershell_success_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 27.9,
+            "compact_hash": "c89e6da96f6b87d7c8910bf38f5614df939d8eef3302ae6cbb3fd699f574264d",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256045"
+        },
+        {
+            "case_id": "case_008_powershell_parser_error",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "8c8d56e06a931709c02b1568b5a2c065e51b0872c1d0de8352c0f9675376f840",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256046"
+        },
+        {
+            "case_id": "case_009_powershell_parameter_binding_exception",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "b3d591f93a6a5d35873c124f37cc8583ff5e311ba5a942a3c1fd5cdceed94216",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256047"
+        },
+        {
+            "case_id": "case_010_cmd_errorlevel",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "26bde6978619e6cec65281a6711eb36898630d4ff267ebaf78e7826bd67952f3",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256048"
+        },
+        {
+            "case_id": "case_011_cmd_path_not_found",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "b9f30135fadf3d1a29720c2a8dc75f5dd25d5169e5fbf33780a2f64b47350cec",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256049"
+        },
+        {
+            "case_id": "case_012_windows_dir_listing",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 42.1,
+            "compact_hash": "5cbb8f1b8d015986c8630f71c106d6659bd15e4d3d91246eebd5645dbeced43f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256050"
+        },
+        {
+            "case_id": "case_013_bash_ls_posix",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 12.0,
+            "compact_hash": "bbab987c0355e2149be1801e515ee0bbccc159619435b6139002794212a2c177",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256051"
+        },
+        {
+            "case_id": "case_014_bash_tree",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 4.3,
+            "compact_hash": "be37cf3fb61d04786af9b7d2cf6b212b48f4a5322ab5b8da790031f2d8f4d329",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256052"
+        },
+        {
+            "case_id": "case_015_bash_env_secrets",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 19.4,
+            "compact_hash": "f2318b4c4a1571eecdd958ebb1d7b85c96af8eb2ca22c01eea3e56256ee3cd52",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256053"
+        },
+        {
+            "case_id": "case_016_bash_find_grep",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.2,
+            "compact_hash": "7706455fd812ef510a9a9d6f75f7319c8032d197dd345219529b4cce7211acc8",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256054"
+        },
+        {
+            "case_id": "case_017_bash_curl_tar",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 9.0,
+            "compact_hash": "cf196e3f0ac7c32a0ff978d65dd923e38e7579dd45f7267b72d618f766d5716b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256056"
+        },
+        {
+            "case_id": "case_018_powershell_get_childitem",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.4,
+            "compact_hash": "c4894aeb91b4f91e22ac43fe9f45ec0ee6c25cb2c735d11c8fea174bfc4516bb",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256057"
+        },
+        {
+            "case_id": "case_019_powershell_invoke_webrequest",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.8,
+            "compact_hash": "d18be98851eccb3043a3912f5b94fe803f8d3a99310af557dfdac8e953a4ceb9",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256058"
+        },
+        {
+            "case_id": "case_020_cmd_xcopy",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 16.0,
+            "compact_hash": "eef57d3d35421ab4ca6ea3ef54e725efd2daaec401ff90568b6920bc6aa292ea",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256059"
+        },
+        {
+            "case_id": "case_021_cmd_robocopy",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 12.6,
+            "compact_hash": "5fafb522510a03935d5c17cc7a676162181c7313182bd7120b3fbd693a0f970a",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256060"
+        },
+        {
+            "case_id": "case_022_ci_set_x_trace",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.4,
+            "compact_hash": "2b50c4ab6bb2e6081acfdefe02a5992b88286fce9206cecc2192cb47d4b5e147",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256061"
+        },
+        {
+            "case_id": "case_023_bash_cp_mv",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.2,
+            "compact_hash": "356a1701402c46cf9d925a224fc67faf83abc13551c5661b43d703907218a025",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256062"
+        },
+        {
+            "case_id": "case_024_bash_rm_rf",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "b2737ba0e613bb1d9d0a4fa91d9d576e9a6373de792b4bf478e6ccfdfc158cb5",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256063"
+        },
+        {
+            "case_id": "case_025_bash_chmod_chown",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.1,
+            "compact_hash": "c6bca9244a19ed96256a37d95069236475ad103c759bea52e6b589b330020422",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256064"
+        },
+        {
+            "case_id": "case_026_bash_find",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.6,
+            "compact_hash": "251635671a43cd86036e5c3bde756dd0af46c6664eee3a7d7540444321db7cc0",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256065"
+        },
+        {
+            "case_id": "case_027_bash_grep_awk",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.7,
+            "compact_hash": "4477cfd8dbed00618ccbb8e671e49343093077e920ded555faeaa1bb763edc7c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256066"
+        },
+        {
+            "case_id": "case_028_bash_ps",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 15.2,
+            "compact_hash": "5db7cbfeec95964268736f294b6dbfa07b9704fabed2a45742b177c13e1c5133",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256067"
+        },
+        {
+            "case_id": "case_029_bash_top",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.2,
+            "compact_hash": "f5c9c4aa72b9e2cff78f2f45d1993c0b0260e5ce6fb7172b567239c32724d1e4",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256068"
+        },
+        {
+            "case_id": "case_030_bash_systemctl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.1,
+            "compact_hash": "3022451f60fb47bb1efc6848a31c8e766ad0197f6d6427b4ff7883a3207bf8c0",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256069"
+        },
+        {
+            "case_id": "case_031_bash_df",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 21.8,
+            "compact_hash": "3ee3b35911e071b78e0a15e139b75f961463454889795eb069881bcf1433e430",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256070"
+        },
+        {
+            "case_id": "case_032_bash_du",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 8.2,
+            "compact_hash": "1105905ce61390c05155e735ff940accc583f7d7c20dec4b053e51402e194485",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256071"
+        },
+        {
+            "case_id": "case_033_bash_netstat",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.2,
+            "compact_hash": "7028c3a42894ec5c38b826773d30392079ab0565e08f6edabcbf02e185137eb0",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256072"
+        },
+        {
+            "case_id": "case_034_bash_ping",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.8,
+            "compact_hash": "e630adc0ae710ad6d43c4e4eb93c1d36e9087f841289b4c051e964adcacb4aa1",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256073"
+        },
+        {
+            "case_id": "case_035_bash_tar",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 41.1,
+            "compact_hash": "2b38560fa664143774860fbf5e113edbb8686f4ab41a0c047fc71437ed28f0be",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256074"
+        },
+        {
+            "case_id": "case_036_bash_rsync",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 3.2,
+            "compact_hash": "aa8b6508e004a00a081f09d3e91af061c786421f00b6afb20c03c02db1df059f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256075"
+        },
+        {
+            "case_id": "case_037_bash_redirection",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.4,
+            "compact_hash": "1d5a5ecffb503ae8c847443daac8a4e4b27a9e158d5b02e94e6441a7dde6c378",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256076"
+        },
+        {
+            "case_id": "case_038_bash_env_prefix",
+            "status": "auditing",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "83a9075eec9875ed18c2911ebd45ca7d13a515f49857f45f0574f13adc7fef8c",
+            "note": "Frozen case changed; re-audit required.",
+            "updated_at": "2026-06-24T17:55:06.256127"
+        },
+        {
+            "case_id": "case_039_ps_get_process",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 30.9,
+            "compact_hash": "2475577aa51de31ab371cfefb5433096b4f17b98c818e2c42071b9a08aa693db",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256078"
+        },
+        {
+            "case_id": "case_040_ps_copy_item",
+            "status": "auditing",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "e52bfb93ce4e69f509e045106be39689dfd76c289ab9aaaf54f6bf9377e56d65",
+            "note": "Frozen case changed; re-audit required.",
+            "updated_at": "2026-06-24T17:55:06.256128"
+        },
+        {
+            "case_id": "case_041_ps_where_object",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.1,
+            "compact_hash": "b2c8e72232e0ddeaa2a475b53efaf33fcb8f1422ab47767b0972c908496eb52d",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256080"
+        },
+        {
+            "case_id": "case_042_ps_convertfrom_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 4.6,
+            "compact_hash": "801b530e312afb211abdee29b14a04c9cbe929112a725715731c145b754512c2",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256081"
+        },
+        {
+            "case_id": "case_043_cmd_copy",
+            "status": "auditing",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 38.4,
+            "compact_hash": "5bbc7e0966ef12e04d9b6e867146fc410ddecc2c92eb7bddde00641222408f44",
+            "note": "Frozen case changed; re-audit required.",
+            "updated_at": "2026-06-24T17:55:06.256129"
+        },
+        {
+            "case_id": "case_044_cmd_where",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.8,
+            "compact_hash": "c9ebe627d2007fde7cf995801990cf03d10b4b6d10c0911ac9237df956c01d5f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256084"
+        },
+        {
+            "case_id": "case_045_cmd_type",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "9c6180e555bb26a08e1affbcc7e4ce865325e63e8afa444fdcf8227a093d085a",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256085"
+        },
+        {
+            "case_id": "case_046_cmd_findstr",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.6,
+            "compact_hash": "0ed46b40049327b2a1a555081fd5d449099508d9c9a89389c3b03d86cb7fbdcd",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256086"
+        },
+        {
+            "case_id": "case_047_cmd_dir_s",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 43.5,
+            "compact_hash": "6808e1ddcc1be3cda1506d4ad6369876ef96cb4342503cfc427b5a96c7d7b56b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256087"
+        },
+        {
+            "case_id": "case_048_bash_permission_denied",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.8,
+            "compact_hash": "92d36497394ea6d6913fa69f9f8f72d8cd7ba5757900cd970af476df4200f73a",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256088"
+        },
+        {
+            "case_id": "case_049_bash_syntax_error",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.0,
+            "compact_hash": "3d8909d313d3e400a5527e44065a212d6339717fe867c75b7a0da8da214e00ea",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256089"
+        },
+        {
+            "case_id": "case_050_ps_command_not_found",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.6,
+            "compact_hash": "5bb282c8917dd67cfdb90de625a154096f795bd0a34b7aeec607d9c3b2f72515",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256090"
+        },
+        {
+            "case_id": "case_051_cmd_not_recognized",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.7,
+            "compact_hash": "f8d7f5c079c54cf9dbf9088eafd225e78acd2a14c67612e222a30a89ec6b79bb",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256091"
+        },
+        {
+            "case_id": "case_052_bash_git",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.4,
+            "compact_hash": "216ece6711b18b15f7a2837e6824ab46ef6fb6d4ce90dcd700f77843424ffa69",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256092"
+        },
+        {
+            "case_id": "case_053_ps_cargo",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.5,
+            "compact_hash": "17908855c6a4095c9f38e6ceb7ccd29f01d0bdf4118ce79e2ee21c4bddd2b904",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256093"
+        },
+        {
+            "case_id": "case_054_bash_kubectl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.1,
+            "compact_hash": "2a13e031c8fe58035e2f19437b3dd68a2f4ca77f61fe4c08c9c2e8c40451c56c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256095"
+        },
+        {
+            "case_id": "case_055_cmd_mvn",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 1.8,
+            "compact_hash": "771b2ec1212d467bb83efe7f53ed0b3634cc2ca6480395345e443443a113e147",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256096"
+        },
+        {
+            "case_id": "case_056_bash_docker",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.7,
+            "compact_hash": "1e568d93e9833344566322393bd3f8c754619d3965d02980a339dffc8c13bbd1",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256097"
+        },
+        {
+            "case_id": "case_057_bash_npm",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 3.1,
+            "compact_hash": "8cd24bb80a1d25a0890e4f36f90c6781ee61a5f0051fee082c536159b8282a82",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256098"
+        },
+        {
+            "case_id": "case_058_bash_pytest",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.0,
+            "compact_hash": "09d6a14d2d69e2bd551596bbfc0ed613d2d80c1594058fa503d13e92a866a466",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256099"
+        },
+        {
+            "case_id": "case_059_bash_terraform",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.9,
+            "compact_hash": "52066b9db560eb7ace0afc632bc74a5a38fbd3e0b9ba5db895b031465613d82b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256100"
+        },
+        {
+            "case_id": "case_060_ps_helm",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.7,
+            "compact_hash": "de33d19080f8c238db7ac4a348e579d457bd1744a549fd997d07e82abb5c9620",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256101"
+        },
+        {
+            "case_id": "case_061_bash_sed_sort",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.5,
+            "compact_hash": "8450ba9fe44409a8cfa4b82662766eb7c5d0572fad8db490de98a4ed7c0b7ddd",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256102"
+        },
+        {
+            "case_id": "case_062_bash_jobs_kill",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.0,
+            "compact_hash": "0879591becb8fdc44f8f46d654d499334b6bb32b9bea7621c15bdcf50953668c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256104"
+        },
+        {
+            "case_id": "case_063_bash_ll_alias",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 2.2,
+            "compact_hash": "61f6612c599098296d5c3136da418618290507fb8cfdabe4c9810b0021084eca",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256105"
+        },
+        {
+            "case_id": "case_064_bash_mkdir",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "d0c0cb5fe939fbc6ba169005373d4d3af236d4b04c31f3542dba6cff58b40a91",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256106"
+        },
+        {
+            "case_id": "case_065_bash_rmdir",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "2e1048d159a07b31d885f0e8180c98fbdbb55e86b8dba90691b85cb643e1df69",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256107"
+        },
+        {
+            "case_id": "case_066_bash_touch",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "473ad19246d3a174904fcf20d37ea532cdc2d5231da1b3c46dc2335fa519ed01",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256108"
+        },
+        {
+            "case_id": "case_067_bash_ripgrep",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "bc77c8a14da783986b06d97555ac5db8a0a119b186600982f76c7c20b7d077ac",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256109"
+        },
+        {
+            "case_id": "case_068_bash_tail",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "716dd591054584f5a5dbdaba05d11827f9766f92a8bb79375e2dc9cba599e08f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256110"
+        },
+        {
+            "case_id": "case_069_bash_wc",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "5bb79c6503ee0d4a33f9b341e71c03754fe0ce688ac7dc918dcc279d8d192778",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256111"
+        },
+        {
+            "case_id": "case_070_bash_zip",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 51.4,
+            "compact_hash": "f81d8be9afc02dbf008dbbf6e4f8ead8cd6e20a4596af39a63333f1ba001b930",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256112"
+        },
+        {
+            "case_id": "case_071_bash_unzip",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 50.4,
+            "compact_hash": "1706c762a6eb99711faebb63a0e0575c4beb66308651ef6096f8945a7619bbd3",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256114"
+        },
+        {
+            "case_id": "case_072_bash_service",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "eab0018c899529f641d9d02fea99bbf48b2b3226928473cb728f6495453b54b2",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256115"
+        },
+        {
+            "case_id": "case_073_bash_mount",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "8dea0f05684dc63cc92b64637fbc2c5a58ed677a909eeec993aa92ebaded081f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256116"
+        },
+        {
+            "case_id": "case_074_bash_scp",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "eadcc021937ddd20157a3e7a74f8335ed6c6f2a1e5659f8cba0953831a35beeb",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256117"
+        },
+        {
+            "case_id": "case_075_cmd_ipconfig",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "5fb0142b6a507f987b9ced647f586b8031d0d481c714117987116ad6ed08f462",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256118"
+        },
+        {
+            "case_id": "case_076_bash_ifconfig",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "848dc58c44a97903e95ea6eb864795ea30811a7346c3a67431acdf7e8fe78477",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256119"
+        },
+        {
+            "case_id": "case_077_bash_ip",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "820d20432bd81e25455e89370471eb4f7694f720d4872309fdb37aaf38e2477c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256120"
+        },
+        {
+            "case_id": "case_078_bash_ss",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "05dd41baf866a1db5e7d1359a18f3493b9023fe73368e2f87a20e41cf0dbd5e2",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256121"
+        },
+        {
+            "case_id": "case_079_ps_remove_item",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "d54052767984b7e96a51a936a4e8c0d67673c70441fbe567153d4d954481bb0c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256122"
+        },
+        {
+            "case_id": "case_080_bash_wget",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "665bfc3b87a852bca5b3739e4c24694fa9cee66680db926811e721751d8848c5",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:06.256123"
+        }
+    ]
+}

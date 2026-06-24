@@ -1,0 +1,12 @@
+{
+    "case_id": "case_007_powershell_success_table",
+    "case_file": "case_007_powershell_success_table.log",
+    "original_lines": 9,
+    "original_bytes": 426,
+    "compact_lines": 9,
+    "compact_bytes": 307,
+    "compression_pct": 27.9,
+    "compact_hash": "c89e6da96f6b87d7c8910bf38f5614df939d8eef3302ae6cbb3fd699f574264d",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

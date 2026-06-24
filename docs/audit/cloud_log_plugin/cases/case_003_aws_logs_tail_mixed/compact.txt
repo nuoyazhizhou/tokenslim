@@ -1,0 +1,4 @@
+Testu@66d01df8f117:~$ aws --profile "$AWS_PROFILE" logs tail /ecs/cloud-document/backend --region "$AWS_REGION" --since 20m
+$CL|WEB_HEALTH|provider=aws|2026-05-13 08:13:39..2026-05-13 08:15:40|source=ecs/backend/f6bf6a1f|GET /health|200 OK|hits=4|ips=10.0.0.231:2,10.0.1.94:2|level=INFO
+!$CL|WEB_ACCESS|provider=aws|2026-05-13 08:15:11..2026-05-13 08:15:11|source=ecs/backend/f6bf6a1f|POST /api/documents|500 Internal Server Error|hits=1|ips=10.0.0.231:1|level=ERROR
+!$CL|WEB_ACCESS|provider=aws|2026-05-13 08:15:13..2026-05-13 08:15:13|source=ecs/backend/f6bf6a1f|GET /api/status|503 Service Unavailable|hits=1|ips=10.0.1.94:1|level=WARNING

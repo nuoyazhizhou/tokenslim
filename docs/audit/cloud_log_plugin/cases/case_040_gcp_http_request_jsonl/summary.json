@@ -1,0 +1,12 @@
+{
+    "case_id": "case_040_gcp_http_request_jsonl",
+    "case_file": "case_040_gcp_http_request_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 815,
+    "compact_lines": 2,
+    "compact_bytes": 332,
+    "compression_pct": 59.3,
+    "compact_hash": "e7b34dfbe2526cf116bf8a8ed4b368b2f17d7bd169f417463f493f5b08c1b130",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_052_aliyun_csv_multiline",
+    "case_file": "case_052_aliyun_csv_multiline.log",
+    "original_lines": 9,
+    "original_bytes": 362,
+    "compact_lines": 9,
+    "compact_bytes": 362,
+    "compression_pct": 0.0,
+    "compact_hash": "f51e810cd9b4dc61a9a22d860d67743064e82e898514ddeb356bf55445672748",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

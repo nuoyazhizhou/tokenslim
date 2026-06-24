@@ -1,0 +1,12 @@
+{
+    "case_id": "case_079_ps_remove_item",
+    "case_file": "case_079_ps_remove_item.log",
+    "original_lines": 18,
+    "original_bytes": 728,
+    "compact_lines": 18,
+    "compact_bytes": 728,
+    "compression_pct": 0.0,
+    "compact_hash": "d54052767984b7e96a51a936a4e8c0d67673c70441fbe567153d4d954481bb0c",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,6 @@
+wrangler tail backend-worker --format pretty
+2026-05-13T08:42:01.000Z INFO cloudflare/workers/backend-worker INFO:     198.51.100.30:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:42:11.000Z INFO cloudflare/workers/backend-worker INFO:     198.51.100.31:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:42:21.000Z INFO cloudflare/workers/backend-worker INFO:     198.51.100.32:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:42:31.000Z INFO cloudflare/workers/backend-worker INFO:     198.51.100.31:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:42:45.000Z ERROR cloudflare/workers/backend-worker ERROR:    198.51.100.32:0 - "GET /api/status HTTP/1.1" 503 Service Unavailable

@@ -1,0 +1,4 @@
+$CL|META|providers=aliyun|sources=backend-7f9d|records=3
+$CL|REC|t=1778661201|lvl=INFO|src=backend-7f9d|msg=PostgreSQL duration: 12.345 ms statement: SELECT id FROM documents WHERE tenant_id =$1
+!$CL|REC|t=1778661209|lvl=ERROR|src=backend-7f9d|msg=Redis Connection refused: failed to connect to 10.0.2.44:6379
+$CL|REC|t=1778661217|lvl=WARN|src=backend-7f9d|msg=MongoDB slow query collection=documents durationMillis=421 filter={tenantId: 42}

@@ -1,0 +1,5 @@
+C:\> findstr /I "error" app.log
+2026-06-07 10:00:00 ERROR Connection failed
+2026-06-07 10:05:00 ERROR Timeout occurred
+C:\> 
+

@@ -1,0 +1,67 @@
+{
+    "case_id": "case_33_git_fetch",
+    "filename": "case_33_git_fetch.log",
+    "size_bytes": 495,
+    "line_count": 11,
+    "registered": true,
+    "registered_title": "log",
+    "title_consistent": null,
+    "deterministic": {
+        "ok_length": true,
+        "length_reason": "",
+        "anchor_ok": true,
+        "anchor_token": "git fetch",
+        "anchor_reason": "",
+        "mojibake": [],
+        "secrets": [],
+        "signals": [],
+        "blocking_issues": [],
+        "routing_boundary_tool": "",
+        "routing_boundary_ratio": 0.0,
+        "routing_boundary_segments": "0/0",
+        "title_consistent": null,
+        "title_assertions_checked": 0,
+        "title_assertions_satisfied": 0,
+        "title_assertions_missing": [],
+        "case_id_families": [],
+        "case_id_family_overlap": [],
+        "case_id_family_mismatch": false,
+        "sidecar_keep_mismatch": [
+            "分支更新行（如 main -> origin"
+        ],
+        "sidecar_compress_mismatch": [
+            "进度行（如 Enumerating objects: 25"
+        ],
+        "sidecar_scenario_empty": false
+    },
+    "llm_judgment": {
+        "status": "valid",
+        "confidence": 0.0,
+        "explanation": "LLM 未参与（无 OPENAI_API_KEY 或调用失败），仅依赖确定性 lint。",
+        "fix_hint": "",
+        "duplicate_of": "",
+        "realism_audit": {
+            "shell_personality_ok": null,
+            "line_length_entropy_ok": null,
+            "error_cause_effect_ok": null,
+            "error_multiline_ok": null,
+            "empty_output_authentic": null,
+            "exit_stderr_consistent": null,
+            "locale_plausible": null,
+            "fabrication_indicators": []
+        },
+        "sidecar_accuracy": {
+            "scenario_accurate": null,
+            "target_capability_accurate": null,
+            "expected_keep_accurate": null,
+            "expected_compress_accurate": null,
+            "inaccurate_fields": []
+        },
+        "llm_invoked": false
+    },
+    "command_tokens": [],
+    "command_families": [],
+    "routing_boundary_tool": "",
+    "content_hash": "028f1746223b338529c5b0ae9daf560e64c0a002b4dd04473108ae683f0dba9f",
+    "final_status": "valid"
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_020_azure_monitor_json",
+    "case_file": "case_020_azure_monitor_json.log",
+    "original_lines": 3,
+    "original_bytes": 837,
+    "compact_lines": 2,
+    "compact_bytes": 340,
+    "compression_pct": 59.4,
+    "compact_hash": "ecdfee590b29f76387fd8af2e8d6c0f254c338c4718c61c35efe05491516c7e8",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

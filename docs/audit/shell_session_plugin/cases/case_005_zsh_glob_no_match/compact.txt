@@ -1,0 +1,6 @@
+user@macbook % ls *.foo
+zsh: no matches found: *.foo
+user@macbook % ls *.txt
+notes.txt readme.txt todo.txt
+user@macbook %
+

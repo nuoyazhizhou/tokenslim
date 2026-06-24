@@ -1,0 +1,12 @@
+{
+    "case_id": "case_071_bash_unzip",
+    "case_file": "case_071_bash_unzip.log",
+    "original_lines": 13,
+    "original_bytes": 361,
+    "compact_lines": 9,
+    "compact_bytes": 179,
+    "compression_pct": 50.4,
+    "compact_hash": "1706c762a6eb99711faebb63a0e0575c4beb66308651ef6096f8945a7619bbd3",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_046_cmd_findstr",
+    "case_file": "case_046_cmd_findstr.log",
+    "original_lines": 4,
+    "original_bytes": 127,
+    "compact_lines": 4,
+    "compact_bytes": 125,
+    "compression_pct": 1.6,
+    "compact_hash": "0ed46b40049327b2a1a555081fd5d449099508d9c9a89389c3b03d86cb7fbdcd",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

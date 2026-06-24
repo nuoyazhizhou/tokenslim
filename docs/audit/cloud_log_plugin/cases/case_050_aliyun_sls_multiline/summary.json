@@ -1,0 +1,12 @@
+{
+    "case_id": "case_050_aliyun_sls_multiline",
+    "case_file": "case_050_aliyun_sls_multiline.log",
+    "original_lines": 3,
+    "original_bytes": 682,
+    "compact_lines": 7,
+    "compact_bytes": 556,
+    "compression_pct": 18.5,
+    "compact_hash": "8a1dec4c4125095998604c6ae8b79dece3b01e8657e8927ae96422fb56655404",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

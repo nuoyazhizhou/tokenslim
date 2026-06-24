@@ -1,0 +1,12 @@
+{
+    "case_id": "case_067_bash_ripgrep",
+    "case_file": "case_067_bash_ripgrep.log",
+    "original_lines": 11,
+    "original_bytes": 318,
+    "compact_lines": 11,
+    "compact_bytes": 318,
+    "compression_pct": 0.0,
+    "compact_hash": "bc77c8a14da783986b06d97555ac5db8a0a119b186600982f76c7c20b7d077ac",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

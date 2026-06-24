@@ -1,0 +1,12 @@
+{
+    "case_id": "case_040_ps_copy_item",
+    "case_file": "case_040_ps_copy_item.log",
+    "original_lines": 11,
+    "original_bytes": 360,
+    "compact_lines": 11,
+    "compact_bytes": 360,
+    "compression_pct": 0.0,
+    "compact_hash": "e52bfb93ce4e69f509e045106be39689dfd76c289ab9aaaf54f6bf9377e56d65",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

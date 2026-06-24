@@ -1,0 +1,4 @@
+az monitor log-analytics query --workspace backend --analytics-query "ContainerAppConsoleLogs_CL | take 3"
+2026-05-13T08:29:01.000Z INFO /subscriptions/000/resourceGroups/rg/providers/Microsoft.App/containerApps/backend INFO:     10.8.0.1:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:29:31.000Z INFO /subscriptions/000/resourceGroups/rg/providers/Microsoft.App/containerApps/backend INFO:     10.8.0.2:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:29:45.000Z ERROR /subscriptions/000/resourceGroups/rg/providers/Microsoft.App/containerApps/backend ERROR:    10.8.0.3:0 - "GET /api/status HTTP/1.1" 503 Service Unavailable

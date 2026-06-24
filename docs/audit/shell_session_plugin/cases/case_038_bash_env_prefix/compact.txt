@@ -1,0 +1,7 @@
+user@linux:~$ FOO=bar node index.js
+Running with FOO=bar
+Server listening on port 3000
+user@linux:~$ echo $?
+0
+user@linux:~$
+

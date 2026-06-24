@@ -1,0 +1,12 @@
+{
+    "case_id": "case_077_bash_ip",
+    "case_file": "case_077_bash_ip.log",
+    "original_lines": 11,
+    "original_bytes": 599,
+    "compact_lines": 11,
+    "compact_bytes": 599,
+    "compression_pct": 0.0,
+    "compact_hash": "820d20432bd81e25455e89370471eb4f7694f720d4872309fdb37aaf38e2477c",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

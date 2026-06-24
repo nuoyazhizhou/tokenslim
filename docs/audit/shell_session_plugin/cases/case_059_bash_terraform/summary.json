@@ -1,0 +1,12 @@
+{
+    "case_id": "case_059_bash_terraform",
+    "case_file": "case_059_bash_terraform.log",
+    "original_lines": 15,
+    "original_bytes": 450,
+    "compact_lines": 15,
+    "compact_bytes": 437,
+    "compression_pct": 2.9,
+    "compact_hash": "52066b9db560eb7ace0afc632bc74a5a38fbd3e0b9ba5db895b031465613d82b",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

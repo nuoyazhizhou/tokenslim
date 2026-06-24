@@ -1,0 +1,12 @@
+{
+    "case_id": "case_055_cmd_mvn",
+    "case_file": "case_055_cmd_mvn.log",
+    "original_lines": 9,
+    "original_bytes": 398,
+    "compact_lines": 9,
+    "compact_bytes": 391,
+    "compression_pct": 1.8,
+    "compact_hash": "771b2ec1212d467bb83efe7f53ed0b3634cc2ca6480395345e443443a113e147",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,1048 @@
+$CL|META|providers=cloud|sources=|records=697
+$CL|REC|t=1780621264700|msg=START RequestId: 196a221f-ccf1-4231-9769-f0e4e8b5db42 Version: $LATEST
+$CL|REC|t=1780621264710|msg=[2026-06-05 01:01:04,710] INFO: 下载 S3 -> 本地: s3://sample-batch-processor/input/app-logs-2026-06-04.tar.gz  ->  /tmp/app-logs-2026-06-04.tar.gz
+$CL|REC|t=1780621264730|msg=[2026-06-05 01:01:04,730] INFO: 解压 -> /tmp/app-logs-2026-06-04/ (files=24, total_size=157286400)
+$CL|REC|t=1780621264750|msg=[2026-06-05 01:01:04,750] INFO: 启动批处理进程：python log_analytics.py --input-dir /tmp/app-logs-2026-06-04/ --output-bucket s3://sample-batch-processor/metrics/2026-06-05/ --rollup-window 60 --max-concurrency 8 --request-timeout 60 --log-level INFO --db-host db-primary.example.local --db-port 3306 --db-name sample_app --db-user app --db-pass REDACTED --on-conflict overwrite
+$CL|REC|t=1780621266700|msg=[2026-06-05 01:01:06,000] INFO: [worker stdout] [2026-06-05 01:01:06,000] INFO: [进度] 1/112 | shard=shard-0 | service=api-gateway | window=2026-06-04T00:00:00Z/PT60S
+$CL|REC|t=1780621266780|msg=[2026-06-05 01:01:06,080] INFO: [worker stdout] [2026-06-05 01:01:06,080] INFO: 聚合中 | service=api-gateway | window=2026-06-04T00:00:00Z | count=1000 | p50_ms=40 | p99_ms=180 | err_rate=0.000
+$CL|REC|t=1780621266900|msg=[2026-06-05 01:01:06,200] INFO: [worker stdout] [2026-06-05 01:01:06,200] INFO: 写入指标 | service=api-gateway | window=2026-06-04T00:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T00:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621267050|msg=[2026-06-05 01:01:06,350] INFO: [worker stdout] [2026-06-05 01:01:06,350] INFO: [进度] 2/112 | shard=shard-0 | service=auth-svc | window=2026-06-04T01:00:00Z/PT60S
+$CL|REC|t=1780621267130|msg=[2026-06-05 01:01:06,430] INFO: [worker stdout] [2026-06-05 01:01:06,430] INFO: 聚合中 | service=auth-svc | window=2026-06-04T01:00:00Z | count=1047 | p50_ms=43 | p99_ms=187 | err_rate=0.013
+$CL|REC|t=1780621267250|msg=[2026-06-05 01:01:06,550] INFO: [worker stdout] [2026-06-05 01:01:06,550] INFO: 写入指标 | service=auth-svc | window=2026-06-04T01:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T01:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621267400|msg=[2026-06-05 01:01:06,700] INFO: [worker stdout] [2026-06-05 01:01:06,700] INFO: [进度] 3/112 | shard=shard-0 | service=billing-svc | window=2026-06-04T02:00:00Z/PT60S
+$CL|REC|t=1780621267480|msg=[2026-06-05 01:01:06,780] INFO: [worker stdout] [2026-06-05 01:01:06,780] INFO: 聚合中 | service=billing-svc | window=2026-06-04T02:00:00Z | count=1094 | p50_ms=46 | p99_ms=194 | err_rate=0.026
+$CL|REC|t=1780621267600|msg=[2026-06-05 01:01:06,900] INFO: [worker stdout] [2026-06-05 01:01:06,900] INFO: 写入指标 | service=billing-svc | window=2026-06-04T02:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T02:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621267750|msg=[2026-06-05 01:01:07,050] INFO: [worker stdout] [2026-06-05 01:01:07,050] INFO: [进度] 4/112 | shard=shard-0 | service=notif-svc | window=2026-06-04T03:00:00Z/PT60S
+$CL|REC|t=1780621267830|msg=[2026-06-05 01:01:07,130] INFO: [worker stdout] [2026-06-05 01:01:07,130] INFO: 聚合中 | service=notif-svc | window=2026-06-04T03:00:00Z | count=1141 | p50_ms=49 | p99_ms=201 | err_rate=0.039
+$CL|REC|t=1780621267950|msg=[2026-06-05 01:01:07,250] INFO: [worker stdout] [2026-06-05 01:01:07,250] INFO: 写入指标 | service=notif-svc | window=2026-06-04T03:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T03:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621268100|msg=[2026-06-05 01:01:07,400] INFO: [worker stdout] [2026-06-05 01:01:07,400] INFO: [进度] 5/112 | shard=shard-0 | service=ingest-svc | window=2026-06-04T04:00:00Z/PT60S
+$CL|REC|t=1780621268180|msg=[2026-06-05 01:01:07,480] INFO: [worker stdout] [2026-06-05 01:01:07,480] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T04:00:00Z | count=1188 | p50_ms=52 | p99_ms=208 | err_rate=0.052
+$CL|REC|t=1780621268300|msg=[2026-06-05 01:01:07,600] INFO: [worker stdout] [2026-06-05 01:01:07,600] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T04:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T04:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621268450|msg=[2026-06-05 01:01:07,750] INFO: [worker stdout] [2026-06-05 01:01:07,750] INFO: [进度] 6/112 | shard=shard-0 | service=report-svc | window=2026-06-04T05:00:00Z/PT60S
+$CL|REC|t=1780621268530|msg=[2026-06-05 01:01:07,830] INFO: [worker stdout] [2026-06-05 01:01:07,830] INFO: 聚合中 | service=report-svc | window=2026-06-04T05:00:00Z | count=1235 | p50_ms=55 | p99_ms=215 | err_rate=0.065
+$CL|REC|t=1780621268650|msg=[2026-06-05 01:01:07,950] INFO: [worker stdout] [2026-06-05 01:01:07,950] INFO: 写入指标 | service=report-svc | window=2026-06-04T05:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T05:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621268800|msg=[2026-06-05 01:01:08,100] INFO: [worker stdout] [2026-06-05 01:01:08,100] INFO: [进度] 7/112 | shard=shard-0 | service=search-svc | window=2026-06-04T06:00:00Z/PT60S
+$CL|REC|t=1780621268880|msg=[2026-06-05 01:01:08,180] INFO: [worker stdout] [2026-06-05 01:01:08,180] INFO: 聚合中 | service=search-svc | window=2026-06-04T06:00:00Z | count=1282 | p50_ms=58 | p99_ms=222 | err_rate=0.078
+$CL|REC|t=1780621269000|msg=[2026-06-05 01:01:08,300] INFO: [worker stdout] [2026-06-05 01:01:08,300] INFO: 写入指标 | service=search-svc | window=2026-06-04T06:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T06:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621269150|msg=[2026-06-05 01:01:08,450] INFO: [worker stdout] [2026-06-05 01:01:08,450] INFO: [进度] 8/112 | shard=shard-0 | service=media-svc | window=2026-06-04T07:00:00Z/PT60S
+$CL|REC|t=1780621269230|msg=[2026-06-05 01:01:08,530] INFO: [worker stdout] [2026-06-05 01:01:08,530] INFO: 聚合中 | service=media-svc | window=2026-06-04T07:00:00Z | count=1329 | p50_ms=61 | p99_ms=229 | err_rate=0.091
+$CL|REC|t=1780621269350|msg=[2026-06-05 01:01:08,650] INFO: [worker stdout] [2026-06-05 01:01:08,650] INFO: 写入指标 | service=media-svc | window=2026-06-04T07:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T07:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621269500|msg=[2026-06-05 01:01:08,800] INFO: [worker stdout] [2026-06-05 01:01:08,800] INFO: [进度] 9/112 | shard=shard-0 | service=api-gateway | window=2026-06-04T08:00:00Z/PT60S
+$CL|REC|t=1780621269580|msg=[2026-06-05 01:01:08,880] INFO: [worker stdout] [2026-06-05 01:01:08,880] INFO: 聚合中 | service=api-gateway | window=2026-06-04T08:00:00Z | count=1376 | p50_ms=64 | p99_ms=236 | err_rate=0.004
+$CL|REC|t=1780621269700|msg=[2026-06-05 01:01:09,000] INFO: [worker stdout] [2026-06-05 01:01:09,000] INFO: 写入指标 | service=api-gateway | window=2026-06-04T08:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T08:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621269850|msg=[2026-06-05 01:01:09,150] INFO: [worker stdout] [2026-06-05 01:01:09,150] INFO: [进度] 10/112 | shard=shard-0 | service=auth-svc | window=2026-06-04T09:00:00Z/PT60S
+$CL|REC|t=1780621269930|msg=[2026-06-05 01:01:09,230] INFO: [worker stdout] [2026-06-05 01:01:09,230] INFO: 聚合中 | service=auth-svc | window=2026-06-04T09:00:00Z | count=1423 | p50_ms=67 | p99_ms=243 | err_rate=0.017
+$CL|REC|t=1780621270050|msg=[2026-06-05 01:01:09,350] INFO: [worker stdout] [2026-06-05 01:01:09,350] INFO: 写入指标 | service=auth-svc | window=2026-06-04T09:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T09:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621270200|msg=[2026-06-05 01:01:09,500] INFO: [worker stdout] [2026-06-05 01:01:09,500] INFO: [进度] 11/112 | shard=shard-0 | service=billing-svc | window=2026-06-04T10:00:00Z/PT60S
+$CL|REC|t=1780621270280|msg=[2026-06-05 01:01:09,580] INFO: [worker stdout] [2026-06-05 01:01:09,580] INFO: 聚合中 | service=billing-svc | window=2026-06-04T10:00:00Z | count=1470 | p50_ms=70 | p99_ms=250 | err_rate=0.030
+$CL|REC|t=1780621270400|msg=[2026-06-05 01:01:09,700] INFO: [worker stdout] [2026-06-05 01:01:09,700] INFO: 写入指标 | service=billing-svc | window=2026-06-04T10:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T10:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621270550|msg=[2026-06-05 01:01:09,850] INFO: [worker stdout] [2026-06-05 01:01:09,850] INFO: [进度] 12/112 | shard=shard-0 | service=notif-svc | window=2026-06-04T11:00:00Z/PT60S
+$CL|REC|t=1780621270630|msg=[2026-06-05 01:01:09,930] INFO: [worker stdout] [2026-06-05 01:01:09,930] INFO: 聚合中 | service=notif-svc | window=2026-06-04T11:00:00Z | count=1517 | p50_ms=73 | p99_ms=257 | err_rate=0.043
+$CL|REC|t=1780621270750|msg=[2026-06-05 01:01:10,050] INFO: [worker stdout] [2026-06-05 01:01:10,050] INFO: 写入指标 | service=notif-svc | window=2026-06-04T11:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T11:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621270900|msg=[2026-06-05 01:01:10,200] INFO: [worker stdout] [2026-06-05 01:01:10,200] INFO: [进度] 13/112 | shard=shard-0 | service=ingest-svc | window=2026-06-04T12:00:00Z/PT60S
+$CL|REC|t=1780621270980|msg=[2026-06-05 01:01:10,280] INFO: [worker stdout] [2026-06-05 01:01:10,280] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T12:00:00Z | count=1564 | p50_ms=76 | p99_ms=264 | err_rate=0.056
+$CL|REC|t=1780621271100|msg=[2026-06-05 01:01:10,400] INFO: [worker stdout] [2026-06-05 01:01:10,400] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T12:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T12:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621271250|msg=[2026-06-05 01:01:10,550] INFO: [worker stdout] [2026-06-05 01:01:10,550] INFO: [进度] 14/112 | shard=shard-0 | service=report-svc | window=2026-06-04T13:00:00Z/PT60S
+$CL|REC|t=1780621271330|msg=[2026-06-05 01:01:10,630] INFO: [worker stdout] [2026-06-05 01:01:10,630] INFO: 聚合中 | service=report-svc | window=2026-06-04T13:00:00Z | count=1611 | p50_ms=79 | p99_ms=271 | err_rate=0.069
+$CL|REC|t=1780621271450|msg=[2026-06-05 01:01:10,750] INFO: [worker stdout] [2026-06-05 01:01:10,750] INFO: 写入指标 | service=report-svc | window=2026-06-04T13:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T13:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621271600|msg=[2026-06-05 01:01:10,900] INFO: [worker stdout] [2026-06-05 01:01:10,900] INFO: [进度] 15/112 | shard=shard-0 | service=search-svc | window=2026-06-04T14:00:00Z/PT60S
+$CL|REC|t=1780621271680|msg=[2026-06-05 01:01:10,980] INFO: [worker stdout] [2026-06-05 01:01:10,980] INFO: 聚合中 | service=search-svc | window=2026-06-04T14:00:00Z | count=1658 | p50_ms=82 | p99_ms=278 | err_rate=0.082
+$CL|REC|t=1780621271800|msg=[2026-06-05 01:01:11,100] INFO: [worker stdout] [2026-06-05 01:01:11,100] INFO: 写入指标 | service=search-svc | window=2026-06-04T14:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T14:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621271950|msg=[2026-06-05 01:01:11,250] INFO: [worker stdout] [2026-06-05 01:01:11,250] INFO: [进度] 16/112 | shard=shard-0 | service=media-svc | window=2026-06-04T15:00:00Z/PT60S
+$CL|REC|t=1780621272030|msg=[2026-06-05 01:01:11,330] INFO: [worker stdout] [2026-06-05 01:01:11,330] INFO: 聚合中 | service=media-svc | window=2026-06-04T15:00:00Z | count=1705 | p50_ms=85 | p99_ms=285 | err_rate=0.095
+$CL|REC|t=1780621272150|msg=[2026-06-05 01:01:11,450] INFO: [worker stdout] [2026-06-05 01:01:11,450] INFO: 写入指标 | service=media-svc | window=2026-06-04T15:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T15:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621272300|msg=[2026-06-05 01:01:11,600] INFO: [worker stdout] [2026-06-05 01:01:11,600] INFO: [进度] 17/112 | shard=shard-0 | service=api-gateway | window=2026-06-04T16:00:00Z/PT60S
+$CL|REC|t=1780621272380|msg=[2026-06-05 01:01:11,680] INFO: [worker stdout] [2026-06-05 01:01:11,680] INFO: 聚合中 | service=api-gateway | window=2026-06-04T16:00:00Z | count=1752 | p50_ms=88 | p99_ms=292 | err_rate=0.008
+$CL|REC|t=1780621272500|msg=[2026-06-05 01:01:11,800] INFO: [worker stdout] [2026-06-05 01:01:11,800] INFO: 写入指标 | service=api-gateway | window=2026-06-04T16:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T16:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621272650|msg=[2026-06-05 01:01:11,950] INFO: [worker stdout] [2026-06-05 01:01:11,950] INFO: [进度] 18/112 | shard=shard-0 | service=auth-svc | window=2026-06-04T17:00:00Z/PT60S
+$CL|REC|t=1780621272730|msg=[2026-06-05 01:01:12,030] INFO: [worker stdout] [2026-06-05 01:01:12,030] INFO: 聚合中 | service=auth-svc | window=2026-06-04T17:00:00Z | count=1799 | p50_ms=91 | p99_ms=299 | err_rate=0.021
+$CL|REC|t=1780621272850|msg=[2026-06-05 01:01:12,150] INFO: [worker stdout] [2026-06-05 01:01:12,150] INFO: 写入指标 | service=auth-svc | window=2026-06-04T17:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T17:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621273000|msg=[2026-06-05 01:01:12,300] INFO: [worker stdout] [2026-06-05 01:01:12,300] INFO: [进度] 19/112 | shard=shard-0 | service=billing-svc | window=2026-06-04T18:00:00Z/PT60S
+$CL|REC|t=1780621273080|msg=[2026-06-05 01:01:12,380] INFO: [worker stdout] [2026-06-05 01:01:12,380] INFO: 聚合中 | service=billing-svc | window=2026-06-04T18:00:00Z | count=1846 | p50_ms=94 | p99_ms=306 | err_rate=0.034
+$CL|REC|t=1780621273200|msg=[2026-06-05 01:01:12,500] INFO: [worker stdout] [2026-06-05 01:01:12,500] INFO: 写入指标 | service=billing-svc | window=2026-06-04T18:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T18:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621273350|msg=[2026-06-05 01:01:12,650] INFO: [worker stdout] [2026-06-05 01:01:12,650] INFO: [进度] 20/112 | shard=shard-0 | service=notif-svc | window=2026-06-04T19:00:00Z/PT60S
+$CL|REC|t=1780621273430|msg=[2026-06-05 01:01:12,730] INFO: [worker stdout] [2026-06-05 01:01:12,730] INFO: 聚合中 | service=notif-svc | window=2026-06-04T19:00:00Z | count=1893 | p50_ms=97 | p99_ms=313 | err_rate=0.047
+$CL|REC|t=1780621273550|msg=[2026-06-05 01:01:12,850] INFO: [worker stdout] [2026-06-05 01:01:12,850] INFO: 写入指标 | service=notif-svc | window=2026-06-04T19:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T19:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621273700|msg=[2026-06-05 01:01:13,000] INFO: [worker stdout] [2026-06-05 01:01:13,000] INFO: [进度] 21/112 | shard=shard-0 | service=ingest-svc | window=2026-06-04T20:00:00Z/PT60S
+$CL|REC|t=1780621273780|msg=[2026-06-05 01:01:13,080] INFO: [worker stdout] [2026-06-05 01:01:13,080] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T20:00:00Z | count=1940 | p50_ms=100 | p99_ms=320 | err_rate=0.060
+$CL|REC|t=1780621273900|msg=[2026-06-05 01:01:13,200] INFO: [worker stdout] [2026-06-05 01:01:13,200] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T20:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T20:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621274050|msg=[2026-06-05 01:01:13,350] INFO: [worker stdout] [2026-06-05 01:01:13,350] INFO: [进度] 22/112 | shard=shard-0 | service=report-svc | window=2026-06-04T21:00:00Z/PT60S
+$CL|REC|t=1780621274130|msg=[2026-06-05 01:01:13,430] INFO: [worker stdout] [2026-06-05 01:01:13,430] INFO: 聚合中 | service=report-svc | window=2026-06-04T21:00:00Z | count=1987 | p50_ms=103 | p99_ms=327 | err_rate=0.073
+$CL|REC|t=1780621274250|msg=[2026-06-05 01:01:13,550] INFO: [worker stdout] [2026-06-05 01:01:13,550] INFO: 写入指标 | service=report-svc | window=2026-06-04T21:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T21:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621274400|msg=[2026-06-05 01:01:13,700] INFO: [worker stdout] [2026-06-05 01:01:13,700] INFO: [进度] 23/112 | shard=shard-0 | service=search-svc | window=2026-06-04T22:00:00Z/PT60S
+$CL|REC|t=1780621274480|msg=[2026-06-05 01:01:13,780] INFO: [worker stdout] [2026-06-05 01:01:13,780] INFO: 聚合中 | service=search-svc | window=2026-06-04T22:00:00Z | count=2034 | p50_ms=106 | p99_ms=334 | err_rate=0.086
+$CL|REC|t=1780621274600|msg=[2026-06-05 01:01:13,900] INFO: [worker stdout] [2026-06-05 01:01:13,900] INFO: 写入指标 | service=search-svc | window=2026-06-04T22:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T22:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621274750|msg=[2026-06-05 01:01:14,050] INFO: [worker stdout] [2026-06-05 01:01:14,050] INFO: [进度] 24/112 | shard=shard-0 | service=media-svc | window=2026-06-04T23:00:00Z/PT60S
+$CL|REC|t=1780621274830|msg=[2026-06-05 01:01:14,130] INFO: [worker stdout] [2026-06-05 01:01:14,130] INFO: 聚合中 | service=media-svc | window=2026-06-04T23:00:00Z | count=2081 | p50_ms=109 | p99_ms=341 | err_rate=0.099
+$CL|REC|t=1780621274950|msg=[2026-06-05 01:01:14,250] INFO: [worker stdout] [2026-06-05 01:01:14,250] INFO: 写入指标 | service=media-svc | window=2026-06-04T23:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T23:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621275100|msg=[2026-06-05 01:01:14,400] INFO: [worker stdout] [2026-06-05 01:01:14,400] INFO: [进度] 25/112 | shard=shard-0 | service=api-gateway | window=2026-06-04T00:00:00Z/PT60S
+$CL|REC|t=1780621275180|msg=[2026-06-05 01:01:14,480] INFO: [worker stdout] [2026-06-05 01:01:14,480] INFO: 聚合中 | service=api-gateway | window=2026-06-04T00:00:00Z | count=2128 | p50_ms=112 | p99_ms=348 | err_rate=0.012
+$CL|REC|t=1780621275300|msg=[2026-06-05 01:01:14,600] INFO: [worker stdout] [2026-06-05 01:01:14,600] INFO: 写入指标 | service=api-gateway | window=2026-06-04T00:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T00:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621275450|msg=[2026-06-05 01:01:14,750] INFO: [worker stdout] [2026-06-05 01:01:14,750] INFO: [进度] 26/112 | shard=shard-0 | service=auth-svc | window=2026-06-04T01:00:00Z/PT60S
+$CL|REC|t=1780621275530|msg=[2026-06-05 01:01:14,830] INFO: [worker stdout] [2026-06-05 01:01:14,830] INFO: 聚合中 | service=auth-svc | window=2026-06-04T01:00:00Z | count=2175 | p50_ms=115 | p99_ms=355 | err_rate=0.025
+$CL|REC|t=1780621275650|msg=[2026-06-05 01:01:14,950] INFO: [worker stdout] [2026-06-05 01:01:14,950] INFO: 写入指标 | service=auth-svc | window=2026-06-04T01:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T01:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621275800|msg=[2026-06-05 01:01:15,100] INFO: [worker stdout] [2026-06-05 01:01:15,100] INFO: [进度] 27/112 | shard=shard-0 | service=billing-svc | window=2026-06-04T02:00:00Z/PT60S
+$CL|REC|t=1780621275880|msg=[2026-06-05 01:01:15,180] INFO: [worker stdout] [2026-06-05 01:01:15,180] INFO: 聚合中 | service=billing-svc | window=2026-06-04T02:00:00Z | count=2222 | p50_ms=118 | p99_ms=362 | err_rate=0.038
+$CL|REC|t=1780621276000|msg=[2026-06-05 01:01:15,300] INFO: [worker stdout] [2026-06-05 01:01:15,300] INFO: 写入指标 | service=billing-svc | window=2026-06-04T02:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T02:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621276150|msg=[2026-06-05 01:01:15,450] INFO: [worker stdout] [2026-06-05 01:01:15,450] INFO: [进度] 28/112 | shard=shard-0 | service=notif-svc | window=2026-06-04T03:00:00Z/PT60S
+$CL|REC|t=1780621276230|msg=[2026-06-05 01:01:15,530] INFO: [worker stdout] [2026-06-05 01:01:15,530] INFO: 聚合中 | service=notif-svc | window=2026-06-04T03:00:00Z | count=2269 | p50_ms=121 | p99_ms=369 | err_rate=0.051
+$CL|REC|t=1780621276350|msg=[2026-06-05 01:01:15,650] INFO: [worker stdout] [2026-06-05 01:01:15,650] INFO: 写入指标 | service=notif-svc | window=2026-06-04T03:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T03:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621296700|msg=[2026-06-05 01:01:14,000] INFO: [worker stdout] [2026-06-05 01:01:14,000] INFO: [进度] 29/112 | shard=shard-1 | service=ingest-svc | window=2026-06-04T04:00:00Z/PT60S
+$CL|REC|t=1780621296780|msg=[2026-06-05 01:01:14,080] INFO: [worker stdout] [2026-06-05 01:01:14,080] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T04:00:00Z | count=2316 | p50_ms=124 | p99_ms=376 | err_rate=0.064
+$CL|REC|t=1780621296900|msg=[2026-06-05 01:01:14,200] INFO: [worker stdout] [2026-06-05 01:01:14,200] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T04:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T04:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621297050|msg=[2026-06-05 01:01:14,350] INFO: [worker stdout] [2026-06-05 01:01:14,350] INFO: [进度] 30/112 | shard=shard-1 | service=report-svc | window=2026-06-04T05:00:00Z/PT60S
+$CL|REC|t=1780621297130|msg=[2026-06-05 01:01:14,430] INFO: [worker stdout] [2026-06-05 01:01:14,430] INFO: 聚合中 | service=report-svc | window=2026-06-04T05:00:00Z | count=2363 | p50_ms=127 | p99_ms=383 | err_rate=0.077
+$CL|REC|t=1780621297250|msg=[2026-06-05 01:01:14,550] INFO: [worker stdout] [2026-06-05 01:01:14,550] INFO: 写入指标 | service=report-svc | window=2026-06-04T05:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T05:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621297400|msg=[2026-06-05 01:01:14,700] INFO: [worker stdout] [2026-06-05 01:01:14,700] INFO: [进度] 31/112 | shard=shard-1 | service=search-svc | window=2026-06-04T06:00:00Z/PT60S
+$CL|REC|t=1780621297480|msg=[2026-06-05 01:01:14,780] INFO: [worker stdout] [2026-06-05 01:01:14,780] INFO: 聚合中 | service=search-svc | window=2026-06-04T06:00:00Z | count=2410 | p50_ms=130 | p99_ms=390 | err_rate=0.090
+$CL|REC|t=1780621297600|msg=[2026-06-05 01:01:14,900] INFO: [worker stdout] [2026-06-05 01:01:14,900] INFO: 写入指标 | service=search-svc | window=2026-06-04T06:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T06:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621297750|msg=[2026-06-05 01:01:15,050] INFO: [worker stdout] [2026-06-05 01:01:15,050] INFO: [进度] 32/112 | shard=shard-1 | service=media-svc | window=2026-06-04T07:00:00Z/PT60S
+$CL|REC|t=1780621297830|msg=[2026-06-05 01:01:15,130] INFO: [worker stdout] [2026-06-05 01:01:15,130] INFO: 聚合中 | service=media-svc | window=2026-06-04T07:00:00Z | count=2457 | p50_ms=133 | p99_ms=397 | err_rate=0.003
+$CL|REC|t=1780621297950|msg=[2026-06-05 01:01:15,250] INFO: [worker stdout] [2026-06-05 01:01:15,250] INFO: 写入指标 | service=media-svc | window=2026-06-04T07:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T07:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621298100|msg=[2026-06-05 01:01:15,400] INFO: [worker stdout] [2026-06-05 01:01:15,400] INFO: [进度] 33/112 | shard=shard-1 | service=api-gateway | window=2026-06-04T08:00:00Z/PT60S
+$CL|REC|t=1780621298180|msg=[2026-06-05 01:01:15,480] INFO: [worker stdout] [2026-06-05 01:01:15,480] INFO: 聚合中 | service=api-gateway | window=2026-06-04T08:00:00Z | count=2504 | p50_ms=136 | p99_ms=404 | err_rate=0.016
+$CL|REC|t=1780621298300|msg=[2026-06-05 01:01:15,600] INFO: [worker stdout] [2026-06-05 01:01:15,600] INFO: 写入指标 | service=api-gateway | window=2026-06-04T08:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T08:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621298450|msg=[2026-06-05 01:01:15,750] INFO: [worker stdout] [2026-06-05 01:01:15,750] INFO: [进度] 34/112 | shard=shard-1 | service=auth-svc | window=2026-06-04T09:00:00Z/PT60S
+$CL|REC|t=1780621298530|msg=[2026-06-05 01:01:15,830] INFO: [worker stdout] [2026-06-05 01:01:15,830] INFO: 聚合中 | service=auth-svc | window=2026-06-04T09:00:00Z | count=2551 | p50_ms=139 | p99_ms=411 | err_rate=0.029
+$CL|REC|t=1780621298650|msg=[2026-06-05 01:01:15,950] INFO: [worker stdout] [2026-06-05 01:01:15,950] INFO: 写入指标 | service=auth-svc | window=2026-06-04T09:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T09:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621298800|msg=[2026-06-05 01:01:16,100] INFO: [worker stdout] [2026-06-05 01:01:16,100] INFO: [进度] 35/112 | shard=shard-1 | service=billing-svc | window=2026-06-04T10:00:00Z/PT60S
+$CL|REC|t=1780621298880|msg=[2026-06-05 01:01:16,180] INFO: [worker stdout] [2026-06-05 01:01:16,180] INFO: 聚合中 | service=billing-svc | window=2026-06-04T10:00:00Z | count=2598 | p50_ms=142 | p99_ms=418 | err_rate=0.042
+$CL|REC|t=1780621299000|msg=[2026-06-05 01:01:16,300] INFO: [worker stdout] [2026-06-05 01:01:16,300] INFO: 写入指标 | service=billing-svc | window=2026-06-04T10:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T10:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621299150|msg=[2026-06-05 01:01:16,450] INFO: [worker stdout] [2026-06-05 01:01:16,450] INFO: [进度] 36/112 | shard=shard-1 | service=notif-svc | window=2026-06-04T11:00:00Z/PT60S
+$CL|REC|t=1780621299230|msg=[2026-06-05 01:01:16,530] INFO: [worker stdout] [2026-06-05 01:01:16,530] INFO: 聚合中 | service=notif-svc | window=2026-06-04T11:00:00Z | count=2645 | p50_ms=145 | p99_ms=425 | err_rate=0.055
+$CL|REC|t=1780621299350|msg=[2026-06-05 01:01:16,650] INFO: [worker stdout] [2026-06-05 01:01:16,650] INFO: 写入指标 | service=notif-svc | window=2026-06-04T11:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T11:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621299500|msg=[2026-06-05 01:01:16,800] INFO: [worker stdout] [2026-06-05 01:01:16,800] INFO: [进度] 37/112 | shard=shard-1 | service=ingest-svc | window=2026-06-04T12:00:00Z/PT60S
+$CL|REC|t=1780621299580|msg=[2026-06-05 01:01:16,880] INFO: [worker stdout] [2026-06-05 01:01:16,880] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T12:00:00Z | count=2692 | p50_ms=148 | p99_ms=432 | err_rate=0.068
+$CL|REC|t=1780621299700|msg=[2026-06-05 01:01:17,000] INFO: [worker stdout] [2026-06-05 01:01:17,000] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T12:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T12:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621299850|msg=[2026-06-05 01:01:17,150] INFO: [worker stdout] [2026-06-05 01:01:17,150] INFO: [进度] 38/112 | shard=shard-1 | service=report-svc | window=2026-06-04T13:00:00Z/PT60S
+$CL|REC|t=1780621299930|msg=[2026-06-05 01:01:17,230] INFO: [worker stdout] [2026-06-05 01:01:17,230] INFO: 聚合中 | service=report-svc | window=2026-06-04T13:00:00Z | count=2739 | p50_ms=151 | p99_ms=439 | err_rate=0.081
+$CL|REC|t=1780621300050|msg=[2026-06-05 01:01:17,350] INFO: [worker stdout] [2026-06-05 01:01:17,350] INFO: 写入指标 | service=report-svc | window=2026-06-04T13:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T13:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621300200|msg=[2026-06-05 01:01:17,500] INFO: [worker stdout] [2026-06-05 01:01:17,500] INFO: [进度] 39/112 | shard=shard-1 | service=search-svc | window=2026-06-04T14:00:00Z/PT60S
+$CL|REC|t=1780621300280|msg=[2026-06-05 01:01:17,580] INFO: [worker stdout] [2026-06-05 01:01:17,580] INFO: 聚合中 | service=search-svc | window=2026-06-04T14:00:00Z | count=2786 | p50_ms=154 | p99_ms=446 | err_rate=0.094
+$CL|REC|t=1780621300400|msg=[2026-06-05 01:01:17,700] INFO: [worker stdout] [2026-06-05 01:01:17,700] INFO: 写入指标 | service=search-svc | window=2026-06-04T14:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T14:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621300550|msg=[2026-06-05 01:01:17,850] INFO: [worker stdout] [2026-06-05 01:01:17,850] INFO: [进度] 40/112 | shard=shard-1 | service=media-svc | window=2026-06-04T15:00:00Z/PT60S
+$CL|REC|t=1780621300630|msg=[2026-06-05 01:01:17,930] INFO: [worker stdout] [2026-06-05 01:01:17,930] INFO: 聚合中 | service=media-svc | window=2026-06-04T15:00:00Z | count=2833 | p50_ms=157 | p99_ms=453 | err_rate=0.007
+$CL|REC|t=1780621300750|msg=[2026-06-05 01:01:18,050] INFO: [worker stdout] [2026-06-05 01:01:18,050] INFO: 写入指标 | service=media-svc | window=2026-06-04T15:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T15:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621300900|msg=[2026-06-05 01:01:18,200] INFO: [worker stdout] [2026-06-05 01:01:18,200] INFO: [进度] 41/112 | shard=shard-1 | service=api-gateway | window=2026-06-04T16:00:00Z/PT60S
+$CL|REC|t=1780621300980|msg=[2026-06-05 01:01:18,280] INFO: [worker stdout] [2026-06-05 01:01:18,280] INFO: 聚合中 | service=api-gateway | window=2026-06-04T16:00:00Z | count=2880 | p50_ms=160 | p99_ms=460 | err_rate=0.020
+$CL|REC|t=1780621301100|msg=[2026-06-05 01:01:18,400] INFO: [worker stdout] [2026-06-05 01:01:18,400] INFO: 写入指标 | service=api-gateway | window=2026-06-04T16:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T16:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621301250|msg=[2026-06-05 01:01:18,550] INFO: [worker stdout] [2026-06-05 01:01:18,550] INFO: [进度] 42/112 | shard=shard-1 | service=auth-svc | window=2026-06-04T17:00:00Z/PT60S
+$CL|REC|t=1780621301330|msg=[2026-06-05 01:01:18,630] INFO: [worker stdout] [2026-06-05 01:01:18,630] INFO: 聚合中 | service=auth-svc | window=2026-06-04T17:00:00Z | count=2927 | p50_ms=163 | p99_ms=467 | err_rate=0.033
+$CL|REC|t=1780621301450|msg=[2026-06-05 01:01:18,750] INFO: [worker stdout] [2026-06-05 01:01:18,750] INFO: 写入指标 | service=auth-svc | window=2026-06-04T17:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T17:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621301600|msg=[2026-06-05 01:01:18,900] INFO: [worker stdout] [2026-06-05 01:01:18,900] INFO: [进度] 43/112 | shard=shard-1 | service=billing-svc | window=2026-06-04T18:00:00Z/PT60S
+$CL|REC|t=1780621301680|msg=[2026-06-05 01:01:18,980] INFO: [worker stdout] [2026-06-05 01:01:18,980] INFO: 聚合中 | service=billing-svc | window=2026-06-04T18:00:00Z | count=2974 | p50_ms=166 | p99_ms=474 | err_rate=0.046
+$CL|REC|t=1780621301800|msg=[2026-06-05 01:01:19,100] INFO: [worker stdout] [2026-06-05 01:01:19,100] INFO: 写入指标 | service=billing-svc | window=2026-06-04T18:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T18:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621301850|msg=[2026-06-05 01:01:19,150] INFO: [worker stdout] [2026-06-05 01:01:19,150] INFO: WARN | service=billing-svc | reason=missing_data | detail=log file truncated, using partial window
+$CL|REC|t=1780621301950|msg=[2026-06-05 01:01:19,250] INFO: [worker stdout] [2026-06-05 01:01:19,250] INFO: [进度] 44/112 | shard=shard-1 | service=notif-svc | window=2026-06-04T19:00:00Z/PT60S
+$CL|REC|t=1780621302030|msg=[2026-06-05 01:01:19,330] INFO: [worker stdout] [2026-06-05 01:01:19,330] INFO: 聚合中 | service=notif-svc | window=2026-06-04T19:00:00Z | count=3021 | p50_ms=169 | p99_ms=481 | err_rate=0.059
+$CL|REC|t=1780621302150|msg=[2026-06-05 01:01:19,450] INFO: [worker stdout] [2026-06-05 01:01:19,450] INFO: 写入指标 | service=notif-svc | window=2026-06-04T19:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T19:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621302300|msg=[2026-06-05 01:01:19,600] INFO: [worker stdout] [2026-06-05 01:01:19,600] INFO: [进度] 45/112 | shard=shard-1 | service=ingest-svc | window=2026-06-04T20:00:00Z/PT60S
+$CL|REC|t=1780621302380|msg=[2026-06-05 01:01:19,680] INFO: [worker stdout] [2026-06-05 01:01:19,680] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T20:00:00Z | count=3068 | p50_ms=172 | p99_ms=488 | err_rate=0.072
+$CL|REC|t=1780621302500|msg=[2026-06-05 01:01:19,800] INFO: [worker stdout] [2026-06-05 01:01:19,800] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T20:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T20:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621302650|msg=[2026-06-05 01:01:19,950] INFO: [worker stdout] [2026-06-05 01:01:19,950] INFO: [进度] 46/112 | shard=shard-1 | service=report-svc | window=2026-06-04T21:00:00Z/PT60S
+$CL|REC|t=1780621302730|msg=[2026-06-05 01:01:20,030] INFO: [worker stdout] [2026-06-05 01:01:20,030] INFO: 聚合中 | service=report-svc | window=2026-06-04T21:00:00Z | count=3115 | p50_ms=175 | p99_ms=495 | err_rate=0.085
+$CL|REC|t=1780621302850|msg=[2026-06-05 01:01:20,150] INFO: [worker stdout] [2026-06-05 01:01:20,150] INFO: 写入指标 | service=report-svc | window=2026-06-04T21:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T21:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621303000|msg=[2026-06-05 01:01:20,300] INFO: [worker stdout] [2026-06-05 01:01:20,300] INFO: [进度] 47/112 | shard=shard-1 | service=search-svc | window=2026-06-04T22:00:00Z/PT60S
+$CL|REC|t=1780621303080|msg=[2026-06-05 01:01:20,380] INFO: [worker stdout] [2026-06-05 01:01:20,380] INFO: 聚合中 | service=search-svc | window=2026-06-04T22:00:00Z | count=3162 | p50_ms=178 | p99_ms=2 | err_rate=0.098
+$CL|REC|t=1780621303200|msg=[2026-06-05 01:01:20,500] INFO: [worker stdout] [2026-06-05 01:01:20,500] INFO: 写入指标 | service=search-svc | window=2026-06-04T22:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T22:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621303350|msg=[2026-06-05 01:01:20,650] INFO: [worker stdout] [2026-06-05 01:01:20,650] INFO: [进度] 48/112 | shard=shard-1 | service=media-svc | window=2026-06-04T23:00:00Z/PT60S
+$CL|REC|t=1780621303430|msg=[2026-06-05 01:01:20,730] INFO: [worker stdout] [2026-06-05 01:01:20,730] INFO: 聚合中 | service=media-svc | window=2026-06-04T23:00:00Z | count=3209 | p50_ms=181 | p99_ms=9 | err_rate=0.011
+$CL|REC|t=1780621303550|msg=[2026-06-05 01:01:20,850] INFO: [worker stdout] [2026-06-05 01:01:20,850] INFO: 写入指标 | service=media-svc | window=2026-06-04T23:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T23:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621303700|msg=[2026-06-05 01:01:21,000] INFO: [worker stdout] [2026-06-05 01:01:21,000] INFO: [进度] 49/112 | shard=shard-1 | service=api-gateway | window=2026-06-04T00:00:00Z/PT60S
+$CL|REC|t=1780621303780|msg=[2026-06-05 01:01:21,080] INFO: [worker stdout] [2026-06-05 01:01:21,080] INFO: 聚合中 | service=api-gateway | window=2026-06-04T00:00:00Z | count=3256 | p50_ms=184 | p99_ms=16 | err_rate=0.024
+$CL|REC|t=1780621303900|msg=[2026-06-05 01:01:21,200] INFO: [worker stdout] [2026-06-05 01:01:21,200] INFO: 写入指标 | service=api-gateway | window=2026-06-04T00:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T00:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621304050|msg=[2026-06-05 01:01:21,350] INFO: [worker stdout] [2026-06-05 01:01:21,350] INFO: [进度] 50/112 | shard=shard-1 | service=auth-svc | window=2026-06-04T01:00:00Z/PT60S
+$CL|REC|t=1780621304130|msg=[2026-06-05 01:01:21,430] INFO: [worker stdout] [2026-06-05 01:01:21,430] INFO: 聚合中 | service=auth-svc | window=2026-06-04T01:00:00Z | count=3303 | p50_ms=187 | p99_ms=23 | err_rate=0.037
+$CL|REC|t=1780621304250|msg=[2026-06-05 01:01:21,550] INFO: [worker stdout] [2026-06-05 01:01:21,550] INFO: 写入指标 | service=auth-svc | window=2026-06-04T01:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T01:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621304400|msg=[2026-06-05 01:01:21,700] INFO: [worker stdout] [2026-06-05 01:01:21,700] INFO: [进度] 51/112 | shard=shard-1 | service=billing-svc | window=2026-06-04T02:00:00Z/PT60S
+$CL|REC|t=1780621304480|msg=[2026-06-05 01:01:21,780] INFO: [worker stdout] [2026-06-05 01:01:21,780] INFO: 聚合中 | service=billing-svc | window=2026-06-04T02:00:00Z | count=3350 | p50_ms=190 | p99_ms=30 | err_rate=0.050
+$CL|REC|t=1780621304600|msg=[2026-06-05 01:01:21,900] INFO: [worker stdout] [2026-06-05 01:01:21,900] INFO: 写入指标 | service=billing-svc | window=2026-06-04T02:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T02:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621304750|msg=[2026-06-05 01:01:22,050] INFO: [worker stdout] [2026-06-05 01:01:22,050] INFO: [进度] 52/112 | shard=shard-1 | service=notif-svc | window=2026-06-04T03:00:00Z/PT60S
+$CL|REC|t=1780621304830|msg=[2026-06-05 01:01:22,130] INFO: [worker stdout] [2026-06-05 01:01:22,130] INFO: 聚合中 | service=notif-svc | window=2026-06-04T03:00:00Z | count=3397 | p50_ms=193 | p99_ms=37 | err_rate=0.063
+$CL|REC|t=1780621304950|msg=[2026-06-05 01:01:22,250] INFO: [worker stdout] [2026-06-05 01:01:22,250] INFO: 写入指标 | service=notif-svc | window=2026-06-04T03:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T03:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621305100|msg=[2026-06-05 01:01:22,400] INFO: [worker stdout] [2026-06-05 01:01:22,400] INFO: [进度] 53/112 | shard=shard-1 | service=ingest-svc | window=2026-06-04T04:00:00Z/PT60S
+$CL|REC|t=1780621305180|msg=[2026-06-05 01:01:22,480] INFO: [worker stdout] [2026-06-05 01:01:22,480] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T04:00:00Z | count=3444 | p50_ms=196 | p99_ms=44 | err_rate=0.076
+$CL|REC|t=1780621305300|msg=[2026-06-05 01:01:22,600] INFO: [worker stdout] [2026-06-05 01:01:22,600] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T04:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T04:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621305450|msg=[2026-06-05 01:01:22,750] INFO: [worker stdout] [2026-06-05 01:01:22,750] INFO: [进度] 54/112 | shard=shard-1 | service=report-svc | window=2026-06-04T05:00:00Z/PT60S
+$CL|REC|t=1780621305530|msg=[2026-06-05 01:01:22,830] INFO: [worker stdout] [2026-06-05 01:01:22,830] INFO: 聚合中 | service=report-svc | window=2026-06-04T05:00:00Z | count=3491 | p50_ms=199 | p99_ms=51 | err_rate=0.089
+$CL|REC|t=1780621305650|msg=[2026-06-05 01:01:22,950] INFO: [worker stdout] [2026-06-05 01:01:22,950] INFO: 写入指标 | service=report-svc | window=2026-06-04T05:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T05:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621305800|msg=[2026-06-05 01:01:23,100] INFO: [worker stdout] [2026-06-05 01:01:23,100] INFO: [进度] 55/112 | shard=shard-1 | service=search-svc | window=2026-06-04T06:00:00Z/PT60S
+$CL|REC|t=1780621305880|msg=[2026-06-05 01:01:23,180] INFO: [worker stdout] [2026-06-05 01:01:23,180] INFO: 聚合中 | service=search-svc | window=2026-06-04T06:00:00Z | count=3538 | p50_ms=2 | p99_ms=58 | err_rate=0.002
+$CL|REC|t=1780621306000|msg=[2026-06-05 01:01:23,300] INFO: [worker stdout] [2026-06-05 01:01:23,300] INFO: 写入指标 | service=search-svc | window=2026-06-04T06:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T06:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621306150|msg=[2026-06-05 01:01:23,450] INFO: [worker stdout] [2026-06-05 01:01:23,450] INFO: [进度] 56/112 | shard=shard-1 | service=media-svc | window=2026-06-04T07:00:00Z/PT60S
+$CL|REC|t=1780621306230|msg=[2026-06-05 01:01:23,530] INFO: [worker stdout] [2026-06-05 01:01:23,530] INFO: 聚合中 | service=media-svc | window=2026-06-04T07:00:00Z | count=3585 | p50_ms=5 | p99_ms=65 | err_rate=0.015
+$CL|REC|t=1780621306350|msg=[2026-06-05 01:01:23,650] INFO: [worker stdout] [2026-06-05 01:01:23,650] INFO: 写入指标 | service=media-svc | window=2026-06-04T07:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T07:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621326700|msg=[2026-06-05 01:01:22,000] INFO: [worker stdout] [2026-06-05 01:01:22,000] INFO: [进度] 57/112 | shard=shard-2 | service=api-gateway | window=2026-06-04T08:00:00Z/PT60S
+$CL|REC|t=1780621326780|msg=[2026-06-05 01:01:22,080] INFO: [worker stdout] [2026-06-05 01:01:22,080] INFO: 聚合中 | service=api-gateway | window=2026-06-04T08:00:00Z | count=3632 | p50_ms=8 | p99_ms=72 | err_rate=0.028
+$CL|REC|t=1780621326900|msg=[2026-06-05 01:01:22,200] INFO: [worker stdout] [2026-06-05 01:01:22,200] INFO: 写入指标 | service=api-gateway | window=2026-06-04T08:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T08:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621327050|msg=[2026-06-05 01:01:22,350] INFO: [worker stdout] [2026-06-05 01:01:22,350] INFO: [进度] 58/112 | shard=shard-2 | service=auth-svc | window=2026-06-04T09:00:00Z/PT60S
+$CL|REC|t=1780621327130|msg=[2026-06-05 01:01:22,430] INFO: [worker stdout] [2026-06-05 01:01:22,430] INFO: 聚合中 | service=auth-svc | window=2026-06-04T09:00:00Z | count=3679 | p50_ms=11 | p99_ms=79 | err_rate=0.041
+$CL|REC|t=1780621327250|msg=[2026-06-05 01:01:22,550] INFO: [worker stdout] [2026-06-05 01:01:22,550] INFO: 写入指标 | service=auth-svc | window=2026-06-04T09:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T09:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621327400|msg=[2026-06-05 01:01:22,700] INFO: [worker stdout] [2026-06-05 01:01:22,700] INFO: [进度] 59/112 | shard=shard-2 | service=billing-svc | window=2026-06-04T10:00:00Z/PT60S
+$CL|REC|t=1780621327480|msg=[2026-06-05 01:01:22,780] INFO: [worker stdout] [2026-06-05 01:01:22,780] INFO: 聚合中 | service=billing-svc | window=2026-06-04T10:00:00Z | count=3726 | p50_ms=14 | p99_ms=86 | err_rate=0.054
+$CL|REC|t=1780621327600|msg=[2026-06-05 01:01:22,900] INFO: [worker stdout] [2026-06-05 01:01:22,900] INFO: 写入指标 | service=billing-svc | window=2026-06-04T10:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T10:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621327750|msg=[2026-06-05 01:01:23,050] INFO: [worker stdout] [2026-06-05 01:01:23,050] INFO: [进度] 60/112 | shard=shard-2 | service=notif-svc | window=2026-06-04T11:00:00Z/PT60S
+$CL|REC|t=1780621327830|msg=[2026-06-05 01:01:23,130] INFO: [worker stdout] [2026-06-05 01:01:23,130] INFO: 聚合中 | service=notif-svc | window=2026-06-04T11:00:00Z | count=3773 | p50_ms=17 | p99_ms=93 | err_rate=0.067
+$CL|REC|t=1780621327950|msg=[2026-06-05 01:01:23,250] INFO: [worker stdout] [2026-06-05 01:01:23,250] INFO: 写入指标 | service=notif-svc | window=2026-06-04T11:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T11:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621328100|msg=[2026-06-05 01:01:23,400] INFO: [worker stdout] [2026-06-05 01:01:23,400] INFO: [进度] 61/112 | shard=shard-2 | service=ingest-svc | window=2026-06-04T12:00:00Z/PT60S
+$CL|REC|t=1780621328180|msg=[2026-06-05 01:01:23,480] INFO: [worker stdout] [2026-06-05 01:01:23,480] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T12:00:00Z | count=3820 | p50_ms=20 | p99_ms=100 | err_rate=0.080
+$CL|REC|t=1780621328300|msg=[2026-06-05 01:01:23,600] INFO: [worker stdout] [2026-06-05 01:01:23,600] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T12:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T12:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621328450|msg=[2026-06-05 01:01:23,750] INFO: [worker stdout] [2026-06-05 01:01:23,750] INFO: [进度] 62/112 | shard=shard-2 | service=report-svc | window=2026-06-04T13:00:00Z/PT60S
+$CL|REC|t=1780621328530|msg=[2026-06-05 01:01:23,830] INFO: [worker stdout] [2026-06-05 01:01:23,830] INFO: 聚合中 | service=report-svc | window=2026-06-04T13:00:00Z | count=3867 | p50_ms=23 | p99_ms=107 | err_rate=0.093
+$CL|REC|t=1780621328650|msg=[2026-06-05 01:01:23,950] INFO: [worker stdout] [2026-06-05 01:01:23,950] INFO: 写入指标 | service=report-svc | window=2026-06-04T13:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T13:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621328800|msg=[2026-06-05 01:01:24,100] INFO: [worker stdout] [2026-06-05 01:01:24,100] INFO: [进度] 63/112 | shard=shard-2 | service=search-svc | window=2026-06-04T14:00:00Z/PT60S
+$CL|REC|t=1780621328880|msg=[2026-06-05 01:01:24,180] INFO: [worker stdout] [2026-06-05 01:01:24,180] INFO: 聚合中 | service=search-svc | window=2026-06-04T14:00:00Z | count=3914 | p50_ms=26 | p99_ms=114 | err_rate=0.006
+$CL|REC|t=1780621329000|msg=[2026-06-05 01:01:24,300] INFO: [worker stdout] [2026-06-05 01:01:24,300] INFO: 写入指标 | service=search-svc | window=2026-06-04T14:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T14:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621329150|msg=[2026-06-05 01:01:24,450] INFO: [worker stdout] [2026-06-05 01:01:24,450] INFO: [进度] 64/112 | shard=shard-2 | service=media-svc | window=2026-06-04T15:00:00Z/PT60S
+$CL|REC|t=1780621329230|msg=[2026-06-05 01:01:24,530] INFO: [worker stdout] [2026-06-05 01:01:24,530] INFO: 聚合中 | service=media-svc | window=2026-06-04T15:00:00Z | count=3961 | p50_ms=29 | p99_ms=121 | err_rate=0.019
+$CL|REC|t=1780621329350|msg=[2026-06-05 01:01:24,650] INFO: [worker stdout] [2026-06-05 01:01:24,650] INFO: 写入指标 | service=media-svc | window=2026-06-04T15:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T15:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621329500|msg=[2026-06-05 01:01:24,800] INFO: [worker stdout] [2026-06-05 01:01:24,800] INFO: [进度] 65/112 | shard=shard-2 | service=api-gateway | window=2026-06-04T16:00:00Z/PT60S
+$CL|REC|t=1780621329580|msg=[2026-06-05 01:01:24,880] INFO: [worker stdout] [2026-06-05 01:01:24,880] INFO: 聚合中 | service=api-gateway | window=2026-06-04T16:00:00Z | count=4008 | p50_ms=32 | p99_ms=128 | err_rate=0.032
+$CL|REC|t=1780621329700|msg=[2026-06-05 01:01:25,000] INFO: [worker stdout] [2026-06-05 01:01:25,000] INFO: 写入指标 | service=api-gateway | window=2026-06-04T16:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T16:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621329850|msg=[2026-06-05 01:01:25,150] INFO: [worker stdout] [2026-06-05 01:01:25,150] INFO: [进度] 66/112 | shard=shard-2 | service=auth-svc | window=2026-06-04T17:00:00Z/PT60S
+$CL|REC|t=1780621329930|msg=[2026-06-05 01:01:25,230] INFO: [worker stdout] [2026-06-05 01:01:25,230] INFO: 聚合中 | service=auth-svc | window=2026-06-04T17:00:00Z | count=4055 | p50_ms=35 | p99_ms=135 | err_rate=0.045
+$CL|REC|t=1780621330050|msg=[2026-06-05 01:01:25,350] INFO: [worker stdout] [2026-06-05 01:01:25,350] INFO: 写入指标 | service=auth-svc | window=2026-06-04T17:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T17:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621330200|msg=[2026-06-05 01:01:25,500] INFO: [worker stdout] [2026-06-05 01:01:25,500] INFO: [进度] 67/112 | shard=shard-2 | service=billing-svc | window=2026-06-04T18:00:00Z/PT60S
+$CL|REC|t=1780621330280|msg=[2026-06-05 01:01:25,580] INFO: [worker stdout] [2026-06-05 01:01:25,580] INFO: 聚合中 | service=billing-svc | window=2026-06-04T18:00:00Z | count=4102 | p50_ms=38 | p99_ms=142 | err_rate=0.058
+$CL|REC|t=1780621330400|msg=[2026-06-05 01:01:25,700] INFO: [worker stdout] [2026-06-05 01:01:25,700] INFO: 写入指标 | service=billing-svc | window=2026-06-04T18:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T18:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621330550|msg=[2026-06-05 01:01:25,850] INFO: [worker stdout] [2026-06-05 01:01:25,850] INFO: [进度] 68/112 | shard=shard-2 | service=notif-svc | window=2026-06-04T19:00:00Z/PT60S
+$CL|REC|t=1780621330630|msg=[2026-06-05 01:01:25,930] INFO: [worker stdout] [2026-06-05 01:01:25,930] INFO: 聚合中 | service=notif-svc | window=2026-06-04T19:00:00Z | count=4149 | p50_ms=41 | p99_ms=149 | err_rate=0.071
+$CL|REC|t=1780621330750|msg=[2026-06-05 01:01:26,050] INFO: [worker stdout] [2026-06-05 01:01:26,050] INFO: 写入指标 | service=notif-svc | window=2026-06-04T19:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T19:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621330900|msg=[2026-06-05 01:01:26,200] INFO: [worker stdout] [2026-06-05 01:01:26,200] INFO: [进度] 69/112 | shard=shard-2 | service=ingest-svc | window=2026-06-04T20:00:00Z/PT60S
+$CL|REC|t=1780621330980|msg=[2026-06-05 01:01:26,280] INFO: [worker stdout] [2026-06-05 01:01:26,280] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T20:00:00Z | count=4196 | p50_ms=44 | p99_ms=156 | err_rate=0.084
+$CL|REC|t=1780621331100|msg=[2026-06-05 01:01:26,400] INFO: [worker stdout] [2026-06-05 01:01:26,400] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T20:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T20:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621331250|msg=[2026-06-05 01:01:26,550] INFO: [worker stdout] [2026-06-05 01:01:26,550] INFO: [进度] 70/112 | shard=shard-2 | service=report-svc | window=2026-06-04T21:00:00Z/PT60S
+$CL|REC|t=1780621331330|msg=[2026-06-05 01:01:26,630] INFO: [worker stdout] [2026-06-05 01:01:26,630] INFO: 聚合中 | service=report-svc | window=2026-06-04T21:00:00Z | count=4243 | p50_ms=47 | p99_ms=163 | err_rate=0.097
+$CL|REC|t=1780621331450|msg=[2026-06-05 01:01:26,750] INFO: [worker stdout] [2026-06-05 01:01:26,750] INFO: 写入指标 | service=report-svc | window=2026-06-04T21:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T21:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621331600|msg=[2026-06-05 01:01:26,900] INFO: [worker stdout] [2026-06-05 01:01:26,900] INFO: [进度] 71/112 | shard=shard-2 | service=search-svc | window=2026-06-04T22:00:00Z/PT60S
+$CL|REC|t=1780621331680|msg=[2026-06-05 01:01:26,980] INFO: [worker stdout] [2026-06-05 01:01:26,980] INFO: 聚合中 | service=search-svc | window=2026-06-04T22:00:00Z | count=4290 | p50_ms=50 | p99_ms=170 | err_rate=0.010
+$CL|REC|t=1780621331800|msg=[2026-06-05 01:01:27,100] INFO: [worker stdout] [2026-06-05 01:01:27,100] INFO: 写入指标 | service=search-svc | window=2026-06-04T22:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T22:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621331950|msg=[2026-06-05 01:01:27,250] INFO: [worker stdout] [2026-06-05 01:01:27,250] INFO: [进度] 72/112 | shard=shard-2 | service=media-svc | window=2026-06-04T23:00:00Z/PT60S
+$CL|REC|t=1780621332030|msg=[2026-06-05 01:01:27,330] INFO: [worker stdout] [2026-06-05 01:01:27,330] INFO: 聚合中 | service=media-svc | window=2026-06-04T23:00:00Z | count=4337 | p50_ms=53 | p99_ms=177 | err_rate=0.023
+$CL|REC|t=1780621332150|msg=[2026-06-05 01:01:27,450] INFO: [worker stdout] [2026-06-05 01:01:27,450] INFO: 写入指标 | service=media-svc | window=2026-06-04T23:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T23:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621332300|msg=[2026-06-05 01:01:27,600] INFO: [worker stdout] [2026-06-05 01:01:27,600] INFO: [进度] 73/112 | shard=shard-2 | service=api-gateway | window=2026-06-04T00:00:00Z/PT60S
+$CL|REC|t=1780621332380|msg=[2026-06-05 01:01:27,680] INFO: [worker stdout] [2026-06-05 01:01:27,680] INFO: 聚合中 | service=api-gateway | window=2026-06-04T00:00:00Z | count=4384 | p50_ms=56 | p99_ms=184 | err_rate=0.036
+$CL|REC|t=1780621332500|msg=[2026-06-05 01:01:27,800] INFO: [worker stdout] [2026-06-05 01:01:27,800] INFO: 写入指标 | service=api-gateway | window=2026-06-04T00:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T00:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621332650|msg=[2026-06-05 01:01:27,950] INFO: [worker stdout] [2026-06-05 01:01:27,950] INFO: [进度] 74/112 | shard=shard-2 | service=auth-svc | window=2026-06-04T01:00:00Z/PT60S
+$CL|REC|t=1780621332730|msg=[2026-06-05 01:01:28,030] INFO: [worker stdout] [2026-06-05 01:01:28,030] INFO: 聚合中 | service=auth-svc | window=2026-06-04T01:00:00Z | count=4431 | p50_ms=59 | p99_ms=191 | err_rate=0.049
+$CL|REC|t=1780621332850|msg=[2026-06-05 01:01:28,150] INFO: [worker stdout] [2026-06-05 01:01:28,150] INFO: 写入指标 | service=auth-svc | window=2026-06-04T01:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T01:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621333000|msg=[2026-06-05 01:01:28,300] INFO: [worker stdout] [2026-06-05 01:01:28,300] INFO: [进度] 75/112 | shard=shard-2 | service=billing-svc | window=2026-06-04T02:00:00Z/PT60S
+$CL|REC|t=1780621333080|msg=[2026-06-05 01:01:28,380] INFO: [worker stdout] [2026-06-05 01:01:28,380] INFO: 聚合中 | service=billing-svc | window=2026-06-04T02:00:00Z | count=4478 | p50_ms=62 | p99_ms=198 | err_rate=0.062
+$CL|REC|t=1780621333200|msg=[2026-06-05 01:01:28,500] INFO: [worker stdout] [2026-06-05 01:01:28,500] INFO: 写入指标 | service=billing-svc | window=2026-06-04T02:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T02:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621333350|msg=[2026-06-05 01:01:28,650] INFO: [worker stdout] [2026-06-05 01:01:28,650] INFO: [进度] 76/112 | shard=shard-2 | service=notif-svc | window=2026-06-04T03:00:00Z/PT60S
+$CL|REC|t=1780621333430|msg=[2026-06-05 01:01:28,730] INFO: [worker stdout] [2026-06-05 01:01:28,730] INFO: 聚合中 | service=notif-svc | window=2026-06-04T03:00:00Z | count=4525 | p50_ms=65 | p99_ms=205 | err_rate=0.075
+$CL|REC|t=1780621333550|msg=[2026-06-05 01:01:28,850] INFO: [worker stdout] [2026-06-05 01:01:28,850] INFO: 写入指标 | service=notif-svc | window=2026-06-04T03:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T03:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621333700|msg=[2026-06-05 01:01:29,000] INFO: [worker stdout] [2026-06-05 01:01:29,000] INFO: [进度] 77/112 | shard=shard-2 | service=ingest-svc | window=2026-06-04T04:00:00Z/PT60S
+$CL|REC|t=1780621333780|msg=[2026-06-05 01:01:29,080] INFO: [worker stdout] [2026-06-05 01:01:29,080] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T04:00:00Z | count=4572 | p50_ms=68 | p99_ms=212 | err_rate=0.088
+$CL|REC|t=1780621333900|msg=[2026-06-05 01:01:29,200] INFO: [worker stdout] [2026-06-05 01:01:29,200] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T04:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T04:00:00Z.json | engine=duckdb
+!$CL|REC|t=1780621334000|msg=[2026-06-05 01:01:29,300] INFO: [worker stdout] [2026-06-05 01:01:29,300] INFO: ERROR | service=ingest-svc | reason=db_lock | detail=deadlock detected will retry 1/3
+$CL|REC|t=1780621334300|msg=[2026-06-05 01:01:29,600] INFO: [worker stdout] [2026-06-05 01:01:29,600] INFO: 重试成功 | service=ingest-svc | ms=300 | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T04:00:00Z.json
+$CL|REC|t=1780621334050|msg=[2026-06-05 01:01:29,350] INFO: [worker stdout] [2026-06-05 01:01:29,350] INFO: [进度] 78/112 | shard=shard-2 | service=report-svc | window=2026-06-04T05:00:00Z/PT60S
+$CL|REC|t=1780621334130|msg=[2026-06-05 01:01:29,430] INFO: [worker stdout] [2026-06-05 01:01:29,430] INFO: 聚合中 | service=report-svc | window=2026-06-04T05:00:00Z | count=4619 | p50_ms=71 | p99_ms=219 | err_rate=0.001
+$CL|REC|t=1780621334250|msg=[2026-06-05 01:01:29,550] INFO: [worker stdout] [2026-06-05 01:01:29,550] INFO: 写入指标 | service=report-svc | window=2026-06-04T05:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T05:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621334400|msg=[2026-06-05 01:01:29,700] INFO: [worker stdout] [2026-06-05 01:01:29,700] INFO: [进度] 79/112 | shard=shard-2 | service=search-svc | window=2026-06-04T06:00:00Z/PT60S
+$CL|REC|t=1780621334480|msg=[2026-06-05 01:01:29,780] INFO: [worker stdout] [2026-06-05 01:01:29,780] INFO: 聚合中 | service=search-svc | window=2026-06-04T06:00:00Z | count=4666 | p50_ms=74 | p99_ms=226 | err_rate=0.014
+$CL|REC|t=1780621334600|msg=[2026-06-05 01:01:29,900] INFO: [worker stdout] [2026-06-05 01:01:29,900] INFO: 写入指标 | service=search-svc | window=2026-06-04T06:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T06:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621334750|msg=[2026-06-05 01:01:30,050] INFO: [worker stdout] [2026-06-05 01:01:30,050] INFO: [进度] 80/112 | shard=shard-2 | service=media-svc | window=2026-06-04T07:00:00Z/PT60S
+$CL|REC|t=1780621334830|msg=[2026-06-05 01:01:30,130] INFO: [worker stdout] [2026-06-05 01:01:30,130] INFO: 聚合中 | service=media-svc | window=2026-06-04T07:00:00Z | count=4713 | p50_ms=77 | p99_ms=233 | err_rate=0.027
+$CL|REC|t=1780621334950|msg=[2026-06-05 01:01:30,250] INFO: [worker stdout] [2026-06-05 01:01:30,250] INFO: 写入指标 | service=media-svc | window=2026-06-04T07:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T07:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621335100|msg=[2026-06-05 01:01:30,400] INFO: [worker stdout] [2026-06-05 01:01:30,400] INFO: [进度] 81/112 | shard=shard-2 | service=api-gateway | window=2026-06-04T08:00:00Z/PT60S
+$CL|REC|t=1780621335180|msg=[2026-06-05 01:01:30,480] INFO: [worker stdout] [2026-06-05 01:01:30,480] INFO: 聚合中 | service=api-gateway | window=2026-06-04T08:00:00Z | count=4760 | p50_ms=80 | p99_ms=240 | err_rate=0.040
+$CL|REC|t=1780621335300|msg=[2026-06-05 01:01:30,600] INFO: [worker stdout] [2026-06-05 01:01:30,600] INFO: 写入指标 | service=api-gateway | window=2026-06-04T08:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T08:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621335450|msg=[2026-06-05 01:01:30,750] INFO: [worker stdout] [2026-06-05 01:01:30,750] INFO: [进度] 82/112 | shard=shard-2 | service=auth-svc | window=2026-06-04T09:00:00Z/PT60S
+$CL|REC|t=1780621335530|msg=[2026-06-05 01:01:30,830] INFO: [worker stdout] [2026-06-05 01:01:30,830] INFO: 聚合中 | service=auth-svc | window=2026-06-04T09:00:00Z | count=4807 | p50_ms=83 | p99_ms=247 | err_rate=0.053
+$CL|REC|t=1780621335650|msg=[2026-06-05 01:01:30,950] INFO: [worker stdout] [2026-06-05 01:01:30,950] INFO: 写入指标 | service=auth-svc | window=2026-06-04T09:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T09:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621335800|msg=[2026-06-05 01:01:31,100] INFO: [worker stdout] [2026-06-05 01:01:31,100] INFO: [进度] 83/112 | shard=shard-2 | service=billing-svc | window=2026-06-04T10:00:00Z/PT60S
+$CL|REC|t=1780621335880|msg=[2026-06-05 01:01:31,180] INFO: [worker stdout] [2026-06-05 01:01:31,180] INFO: 聚合中 | service=billing-svc | window=2026-06-04T10:00:00Z | count=4854 | p50_ms=86 | p99_ms=254 | err_rate=0.066
+$CL|REC|t=1780621336000|msg=[2026-06-05 01:01:31,300] INFO: [worker stdout] [2026-06-05 01:01:31,300] INFO: 写入指标 | service=billing-svc | window=2026-06-04T10:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T10:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621336150|msg=[2026-06-05 01:01:31,450] INFO: [worker stdout] [2026-06-05 01:01:31,450] INFO: [进度] 84/112 | shard=shard-2 | service=notif-svc | window=2026-06-04T11:00:00Z/PT60S
+$CL|REC|t=1780621336230|msg=[2026-06-05 01:01:31,530] INFO: [worker stdout] [2026-06-05 01:01:31,530] INFO: 聚合中 | service=notif-svc | window=2026-06-04T11:00:00Z | count=4901 | p50_ms=89 | p99_ms=261 | err_rate=0.079
+$CL|REC|t=1780621336350|msg=[2026-06-05 01:01:31,650] INFO: [worker stdout] [2026-06-05 01:01:31,650] INFO: 写入指标 | service=notif-svc | window=2026-06-04T11:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T11:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621356700|msg=[2026-06-05 01:01:30,000] INFO: [worker stdout] [2026-06-05 01:01:30,000] INFO: [进度] 85/112 | shard=shard-3 | service=ingest-svc | window=2026-06-04T12:00:00Z/PT60S
+$CL|REC|t=1780621356780|msg=[2026-06-05 01:01:30,080] INFO: [worker stdout] [2026-06-05 01:01:30,080] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T12:00:00Z | count=4948 | p50_ms=92 | p99_ms=268 | err_rate=0.092
+$CL|REC|t=1780621356900|msg=[2026-06-05 01:01:30,200] INFO: [worker stdout] [2026-06-05 01:01:30,200] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T12:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T12:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621357050|msg=[2026-06-05 01:01:30,350] INFO: [worker stdout] [2026-06-05 01:01:30,350] INFO: [进度] 86/112 | shard=shard-3 | service=report-svc | window=2026-06-04T13:00:00Z/PT60S
+$CL|REC|t=1780621357130|msg=[2026-06-05 01:01:30,430] INFO: [worker stdout] [2026-06-05 01:01:30,430] INFO: 聚合中 | service=report-svc | window=2026-06-04T13:00:00Z | count=4995 | p50_ms=95 | p99_ms=275 | err_rate=0.005
+$CL|REC|t=1780621357250|msg=[2026-06-05 01:01:30,550] INFO: [worker stdout] [2026-06-05 01:01:30,550] INFO: 写入指标 | service=report-svc | window=2026-06-04T13:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T13:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621357400|msg=[2026-06-05 01:01:30,700] INFO: [worker stdout] [2026-06-05 01:01:30,700] INFO: [进度] 87/112 | shard=shard-3 | service=search-svc | window=2026-06-04T14:00:00Z/PT60S
+$CL|REC|t=1780621357480|msg=[2026-06-05 01:01:30,780] INFO: [worker stdout] [2026-06-05 01:01:30,780] INFO: 聚合中 | service=search-svc | window=2026-06-04T14:00:00Z | count=5042 | p50_ms=98 | p99_ms=282 | err_rate=0.018
+$CL|REC|t=1780621357600|msg=[2026-06-05 01:01:30,900] INFO: [worker stdout] [2026-06-05 01:01:30,900] INFO: 写入指标 | service=search-svc | window=2026-06-04T14:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T14:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621357750|msg=[2026-06-05 01:01:31,050] INFO: [worker stdout] [2026-06-05 01:01:31,050] INFO: [进度] 88/112 | shard=shard-3 | service=media-svc | window=2026-06-04T15:00:00Z/PT60S
+$CL|REC|t=1780621357830|msg=[2026-06-05 01:01:31,130] INFO: [worker stdout] [2026-06-05 01:01:31,130] INFO: 聚合中 | service=media-svc | window=2026-06-04T15:00:00Z | count=5089 | p50_ms=101 | p99_ms=289 | err_rate=0.031
+$CL|REC|t=1780621357950|msg=[2026-06-05 01:01:31,250] INFO: [worker stdout] [2026-06-05 01:01:31,250] INFO: 写入指标 | service=media-svc | window=2026-06-04T15:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T15:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621358100|msg=[2026-06-05 01:01:31,400] INFO: [worker stdout] [2026-06-05 01:01:31,400] INFO: [进度] 89/112 | shard=shard-3 | service=api-gateway | window=2026-06-04T16:00:00Z/PT60S
+$CL|REC|t=1780621358180|msg=[2026-06-05 01:01:31,480] INFO: [worker stdout] [2026-06-05 01:01:31,480] INFO: 聚合中 | service=api-gateway | window=2026-06-04T16:00:00Z | count=5136 | p50_ms=104 | p99_ms=296 | err_rate=0.044
+$CL|REC|t=1780621358300|msg=[2026-06-05 01:01:31,600] INFO: [worker stdout] [2026-06-05 01:01:31,600] INFO: 写入指标 | service=api-gateway | window=2026-06-04T16:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T16:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621358450|msg=[2026-06-05 01:01:31,750] INFO: [worker stdout] [2026-06-05 01:01:31,750] INFO: [进度] 90/112 | shard=shard-3 | service=auth-svc | window=2026-06-04T17:00:00Z/PT60S
+$CL|REC|t=1780621358530|msg=[2026-06-05 01:01:31,830] INFO: [worker stdout] [2026-06-05 01:01:31,830] INFO: 聚合中 | service=auth-svc | window=2026-06-04T17:00:00Z | count=5183 | p50_ms=107 | p99_ms=303 | err_rate=0.057
+$CL|REC|t=1780621358650|msg=[2026-06-05 01:01:31,950] INFO: [worker stdout] [2026-06-05 01:01:31,950] INFO: 写入指标 | service=auth-svc | window=2026-06-04T17:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T17:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621358800|msg=[2026-06-05 01:01:32,100] INFO: [worker stdout] [2026-06-05 01:01:32,100] INFO: [进度] 91/112 | shard=shard-3 | service=billing-svc | window=2026-06-04T18:00:00Z/PT60S
+$CL|REC|t=1780621358880|msg=[2026-06-05 01:01:32,180] INFO: [worker stdout] [2026-06-05 01:01:32,180] INFO: 聚合中 | service=billing-svc | window=2026-06-04T18:00:00Z | count=5230 | p50_ms=110 | p99_ms=310 | err_rate=0.070
+$CL|REC|t=1780621359000|msg=[2026-06-05 01:01:32,300] INFO: [worker stdout] [2026-06-05 01:01:32,300] INFO: 写入指标 | service=billing-svc | window=2026-06-04T18:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T18:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621359150|msg=[2026-06-05 01:01:32,450] INFO: [worker stdout] [2026-06-05 01:01:32,450] INFO: [进度] 92/112 | shard=shard-3 | service=notif-svc | window=2026-06-04T19:00:00Z/PT60S
+$CL|REC|t=1780621359230|msg=[2026-06-05 01:01:32,530] INFO: [worker stdout] [2026-06-05 01:01:32,530] INFO: 聚合中 | service=notif-svc | window=2026-06-04T19:00:00Z | count=5277 | p50_ms=113 | p99_ms=317 | err_rate=0.083
+$CL|REC|t=1780621359350|msg=[2026-06-05 01:01:32,650] INFO: [worker stdout] [2026-06-05 01:01:32,650] INFO: 写入指标 | service=notif-svc | window=2026-06-04T19:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T19:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621359500|msg=[2026-06-05 01:01:32,800] INFO: [worker stdout] [2026-06-05 01:01:32,800] INFO: [进度] 93/112 | shard=shard-3 | service=ingest-svc | window=2026-06-04T20:00:00Z/PT60S
+$CL|REC|t=1780621359580|msg=[2026-06-05 01:01:32,880] INFO: [worker stdout] [2026-06-05 01:01:32,880] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T20:00:00Z | count=5324 | p50_ms=116 | p99_ms=324 | err_rate=0.096
+$CL|REC|t=1780621359700|msg=[2026-06-05 01:01:33,000] INFO: [worker stdout] [2026-06-05 01:01:33,000] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T20:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T20:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621359850|msg=[2026-06-05 01:01:33,150] INFO: [worker stdout] [2026-06-05 01:01:33,150] INFO: [进度] 94/112 | shard=shard-3 | service=report-svc | window=2026-06-04T21:00:00Z/PT60S
+$CL|REC|t=1780621359930|msg=[2026-06-05 01:01:33,230] INFO: [worker stdout] [2026-06-05 01:01:33,230] INFO: 聚合中 | service=report-svc | window=2026-06-04T21:00:00Z | count=5371 | p50_ms=119 | p99_ms=331 | err_rate=0.009
+$CL|REC|t=1780621360050|msg=[2026-06-05 01:01:33,350] INFO: [worker stdout] [2026-06-05 01:01:33,350] INFO: 写入指标 | service=report-svc | window=2026-06-04T21:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T21:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621360200|msg=[2026-06-05 01:01:33,500] INFO: [worker stdout] [2026-06-05 01:01:33,500] INFO: [进度] 95/112 | shard=shard-3 | service=search-svc | window=2026-06-04T22:00:00Z/PT60S
+$CL|REC|t=1780621360280|msg=[2026-06-05 01:01:33,580] INFO: [worker stdout] [2026-06-05 01:01:33,580] INFO: 聚合中 | service=search-svc | window=2026-06-04T22:00:00Z | count=5418 | p50_ms=122 | p99_ms=338 | err_rate=0.022
+$CL|REC|t=1780621360400|msg=[2026-06-05 01:01:33,700] INFO: [worker stdout] [2026-06-05 01:01:33,700] INFO: 写入指标 | service=search-svc | window=2026-06-04T22:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T22:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621360550|msg=[2026-06-05 01:01:33,850] INFO: [worker stdout] [2026-06-05 01:01:33,850] INFO: [进度] 96/112 | shard=shard-3 | service=media-svc | window=2026-06-04T23:00:00Z/PT60S
+$CL|REC|t=1780621360630|msg=[2026-06-05 01:01:33,930] INFO: [worker stdout] [2026-06-05 01:01:33,930] INFO: 聚合中 | service=media-svc | window=2026-06-04T23:00:00Z | count=5465 | p50_ms=125 | p99_ms=345 | err_rate=0.035
+$CL|REC|t=1780621360750|msg=[2026-06-05 01:01:34,050] INFO: [worker stdout] [2026-06-05 01:01:34,050] INFO: 写入指标 | service=media-svc | window=2026-06-04T23:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T23:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621360900|msg=[2026-06-05 01:01:34,200] INFO: [worker stdout] [2026-06-05 01:01:34,200] INFO: [进度] 97/112 | shard=shard-3 | service=api-gateway | window=2026-06-04T00:00:00Z/PT60S
+$CL|REC|t=1780621360980|msg=[2026-06-05 01:01:34,280] INFO: [worker stdout] [2026-06-05 01:01:34,280] INFO: 聚合中 | service=api-gateway | window=2026-06-04T00:00:00Z | count=5512 | p50_ms=128 | p99_ms=352 | err_rate=0.048
+$CL|REC|t=1780621361100|msg=[2026-06-05 01:01:34,400] INFO: [worker stdout] [2026-06-05 01:01:34,400] INFO: 写入指标 | service=api-gateway | window=2026-06-04T00:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T00:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621361250|msg=[2026-06-05 01:01:34,550] INFO: [worker stdout] [2026-06-05 01:01:34,550] INFO: [进度] 98/112 | shard=shard-3 | service=auth-svc | window=2026-06-04T01:00:00Z/PT60S
+$CL|REC|t=1780621361330|msg=[2026-06-05 01:01:34,630] INFO: [worker stdout] [2026-06-05 01:01:34,630] INFO: 聚合中 | service=auth-svc | window=2026-06-04T01:00:00Z | count=5559 | p50_ms=131 | p99_ms=359 | err_rate=0.061
+$CL|REC|t=1780621361450|msg=[2026-06-05 01:01:34,750] INFO: [worker stdout] [2026-06-05 01:01:34,750] INFO: 写入指标 | service=auth-svc | window=2026-06-04T01:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T01:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621361600|msg=[2026-06-05 01:01:34,900] INFO: [worker stdout] [2026-06-05 01:01:34,900] INFO: [进度] 99/112 | shard=shard-3 | service=billing-svc | window=2026-06-04T02:00:00Z/PT60S
+$CL|REC|t=1780621361680|msg=[2026-06-05 01:01:34,980] INFO: [worker stdout] [2026-06-05 01:01:34,980] INFO: 聚合中 | service=billing-svc | window=2026-06-04T02:00:00Z | count=5606 | p50_ms=134 | p99_ms=366 | err_rate=0.074
+$CL|REC|t=1780621361800|msg=[2026-06-05 01:01:35,100] INFO: [worker stdout] [2026-06-05 01:01:35,100] INFO: 写入指标 | service=billing-svc | window=2026-06-04T02:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T02:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621361950|msg=[2026-06-05 01:01:35,250] INFO: [worker stdout] [2026-06-05 01:01:35,250] INFO: [进度] 100/112 | shard=shard-3 | service=notif-svc | window=2026-06-04T03:00:00Z/PT60S
+$CL|REC|t=1780621362030|msg=[2026-06-05 01:01:35,330] INFO: [worker stdout] [2026-06-05 01:01:35,330] INFO: 聚合中 | service=notif-svc | window=2026-06-04T03:00:00Z | count=5653 | p50_ms=137 | p99_ms=373 | err_rate=0.087
+$CL|REC|t=1780621362150|msg=[2026-06-05 01:01:35,450] INFO: [worker stdout] [2026-06-05 01:01:35,450] INFO: 写入指标 | service=notif-svc | window=2026-06-04T03:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T03:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621362300|msg=[2026-06-05 01:01:35,600] INFO: [worker stdout] [2026-06-05 01:01:35,600] INFO: [进度] 101/112 | shard=shard-3 | service=ingest-svc | window=2026-06-04T04:00:00Z/PT60S
+$CL|REC|t=1780621362380|msg=[2026-06-05 01:01:35,680] INFO: [worker stdout] [2026-06-05 01:01:35,680] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T04:00:00Z | count=5700 | p50_ms=140 | p99_ms=380 | err_rate=0.000
+$CL|REC|t=1780621362500|msg=[2026-06-05 01:01:35,800] INFO: [worker stdout] [2026-06-05 01:01:35,800] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T04:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T04:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621362650|msg=[2026-06-05 01:01:35,950] INFO: [worker stdout] [2026-06-05 01:01:35,950] INFO: [进度] 102/112 | shard=shard-3 | service=report-svc | window=2026-06-04T05:00:00Z/PT60S
+$CL|REC|t=1780621362730|msg=[2026-06-05 01:01:36,030] INFO: [worker stdout] [2026-06-05 01:01:36,030] INFO: 聚合中 | service=report-svc | window=2026-06-04T05:00:00Z | count=5747 | p50_ms=143 | p99_ms=387 | err_rate=0.013
+$CL|REC|t=1780621362850|msg=[2026-06-05 01:01:36,150] INFO: [worker stdout] [2026-06-05 01:01:36,150] INFO: 写入指标 | service=report-svc | window=2026-06-04T05:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T05:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621363000|msg=[2026-06-05 01:01:36,300] INFO: [worker stdout] [2026-06-05 01:01:36,300] INFO: [进度] 103/112 | shard=shard-3 | service=search-svc | window=2026-06-04T06:00:00Z/PT60S
+$CL|REC|t=1780621363080|msg=[2026-06-05 01:01:36,380] INFO: [worker stdout] [2026-06-05 01:01:36,380] INFO: 聚合中 | service=search-svc | window=2026-06-04T06:00:00Z | count=5794 | p50_ms=146 | p99_ms=394 | err_rate=0.026
+$CL|REC|t=1780621363200|msg=[2026-06-05 01:01:36,500] INFO: [worker stdout] [2026-06-05 01:01:36,500] INFO: 写入指标 | service=search-svc | window=2026-06-04T06:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T06:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621363350|msg=[2026-06-05 01:01:36,650] INFO: [worker stdout] [2026-06-05 01:01:36,650] INFO: [进度] 104/112 | shard=shard-3 | service=media-svc | window=2026-06-04T07:00:00Z/PT60S
+$CL|REC|t=1780621363430|msg=[2026-06-05 01:01:36,730] INFO: [worker stdout] [2026-06-05 01:01:36,730] INFO: 聚合中 | service=media-svc | window=2026-06-04T07:00:00Z | count=5841 | p50_ms=149 | p99_ms=401 | err_rate=0.039
+$CL|REC|t=1780621363550|msg=[2026-06-05 01:01:36,850] INFO: [worker stdout] [2026-06-05 01:01:36,850] INFO: 写入指标 | service=media-svc | window=2026-06-04T07:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T07:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621363700|msg=[2026-06-05 01:01:37,000] INFO: [worker stdout] [2026-06-05 01:01:37,000] INFO: [进度] 105/112 | shard=shard-3 | service=api-gateway | window=2026-06-04T08:00:00Z/PT60S
+$CL|REC|t=1780621363780|msg=[2026-06-05 01:01:37,080] INFO: [worker stdout] [2026-06-05 01:01:37,080] INFO: 聚合中 | service=api-gateway | window=2026-06-04T08:00:00Z | count=5888 | p50_ms=152 | p99_ms=408 | err_rate=0.052
+$CL|REC|t=1780621363900|msg=[2026-06-05 01:01:37,200] INFO: [worker stdout] [2026-06-05 01:01:37,200] INFO: 写入指标 | service=api-gateway | window=2026-06-04T08:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=api-gateway/2026-06-04T08:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621364050|msg=[2026-06-05 01:01:37,350] INFO: [worker stdout] [2026-06-05 01:01:37,350] INFO: [进度] 106/112 | shard=shard-3 | service=auth-svc | window=2026-06-04T09:00:00Z/PT60S
+$CL|REC|t=1780621364130|msg=[2026-06-05 01:01:37,430] INFO: [worker stdout] [2026-06-05 01:01:37,430] INFO: 聚合中 | service=auth-svc | window=2026-06-04T09:00:00Z | count=5935 | p50_ms=155 | p99_ms=415 | err_rate=0.065
+$CL|REC|t=1780621364250|msg=[2026-06-05 01:01:37,550] INFO: [worker stdout] [2026-06-05 01:01:37,550] INFO: 写入指标 | service=auth-svc | window=2026-06-04T09:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=auth-svc/2026-06-04T09:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621364400|msg=[2026-06-05 01:01:37,700] INFO: [worker stdout] [2026-06-05 01:01:37,700] INFO: [进度] 107/112 | shard=shard-3 | service=billing-svc | window=2026-06-04T10:00:00Z/PT60S
+$CL|REC|t=1780621364480|msg=[2026-06-05 01:01:37,780] INFO: [worker stdout] [2026-06-05 01:01:37,780] INFO: 聚合中 | service=billing-svc | window=2026-06-04T10:00:00Z | count=5982 | p50_ms=158 | p99_ms=422 | err_rate=0.078
+$CL|REC|t=1780621364600|msg=[2026-06-05 01:01:37,900] INFO: [worker stdout] [2026-06-05 01:01:37,900] INFO: 写入指标 | service=billing-svc | window=2026-06-04T10:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=billing-svc/2026-06-04T10:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621364750|msg=[2026-06-05 01:01:38,050] INFO: [worker stdout] [2026-06-05 01:01:38,050] INFO: [进度] 108/112 | shard=shard-3 | service=notif-svc | window=2026-06-04T11:00:00Z/PT60S
+$CL|REC|t=1780621364830|msg=[2026-06-05 01:01:38,130] INFO: [worker stdout] [2026-06-05 01:01:38,130] INFO: 聚合中 | service=notif-svc | window=2026-06-04T11:00:00Z | count=6029 | p50_ms=161 | p99_ms=429 | err_rate=0.091
+$CL|REC|t=1780621364950|msg=[2026-06-05 01:01:38,250] INFO: [worker stdout] [2026-06-05 01:01:38,250] INFO: 写入指标 | service=notif-svc | window=2026-06-04T11:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=notif-svc/2026-06-04T11:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621365100|msg=[2026-06-05 01:01:38,400] INFO: [worker stdout] [2026-06-05 01:01:38,400] INFO: [进度] 109/112 | shard=shard-3 | service=ingest-svc | window=2026-06-04T12:00:00Z/PT60S
+$CL|REC|t=1780621365180|msg=[2026-06-05 01:01:38,480] INFO: [worker stdout] [2026-06-05 01:01:38,480] INFO: 聚合中 | service=ingest-svc | window=2026-06-04T12:00:00Z | count=6076 | p50_ms=164 | p99_ms=436 | err_rate=0.004
+$CL|REC|t=1780621365300|msg=[2026-06-05 01:01:38,600] INFO: [worker stdout] [2026-06-05 01:01:38,600] INFO: 写入指标 | service=ingest-svc | window=2026-06-04T12:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=ingest-svc/2026-06-04T12:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621365450|msg=[2026-06-05 01:01:38,750] INFO: [worker stdout] [2026-06-05 01:01:38,750] INFO: [进度] 110/112 | shard=shard-3 | service=report-svc | window=2026-06-04T13:00:00Z/PT60S
+$CL|REC|t=1780621365530|msg=[2026-06-05 01:01:38,830] INFO: [worker stdout] [2026-06-05 01:01:38,830] INFO: 聚合中 | service=report-svc | window=2026-06-04T13:00:00Z | count=6123 | p50_ms=167 | p99_ms=443 | err_rate=0.017
+$CL|REC|t=1780621365650|msg=[2026-06-05 01:01:38,950] INFO: [worker stdout] [2026-06-05 01:01:38,950] INFO: 写入指标 | service=report-svc | window=2026-06-04T13:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=report-svc/2026-06-04T13:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621365800|msg=[2026-06-05 01:01:39,100] INFO: [worker stdout] [2026-06-05 01:01:39,100] INFO: [进度] 111/112 | shard=shard-3 | service=search-svc | window=2026-06-04T14:00:00Z/PT60S
+$CL|REC|t=1780621365880|msg=[2026-06-05 01:01:39,180] INFO: [worker stdout] [2026-06-05 01:01:39,180] INFO: 聚合中 | service=search-svc | window=2026-06-04T14:00:00Z | count=6170 | p50_ms=170 | p99_ms=450 | err_rate=0.030
+$CL|REC|t=1780621366000|msg=[2026-06-05 01:01:39,300] INFO: [worker stdout] [2026-06-05 01:01:39,300] INFO: 写入指标 | service=search-svc | window=2026-06-04T14:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=search-svc/2026-06-04T14:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621366150|msg=[2026-06-05 01:01:39,450] INFO: [worker stdout] [2026-06-05 01:01:39,450] INFO: [进度] 112/112 | shard=shard-3 | service=media-svc | window=2026-06-04T15:00:00Z/PT60S
+$CL|REC|t=1780621366230|msg=[2026-06-05 01:01:39,530] INFO: [worker stdout] [2026-06-05 01:01:39,530] INFO: 聚合中 | service=media-svc | window=2026-06-04T15:00:00Z | count=6217 | p50_ms=173 | p99_ms=457 | err_rate=0.043
+$CL|REC|t=1780621366350|msg=[2026-06-05 01:01:39,650] INFO: [worker stdout] [2026-06-05 01:01:39,650] INFO: 写入指标 | service=media-svc | window=2026-06-04T15:00:00Z | out=s3://sample-batch-processor/metrics/2026-06-05/service=media-svc/2026-06-04T15:00:00Z.json | engine=duckdb
+$CL|REC|t=1780621494700|msg=[2026-06-05 01:04:21,000] INFO: 心跳检查 (checkpoint 1/4) processed=28 failed=0 throughput=8.4 windows/s
+$CL|REC|t=1780621524700|msg=[2026-06-05 01:04:22,000] INFO: 心跳检查 (checkpoint 2/4) processed=56 failed=0 throughput=8.4 windows/s
+$CL|REC|t=1780621554700|msg=[2026-06-05 01:04:23,000] INFO: 心跳检查 (checkpoint 3/4) processed=84 failed=0 throughput=8.4 windows/s
+$CL|REC|t=1780621584700|msg=[2026-06-05 01:04:24,000] INFO: 心跳检查 (checkpoint 4/4) processed=112 failed=0 throughput=8.4 windows/s
+$CL|REC|t=1780621644700|msg=[2026-06-05 01:07:24,700] INFO: 批处理完成 summary=windows=112 services=8 failed=0 elapsed=360000ms
+$CL|REC|t=1780621645200|msg=END RequestId: 196a221f-ccf1-4231-9769-f0e4e8b5db42
+$CL|REC|t=1780621645200|msg=REPORT RequestId: 196a221f-ccf1-4231-9769-f0e4e8b5db42 Duration: 360142.00 ms Billed Duration: 361000 ms Memory Size: 2048 MB Max Memory Used: 1408 MB Init Duration: 1184.55 ms
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"
+"

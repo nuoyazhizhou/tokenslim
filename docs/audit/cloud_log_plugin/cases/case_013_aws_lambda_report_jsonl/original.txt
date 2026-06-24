@@ -1,0 +1,3 @@
+{"timestamp":"2026-05-13T08:20:01.001Z","logGroup":"/aws/lambda/doc-worker","logStream":"2026/05/13/[$LATEST]8f7a","message":"START RequestId: 9a1 Version: $LATEST"}
+{"timestamp":"2026-05-13T08:20:01.121Z","logGroup":"/aws/lambda/doc-worker","logStream":"2026/05/13/[$LATEST]8f7a","level":"ERROR","message":"ERROR Runtime.ImportModuleError: Unable to import module 'app': No module named app"}
+{"timestamp":"2026-05-13T08:20:01.222Z","logGroup":"/aws/lambda/doc-worker","logStream":"2026/05/13/[$LATEST]8f7a","message":"REPORT RequestId: 9a1 Duration: 121.34 ms Billed Duration: 122 ms Memory Size: 512 MB Max Memory Used: 93 MB"}

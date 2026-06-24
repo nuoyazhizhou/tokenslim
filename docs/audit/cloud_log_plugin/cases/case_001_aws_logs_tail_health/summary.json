@@ -1,0 +1,12 @@
+{
+    "case_id": "case_001_aws_logs_tail_health",
+    "case_file": "case_001_aws_logs_tail_health.log",
+    "original_lines": 8,
+    "original_bytes": 920,
+    "compact_lines": 2,
+    "compact_bytes": 287,
+    "compression_pct": 68.8,
+    "compact_hash": "d9ba4089429530ac931cdd25362e716dc460bbfa39a4d853f2827d79251fbd6d",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,2 @@
+$CL|WEB_HEALTH|provider=aws|2026-05-13 08:22:01..2026-05-13 08:22:31|source=app/alb/50dc6c49|GET /health|200 OK|hits=2|ips=198.51.100.10:1,198.51.100.11:1|level=INFO
+!$CL|WEB_ACCESS|provider=aws|2026-05-13 08:22:35..2026-05-13 08:22:35|source=app/alb/50dc6c49|POST /api/upload|502 Bad Gateway|hits=1|ips=198.51.100.12:1|level=ERROR

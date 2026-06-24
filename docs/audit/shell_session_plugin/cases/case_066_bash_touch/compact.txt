@@ -1,0 +1,8 @@
+user@host:~$ touch notes.md checklist.txt && ls -la notes.md
+-rw-r--r-- 1 user user 0 Oct 10 10:00 notes.md
+user@host:~$ stat notes.md
+  File: notes.md
+  Size: 0         	Blocks: 0          IO Block: 1024   regular empty file
+Device: 801h/2049d	Inode: 131073      Links: 1
+user@host:~$
+

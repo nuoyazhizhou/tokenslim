@@ -1,0 +1,12 @@
+user@host:~$ rg --version
+ripgrep 14.1.0
+user@host:~$ rg -n "TODO" src/
+src/main.rs:42:    // TODO: handle edge case for empty input
+src/lib.rs:7:    // TODO: refactor after v2 release
+src/utils.py:18:    # TODO: cache invalidation
+user@host:~$ rg -c "TODO" src/
+src/main.rs:1
+src/lib.rs:1
+src/utils.py:1
+user@host:~$
+

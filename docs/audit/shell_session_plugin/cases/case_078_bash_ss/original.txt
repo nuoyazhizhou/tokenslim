@@ -1,0 +1,15 @@
+user@host:~$ ss -tulpn
+Netid   State    Recv-Q   Send-Q     Local Address:Port     Peer Address:Port   Process
+tcp     LISTEN   0        128              0.0.0.0:22            0.0.0.0:*       users:(("sshd",pid=1234,fd=3))
+tcp     LISTEN   0        511              0.0.0.0:80            0.0.0.0:*       users:(("nginx",pid=5678,fd=6))
+tcp     LISTEN   0        128              0.0.0.0:443           0.0.0.0:*       users:(("nginx",pid=5678,fd=7))
+tcp     LISTEN   0        128                 [::]:22               [::]:*       users:(("sshd",pid=1234,fd=4))
+tcp     LISTEN   0        128            127.0.0.1:3306          0.0.0.0:*       users:(("mysqld",pid=2345,fd=10))
+udp     UNCONN   0        0                0.0.0.0:68            0.0.0.0:*       users:(("dhclient",pid=890,fd=6))
+user@host:~$ ss -s
+TCP:   4 (estab 1, closed 0, orphaned 0, timewait 0)
+Transport Total     IP        IPv6
+RAW	  0         0         0
+UDP	  1         1         0
+TCP	  4         3         1
+user@host:~$

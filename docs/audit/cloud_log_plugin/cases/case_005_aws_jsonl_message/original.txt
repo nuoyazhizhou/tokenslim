@@ -1,0 +1,3 @@
+{"timestamp":"2026-05-13T08:13:39.939000+00:00","logGroup":"/ecs/cloud-document/backend","logStream":"ecs/backend/f6bf6a1fb38440c992e4e33e1691b589","message":"worker started pid=42"}
+{"timestamp":"2026-05-13T08:13:41.100000+00:00","logGroup":"/ecs/cloud-document/backend","logStream":"ecs/backend/f6bf6a1fb38440c992e4e33e1691b589","level":"ERROR","message":"database connection error: timeout after 30s"}
+{"timestamp":"2026-05-13T08:13:45.210000+00:00","logGroup":"/ecs/cloud-document/backend","logStream":"ecs/backend/f6bf6a1fb38440c992e4e33e1691b589","message":"retrying database connection"}

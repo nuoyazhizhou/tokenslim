@@ -1,0 +1,12 @@
+{
+    "case_id": "case_024_aliyun_sls_table_syslog",
+    "case_file": "case_024_aliyun_sls_table_syslog.log",
+    "original_lines": 5,
+    "original_bytes": 395,
+    "compact_lines": 5,
+    "compact_bytes": 395,
+    "compression_pct": 0.0,
+    "compact_hash": "7786298cea0ee6548600d375667dc67a04e56899fa64b5cd9dfa36c58051d374",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

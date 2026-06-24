@@ -1,0 +1,5 @@
+user@linux:~$ du -sh /var/log/*
+1.2G /var/log/journal
+500M /var/log/syslog
+user@linux:~$ 
+

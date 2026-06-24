@@ -1,0 +1,3 @@
+oci logging log-entry list --log-group-id ocid1.loggroup.oc1..backend
+$CL|WEB_HEALTH|provider=oci|2026-05-13 08:32:01..2026-05-13 08:32:31|source=ocid1.log.oc1..backend|GET /health|200 OK|hits=4|ips=10.1.2.1:1,10.1.2.2:2,10.1.2.3:1|level=INFO
+!$CL|WEB_ACCESS|provider=oci|2026-05-13 08:32:45..2026-05-13 08:32:45|source=ocid1.log.oc1..backend|POST /api/documents|500 Internal Server Error|hits=1|ips=10.1.2.3:1|level=ERROR

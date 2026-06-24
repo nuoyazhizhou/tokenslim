@@ -1,0 +1,3 @@
+{"TIMESTAMP": 1717560700000, "timestamp": "2026-06-05 14:11:40", "logContent": "Validating user session", "__SOURCE__": "10.0.0.1", "logsetName": "prod-logs", "topicName": "app-topic", "level": "DEBUG"}
+{"TIMESTAMP": 1717560701000, "timestamp": "2026-06-05 14:11:41", "logContent": "Failed to validate session\nError: Session expired or invalid token\n    at SessionManager.validate (/app/src/session.js:55:15)\n    at Object.handler (/app/src/api.js:102:22)", "__SOURCE__": "10.0.0.1", "logsetName": "prod-logs", "topicName": "app-topic", "level": "ERROR"}
+{"TIMESTAMP": 1717560702000, "timestamp": "2026-06-05 14:11:42", "logContent": "Connection closed", "__SOURCE__": "10.0.0.1", "logsetName": "prod-logs", "topicName": "app-topic", "level": "INFO"}

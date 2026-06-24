@@ -1,0 +1,12 @@
+{
+    "case_id": "case_029_bash_top",
+    "case_file": "case_029_bash_top.log",
+    "original_lines": 7,
+    "original_bytes": 433,
+    "compact_lines": 7,
+    "compact_bytes": 428,
+    "compression_pct": 1.2,
+    "compact_hash": "f5c9c4aa72b9e2cff78f2f45d1993c0b0260e5ce6fb7172b567239c32724d1e4",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

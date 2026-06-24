@@ -1,0 +1,9 @@
+$CL|META|providers=gcp|sources=projects/cloud-demo/stderr|records=3
+$CL|REC|t=2026-06-05 04:10:00|lvl=INFO|src=projects/cloud-demo/stderr|msg=Starting job
+!$CL|REC|t=2026-06-05 04:10:01|lvl=ERROR|src=projects/cloud-demo/stderr|msg=Traceback (most recent call last):
+  File "app.py", line 42, in <module>
+    main()
+  File "app.py", line 15, in main
+    raise ValueError("Database timeout after 30s")
+ValueError: Database timeout after 30s
+!$CL|REC|t=2026-06-05 04:10:02|lvl=ERROR|src=projects/cloud-demo/stderr|msg=Job failed

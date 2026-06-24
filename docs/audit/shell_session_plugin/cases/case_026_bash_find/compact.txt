@@ -1,0 +1,6 @@
+user@linux:~$ find /etc -name "*.conf" -type f
+/etc/resolv.conf
+/etc/host.conf
+/etc/sysctl.conf
+user@linux:~$ 
+

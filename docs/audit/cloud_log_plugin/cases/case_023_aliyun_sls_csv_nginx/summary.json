@@ -1,0 +1,12 @@
+{
+    "case_id": "case_023_aliyun_sls_csv_nginx",
+    "case_file": "case_023_aliyun_sls_csv_nginx.log",
+    "original_lines": 5,
+    "original_bytes": 460,
+    "compact_lines": 5,
+    "compact_bytes": 460,
+    "compression_pct": 0.0,
+    "compact_hash": "aea460c89d2b60708b49ff418c6ff9d3e9e592965ce8226f4d235a4c87ef94e9",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_013_aws_lambda_report_jsonl",
+    "case_file": "case_013_aws_lambda_report_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 631,
+    "compact_lines": 4,
+    "compact_bytes": 465,
+    "compression_pct": 26.3,
+    "compact_hash": "a3f27b85617976594fd36c7ee516a3ce1961f5120ab62243e0bb734aed083cae",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

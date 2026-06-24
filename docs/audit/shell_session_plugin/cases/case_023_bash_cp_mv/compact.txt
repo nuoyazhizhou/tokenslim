@@ -1,0 +1,6 @@
+user@linux:~$ cp /var/log/syslog ./backup/
+user@linux:~$ mv ./backup/syslog ./backup/syslog.bak
+user@linux:~$ echo $?
+0
+user@linux:~$ 
+

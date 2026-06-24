@@ -1,0 +1,12 @@
+{
+    "case_id": "case_014_aws_cloudtrail_jsonl",
+    "case_file": "case_014_aws_cloudtrail_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 683,
+    "compact_lines": 4,
+    "compact_bytes": 582,
+    "compression_pct": 14.8,
+    "compact_hash": "bf949a84d6bc9548ebd3e27d66c30de140d9393cd4b75fbd05842e141a0e7d72",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

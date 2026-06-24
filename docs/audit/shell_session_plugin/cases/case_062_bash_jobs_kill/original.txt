@@ -1,0 +1,4 @@
+user@linux:~$ jobs
+[1]+  Stopped                 vim test.txt
+user@linux:~$ kill %1
+user@linux:~$ 

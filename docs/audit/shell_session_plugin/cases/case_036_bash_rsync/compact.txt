@@ -1,0 +1,10 @@
+user@linux:~$ rsync -avz ./src/ user@remote:/dest/
+sending incremental file list
+src/
+src/main.rs
+src/lib.rs
+
+sent 450 bytes  received 30 bytes  960.00 bytes/sec
+total size is 4000  speedup is 8.33
+user@linux:~$ 
+

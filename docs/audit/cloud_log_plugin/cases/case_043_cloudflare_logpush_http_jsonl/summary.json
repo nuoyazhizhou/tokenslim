@@ -1,0 +1,12 @@
+{
+    "case_id": "case_043_cloudflare_logpush_http_jsonl",
+    "case_file": "case_043_cloudflare_logpush_http_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 687,
+    "compact_lines": 3,
+    "compact_bytes": 471,
+    "compression_pct": 31.4,
+    "compact_hash": "13e92567b960dca81d4229223a6a3dd7c39a2757386525c9abd9b781891229cf",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

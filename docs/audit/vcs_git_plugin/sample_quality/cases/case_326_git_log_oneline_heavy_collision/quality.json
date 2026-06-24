@@ -1,0 +1,67 @@
+{
+    "case_id": "case_326_git_log_oneline_heavy_collision",
+    "filename": "case_326_git_log_oneline_heavy_collision.log",
+    "size_bytes": 3265,
+    "line_count": 51,
+    "registered": true,
+    "registered_title": "log",
+    "title_consistent": null,
+    "deterministic": {
+        "ok_length": true,
+        "length_reason": "",
+        "anchor_ok": true,
+        "anchor_token": "git log --oneline -n 50",
+        "anchor_reason": "",
+        "mojibake": [],
+        "secrets": [],
+        "signals": [],
+        "blocking_issues": [],
+        "routing_boundary_tool": "",
+        "routing_boundary_ratio": 0.0,
+        "routing_boundary_segments": "0/0",
+        "title_consistent": null,
+        "title_assertions_checked": 0,
+        "title_assertions_satisfied": 0,
+        "title_assertions_missing": [],
+        "case_id_families": [],
+        "case_id_family_overlap": [],
+        "case_id_family_mismatch": false,
+        "sidecar_keep_mismatch": [
+            "提交哈希（前10位）和提交信息"
+        ],
+        "sidecar_compress_mismatch": [
+            "重复的'f'字符（哈希后30位）"
+        ],
+        "sidecar_scenario_empty": false
+    },
+    "llm_judgment": {
+        "status": "valid",
+        "confidence": 0.0,
+        "explanation": "LLM 未参与（无 OPENAI_API_KEY 或调用失败），仅依赖确定性 lint。",
+        "fix_hint": "",
+        "duplicate_of": "",
+        "realism_audit": {
+            "shell_personality_ok": null,
+            "line_length_entropy_ok": null,
+            "error_cause_effect_ok": null,
+            "error_multiline_ok": null,
+            "empty_output_authentic": null,
+            "exit_stderr_consistent": null,
+            "locale_plausible": null,
+            "fabrication_indicators": []
+        },
+        "sidecar_accuracy": {
+            "scenario_accurate": null,
+            "target_capability_accurate": null,
+            "expected_keep_accurate": null,
+            "expected_compress_accurate": null,
+            "inaccurate_fields": []
+        },
+        "llm_invoked": false
+    },
+    "command_tokens": [],
+    "command_families": [],
+    "routing_boundary_tool": "",
+    "content_hash": "6e3b638140e00a1874fa8088cd3c7fd0b54a830f6c95d093afaa7f5e63b89e3a",
+    "final_status": "valid"
+}

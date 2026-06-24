@@ -1,0 +1,12 @@
+{
+    "case_id": "case_049_gcp_jsonl_multiline",
+    "case_file": "case_049_gcp_jsonl_multiline.log",
+    "original_lines": 3,
+    "original_bytes": 1022,
+    "compact_lines": 9,
+    "compact_bytes": 526,
+    "compression_pct": 48.5,
+    "compact_hash": "eb8fa91deb1bc0aee6395e4da6bd3362c136963a2f94c78ce27e84d2830f610a",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

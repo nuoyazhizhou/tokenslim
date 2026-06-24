@@ -1,0 +1,7 @@
+user@host:~$ mkdir -p project/src project/tests docs
+user@host:~$ ls project/
+src
+tests
+user@host:~$ ls docs/
+user@host:~$
+

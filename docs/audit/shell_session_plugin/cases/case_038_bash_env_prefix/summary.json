@@ -1,0 +1,12 @@
+{
+    "case_id": "case_038_bash_env_prefix",
+    "case_file": "case_038_bash_env_prefix.log",
+    "original_lines": 6,
+    "original_bytes": 125,
+    "compact_lines": 6,
+    "compact_bytes": 125,
+    "compression_pct": 0.0,
+    "compact_hash": "83a9075eec9875ed18c2911ebd45ca7d13a515f49857f45f0574f13adc7fef8c",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

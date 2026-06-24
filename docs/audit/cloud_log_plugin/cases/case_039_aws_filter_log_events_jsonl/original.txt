@@ -1,0 +1,4 @@
+{"timestamp":"2026-05-13T08:13:39.939Z","logStreamName":"ecs/backend/f6bf6a1","message":"INFO:     10.0.1.94:0 - \"GET /health HTTP/1.1\" 200 OK","ingestionTime":1778665647000}
+{"timestamp":"2026-05-13T08:13:40.150Z","logStreamName":"ecs/backend/f6bf6a1","message":"INFO:     10.0.0.231:0 - \"GET /health HTTP/1.1\" 200 OK","ingestionTime":1778665647100}
+{"timestamp":"2026-05-13T08:14:09.969Z","logStreamName":"ecs/backend/f6bf6a1","message":"INFO:     10.0.1.94:0 - \"GET /health HTTP/1.1\" 200 OK","ingestionTime":1778665670000}
+{"timestamp":"2026-05-13T08:14:10.158Z","logStreamName":"ecs/backend/f6bf6a1","message":"INFO:     10.0.0.231:0 - \"GET /health HTTP/1.1\" 200 OK","ingestionTime":1778665670200}

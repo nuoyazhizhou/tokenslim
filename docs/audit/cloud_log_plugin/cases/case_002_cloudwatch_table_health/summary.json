@@ -1,0 +1,12 @@
+{
+    "case_id": "case_002_cloudwatch_table_health",
+    "case_file": "case_002_cloudwatch_table_health.log",
+    "original_lines": 10,
+    "original_bytes": 1040,
+    "compact_lines": 1,
+    "compact_bytes": 147,
+    "compression_pct": 85.9,
+    "compact_hash": "a394e86801cf1da755659ba7fec522bdd3190659391144009e194e39701872ca",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

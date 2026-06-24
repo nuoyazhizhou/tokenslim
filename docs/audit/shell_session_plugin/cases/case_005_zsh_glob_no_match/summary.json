@@ -1,0 +1,12 @@
+{
+    "case_id": "case_005_zsh_glob_no_match",
+    "case_file": "case_005_zsh_glob_no_match.log",
+    "original_lines": 5,
+    "original_bytes": 124,
+    "compact_lines": 5,
+    "compact_bytes": 122,
+    "compression_pct": 1.6,
+    "compact_hash": "e66e73559484c46ef44d7bb29851347a5ff2920639d3be932b61e0cf6fe504bb",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

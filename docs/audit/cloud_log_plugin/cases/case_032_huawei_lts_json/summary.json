@@ -1,0 +1,12 @@
+{
+    "case_id": "case_032_huawei_lts_json",
+    "case_file": "case_032_huawei_lts_json.log",
+    "original_lines": 3,
+    "original_bytes": 559,
+    "compact_lines": 2,
+    "compact_bytes": 314,
+    "compression_pct": 43.8,
+    "compact_hash": "a75de29e6d3363b13255e7a63b462f91f4d13a216deeda7a8546691de24e74f1",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

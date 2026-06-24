@@ -1,0 +1,4 @@
+$CL|META|providers=aliyun|sources=backend-7f9d|records=3
+$CL|REC|t=1778665646|lvl=INFO|src=backend-7f9d|msg=worker started pid=42
+!$CL|REC|t=1778665672|lvl=ERROR|src=backend-7f9d|msg=database connection error: timeout after 30s
+$CL|REC|t=1778665706|lvl=INFO|src=backend-7f9d|msg=retrying database connection

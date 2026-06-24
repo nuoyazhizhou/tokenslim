@@ -1,0 +1,12 @@
+{
+    "case_id": "case_072_bash_service",
+    "case_file": "case_072_bash_service.log",
+    "original_lines": 20,
+    "original_bytes": 917,
+    "compact_lines": 20,
+    "compact_bytes": 917,
+    "compression_pct": 0.0,
+    "compact_hash": "eab0018c899529f641d9d02fea99bbf48b2b3226928473cb728f6495453b54b2",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

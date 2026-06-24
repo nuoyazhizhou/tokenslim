@@ -1,0 +1,12 @@
+{
+    "case_id": "case_027_oci_logging_cli_plain",
+    "case_file": "case_027_oci_logging_cli_plain.log",
+    "original_lines": 6,
+    "original_bytes": 628,
+    "compact_lines": 3,
+    "compact_bytes": 423,
+    "compression_pct": 32.6,
+    "compact_hash": "fdb00e3ca5e3cfbbdaa88c4af264a861b3800af830a7f3b7da884d4369058fd7",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

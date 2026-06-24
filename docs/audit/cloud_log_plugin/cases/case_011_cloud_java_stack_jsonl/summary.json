@@ -1,0 +1,12 @@
+{
+    "case_id": "case_011_cloud_java_stack_jsonl",
+    "case_file": "case_011_cloud_java_stack_jsonl.log",
+    "original_lines": 2,
+    "original_bytes": 526,
+    "compact_lines": 6,
+    "compact_bytes": 463,
+    "compression_pct": 12.0,
+    "compact_hash": "cb5599e14c0a5f4faff2320d522cdfd65a3fae4a8057273d63a1400fc68ebdde",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

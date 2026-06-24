@@ -1,0 +1,12 @@
+{
+    "case_id": "case_036_cloudflare_http_json",
+    "case_file": "case_036_cloudflare_http_json.log",
+    "original_lines": 3,
+    "original_bytes": 447,
+    "compact_lines": 4,
+    "compact_bytes": 367,
+    "compression_pct": 17.9,
+    "compact_hash": "9e14780f21347797615986d45f27596dcfa2e8d998fb865d219c45fd44488bcf",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

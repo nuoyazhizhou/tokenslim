@@ -1,0 +1,4 @@
+$CL|META|providers=cloudflare|sources=backend-worker|records=3
+$CL|REC|t=2026-05-13 08:41:01|lvl=info|src=backend-worker|msg=GET /health 200 colo=SJC cache=MISS
+$CL|REC|t=2026-05-13 08:41:31|lvl=info|src=backend-worker|msg=GET /health 200 colo=SJC cache=MISS
+!$CL|REC|t=2026-05-13 08:41:45|lvl=error|src=backend-worker|msg=POST /api/render 500 error=upstream timeout

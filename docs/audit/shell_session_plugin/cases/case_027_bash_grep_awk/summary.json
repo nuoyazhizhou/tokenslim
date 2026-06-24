@@ -1,0 +1,12 @@
+{
+    "case_id": "case_027_bash_grep_awk",
+    "case_file": "case_027_bash_grep_awk.log",
+    "original_lines": 4,
+    "original_bytes": 120,
+    "compact_lines": 4,
+    "compact_bytes": 118,
+    "compression_pct": 1.7,
+    "compact_hash": "4477cfd8dbed00618ccbb8e671e49343093077e920ded555faeaa1bb763edc7c",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

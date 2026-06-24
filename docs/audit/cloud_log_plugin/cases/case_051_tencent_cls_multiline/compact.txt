@@ -1,0 +1,7 @@
+$CL|META|providers=tencent|sources=prod-logs|records=3
+$CL|REC|t=2026-06-05 14:11:40|lvl=DEBUG|src=prod-logs|msg=Validating user session
+!$CL|REC|t=2026-06-05 14:11:41|lvl=ERROR|src=prod-logs|msg=Failed to validate session
+Error: Session expired or invalid token
+    at SessionManager.validate (/app/src/session.js:55:15)
+    at Object.handler (/app/src/api.js:102:22)
+$CL|REC|t=2026-06-05 14:11:42|lvl=INFO|src=prod-logs|msg=Connection closed
