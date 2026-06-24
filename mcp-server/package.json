@@ -1,0 +1,40 @@
+{
+  "name": "@tokenslim/mcp-server",
+  "version": "0.1.0",
+  "description": "TokenSlim MCP Server - 让所有支持 MCP 的 AI Agent 直接调用 TokenSlim 压缩/解压能力",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "tokenslim-mcp-server": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "keywords": [
+    "tokenslim",
+    "mcp",
+    "model-context-protocol",
+    "compression",
+    "ai-agent"
+  ],
+  "author": "TokenSlim Team",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
