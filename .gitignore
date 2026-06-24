@@ -146,3 +146,6 @@ docs/prompts/non_vcs_classical_prompts.md
 docs/prompts/vcs_cloud_cli_prompt.md
 docs/prompts/vcs_needs_fix_tactical_prompt.md
 docs/prompts/vcs_prompts_delta.md
+
+# Qoder AI IDE 自动生成的仓库 wiki (本地缓存, 不发布)
+.qoder/
