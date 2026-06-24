@@ -1,0 +1,12 @@
+{
+    "case_id": "case_012_cloud_python_traceback_jsonl",
+    "case_file": "case_012_cloud_python_traceback_jsonl.log",
+    "original_lines": 1,
+    "original_bytes": 366,
+    "compact_lines": 6,
+    "compact_bytes": 292,
+    "compression_pct": 20.2,
+    "compact_hash": "f19e453c02838dd219bb38865e00fb38846eabb9b60b2d389a972a5e0c9f6b12",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

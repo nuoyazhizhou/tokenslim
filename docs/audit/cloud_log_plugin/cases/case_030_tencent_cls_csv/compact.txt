@@ -1,0 +1,5 @@
+timestamp,logsetName,topic,level,logContent
+2026-05-13T08:35:01Z,prod-cls,backend,INFO,"worker started pid=42"
+2026-05-13T08:35:09Z,prod-cls,backend,ERROR,"database connection error: timeout after 30s"
+2026-05-13T08:35:17Z,prod-cls,backend,INFO,"retrying database connection"
+2026-05-13T08:35:25Z,prod-cls,backend,INFO,"database connection restored"

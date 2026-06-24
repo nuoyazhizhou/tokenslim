@@ -1,0 +1,4 @@
+gcloud logging read 'resource.type="cloud_run_revision"' --limit=20
+2026-05-13T08:13:39.939Z INFO run.googleapis.com/stdout worker started pid=42
+2026-05-13T08:13:41.100Z ERROR run.googleapis.com/stderr database connection error: timeout after 30s
+2026-05-13T08:13:45.210Z INFO run.googleapis.com/stdout retrying database connection

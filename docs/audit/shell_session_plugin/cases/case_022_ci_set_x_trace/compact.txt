@@ -1,0 +1,44 @@
++ docker build -t myapp:latest .
+Sending build context to Docker daemon  2.048kB
+Step 1/5 : FROM ubuntu:20.04
+ ---> d13c942271d6
+Step 2/5 : RUN apt-get update && apt-get install -y curl
+ ---> Running in a1b2c3d4e5f6
+Ign:1 http://archive.ubuntu.com/ubuntu focal InRelease
+Get:2 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+Get:3 http://archive.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+Fetched 228 kB in 1s (228 kB/s)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+The following additional packages will be installed:
+  ca-certificates
+The following NEW packages will be installed:
+  ca-certificates curl
+0 upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
+Need to get 150 kB of archives.
+After this operation, 450 kB of additional disk space will be used.
+Get:1 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 ca-certificates all 20210119~20.04.1 [109 kB]
+Get:2 http://archive.ubuntu.com/ubuntu focal-security/main amd64 curl amd64 7.68.0-1ubuntu2.7 [41 kB]
+Fetched 150 kB in 0s (150 kB/s)
+Setting up ca-certificates (20210119~20.04.1) ...
+Setting up curl (7.68.0-1ubuntu2.7) ...
+Removing intermediate container a1b2c3d4e5f6
+ ---> 1a2b3c4d5e6f
+Step 3/5 : COPY . /app
+ ---> 2b3c4d5e6f7a
+Step 4/5 : WORKDIR /app
+ ---> Running in 3c4d5e6f7a8b
+Removing intermediate container 3c4d5e6f7a8b
+ ---> 4d5e6f7a8b9c
+Step 5/5 : CMD ["./run.sh"]
+ ---> Running in 5e6f7a8b9c0d
+Removing intermediate container 5e6f7a8b9c0d
+ ---> 6f7a8b9c0d1e
+Successfully built 6f7a8b9c0d1e
+Successfully tagged myapp:latest
++ docker run --rm myapp:latest
+Starting application...
+Application failed to connect to database. Error: ConnectionRefused(111)
++ exit 1
+

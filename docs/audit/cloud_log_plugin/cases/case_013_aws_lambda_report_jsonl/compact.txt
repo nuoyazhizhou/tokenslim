@@ -1,0 +1,4 @@
+$CL|META|providers=aws|sources=2026/05/[$LATEST|records=3
+$CL|REC|t=2026-05-13 08:20:01|src=2026/05/[$LATEST|msg=START RequestId: 9a1 Version: $LATEST
+!$CL|REC|t=2026-05-13 08:20:01|lvl=ERROR|src=2026/05/[$LATEST|msg=ERROR Runtime.ImportModuleError: Unable to import module 'app': No module named app
+$CL|REC|t=2026-05-13 08:20:01|src=2026/05/[$LATEST|msg=REPORT RequestId: 9a1 Duration: 121.34 ms Billed Duration: 122 ms Memory Size: 512 MB Max Memory Used: 93 MB

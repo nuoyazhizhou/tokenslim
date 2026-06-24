@@ -1,0 +1,12 @@
+{
+    "case_id": "case_058_bash_pytest",
+    "case_file": "case_058_bash_pytest.log",
+    "original_lines": 10,
+    "original_bytes": 404,
+    "compact_lines": 10,
+    "compact_bytes": 396,
+    "compression_pct": 2.0,
+    "compact_hash": "09d6a14d2d69e2bd551596bbfc0ed613d2d80c1594058fa503d13e92a866a466",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

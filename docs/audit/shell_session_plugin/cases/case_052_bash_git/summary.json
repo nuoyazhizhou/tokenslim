@@ -1,0 +1,12 @@
+{
+    "case_id": "case_052_bash_git",
+    "case_file": "case_052_bash_git.log",
+    "original_lines": 11,
+    "original_bytes": 374,
+    "compact_lines": 11,
+    "compact_bytes": 365,
+    "compression_pct": 2.4,
+    "compact_hash": "216ece6711b18b15f7a2837e6824ab46ef6fb6d4ce90dcd700f77843424ffa69",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

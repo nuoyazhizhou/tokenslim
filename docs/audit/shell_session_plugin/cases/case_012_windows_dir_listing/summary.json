@@ -1,0 +1,12 @@
+{
+    "case_id": "case_012_windows_dir_listing",
+    "case_file": "case_012_windows_dir_listing.log",
+    "original_lines": 13,
+    "original_bytes": 354,
+    "compact_lines": 11,
+    "compact_bytes": 205,
+    "compression_pct": 42.1,
+    "compact_hash": "5cbb8f1b8d015986c8630f71c106d6659bd15e4d3d91246eebd5645dbeced43f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

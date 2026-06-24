@@ -1,0 +1,9 @@
+user@host:~$ wc -l /var/log/syslog /var/log/auth.log
+  1234 /var/log/syslog
+   567 /var/log/auth.log
+  1801 total
+user@host:~$ wc -c src/main.rs README.md
+ 2048 src/main.rs
+ 1024 README.md
+ 3072 total
+user@host:~$

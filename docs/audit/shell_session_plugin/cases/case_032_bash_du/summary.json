@@ -1,0 +1,12 @@
+{
+    "case_id": "case_032_bash_du",
+    "case_file": "case_032_bash_du.log",
+    "original_lines": 4,
+    "original_bytes": 98,
+    "compact_lines": 4,
+    "compact_bytes": 90,
+    "compression_pct": 8.2,
+    "compact_hash": "1105905ce61390c05155e735ff940accc583f7d7c20dec4b053e51402e194485",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

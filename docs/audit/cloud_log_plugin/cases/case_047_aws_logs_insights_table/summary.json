@@ -1,0 +1,12 @@
+{
+    "case_id": "case_047_aws_logs_insights_table",
+    "case_file": "case_047_aws_logs_insights_table.log",
+    "original_lines": 3251,
+    "original_bytes": 313730,
+    "compact_lines": 2440,
+    "compact_bytes": 152653,
+    "compression_pct": 51.3,
+    "compact_hash": "93a4eec261b283a10c6d59779653d1d7b26dcf1583258717ffe5209a7ec551a1",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

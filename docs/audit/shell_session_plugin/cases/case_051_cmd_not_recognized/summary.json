@@ -1,0 +1,12 @@
+{
+    "case_id": "case_051_cmd_not_recognized",
+    "case_file": "case_051_cmd_not_recognized.log",
+    "original_lines": 4,
+    "original_bytes": 117,
+    "compact_lines": 4,
+    "compact_bytes": 115,
+    "compression_pct": 1.7,
+    "compact_hash": "f8d7f5c079c54cf9dbf9088eafd225e78acd2a14c67612e222a30a89ec6b79bb",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

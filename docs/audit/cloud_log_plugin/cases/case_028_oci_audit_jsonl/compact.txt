@@ -1,0 +1,4 @@
+$CL|META|providers=oci|sources=oraclecloud.audit|records=3
+$CL|REC|t=2026-05-13 08:33:01|lvl=com.oraclecloud.audit|src=oraclecloud.audit|msg=CreateInstance compartment=prod principal=alice result=SUCCESS
+!$CL|REC|t=2026-05-13 08:33:21|lvl=ERROR|src=oraclecloud.audit|msg=UpdateSecurityList denied: user bob is not authorized
+$CL|REC|t=2026-05-13 08:33:41|lvl=com.oraclecloud.audit|src=oraclecloud.audit|msg=DeleteObject bucket=tmp principal=cleanup result=SUCCESS

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_051_tencent_cls_multiline",
+    "case_file": "case_051_tencent_cls_multiline.log",
+    "original_lines": 3,
+    "original_bytes": 754,
+    "compact_lines": 7,
+    "compact_bytes": 444,
+    "compression_pct": 41.1,
+    "compact_hash": "f70e5922197afa4aa8223446a5760d5d522b3345965d2f4d809f883dfa8bd500",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

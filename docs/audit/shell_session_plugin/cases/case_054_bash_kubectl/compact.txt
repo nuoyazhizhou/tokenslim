@@ -1,0 +1,5 @@
+user@linux:~$ kubectl get pods
+NAME                                READY   STATUS    RESTARTS   AGE
+nginx-deployment-7fb96c846b-8b5x2   1/1     Running   0          1d
+user@linux:~$ 
+

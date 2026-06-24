@@ -1,0 +1,2 @@
+$CL|WEB_HEALTH|provider=gcp|2026-05-13 08:20:01..2026-05-13 08:20:31|source=projects/prod/run.goog|GET /health|200 OK|hits=2|ips=10.24.0.5:1,10.24.0.6:1|level=INFO
+!$CL|WEB_ACCESS|provider=gcp|2026-05-13 08:21:01..2026-05-13 08:21:01|source=projects/prod/run.goog|POST /api/v1/checkout|503 ERR|hits=1|ips=198.51.100.44:1|level=INFO

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_037_bash_redirection",
+    "case_file": "case_037_bash_redirection.log",
+    "original_lines": 4,
+    "original_bytes": 144,
+    "compact_lines": 4,
+    "compact_bytes": 142,
+    "compression_pct": 1.4,
+    "compact_hash": "1d5a5ecffb503ae8c847443daac8a4e4b27a9e158d5b02e94e6441a7dde6c378",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

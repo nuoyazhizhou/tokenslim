@@ -1,0 +1,13 @@
+user@host:~$ unzip archive.zip -d ./extracted
+Archive:  archive.zip
+   creating: ./extracted/project/
+  inflating: ./extracted/project/main.py
+  inflating: ./extracted/project/utils.py
+  inflating: ./extracted/project/README.md
+  inflating: ./extracted/project/tests/test_main.py
+user@host:~$ ls extracted/project/
+main.py
+README.md
+tests
+utils.py
+user@host:~$

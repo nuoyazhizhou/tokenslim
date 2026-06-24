@@ -1,0 +1,9 @@
+PS C:\> Get-Process | Select-Object -First 3
+
+Handles  NPM(K)    PM(K)      WS(K)     CPU(s)     Id  SI ProcessName
+-------  ------    -----      -----     ------     --  -- -----------
+    200      15    10000      20000       1.23   1000   1 chrome
+    150      10     5000      15000       0.50   1010   1 explorer
+    100       5     2000      10000       0.10   1020   1 svchost
+
+PS C:\> 

@@ -1,0 +1,7 @@
+timestamp,logGroupName,containerName,levelName,log_content
+2026-05-13T08:38:01Z,prod-lts,backend,INFO,"PostgreSQL duration: 8.231 ms statement: SELECT * FROM sessions WHERE id = $1"
+2026-05-13T08:38:09Z,prod-lts,backend,ERROR,"MongoDB connection error: server selection timeout"
+2026-05-13T08:38:17Z,prod-lts,backend,WARN,"Redis slow command HGETALL session:42 took 126ms"
+2026-05-13T08:38:25Z,prod-lts,backend,INFO,"PostgreSQL duration: 6.002 ms statement: SELECT id FROM documents WHERE tenant_id = $1"
+2026-05-13T08:38:33Z,prod-lts,backend,INFO,"worker heartbeat ok"
+2026-05-13T08:38:41Z,prod-lts,backend,INFO,"pool healthy"

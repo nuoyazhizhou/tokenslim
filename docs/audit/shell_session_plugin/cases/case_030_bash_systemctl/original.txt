@@ -1,0 +1,5 @@
+user@linux:~$ systemctl status docker
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/lib/systemd/system/docker.service; enabled; vendor preset: enabled)
+     Active: active (running) since Sun 2026-06-07 10:00:00 UTC; 2h ago
+user@linux:~$ 

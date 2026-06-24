@@ -1,0 +1,4 @@
+user@linux:~$ tar -czvf backup.tar.gz /home/user/docs
+  [... extracted 4 files ...]
+user@linux:~$ 
+

@@ -1,0 +1,2 @@
+$CL|WEB_HEALTH|provider=huawei|2026-05-13 08:37:01..2026-05-13 08:37:31|source=prod-lts|GET /health|200 OK|hits=2|ips=10.5.0.1:1,10.5.0.2:1|level=INFO
+!$CL|WEB_ACCESS|provider=huawei|2026-05-13 08:37:45..2026-05-13 08:37:45|source=prod-lts|GET /api/status|503 Service Unavailable|hits=1|ips=10.5.0.3:1|level=ERROR

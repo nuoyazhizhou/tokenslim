@@ -1,0 +1,1993 @@
+{
+    "generated_at": "2026-06-24T17:56:01.050197",
+    "plugin_count": 63,
+    "audited_plugin_count": 0,
+    "frozen_plugin_count": 0,
+    "coverage_gap_count": 59,
+    "source": {
+        "config_dir": "config/plugins",
+        "samples_dir": "samples",
+        "source_dir": "src/plugins",
+        "audit_dir": "docs/audit"
+    },
+    "plugins": [
+        {
+            "name": "android_gradle",
+            "config_path": "config\\plugins\\android_gradle.json",
+            "source_path": "src/plugins\\android_gradle_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 190,
+            "description": "Android Gradle \u6784\u5efa\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "build_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 44,
+            "showcase_cases": 22,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\android_gradle\\android_gradle.latest.json"
+        },
+        {
+            "name": "ansi_cleaner",
+            "config_path": "config\\plugins\\ansi_cleaner.json",
+            "source_path": "src/plugins\\ansi_cleaner_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 250,
+            "description": "ANSI escape sequence cleaner",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "\\x1b\\[[0-9;]*[a-zA-Z]"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\ansi_cleaner\\ansi_cleaner.latest.json"
+        },
+        {
+            "name": "ansible",
+            "config_path": "config\\plugins\\ansible.json",
+            "source_path": "src/plugins\\ansible_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 91,
+            "description": "Ansible play/task output compaction",
+            "capability_tags": [
+                "infra"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "ansible",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\ansible\\ansible.latest.json"
+        },
+        {
+            "name": "artifact_summary",
+            "config_path": "config\\plugins\\artifact_summary.json",
+            "source_path": "src/plugins\\artifact_summary_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 58,
+            "description": "Build artifact summary compaction for SARIF security/code scanning results and JUnit XML test reports",
+            "capability_tags": [
+                "build_log",
+                "data_format",
+                "test_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "<testsuites?|<testcase",
+                "\\\"runs\\\"\\s*:",
+                "\\\"ruleId\\\"\\s*:"
+            ],
+            "semantic_dimensions": [
+                "artifact_type",
+                "test_status",
+                "failure",
+                "error",
+                "skipped",
+                "security_level",
+                "rule_id",
+                "source_location",
+                "tool"
+            ],
+            "coverage_claims": [
+                {
+                    "name": "sarif",
+                    "covered": true
+                },
+                {
+                    "name": "junit",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\artifact_summary\\artifact_summary.latest.json"
+        },
+        {
+            "name": "bazel",
+            "config_path": "config\\plugins\\bazel.json",
+            "source_path": "src/plugins\\bazel_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 95,
+            "description": "Bazel build/test output compaction",
+            "capability_tags": [
+                "build_log",
+                "test_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\bazel\\bazel.latest.json"
+        },
+        {
+            "name": "ci_log",
+            "config_path": "config\\plugins\\ci_log.json",
+            "source_path": "src/plugins\\ci_log_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 174,
+            "description": "CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs",
+            "capability_tags": [
+                "ci_cd"
+            ],
+            "route_group": "build",
+            "route_keywords": [],
+            "route_arg_prefixes": [
+                "az pipelines"
+            ],
+            "detect_patterns": [
+                "::(group|endgroup|error|warning)::",
+                "(section_start:|section_end:|Running with gitlab-runner)",
+                "(\\[Pipeline\\]|##\\[(section|error|warning|command)\\]|buildkite-agent|circleci)",
+                "(##teamcity\\[|travis_(fold|time):|\\[(ACME-CI|ci)\\]|### Step:)"
+            ],
+            "semantic_dimensions": [
+                "provider",
+                "job",
+                "step",
+                "status",
+                "error",
+                "warning",
+                "cache",
+                "artifact",
+                "retry"
+            ],
+            "coverage_claims": [
+                {
+                    "name": "azure",
+                    "covered": true
+                },
+                {
+                    "name": "github_actions",
+                    "covered": true
+                },
+                {
+                    "name": "gitlab",
+                    "covered": true
+                },
+                {
+                    "name": "jenkins",
+                    "covered": true
+                },
+                {
+                    "name": "teamcity",
+                    "covered": true
+                },
+                {
+                    "name": "travis",
+                    "covered": true
+                },
+                {
+                    "name": "buildkite",
+                    "covered": true
+                },
+                {
+                    "name": "circleci",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 88,
+            "showcase_cases": 44,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\ci_log\\ci_log.latest.json"
+        },
+        {
+            "name": "cloud_log",
+            "config_path": "config\\plugins\\cloud_log.json",
+            "source_path": "src/plugins\\cloud_log_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 90,
+            "description": "\u4e3b\u6d41\u4e91\u5382\u5546\u65e5\u5fd7\u5916\u58f3\u5265\u79bb\uff08AWS/GCP/Azure/\u963f\u91cc\u4e91/OCI/\u817e\u8baf\u4e91/\u534e\u4e3a\u4e91/Cloudflare\uff09\uff0c\u5c06 message/textPayload/content \u7b49\u5185\u5c42\u65e5\u5fd7\u8fd8\u539f\u7ed9\u4e13\u7528\u65e5\u5fd7\u63d2\u4ef6",
+            "capability_tags": [
+                "cloud_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "aws\\s+.*logs\\s+tail",
+                "gcloud\\s+logging",
+                "az\\s+monitor",
+                "\\\"textPayload\\\"",
+                "\\\"logStream\\\"",
+                "TimeGenerated",
+                "__time__",
+                "oci\\s+logging",
+                "tccli\\s+cls",
+                "hcloud\\s+lts",
+                "wrangler\\s+tail",
+                "\\\"rayID\\\""
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "aws",
+                    "covered": true
+                },
+                {
+                    "name": "gcp",
+                    "covered": true
+                },
+                {
+                    "name": "azure",
+                    "covered": true
+                },
+                {
+                    "name": "oci",
+                    "covered": true
+                },
+                {
+                    "name": "cloudflare",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 104,
+            "showcase_cases": 52,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\cloud_log\\cloud_log.latest.json"
+        },
+        {
+            "name": "cloudformation",
+            "config_path": "config\\plugins\\cloudformation.json",
+            "source_path": "src/plugins\\cloudformation_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 93,
+            "description": "AWS CloudFormation event compaction",
+            "capability_tags": [
+                "cloud_log",
+                "infra"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "aws",
+                    "covered": true
+                },
+                {
+                    "name": "cloudformation",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\cloudformation\\cloudformation.latest.json"
+        },
+        {
+            "name": "db_log",
+            "config_path": "config\\plugins\\db_log.json",
+            "source_path": "src/plugins\\db_log_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 165,
+            "description": "Database log compaction for PostgreSQL, MySQL, MongoDB, and Redis slow/error/replication/runtime events",
+            "capability_tags": [
+                "database",
+                "stack_trace"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "postgresql",
+                    "covered": true
+                },
+                {
+                    "name": "mongodb",
+                    "covered": true
+                },
+                {
+                    "name": "redis",
+                    "covered": true
+                },
+                {
+                    "name": "mysql",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 44,
+            "showcase_cases": 22,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\db_log\\db_log.latest.json"
+        },
+        {
+            "name": "dotnet",
+            "config_path": "config\\plugins\\dotnet.json",
+            "source_path": "src/plugins\\dotnet_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": ".NET \u6784\u5efa\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\dotnet\\dotnet.latest.json"
+        },
+        {
+            "name": "encoding_fallback",
+            "config_path": "config\\plugins\\encoding_fallback.json",
+            "source_path": "src/plugins\\encoding_fallback_plugin",
+            "has_config": true,
+            "has_source": false,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u7f16\u7801\u515c\u5e95",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 20,
+            "showcase_cases": 0,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\encoding_fallback\\encoding_fallback.latest.json"
+        },
+        {
+            "name": "explain",
+            "config_path": "config\\plugins\\explain.json",
+            "source_path": "src/plugins\\explain_plugin",
+            "has_config": true,
+            "has_source": false,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u89e3\u91ca\u63d2\u4ef6",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 2,
+            "showcase_cases": 0,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "meta",
+            "latest_json": "docs/audit\\explain\\explain.latest.json"
+        },
+        {
+            "name": "gcc_log",
+            "config_path": "config\\plugins\\gcc_log.json",
+            "source_path": "src/plugins\\gcc_log_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "GCC/Clang \u7f16\u8bd1\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "build_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^\\[\\d{4}-\\d{2}-\\d{2}T"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 48,
+            "showcase_cases": 24,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\gcc_log\\gcc_log.latest.json"
+        },
+        {
+            "name": "generic_text",
+            "config_path": "config\\plugins\\generic_text.json",
+            "source_path": "src/plugins\\generic_text_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u901a\u7528\u6587\u672c\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "generic",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\generic_text\\generic_text.latest.json"
+        },
+        {
+            "name": "git_diff",
+            "config_path": "config\\plugins\\git_diff.json",
+            "source_path": "src/plugins\\git_diff_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Git diff \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\git_diff\\git_diff.latest.json"
+        },
+        {
+            "name": "helm",
+            "config_path": "config\\plugins\\helm.json",
+            "source_path": "src/plugins\\helm_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 94,
+            "description": "Helm install/upgrade output compaction",
+            "capability_tags": [
+                "infra"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "helm",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\helm\\helm.latest.json"
+        },
+        {
+            "name": "java_stack",
+            "config_path": "config\\plugins\\java_stack.json",
+            "source_path": "src/plugins\\java_stack_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 170,
+            "description": "Java \u5806\u6808\u8ddf\u8e2a\u8131\u6c34",
+            "capability_tags": [
+                "stack_trace"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 32,
+            "showcase_cases": 16,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\java_stack\\java_stack.latest.json"
+        },
+        {
+            "name": "json",
+            "config_path": "config\\plugins\\json.json",
+            "source_path": "src/plugins\\json_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 150,
+            "description": "JSON structure compaction",
+            "capability_tags": [
+                "data_format"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^\\s*\\{.*\\}\\s*$",
+                "^\\s*\\[.*\\]\\s*$"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "json",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\json\\json.latest.json"
+        },
+        {
+            "name": "kubernetes_docker",
+            "config_path": "config\\plugins\\kubernetes_docker.json",
+            "source_path": "src/plugins\\kubernetes_docker_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Kubernetes/Docker \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "infra"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 48,
+            "showcase_cases": 24,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\kubernetes_docker\\kubernetes_docker.latest.json"
+        },
+        {
+            "name": "markdown",
+            "config_path": "config\\plugins\\markdown.json",
+            "source_path": "src/plugins\\markdown_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Markdown \u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\markdown\\markdown.latest.json"
+        },
+        {
+            "name": "maven",
+            "config_path": "config\\plugins\\maven.json",
+            "source_path": "src/plugins\\maven_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Maven \u6784\u5efa\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "build_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 32,
+            "showcase_cases": 16,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\maven\\maven.latest.json"
+        },
+        {
+            "name": "minify_code",
+            "config_path": "config\\plugins\\minify_code.json",
+            "source_path": "src/plugins\\minify_code_plugin",
+            "has_config": true,
+            "has_source": false,
+            "enabled": false,
+            "priority": 50,
+            "description": "Deprecated config-only entry; smart_code_plugin owns code compaction",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^(function|const|let|var|class|import|export|def |fn |pub )"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 0,
+            "showcase_cases": 0,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "disabled_config",
+            "latest_json": "docs/audit\\minify_code\\minify_code.latest.json"
+        },
+        {
+            "name": "ndjson",
+            "config_path": "config\\plugins\\ndjson.json",
+            "source_path": "src/plugins\\ndjson_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "NDJSON \u8131\u6c34",
+            "capability_tags": [
+                "data_format"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "json",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\ndjson\\ndjson.latest.json"
+        },
+        {
+            "name": "node_error",
+            "config_path": "config\\plugins\\node_error.json",
+            "source_path": "src/plugins\\node_error_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 170,
+            "description": "Node.js \u9519\u8bef\u5806\u6808\u8131\u6c34",
+            "capability_tags": [
+                "stack_trace"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\node_error\\node_error.latest.json"
+        },
+        {
+            "name": "nodejs",
+            "config_path": "config\\plugins\\nodejs.json",
+            "source_path": "src/plugins\\nodejs_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 180,
+            "description": "Node.js \u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "stack_trace"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 46,
+            "showcase_cases": 23,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\nodejs\\nodejs.latest.json"
+        },
+        {
+            "name": "noise_filter",
+            "config_path": "config\\plugins\\noise_filter.json",
+            "source_path": "src/plugins\\noise_filter_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u566a\u58f0\u8fc7\u6ee4",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\noise_filter\\noise_filter.latest.json"
+        },
+        {
+            "name": "npm",
+            "config_path": "",
+            "source_path": "src/plugins\\npm_plugin",
+            "has_config": false,
+            "has_source": false,
+            "enabled": true,
+            "priority": 0,
+            "description": "",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 0,
+            "showcase_cases": 0,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "unknown",
+            "latest_json": "docs/audit\\npm\\npm.latest.json"
+        },
+        {
+            "name": "php_ruby",
+            "config_path": "config\\plugins\\php_ruby.json",
+            "source_path": "src/plugins\\php_ruby_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "PHP/Ruby \u9519\u8bef\u6808\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\php_ruby\\php_ruby.latest.json"
+        },
+        {
+            "name": "protobuf",
+            "config_path": "config\\plugins\\protobuf.json",
+            "source_path": "src/plugins\\protobuf_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 96,
+            "description": "protoc/buf diagnostic compaction",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\protobuf\\protobuf.latest.json"
+        },
+        {
+            "name": "pulumi",
+            "config_path": "config\\plugins\\pulumi.json",
+            "source_path": "src/plugins\\pulumi_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 92,
+            "description": "Pulumi preview/up output compaction",
+            "capability_tags": [
+                "infra"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "pulumi",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\pulumi\\pulumi.latest.json"
+        },
+        {
+            "name": "pytest",
+            "config_path": "config\\plugins\\pytest.json",
+            "source_path": "src/plugins\\pytest_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 97,
+            "description": "pytest session and result compaction",
+            "capability_tags": [
+                "test_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "pytest",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 36,
+            "showcase_cases": 18,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\pytest\\pytest.latest.json"
+        },
+        {
+            "name": "python_traceback",
+            "config_path": "config\\plugins\\python_traceback.json",
+            "source_path": "src/plugins\\python_traceback_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 160,
+            "description": "Python \u5806\u6808\u8ddf\u8e2a\u8131\u6c34",
+            "capability_tags": [
+                "stack_trace"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 32,
+            "showcase_cases": 16,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\python_traceback\\python_traceback.latest.json"
+        },
+        {
+            "name": "rust_go",
+            "config_path": "config\\plugins\\rust_go.json",
+            "source_path": "src/plugins\\rust_go_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 160,
+            "description": "Rust/Go \u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "stack_trace"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 36,
+            "showcase_cases": 18,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\rust_go\\rust_go.latest.json"
+        },
+        {
+            "name": "shell_session",
+            "config_path": "config\\plugins\\shell_session.json",
+            "source_path": "src/plugins\\shell_session_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Shell \u4f1a\u8bdd\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 160,
+            "showcase_cases": 80,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\shell_session\\shell_session.latest.json"
+        },
+        {
+            "name": "smart_code",
+            "config_path": "config\\plugins\\smart_code.json",
+            "source_path": "src/plugins\\smart_code_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 100,
+            "description": "Smart code detection and compaction",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^(package|import|from|use |#include|#define)"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\smart_code\\smart_code.latest.json"
+        },
+        {
+            "name": "smart_path",
+            "config_path": "config\\plugins\\smart_path.json",
+            "source_path": "src/plugins\\smart_path_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u667a\u80fd\u8def\u5f84\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\smart_path\\smart_path.latest.json"
+        },
+        {
+            "name": "spring_boot",
+            "config_path": "config\\plugins\\spring_boot.json",
+            "source_path": "src/plugins\\spring_boot_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Spring Boot \u5e94\u7528\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 30,
+            "showcase_cases": 15,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\spring_boot\\spring_boot.latest.json"
+        },
+        {
+            "name": "sql",
+            "config_path": "config\\plugins\\sql.json",
+            "source_path": "src/plugins\\sql_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "SQL \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "database"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\sql\\sql.latest.json"
+        },
+        {
+            "name": "static_rule",
+            "config_path": "config\\plugins\\static_rule.json",
+            "source_path": "src/plugins\\static_rule_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u9759\u6001\u89c4\u5219\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\static_rule\\static_rule.latest.json"
+        },
+        {
+            "name": "syslog",
+            "config_path": "config\\plugins\\syslog.json",
+            "source_path": "src/plugins\\syslog_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 130,
+            "description": "\u7cfb\u7edf\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^[A-Z][a-z]{2}\\s+\\d{1,2}\\s+\\d{2}:\\d{2}:\\d{2}"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\syslog\\syslog.latest.json"
+        },
+        {
+            "name": "template_driven",
+            "config_path": "config\\plugins\\template_driven.json",
+            "source_path": "src/plugins\\template_driven_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "\u6a21\u677f\u9a71\u52a8\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\template_driven\\template_driven.latest.json"
+        },
+        {
+            "name": "terraform",
+            "config_path": "config\\plugins\\terraform.json",
+            "source_path": "src/plugins\\terraform_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 90,
+            "description": "Terraform plan/apply output compaction",
+            "capability_tags": [
+                "infra"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "terraform",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\terraform\\terraform.latest.json"
+        },
+        {
+            "name": "unity_unreal",
+            "config_path": "config\\plugins\\unity_unreal.json",
+            "source_path": "src/plugins\\unity_unreal_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Unity/Unreal \u6784\u5efa\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 30,
+            "showcase_cases": 15,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\unity_unreal\\unity_unreal.latest.json"
+        },
+        {
+            "name": "vcs",
+            "config_path": "config\\plugins\\vcs.json",
+            "source_path": "src/plugins\\vcs_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "vcs",
+            "route_keywords": [
+                "git",
+                "svn",
+                "hg",
+                "p4",
+                "cvs",
+                "bzr",
+                "fossil",
+                "darcs",
+                "gh",
+                "glab",
+                "az",
+                "bitbucket",
+                "repo",
+                "gerrit"
+            ],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 0,
+            "showcase_cases": 0,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "orchestrator",
+            "latest_json": "docs/audit\\vcs\\vcs.latest.json"
+        },
+        {
+            "name": "vcs_az",
+            "config_path": "config\\plugins\\vcs_az.json",
+            "source_path": "src/plugins\\vcs_az_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Azure DevOps CLI \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "azure",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 18,
+            "showcase_cases": 9,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_az\\vcs_az.latest.json"
+        },
+        {
+            "name": "vcs_bitbucket",
+            "config_path": "config\\plugins\\vcs_bitbucket.json",
+            "source_path": "src/plugins\\vcs_bitbucket_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Bitbucket CLI \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 18,
+            "showcase_cases": 9,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_bitbucket\\vcs_bitbucket.latest.json"
+        },
+        {
+            "name": "vcs_bzr",
+            "config_path": "config\\plugins\\vcs_bzr.json",
+            "source_path": "src/plugins\\vcs_bzr_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Bazaar \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 26,
+            "showcase_cases": 13,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_bzr\\vcs_bzr.latest.json"
+        },
+        {
+            "name": "vcs_cvs",
+            "config_path": "config\\plugins\\vcs_cvs.json",
+            "source_path": "src/plugins\\vcs_cvs_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "CVS \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 28,
+            "showcase_cases": 14,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_cvs\\vcs_cvs.latest.json"
+        },
+        {
+            "name": "vcs_darcs",
+            "config_path": "config\\plugins\\vcs_darcs.json",
+            "source_path": "src/plugins\\vcs_darcs_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Darcs \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 20,
+            "showcase_cases": 10,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_darcs\\vcs_darcs.latest.json"
+        },
+        {
+            "name": "vcs_fossil",
+            "config_path": "config\\plugins\\vcs_fossil.json",
+            "source_path": "src/plugins\\vcs_fossil_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Fossil \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 20,
+            "showcase_cases": 10,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_fossil\\vcs_fossil.latest.json"
+        },
+        {
+            "name": "vcs_gerrit",
+            "config_path": "config\\plugins\\vcs_gerrit.json",
+            "source_path": "src/plugins\\vcs_gerrit_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Gerrit \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 18,
+            "showcase_cases": 9,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_gerrit\\vcs_gerrit.latest.json"
+        },
+        {
+            "name": "vcs_gh",
+            "config_path": "config\\plugins\\vcs_gh.json",
+            "source_path": "src/plugins\\vcs_gh_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "GitHub CLI \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 40,
+            "showcase_cases": 20,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_gh\\vcs_gh.latest.json"
+        },
+        {
+            "name": "vcs_git",
+            "config_path": "config\\plugins\\vcs_git.json",
+            "source_path": "src/plugins\\vcs_git_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Git \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 176,
+            "showcase_cases": 88,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_git\\vcs_git.latest.json"
+        },
+        {
+            "name": "vcs_glab",
+            "config_path": "config\\plugins\\vcs_glab.json",
+            "source_path": "src/plugins\\vcs_glab_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "GitLab CLI \u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "gitlab",
+                    "covered": false
+                }
+            ],
+            "coverage_warnings": [
+                "declared_without_case_evidence:gitlab"
+            ],
+            "sample_cases": 14,
+            "showcase_cases": 7,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_glab\\vcs_glab.latest.json"
+        },
+        {
+            "name": "vcs_hg",
+            "config_path": "config\\plugins\\vcs_hg.json",
+            "source_path": "src/plugins\\vcs_hg_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Mercurial \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 98,
+            "showcase_cases": 49,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_hg\\vcs_hg.latest.json"
+        },
+        {
+            "name": "vcs_p4",
+            "config_path": "config\\plugins\\vcs_p4.json",
+            "source_path": "src/plugins\\vcs_p4_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Perforce \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 88,
+            "showcase_cases": 44,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_p4\\vcs_p4.latest.json"
+        },
+        {
+            "name": "vcs_repo",
+            "config_path": "config\\plugins\\vcs_repo.json",
+            "source_path": "src/plugins\\vcs_repo_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Android Repo \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 22,
+            "showcase_cases": 11,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_repo\\vcs_repo.latest.json"
+        },
+        {
+            "name": "vcs_svn",
+            "config_path": "config\\plugins\\vcs_svn.json",
+            "source_path": "src/plugins\\vcs_svn_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "SVN \u547d\u4ee4\u8f93\u51fa\u8131\u6c34",
+            "capability_tags": [
+                "vcs"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 108,
+            "showcase_cases": 54,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\vcs_svn\\vcs_svn.latest.json"
+        },
+        {
+            "name": "web_log",
+            "config_path": "config\\plugins\\web_log.json",
+            "source_path": "src/plugins\\web_log_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 170,
+            "description": "Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals",
+            "capability_tags": [
+                "web_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^\\d+\\.\\d+\\.\\d+\\.\\d+",
+                "INFO:\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+\\s+-\\s+\\\"(GET|POST|PUT|PATCH|DELETE)",
+                "\\\"(request_method|ClientRequestMethod|httpRequest|message)\\\"",
+                "^#Fields:\\s+.*cs-method.*sc-status",
+                "^\\[\\d{4}-\\d{2}-\\d{2}T[^\\]]+\\]\\s+\\\"(GET|POST|PUT|PATCH|DELETE)"
+            ],
+            "semantic_dimensions": [
+                "summary",
+                "status",
+                "method",
+                "top_url",
+                "top_ip",
+                "top_ua",
+                "top_ref",
+                "dict_ip",
+                "dict_ua",
+                "routine",
+                "anomaly",
+                "scan",
+                "burst",
+                "slow"
+            ],
+            "coverage_claims": [
+                {
+                    "name": "aws",
+                    "covered": true
+                },
+                {
+                    "name": "cloudflare",
+                    "covered": true
+                },
+                {
+                    "name": "alb",
+                    "covered": true
+                },
+                {
+                    "name": "nginx",
+                    "covered": true
+                },
+                {
+                    "name": "apache",
+                    "covered": true
+                },
+                {
+                    "name": "uvicorn",
+                    "covered": true
+                },
+                {
+                    "name": "csv",
+                    "covered": true
+                },
+                {
+                    "name": "json",
+                    "covered": true
+                },
+                {
+                    "name": "table",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 96,
+            "showcase_cases": 48,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\web_log\\web_log.latest.json"
+        },
+        {
+            "name": "webpack_vite",
+            "config_path": "config\\plugins\\webpack_vite.json",
+            "source_path": "src/plugins\\webpack_vite_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 200,
+            "description": "Webpack/Vite \u6784\u5efa\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "web_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\webpack_vite\\webpack_vite.latest.json"
+        },
+        {
+            "name": "xcode_log",
+            "config_path": "config\\plugins\\xcode_log.json",
+            "source_path": "src/plugins\\xcode_log_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 180,
+            "description": "Xcode \u6784\u5efa\u65e5\u5fd7\u8131\u6c34",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\xcode_log\\xcode_log.latest.json"
+        },
+        {
+            "name": "xml_html",
+            "config_path": "config\\plugins\\xml_html.json",
+            "source_path": "src/plugins\\xml_html_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 150,
+            "description": "XML and HTML structure compaction",
+            "capability_tags": [
+                "data_format"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^\\s*<[a-zA-Z]",
+                "^\\s*<!DOCTYPE"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 24,
+            "showcase_cases": 12,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\xml_html\\xml_html.latest.json"
+        },
+        {
+            "name": "yaml",
+            "config_path": "config\\plugins\\yaml.json",
+            "source_path": "src/plugins\\yaml_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 150,
+            "description": "YAML structure compaction",
+            "capability_tags": [
+                "data_format"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^\\w+:\\s*$",
+                "^\\s+-\\s+\\w+:"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 28,
+            "showcase_cases": 14,
+            "audit_cases": 0,
+            "frozen_cases": 0,
+            "auditing_cases": 0,
+            "coverage_status": "missing_audit",
+            "latest_json": "docs/audit\\yaml\\yaml.latest.json"
+        }
+    ]
+}

@@ -1,0 +1,13 @@
+C:\> type config.ini
+[Settings]
+enabled=true
+port=8080
+log_level=info
+max_connections=100
+C:\> type README.md
+# Project README
+This is the main project.
+C:\> type nul
+C:\> echo done
+done
+C:\>

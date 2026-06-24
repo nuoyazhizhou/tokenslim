@@ -1,0 +1,12 @@
+C:\> copy file1.txt file2.txt
+        1 file(s) copied.
+C:\> dir file*.txt
+
+ Directory of C:\
+
+06/09/2026 10:00 AM 128 file1.txt
+06/09/2026 10:00 AM 128 file2.txt
+ 2 File(s) 256 bytes
+ 0 Dir(s) 50,000,000 bytes free
+C:\>
+

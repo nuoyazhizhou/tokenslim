@@ -1,0 +1,12 @@
+{
+    "case_id": "case_030_bash_systemctl",
+    "case_file": "case_030_bash_systemctl.log",
+    "original_lines": 5,
+    "original_bytes": 275,
+    "compact_lines": 5,
+    "compact_bytes": 272,
+    "compression_pct": 1.1,
+    "compact_hash": "3022451f60fb47bb1efc6848a31c8e766ad0197f6d6427b4ff7883a3207bf8c0",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

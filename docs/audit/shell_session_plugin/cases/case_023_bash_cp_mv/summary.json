@@ -1,0 +1,12 @@
+{
+    "case_id": "case_023_bash_cp_mv",
+    "case_file": "case_023_bash_cp_mv.log",
+    "original_lines": 5,
+    "original_bytes": 138,
+    "compact_lines": 5,
+    "compact_bytes": 135,
+    "compression_pct": 2.2,
+    "compact_hash": "356a1701402c46cf9d925a224fc67faf83abc13551c5661b43d703907218a025",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,798 @@
+{
+    "track": "vcs_git_plugin",
+    "updated_at": "2026-06-24T17:54:39.140642",
+    "cases": [
+        {
+            "case_id": "case_081_merge_conflict",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 22.0,
+            "compact_hash": "ca9fb0ffe6f68a00168cc46650d8e809db3a475f045bb418b3c7d9f533c12b8f",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140551"
+        },
+        {
+            "case_id": "case_082_rebase_interactive",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 73.0,
+            "compact_hash": "2bf6bd4bc9e62a02ade17c958c22018d85b6788ef18d0b21c83362a76e892a71",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140552"
+        },
+        {
+            "case_id": "case_083_log_graph",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 38.9,
+            "compact_hash": "f56cee8929bb66fd8a399f0e53c1a7093c48b3a25cf38e284376114d7c0856b4",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140553"
+        },
+        {
+            "case_id": "case_084_reflog_long",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 62.8,
+            "compact_hash": "477c249b1cbd81b8b86ccca1053f0453fa946274b03a245c8a938d8dce3c058b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140555"
+        },
+        {
+            "case_id": "case_128_git_remote",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 7.4,
+            "compact_hash": "a90d898822e1d73819f1906def49e1d743516ef6aff1e65729b21bbad1238da0",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140555"
+        },
+        {
+            "case_id": "case_129_git_branch",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 13.8,
+            "compact_hash": "a502dcfa242599c168b1028d2a9526d5a1f516796382d63524a6988554b6e7fa",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140556"
+        },
+        {
+            "case_id": "case_130_git_tag_list",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 11.3,
+            "compact_hash": "0d7839ebb909a6c9f38dd0f4d68553bf28a418f4efe9c914670ac1f3cd2b709c",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140557"
+        },
+        {
+            "case_id": "case_131_git_stash_list",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "3d58424ef64982d228aa721b43979c64d4c1e1a024f04c9ac69eb62d1c681bf9",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140558"
+        },
+        {
+            "case_id": "case_163_git_blame",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 41.5,
+            "compact_hash": "60846ec98240aec40d7784c019cee09845777f8051507e0ad2d548571f42d8c6",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140559"
+        },
+        {
+            "case_id": "case_164_git_rebase_i",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 81.3,
+            "compact_hash": "e41b5209cd29c7e771a62282349ea3fcec8c63f83f6cbb6fcf894ec5cb27af95",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140560"
+        },
+        {
+            "case_id": "case_165_git_worktree",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "dbd8df8fd6dd5621185179de0e24471d749f0f5491915eb7837e37bef0f8a9fc",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140561"
+        },
+        {
+            "case_id": "case_166_git_reflog",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 16.2,
+            "compact_hash": "45ce68118ae9d6a3557ef1af15d542f609ef1e4cf714cd4faff414bdde44fbbf",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140562"
+        },
+        {
+            "case_id": "case_167_git_grep",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "97d09c0bf2b26e706ea0208d2ca34429c4b13ad1a5ab8c0c865b1dd35ddcc67c",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140563"
+        },
+        {
+            "case_id": "case_168_git_log_oneline",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "1c16018b31577e031ef1429bdb29d3237d94f206280ec0a737363876eb8aa7ba",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140564"
+        },
+        {
+            "case_id": "case_169_git_diff_stat",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 21.4,
+            "compact_hash": "5f694b92e62578b8cc7aeeccf26e2c0c4c0c8e845952f71171ae70cc28d1bd50",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140565"
+        },
+        {
+            "case_id": "case_170_git_shortlog",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 17.2,
+            "compact_hash": "86660664431846064923d62819d273b0dc234b54f4aa2265b710a6f5e40b4b02",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140566"
+        },
+        {
+            "case_id": "case_237_git_log_oneline_short",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "ff8fb38f4e10169eec78eff071d8f6c775721ab8fdd6addef55e57022838f141",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140566"
+        },
+        {
+            "case_id": "case_238_git_log_graph",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 4.8,
+            "compact_hash": "37ff00c433919b99408960e8109b013240f4840b6837fac6c0ddba8cbb5ff16f",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140567"
+        },
+        {
+            "case_id": "case_239_git_bisect_bad",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "a0f509cda1ff15641d3ac380e9b69ea7cc19eff59345c94a7464fec9a62ffe39",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140568"
+        },
+        {
+            "case_id": "case_23_git_status",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 29.6,
+            "compact_hash": "71feee926bb3f2616e667019c66b861129b36dc172ba2e2563e8c748964f548b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140569"
+        },
+        {
+            "case_id": "case_240_git_bisect_good",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "c862e6f8c487f7f626cc171e3e3f54ebab3f324400b0e76b85425c119bbc20ff",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140570"
+        },
+        {
+            "case_id": "case_241_git_clean_fd",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 23.3,
+            "compact_hash": "78b240298650f0319150f3c5129531dd7a2bf8a755142a7f914c50abfeac8488",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140571"
+        },
+        {
+            "case_id": "case_246_git_status_branch",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 26.9,
+            "compact_hash": "a49772e1a9e9607d1068d6a5b38aed71eb04eabe9c3cd509cbabb199d08ee95e",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140572"
+        },
+        {
+            "case_id": "case_247_git_status_porcelain",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 2.7,
+            "compact_hash": "bf22830fd8057854778aa39f6bfa7ac9b1a8f3eb7aa34ad2b30c770172a86c49",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140573"
+        },
+        {
+            "case_id": "case_248_git_status_short",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 2.9,
+            "compact_hash": "076806dfdb8776de077d9f63123b4e5307719ae0887b6251469e71b78cf69390",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140574"
+        },
+        {
+            "case_id": "case_249_git_status_long",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 76.1,
+            "compact_hash": "399af5e1b4a455c05c9523e64211ef028b344763a8ac8148157062910273db4b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140575"
+        },
+        {
+            "case_id": "case_24_git_diff",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 24.5,
+            "compact_hash": "4c678534f96c7d78550ba12329b6687253dddc1d59e0f6ed2d33623c592b5fcb",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140576"
+        },
+        {
+            "case_id": "case_250_git_status_ignored",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 72.7,
+            "compact_hash": "f20ba51376636ed27e7986f571bfe822b5588f226216bb1a00cc19e626b233d4",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140577"
+        },
+        {
+            "case_id": "case_251_git_status_untracked_all",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 56.1,
+            "compact_hash": "60babe16d6874d3930bd1516c82cac1a2a80e7baf72c56de4bbcff9f97327206",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140578"
+        },
+        {
+            "case_id": "case_252_git_log_oneline_n20",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "d2ed5f30e0253e40b90a201b02f8b85d7d3aaa21ba5e2361b523beb1c75488a4",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140578"
+        },
+        {
+            "case_id": "case_253_git_log_stat",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 22.4,
+            "compact_hash": "eaa933d200c27e57c5973cf037eaa971115289f4e5ca95b2589d29bd1313c272",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140579"
+        },
+        {
+            "case_id": "case_254_git_log_patch",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 86.3,
+            "compact_hash": "18544076055f5ad0cfe2615b7f25f79924311f7d0dc106836506c5af55c32edc",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140580"
+        },
+        {
+            "case_id": "case_255_git_log_graph",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 71.1,
+            "compact_hash": "45b6208aeb5e744e27e7f91430d63544cecc8e71a3866ae4c50747e97d2308ff",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140581"
+        },
+        {
+            "case_id": "case_256_git_log_all",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 41.7,
+            "compact_hash": "f800e28f064d04b75b6705ceb5bf946761e42619355e8fefed4c6e6cc1aef8b1",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140582"
+        },
+        {
+            "case_id": "case_257_git_diff_cached",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 34.8,
+            "compact_hash": "c09e4db52ee4c1bc3a6a4e33d7da210d6c4a24b820686902ec385f7af5bfb2ae",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140583"
+        },
+        {
+            "case_id": "case_258_git_diff_head",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 30.6,
+            "compact_hash": "997ea688f006fcbfc44d374e5d73c894246b1ae29f457598b47dc739eb613a47",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140584"
+        },
+        {
+            "case_id": "case_259_git_diff_stat",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 20.2,
+            "compact_hash": "1f55e641341f9405bd60b8639bd3f8b1733dd97179e04bc998177ed0a56b5f7b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140585"
+        },
+        {
+            "case_id": "case_25_git_log",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 30.1,
+            "compact_hash": "fa5f460850e0c9b901fded0ae1d2f8f6ae8ca2432bbccc06a9ae03b022e4c525",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140585"
+        },
+        {
+            "case_id": "case_260_git_diff_word_diff",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 30.2,
+            "compact_hash": "e74e408a96b23a960472114ae6d482821262c511975eb320bc28c22175ea0119",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140586"
+        },
+        {
+            "case_id": "case_261_git_diff_branches",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 32.6,
+            "compact_hash": "fc325cfcedcdd66cfd4f84035214af730f3dda9a9f875665b3fedeee97554da9",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140587"
+        },
+        {
+            "case_id": "case_26_git_show",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 31.4,
+            "compact_hash": "d17be6f166f49663edb8a2687f0f601522154219a5ee1913f74daf75293af599",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140588"
+        },
+        {
+            "case_id": "case_283_git_diff_name_only",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 1.1,
+            "compact_hash": "3a272cbf66a44d1df516655b4860ba2c22b892bbad892640eca0ffcadc3b8a1b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140589"
+        },
+        {
+            "case_id": "case_284_git_diff_name_status",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.6,
+            "compact_hash": "d5e7dfaa4f07256e87ae20ba67d3b684c8db8bbd36e9f0801a14060acfe52c64",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140590"
+        },
+        {
+            "case_id": "case_285_git_stash_show",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 17.3,
+            "compact_hash": "11e432ede81d541d776ff66d1d5d470ee2ebb7c186d742f5a61f1d26901cf780",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140591"
+        },
+        {
+            "case_id": "case_286_git_stash_pop",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 70.7,
+            "compact_hash": "d6522c8909a8f91e881c676b952c3c0495a2012507dee5f3e99b017900fdc6cf",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140592"
+        },
+        {
+            "case_id": "case_287_git_branch_v",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 3.3,
+            "compact_hash": "74f5ad3fb83a117b2bf585e87bdc5f1f565cd0e7ac85d405c02136dd4c572515",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140593"
+        },
+        {
+            "case_id": "case_288_git_branch_d",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 1.1,
+            "compact_hash": "3e05b834192807708232398e37a3d5428a207daeec9bc254bc0949dc29448d39",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140593"
+        },
+        {
+            "case_id": "case_289_git_branch_D",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 1.2,
+            "compact_hash": "02672c3b2f43773aa909a83469b00b7f9e9a454fd19ac36be86b8cafd30a3ffe",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140594"
+        },
+        {
+            "case_id": "case_290_git_add_p",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 64.6,
+            "compact_hash": "81150fce3e070bd7cfe95d32eea3a2729aa166eb4c00c5e70d667217a83d3ea1",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140595"
+        },
+        {
+            "case_id": "case_291_git_reset_hard",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 1.6,
+            "compact_hash": "f155dfa4367e00394455280e50c10617f03eb5fdf3f7c3c638231709ebfd30f7",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140596"
+        },
+        {
+            "case_id": "case_292_git_reset_soft",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "31978773bb682a0003747fdb71147c7573ac3952705f556053f8d072ba5fda04",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140597"
+        },
+        {
+            "case_id": "case_293_git_reset_mixed",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 27.7,
+            "compact_hash": "2abc9529ba583dd3c8b55f8c879e7ae8909c5b192519edfcda626355deec96cc",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140598"
+        },
+        {
+            "case_id": "case_294_git_checkout_b",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 32.0,
+            "compact_hash": "e09dc412b8eeaf265c2779b3f083ab9cee1752c256caafcb341348885717113b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140598"
+        },
+        {
+            "case_id": "case_295_git_cherry_pick_continue",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 62.6,
+            "compact_hash": "d68bd6de7afca762ac35420b15434b337a31f2a69a9bf9e4994fcf310e5f6735",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140599"
+        },
+        {
+            "case_id": "case_296_git_cherry_pick_abort",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "bd13b63f59ab566e222d5beba3e1ee9294e283c8482933ff9cfa1e9ad64ef508",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140600"
+        },
+        {
+            "case_id": "case_297_git_rebase_continue",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 18.1,
+            "compact_hash": "03092b49d67c5907fa2dbfd235e2c4f6c5fd7cb850b7bdc9e38649b4bb6aabe3",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140601"
+        },
+        {
+            "case_id": "case_298_git_rebase_abort",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 5.3,
+            "compact_hash": "91a1493ea4688e55e9489372c7d5cbc4ee95d22bd3960357147ebd4bb0f9462f",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140602"
+        },
+        {
+            "case_id": "case_299_git_rebase_skip",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 16.3,
+            "compact_hash": "033f1b4792a51f97d23688fe4246572594a0bc556a9228e8120e6fc08cd621fb",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140603"
+        },
+        {
+            "case_id": "case_300_git_merge_abort",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 5.6,
+            "compact_hash": "0449cca93affd3bd14d6d97ea95cbfb7d6b3604b6ed41e0b0a65d343d9b92b30",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140604"
+        },
+        {
+            "case_id": "case_30_git_checkout",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 56.6,
+            "compact_hash": "dc53b03c66d37858635a84ce056a36770b7ea182165574ffceddced43d0fdc81",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140605"
+        },
+        {
+            "case_id": "case_31_git_checkout_file",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.6,
+            "compact_hash": "2c5b9c877217f94397e9ed24763115f36c4edb9cc068cbcaedacb96b919c3586",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140605"
+        },
+        {
+            "case_id": "case_323_git_log_parentheses",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 43.6,
+            "compact_hash": "ee4962e4ae406d6ea356d73cacec3a0b00c658c5c5b991a5d0d4cd94d6ac1412",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140606"
+        },
+        {
+            "case_id": "case_324_git_log_oneline_full_hash_collision",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 38.8,
+            "compact_hash": "8f88b92a94e44b83a22325742aaa460b6e288eb5edc9c3ec6f8a9005733068c6",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140607"
+        },
+        {
+            "case_id": "case_325_git_reflog_with_hash_collision",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 43.6,
+            "compact_hash": "a11c0abcc65fbfa2748be0920fd3f3fe66554b5192151e628cc801ef6af68e6b",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140608"
+        },
+        {
+            "case_id": "case_326_git_log_oneline_heavy_collision",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 43.8,
+            "compact_hash": "2cdbcfe09cc97a6a729f2fbea19a1c07cf672edf00f7b8474fa43a5d359a0d95",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140609"
+        },
+        {
+            "case_id": "case_327_git_blame_hash_collision",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 50.9,
+            "compact_hash": "60569e1b7e800c7b2033d9d56746fc43c7d80d884c82dc9722d833b7ad24608f",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140610"
+        },
+        {
+            "case_id": "case_328_git_show_multi_commit_collision",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 53.6,
+            "compact_hash": "2d43a15f7544703a897eb33d47061a2145a4ee82684985d5a9b51d32247ed3d9",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140611"
+        },
+        {
+            "case_id": "case_329_git_help",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 5.1,
+            "compact_hash": "8a472dc51d236b9f31dd9a97daf7ff369c70360a7293be7ebab951252118042a",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140612"
+        },
+        {
+            "case_id": "case_32_git_stash",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 26.7,
+            "compact_hash": "67543611f3b184c354b2ba431b684c434996cac66ca7ebc64253f3c05f613115",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140613"
+        },
+        {
+            "case_id": "case_330_git_status_unmerged",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 68.0,
+            "compact_hash": "ae2ce7069708c17953e16c52b6d45bba72f65a3bc18997100e466d9205f931bc",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140614"
+        },
+        {
+            "case_id": "case_33_git_fetch",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 57.6,
+            "compact_hash": "53e71a439d3a2ef76e3a7a42eca45e457731cad7589fd4e33a275ab867ce5f96",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140615"
+        },
+        {
+            "case_id": "case_34_git_push",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 44.7,
+            "compact_hash": "a034c7af4ebc157214ba44587795dea7f4db18b245c6aac5347a424d4e4bf3a3",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140615"
+        },
+        {
+            "case_id": "case_44_git_merge",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 14.7,
+            "compact_hash": "f678b427338b01265ef9da3d2b67baa0a76779a1fe96cd04209c489e28f6bbc8",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140616"
+        },
+        {
+            "case_id": "case_45_git_rebase",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 22.4,
+            "compact_hash": "944d1229568683394adfd915f7ef6ea16cd9c348c6509ce6196ad06dba3b2b3a",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140617"
+        },
+        {
+            "case_id": "case_46_git_reset",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 51.2,
+            "compact_hash": "a56ba3edb13ff9a2f64c837b7d45c89456074a3e5dbbf21d20f78dc7be1c4809",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140618"
+        },
+        {
+            "case_id": "case_47_git_cherry_pick",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 39.2,
+            "compact_hash": "3bbf3b3c64f680057c9be96803095e33cc2487f8b32281f75e6448e4258adc92",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140619"
+        },
+        {
+            "case_id": "case_48_git_revert",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 9.3,
+            "compact_hash": "78a37903119dc62684970f87949a12cb59db46d9fdbd7ee19a3430521f658318",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140620"
+        },
+        {
+            "case_id": "case_49_git_pull",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 2.6,
+            "compact_hash": "1297a99e8e93d55687a7c4535395e03b584d7945b842174235af4647c8c75b5c",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140620"
+        },
+        {
+            "case_id": "case_50_git_add",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 72.8,
+            "compact_hash": "dcc3782fb1bc4f888e36fe5e6e650aa572648a63755d32ed1b3ccc49ec9e43d3",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140621"
+        },
+        {
+            "case_id": "case_51_git_rm",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 59.8,
+            "compact_hash": "2e8c6dd05713d70c77eaa81d0d4826137085925f9ddb5a8833105b70d3deb6b2",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140622"
+        },
+        {
+            "case_id": "case_52_git_restore",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 18.2,
+            "compact_hash": "873b81544d881c4f93410dff1ee2f323ec8742d74b020a54682a8b891cd55018",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140623"
+        },
+        {
+            "case_id": "case_53_git_switch",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 59.2,
+            "compact_hash": "1efa4f68d8b0be61a5590815cdeb60e03a1fb0171ad1a9c35030e9220d3bddd4",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140624"
+        },
+        {
+            "case_id": "case_54_git_tag",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 10.2,
+            "compact_hash": "d991d45ac9ef2bb82aab0e6bee4d90765b512dd66c665c141dc9e8f3b74df8e2",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140625"
+        },
+        {
+            "case_id": "case_55_git_bisect",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 25.6,
+            "compact_hash": "e3b11ffe2f9420b65dbb56feab920de052d33484d44610c5ee48fdf2e2416eda",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140626"
+        },
+        {
+            "case_id": "case_56_git_clean",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 50.0,
+            "compact_hash": "6d3a7a15f746d242d4ba30c8a4e9b7427996fb005bf7b50f7945a632712fb196",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140627"
+        },
+        {
+            "case_id": "case_57_git_submodule",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 26.1,
+            "compact_hash": "1d49b0804f82a5c9a9bb5c16ca2c747f3e984d98b6e7619e3c3491cead7fc87d",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140627"
+        },
+        {
+            "case_id": "case_tree_diff_name_only",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 3.7,
+            "compact_hash": "35f6e7b1ff982be7d92c7aca66b8846957c93daae59d94a63ce133ddb1679836",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140628"
+        },
+        {
+            "case_id": "case_tree_status",
+            "status": "frozen",
+            "last_version": "20260624-175436",
+            "compression_pct": 0.0,
+            "compact_hash": "debbaafc84a45dcd7a6f131105aeb197a15e62d84a9835f8da37ed8cbebd5b1e",
+            "note": "",
+            "updated_at": "2026-06-24T17:54:39.140629"
+        }
+    ]
+}

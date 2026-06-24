@@ -1,0 +1,5 @@
+PS C:\> helm ls
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+my-release      default         1               2026-06-07 10:00:00.000000000 +0000 UTC deployed        nginx-1.0.0     1.19.0
+PS C:\> 
+

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_006_gcp_jsonl_textpayload",
+    "case_file": "case_006_gcp_jsonl_textpayload.log",
+    "original_lines": 3,
+    "original_bytes": 766,
+    "compact_lines": 4,
+    "compact_bytes": 412,
+    "compression_pct": 46.2,
+    "compact_hash": "dea71867878648fbdb0d49ce4f2a36429da3f678e03fcf010f2917a3765e416a",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,3 @@
+wrangler tail backend-worker --format pretty
+$CL|WEB_HEALTH|provider=cloudflare|2026-05-13 08:42:01..2026-05-13 08:42:31|source=cloudflare/workers/backend-|GET /health|200 OK|hits=4|ips=198.51.100.30:1,198.51.100.31:2,198.51.100.32:1|level=INFO
+!$CL|WEB_ACCESS|provider=cloudflare|2026-05-13 08:42:45..2026-05-13 08:42:45|source=cloudflare/workers/backend-|GET /api/status|503 Service Unavailable|hits=1|ips=198.51.100.32:1|level=ERROR

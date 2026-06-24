@@ -1,0 +1,12 @@
+{
+    "case_id": "case_004_aws_csv_health",
+    "case_file": "case_004_aws_csv_health.log",
+    "original_lines": 5,
+    "original_bytes": 600,
+    "compact_lines": 1,
+    "compact_bytes": 163,
+    "compression_pct": 72.8,
+    "compact_hash": "e2519cd389724ac45bbb5804df01b58c3d678d002b5e4cc00b2737429a2d2123",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

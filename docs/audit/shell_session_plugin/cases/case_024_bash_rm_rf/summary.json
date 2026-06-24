@@ -1,0 +1,12 @@
+{
+    "case_id": "case_024_bash_rm_rf",
+    "case_file": "case_024_bash_rm_rf.log",
+    "original_lines": 9,
+    "original_bytes": 235,
+    "compact_lines": 9,
+    "compact_bytes": 235,
+    "compression_pct": 0.0,
+    "compact_hash": "b2737ba0e613bb1d9d0a4fa91d9d576e9a6373de792b4bf478e6ccfdfc158cb5",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

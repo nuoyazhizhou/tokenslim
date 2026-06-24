@@ -1,0 +1,12 @@
+{
+    "case_id": "case_073_bash_mount",
+    "case_file": "case_073_bash_mount.log",
+    "original_lines": 8,
+    "original_bytes": 336,
+    "compact_lines": 8,
+    "compact_bytes": 336,
+    "compression_pct": 0.0,
+    "compact_hash": "8dea0f05684dc63cc92b64637fbc2c5a58ed677a909eeec993aa92ebaded081f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

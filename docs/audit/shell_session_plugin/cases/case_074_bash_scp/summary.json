@@ -1,0 +1,12 @@
+{
+    "case_id": "case_074_bash_scp",
+    "case_file": "case_074_bash_scp.log",
+    "original_lines": 9,
+    "original_bytes": 528,
+    "compact_lines": 9,
+    "compact_bytes": 528,
+    "compression_pct": 0.0,
+    "compact_hash": "eadcc021937ddd20157a3e7a74f8335ed6c6f2a1e5659f8cba0953831a35beeb",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

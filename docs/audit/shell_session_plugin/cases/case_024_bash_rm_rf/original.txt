@@ -1,0 +1,9 @@
+user@linux:~$ ls tmp_cache/
+old_data.json
+session.lock
+user@linux:~$ rm -rf ./tmp_cache
+user@linux:~$ ls tmp_cache/
+ls: cannot access 'tmp_cache/': No such file or directory
+user@linux:~$ echo "cleanup done"
+cleanup done
+user@linux:~$

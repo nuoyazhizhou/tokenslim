@@ -1,0 +1,3 @@
+{"__time__":"1778665646","__source__":"backend-7f9d","level":"INFO","content":"worker started pid=42"}
+{"__time__":"1778665672","__source__":"backend-7f9d","level":"ERROR","content":"database connection error: timeout after 30s"}
+{"__time__":"1778665706","__source__":"backend-7f9d","level":"INFO","content":"retrying database connection"}

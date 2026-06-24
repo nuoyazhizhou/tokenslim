@@ -1,0 +1,12 @@
+{
+    "case_id": "case_080_bash_wget",
+    "case_file": "case_080_bash_wget.log",
+    "original_lines": 12,
+    "original_bytes": 339,
+    "compact_lines": 12,
+    "compact_bytes": 339,
+    "compression_pct": 0.0,
+    "compact_hash": "665bfc3b87a852bca5b3739e4c24694fa9cee66680db926811e721751d8848c5",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

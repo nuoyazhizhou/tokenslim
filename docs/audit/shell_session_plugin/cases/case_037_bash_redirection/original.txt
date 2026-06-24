@@ -1,0 +1,4 @@
+user@linux:~$ echo "Hello World" > test.txt
+user@linux:~$ cat test.txt >> append.txt
+user@linux:~$ ls nonexistent 2> error.log
+user@linux:~$ 

@@ -1,0 +1,6 @@
+user@linux:~$ tar -czvf backup.tar.gz /home/user/docs
+/home/user/docs/
+/home/user/docs/file1.txt
+/home/user/docs/file2.txt
+/home/user/docs/file3.txt
+user@linux:~$ 

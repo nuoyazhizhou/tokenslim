@@ -1,0 +1,12 @@
+{
+    "case_id": "case_018_gcp_audit_protopayload",
+    "case_file": "case_018_gcp_audit_protopayload.log",
+    "original_lines": 2,
+    "original_bytes": 653,
+    "compact_lines": 3,
+    "compact_bytes": 400,
+    "compression_pct": 38.7,
+    "compact_hash": "f4d2941e47abaabe1f6256fda8b9c0dda863872a7414eb2aa7c0e8fd7a60f301",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

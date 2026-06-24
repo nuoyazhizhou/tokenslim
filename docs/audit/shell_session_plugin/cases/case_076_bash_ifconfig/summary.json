@@ -1,0 +1,12 @@
+{
+    "case_id": "case_076_bash_ifconfig",
+    "case_file": "case_076_bash_ifconfig.log",
+    "original_lines": 15,
+    "original_bytes": 737,
+    "compact_lines": 15,
+    "compact_bytes": 737,
+    "compression_pct": 0.0,
+    "compact_hash": "848dc58c44a97903e95ea6eb864795ea30811a7346c3a67431acdf7e8fe78477",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

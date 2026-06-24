@@ -1,0 +1,12 @@
+{
+    "case_id": "case_068_bash_tail",
+    "case_file": "case_068_bash_tail.log",
+    "original_lines": 7,
+    "original_bytes": 455,
+    "compact_lines": 7,
+    "compact_bytes": 455,
+    "compression_pct": 0.0,
+    "compact_hash": "716dd591054584f5a5dbdaba05d11827f9766f92a8bb79375e2dc9cba599e08f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

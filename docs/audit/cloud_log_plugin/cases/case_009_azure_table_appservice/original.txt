@@ -1,0 +1,5 @@
+| TimeGenerated [UTC]       | LogLevel | LogMessage                                      |
+|---------------------------|----------|-------------------------------------------------|
+| 2026-05-13T08:13:39.939Z  | INFO     | worker started pid=42                           |
+| 2026-05-13T08:13:41.100Z  | ERROR    | database connection error: timeout after 30s    |
+| 2026-05-13T08:13:45.210Z  | INFO     | retrying database connection                    |

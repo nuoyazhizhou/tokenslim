@@ -1,0 +1,12 @@
+{
+    "case_id": "case_053_ps_cargo",
+    "case_file": "case_053_ps_cargo.log",
+    "original_lines": 11,
+    "original_bytes": 354,
+    "compact_lines": 11,
+    "compact_bytes": 345,
+    "compression_pct": 2.5,
+    "compact_hash": "17908855c6a4095c9f38e6ceb7ccd29f01d0bdf4118ce79e2ee21c4bddd2b904",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

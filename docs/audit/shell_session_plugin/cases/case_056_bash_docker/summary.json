@@ -1,0 +1,12 @@
+{
+    "case_id": "case_056_bash_docker",
+    "case_file": "case_056_bash_docker.log",
+    "original_lines": 4,
+    "original_bytes": 279,
+    "compact_lines": 4,
+    "compact_bytes": 277,
+    "compression_pct": 0.7,
+    "compact_hash": "1e568d93e9833344566322393bd3f8c754619d3965d02980a339dffc8c13bbd1",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

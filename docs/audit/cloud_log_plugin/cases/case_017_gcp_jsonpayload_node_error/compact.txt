@@ -1,0 +1,5 @@
+$CL|META|providers=gcp|sources=projects/cloud-document/run.goog|records=2
+$CL|REC|t=2026-05-13 08:24:01|lvl=INFO|src=projects/cloud-document/run.goog|msg=server listening on 8080
+!$CL|REC|t=2026-05-13 08:24:02|lvl=ERROR|src=projects/cloud-document/run.goog|msg=TypeError: Cannot read properties of undefined (reading 'id')
+    at handler (/workspace/index.js:42:17)
+    at processTicksAndRejections (node:internal/process/task_queues:95:5)

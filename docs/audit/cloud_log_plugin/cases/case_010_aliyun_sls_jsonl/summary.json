@@ -1,0 +1,12 @@
+{
+    "case_id": "case_010_aliyun_sls_jsonl",
+    "case_file": "case_010_aliyun_sls_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 340,
+    "compact_lines": 4,
+    "compact_bytes": 308,
+    "compression_pct": 9.4,
+    "compact_hash": "dfa51e57dbff291987080912f9f8ad0ca44d766b9b58267b07511a3fe6aebf6f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

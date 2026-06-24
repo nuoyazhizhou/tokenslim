@@ -1,0 +1,12 @@
+{
+    "case_id": "case_061_bash_sed_sort",
+    "case_file": "case_061_bash_sed_sort.log",
+    "original_lines": 5,
+    "original_bytes": 118,
+    "compact_lines": 5,
+    "compact_bytes": 115,
+    "compression_pct": 2.5,
+    "compact_hash": "8450ba9fe44409a8cfa4b82662766eb7c5d0572fad8db490de98a4ed7c0b7ddd",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

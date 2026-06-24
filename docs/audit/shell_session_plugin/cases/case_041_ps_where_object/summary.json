@@ -1,0 +1,12 @@
+{
+    "case_id": "case_041_ps_where_object",
+    "case_file": "case_041_ps_where_object.log",
+    "original_lines": 8,
+    "original_bytes": 284,
+    "compact_lines": 8,
+    "compact_bytes": 278,
+    "compression_pct": 2.1,
+    "compact_hash": "b2c8e72232e0ddeaa2a475b53efaf33fcb8f1422ab47767b0972c908496eb52d",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

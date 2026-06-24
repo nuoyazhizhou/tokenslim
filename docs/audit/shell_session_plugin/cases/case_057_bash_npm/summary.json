@@ -1,0 +1,12 @@
+{
+    "case_id": "case_057_bash_npm",
+    "case_file": "case_057_bash_npm.log",
+    "original_lines": 6,
+    "original_bytes": 128,
+    "compact_lines": 6,
+    "compact_bytes": 124,
+    "compression_pct": 3.1,
+    "compact_hash": "8cd24bb80a1d25a0890e4f36f90c6781ee61a5f0051fee082c536159b8282a82",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

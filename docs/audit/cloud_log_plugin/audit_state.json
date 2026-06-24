@@ -1,0 +1,474 @@
+{
+    "track": "cloud_log_plugin",
+    "updated_at": "2026-06-24T17:55:02.345839",
+    "cases": [
+        {
+            "case_id": "case_001_aws_logs_tail_health",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 68.8,
+            "compact_hash": "d9ba4089429530ac931cdd25362e716dc460bbfa39a4d853f2827d79251fbd6d",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345778"
+        },
+        {
+            "case_id": "case_002_cloudwatch_table_health",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 85.9,
+            "compact_hash": "a394e86801cf1da755659ba7fec522bdd3190659391144009e194e39701872ca",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345779"
+        },
+        {
+            "case_id": "case_003_aws_logs_tail_mixed",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 33.7,
+            "compact_hash": "a7abfd8a8ed9176f1fb086ad60b5e1e07159a5c4f9ccdb960a93f33fc57224e4",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345781"
+        },
+        {
+            "case_id": "case_004_aws_csv_health",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 72.8,
+            "compact_hash": "e2519cd389724ac45bbb5804df01b58c3d678d002b5e4cc00b2737429a2d2123",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345782"
+        },
+        {
+            "case_id": "case_005_aws_jsonl_message",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 41.8,
+            "compact_hash": "7d09102ec0bcc711fe7e25a51f47f825899159d1e1ac942ce7549c3769022af2",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345783"
+        },
+        {
+            "case_id": "case_006_gcp_jsonl_textpayload",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 46.2,
+            "compact_hash": "dea71867878648fbdb0d49ce4f2a36429da3f678e03fcf010f2917a3765e416a",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345784"
+        },
+        {
+            "case_id": "case_007_gcp_plain_logging",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "7f4e4811598cd111c942e18115d05cd6e9b9b5ef31a9e1a33b71752359b1ab4c",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345785"
+        },
+        {
+            "case_id": "case_008_azure_csv_appservice",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 18.1,
+            "compact_hash": "69253006cda9f02c6cae29e99369e5a23e7ad5ac5776695dd83fcfeda9b9197d",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345786"
+        },
+        {
+            "case_id": "case_009_azure_table_appservice",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 40.4,
+            "compact_hash": "56d1447b1276691e74c6c5846b921d9dd94a94567ecbfc5417ffef6b149380fc",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345787"
+        },
+        {
+            "case_id": "case_010_aliyun_sls_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 9.4,
+            "compact_hash": "dfa51e57dbff291987080912f9f8ad0ca44d766b9b58267b07511a3fe6aebf6f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345787"
+        },
+        {
+            "case_id": "case_011_cloud_java_stack_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 12.0,
+            "compact_hash": "cb5599e14c0a5f4faff2320d522cdfd65a3fae4a8057273d63a1400fc68ebdde",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345788"
+        },
+        {
+            "case_id": "case_012_cloud_python_traceback_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 20.2,
+            "compact_hash": "f19e453c02838dd219bb38865e00fb38846eabb9b60b2d389a972a5e0c9f6b12",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345789"
+        },
+        {
+            "case_id": "case_013_aws_lambda_report_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 26.3,
+            "compact_hash": "a3f27b85617976594fd36c7ee516a3ce1961f5120ab62243e0bb734aed083cae",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345790"
+        },
+        {
+            "case_id": "case_014_aws_cloudtrail_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 14.8,
+            "compact_hash": "bf949a84d6bc9548ebd3e27d66c30de140d9393cd4b75fbd05842e141a0e7d72",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345791"
+        },
+        {
+            "case_id": "case_015_aws_alb_access_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 48.0,
+            "compact_hash": "689f9ba56be1cc6b77f646ab5da1d0c371db0afc1af90e4303401a1ae479e1e7",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345792"
+        },
+        {
+            "case_id": "case_016_aws_vpc_flow_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 19.0,
+            "compact_hash": "fed5591d0449d733d3289aebbd8d9caf357f5f5f1ea32aa7bd8ea44a9fd2cc5b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345793"
+        },
+        {
+            "case_id": "case_017_gcp_jsonpayload_node_error",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 33.4,
+            "compact_hash": "d75b4180f028b13b163c63178dcb2adedfc6d369bdba0e01a06c2a06a3a351bc",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345794"
+        },
+        {
+            "case_id": "case_018_gcp_audit_protopayload",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 38.7,
+            "compact_hash": "f4d2941e47abaabe1f6256fda8b9c0dda863872a7414eb2aa7c0e8fd7a60f301",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345795"
+        },
+        {
+            "case_id": "case_019_gcp_gke_plain",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 36.2,
+            "compact_hash": "8d0bc77324520139a94cc8b908df6dc4646ec3f975f69a1cf401fadc3f4e80bb",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345796"
+        },
+        {
+            "case_id": "case_020_azure_monitor_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 59.4,
+            "compact_hash": "ecdfee590b29f76387fd8af2e8d6c0f254c338c4718c61c35efe05491516c7e8",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345797"
+        },
+        {
+            "case_id": "case_021_azure_appinsights_exception_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 23.3,
+            "compact_hash": "6d8897adaafc2c8bed8290b487690bc9d12ddac572ed983ff5dcc103e22c867f",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345798"
+        },
+        {
+            "case_id": "case_022_azure_containerapps_plain",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 28.7,
+            "compact_hash": "b4d929b237c834f0d25dd76cb39b33deb50b1222e80a9ee4a3a3abc7f36317b3",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345799"
+        },
+        {
+            "case_id": "case_023_aliyun_sls_csv_nginx",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "aea460c89d2b60708b49ff418c6ff9d3e9e592965ce8226f4d235a4c87ef94e9",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345800"
+        },
+        {
+            "case_id": "case_024_aliyun_sls_table_syslog",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "7786298cea0ee6548600d375667dc67a04e56899fa64b5cd9dfa36c58051d374",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345800"
+        },
+        {
+            "case_id": "case_025_aliyun_sls_db_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 6.9,
+            "compact_hash": "a00004a52a797e2829914276df35e1a7c614d409ca874eb900b9f94fcada380b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345801"
+        },
+        {
+            "case_id": "case_026_oci_logging_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 39.9,
+            "compact_hash": "b5712619523f9445ee6644f591660dbbe08060b4a83b8ec773b0bfcf75b7dfa0",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345802"
+        },
+        {
+            "case_id": "case_027_oci_logging_cli_plain",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 32.6,
+            "compact_hash": "fdb00e3ca5e3cfbbdaa88c4af264a861b3800af830a7f3b7da884d4369058fd7",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345803"
+        },
+        {
+            "case_id": "case_028_oci_audit_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 9.4,
+            "compact_hash": "aca240da14b71a14836849f1aae07605d8382943d5c7427528512ff36a6a6637",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345804"
+        },
+        {
+            "case_id": "case_029_tencent_cls_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 39.4,
+            "compact_hash": "17c18a58999332e2eea96e388897081268ca3da897635a8f633799e9c8ad402b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345805"
+        },
+        {
+            "case_id": "case_030_tencent_cls_csv",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "57981e71425bf656f00787c78aa01ec132323b9fb8e989950ef21b17f77fffd5",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345806"
+        },
+        {
+            "case_id": "case_031_tencent_cls_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "e6823e065374f65466bca80a74e7880e77e5e86331ef6e814a966a983642cefc",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345807"
+        },
+        {
+            "case_id": "case_032_huawei_lts_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 43.8,
+            "compact_hash": "a75de29e6d3363b13255e7a63b462f91f4d13a216deeda7a8546691de24e74f1",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345808"
+        },
+        {
+            "case_id": "case_033_huawei_lts_csv",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "f163233acfca15af0e42c13561979b5f6e79871ca04ebbe50a245d15324699d5",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345809"
+        },
+        {
+            "case_id": "case_034_huawei_lts_plain",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 30.6,
+            "compact_hash": "03d3273a42c5db401478bddcefdd96cc13fac79a5c42a5d8eaa119ca51931a2d",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345810"
+        },
+        {
+            "case_id": "case_035_cloudflare_workers_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 34.6,
+            "compact_hash": "5429b3fc49d34a0322591370af269a58ed77821b9948af5c16fd36b232595093",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345811"
+        },
+        {
+            "case_id": "case_036_cloudflare_http_json",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 17.9,
+            "compact_hash": "9e14780f21347797615986d45f27596dcfa2e8d998fb865d219c45fd44488bcf",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345812"
+        },
+        {
+            "case_id": "case_037_cloudflare_wrangler_tail_plain",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 35.6,
+            "compact_hash": "505fa998e0c49293ed1922a696b8227bc2e3883d1feea48770e679245cf8df2e",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345813"
+        },
+        {
+            "case_id": "case_038_aws_logs_insights_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 56.2,
+            "compact_hash": "e9b57882aaf5b26dd665c0bf2ac204dfd481688d54e45d675752880ee6d41f6b",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345814"
+        },
+        {
+            "case_id": "case_039_aws_filter_log_events_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 77.2,
+            "compact_hash": "2a30662a5a595ac3cafbdfbdbdd29f75cf852f77a23847d7adcd883ad49afb9d",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345815"
+        },
+        {
+            "case_id": "case_040_gcp_http_request_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 59.3,
+            "compact_hash": "e7b34dfbe2526cf116bf8a8ed4b368b2f17d7bd169f417463f493f5b08c1b130",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345816"
+        },
+        {
+            "case_id": "case_041_azure_appinsights_traces_csv",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "cc526cdb8e862e7e8ba429f60b36794de0084e71dfb2d3f382a7ed3e3b391bf4",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345817"
+        },
+        {
+            "case_id": "case_042_oci_logging_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "2d588d54339dc64cbff0196917ced58e9e4fa70244198043f7cb4acfd3ca4fb7",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345817"
+        },
+        {
+            "case_id": "case_043_cloudflare_logpush_http_jsonl",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 31.4,
+            "compact_hash": "13e92567b960dca81d4229223a6a3dd7c39a2757386525c9abd9b781891229cf",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345818"
+        },
+        {
+            "case_id": "case_044_non_cloud_plain",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "5c83fad2a210f5770ca41bb5d2a31b27b6231a0a3307732cbc805412e28b7528",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345819"
+        },
+        {
+            "case_id": "case_045_aws_logs_insights_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 93.1,
+            "compact_hash": "585679968eb009ff2b78f43b7c81efe533e02598e5ff58578d9a996ebbe877c5",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345820"
+        },
+        {
+            "case_id": "case_046_aws_logs_insights_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 92.1,
+            "compact_hash": "385bd0d345ef386a11a76e836c3841caf9bbdacc89fcf4ded000904c38d57363",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345821"
+        },
+        {
+            "case_id": "case_047_aws_logs_insights_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 51.3,
+            "compact_hash": "93a4eec261b283a10c6d59779653d1d7b26dcf1583258717ffe5209a7ec551a1",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345822"
+        },
+        {
+            "case_id": "case_048_aws_logs_insights_table",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 51.0,
+            "compact_hash": "f0ad28d232623d297ab0006c894f01e10e23b65bd074e2ee63af7ba24f76fe5e",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345823"
+        },
+        {
+            "case_id": "case_049_gcp_jsonl_multiline",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 48.5,
+            "compact_hash": "eb8fa91deb1bc0aee6395e4da6bd3362c136963a2f94c78ce27e84d2830f610a",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345824"
+        },
+        {
+            "case_id": "case_050_aliyun_sls_multiline",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 18.5,
+            "compact_hash": "8a1dec4c4125095998604c6ae8b79dece3b01e8657e8927ae96422fb56655404",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345825"
+        },
+        {
+            "case_id": "case_051_tencent_cls_multiline",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 41.1,
+            "compact_hash": "f70e5922197afa4aa8223446a5760d5d522b3345965d2f4d809f883dfa8bd500",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345825"
+        },
+        {
+            "case_id": "case_052_aliyun_csv_multiline",
+            "status": "frozen",
+            "last_version": "all_20260624-175500",
+            "compression_pct": 0.0,
+            "compact_hash": "f51e810cd9b4dc61a9a22d860d67743064e82e898514ddeb356bf55445672748",
+            "note": "",
+            "updated_at": "2026-06-24T17:55:02.345826"
+        }
+    ]
+}

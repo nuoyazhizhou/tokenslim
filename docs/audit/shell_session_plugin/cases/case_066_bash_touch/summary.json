@@ -1,0 +1,12 @@
+{
+    "case_id": "case_066_bash_touch",
+    "case_file": "case_066_bash_touch.log",
+    "original_lines": 7,
+    "original_bytes": 286,
+    "compact_lines": 7,
+    "compact_bytes": 286,
+    "compression_pct": 0.0,
+    "compact_hash": "473ad19246d3a174904fcf20d37ea532cdc2d5231da1b3c46dc2335fa519ed01",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

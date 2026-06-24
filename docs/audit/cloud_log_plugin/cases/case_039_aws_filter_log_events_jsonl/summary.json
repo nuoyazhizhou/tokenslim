@@ -1,0 +1,12 @@
+{
+    "case_id": "case_039_aws_filter_log_events_jsonl",
+    "case_file": "case_039_aws_filter_log_events_jsonl.log",
+    "original_lines": 4,
+    "original_bytes": 710,
+    "compact_lines": 1,
+    "compact_bytes": 162,
+    "compression_pct": 77.2,
+    "compact_hash": "2a30662a5a595ac3cafbdfbdbdd29f75cf852f77a23847d7adcd883ad49afb9d",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

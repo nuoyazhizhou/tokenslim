@@ -1,0 +1,15 @@
+C:\> dir /s src
+ Volume in drive C has no label.
+ Volume Serial Number is ABCD-1234
+
+ Directory of C:\src
+
+06/07/2026  10:00 AM    <DIR>          .
+06/07/2026  10:00 AM    <DIR>          ..
+06/07/2026  10:00 AM             1,024 main.rs
+               1 File(s)          1,024 bytes
+
+     Total Files Listed:
+               1 File(s)          1,024 bytes
+               2 Dir(s)  50,000,000,000 bytes free
+C:\> 

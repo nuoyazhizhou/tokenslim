@@ -1,0 +1,5 @@
+user@linux:~$ cat /var/log/auth.log | grep "Failed password" | awk '{print $11}'
+192.168.1.10
+10.0.0.5
+user@linux:~$ 
+

@@ -1,0 +1,2 @@
+$CL|WEB_HEALTH|provider=cloudflare|2026-05-13 08:40:01..2026-05-13 08:40:31|source=backend-worker|GET /health|200 OK|hits=2|ips=198.51.100.20:1,198.51.100.21:1|level=INFO
+!$CL|WEB_ACCESS|provider=cloudflare|2026-05-13 08:40:45..2026-05-13 08:40:45|source=backend-worker|POST /api/render|500 Internal Server Error|hits=1|ips=198.51.100.22:1|level=ERROR

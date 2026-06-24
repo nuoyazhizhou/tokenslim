@@ -1,0 +1,6 @@
+user@linux:~$ df -h
+Filesystem Size Used Avail Use% Mounted on
+/dev/sda1 50G 20G 30G 40% /
+tmpfs 4.0G 0 4.0G 0% /dev/shm
+user@linux:~$ 
+

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_049_bash_syntax_error",
+    "case_file": "case_049_bash_syntax_error.log",
+    "original_lines": 3,
+    "original_bytes": 105,
+    "compact_lines": 3,
+    "compact_bytes": 104,
+    "compression_pct": 1.0,
+    "compact_hash": "3d8909d313d3e400a5527e44065a212d6339717fe867c75b7a0da8da214e00ea",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

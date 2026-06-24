@@ -1,0 +1,12 @@
+user@host:~$ ip addr show eth0
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UP group default qlen 1000
+    link/ether 00:1a:2b:3c:4d:5e brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.50/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0
+       valid_lft 86316sec preferred_lft 86316sec
+    inet6 fe80::21a:2bff:fe3c:4d5e/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+user@host:~$ ip route show
+default via 192.168.1.1 dev eth0 proto dhcp metric 100
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.50 metric 100
+user@host:~$
+

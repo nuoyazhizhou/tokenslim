@@ -1,0 +1,5 @@
+user@linux:~$ cat list.txt | sed 's/foo/bar/g' | sort | uniq -c
+      2 bar
+      1 baz
+      3 qux
+user@linux:~$ 

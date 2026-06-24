@@ -1,0 +1,4 @@
+$CL|META|providers=azure|sources=/subscriptions/backend|records=3
+$CL|REC|t=2026-05-13 08:13:39|lvl=Information|src=/subscriptions/backend|msg=worker started pid=42
+!$CL|REC|t=2026-05-13 08:13:41|lvl=Error|src=/subscriptions/backend|msg=database connection error: timeout after 30s
+$CL|REC|t=2026-05-13 08:13:45|lvl=Information|src=/subscriptions/backend|msg=retrying database connection

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_030_tencent_cls_csv",
+    "case_file": "case_030_tencent_cls_csv.log",
+    "original_lines": 5,
+    "original_bytes": 350,
+    "compact_lines": 5,
+    "compact_bytes": 350,
+    "compression_pct": 0.0,
+    "compact_hash": "57981e71425bf656f00787c78aa01ec132323b9fb8e989950ef21b17f77fffd5",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

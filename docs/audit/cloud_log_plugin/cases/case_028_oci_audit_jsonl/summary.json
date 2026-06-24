@@ -1,0 +1,12 @@
+{
+    "case_id": "case_028_oci_audit_jsonl",
+    "case_file": "case_028_oci_audit_jsonl.log",
+    "original_lines": 3,
+    "original_bytes": 512,
+    "compact_lines": 4,
+    "compact_bytes": 464,
+    "compression_pct": 9.4,
+    "compact_hash": "aca240da14b71a14836849f1aae07605d8382943d5c7427528512ff36a6a6637",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

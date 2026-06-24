@@ -1,0 +1,12 @@
+{
+    "case_id": "case_034_bash_ping",
+    "case_file": "case_034_bash_ping.log",
+    "original_lines": 10,
+    "original_bytes": 445,
+    "compact_lines": 10,
+    "compact_bytes": 437,
+    "compression_pct": 1.8,
+    "compact_hash": "e630adc0ae710ad6d43c4e4eb93c1d36e9087f841289b4c051e964adcacb4aa1",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_017_gcp_jsonpayload_node_error",
+    "case_file": "case_017_gcp_jsonpayload_node_error.log",
+    "original_lines": 2,
+    "original_bytes": 661,
+    "compact_lines": 5,
+    "compact_bytes": 440,
+    "compression_pct": 33.4,
+    "compact_hash": "d75b4180f028b13b163c63178dcb2adedfc6d369bdba0e01a06c2a06a3a351bc",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,63 @@
+{
+    "case_id": "case_284_git_diff_name_status",
+    "filename": "case_284_git_diff_name_status.log",
+    "size_bytes": 158,
+    "line_count": 6,
+    "registered": true,
+    "registered_title": "diff",
+    "title_consistent": null,
+    "deterministic": {
+        "ok_length": true,
+        "length_reason": "",
+        "anchor_ok": true,
+        "anchor_token": "git diff --name-status",
+        "anchor_reason": "",
+        "mojibake": [],
+        "secrets": [],
+        "signals": [],
+        "blocking_issues": [],
+        "routing_boundary_tool": "",
+        "routing_boundary_ratio": 0.0,
+        "routing_boundary_segments": "0/0",
+        "title_consistent": null,
+        "title_assertions_checked": 0,
+        "title_assertions_satisfied": 0,
+        "title_assertions_missing": [],
+        "case_id_families": [],
+        "case_id_family_overlap": [],
+        "case_id_family_mismatch": false,
+        "sidecar_keep_mismatch": [],
+        "sidecar_compress_mismatch": [],
+        "sidecar_scenario_empty": false
+    },
+    "llm_judgment": {
+        "status": "valid",
+        "confidence": 0.0,
+        "explanation": "LLM 未参与（无 OPENAI_API_KEY 或调用失败），仅依赖确定性 lint。",
+        "fix_hint": "",
+        "duplicate_of": "",
+        "realism_audit": {
+            "shell_personality_ok": null,
+            "line_length_entropy_ok": null,
+            "error_cause_effect_ok": null,
+            "error_multiline_ok": null,
+            "empty_output_authentic": null,
+            "exit_stderr_consistent": null,
+            "locale_plausible": null,
+            "fabrication_indicators": []
+        },
+        "sidecar_accuracy": {
+            "scenario_accurate": null,
+            "target_capability_accurate": null,
+            "expected_keep_accurate": null,
+            "expected_compress_accurate": null,
+            "inaccurate_fields": []
+        },
+        "llm_invoked": false
+    },
+    "command_tokens": [],
+    "command_families": [],
+    "routing_boundary_tool": "",
+    "content_hash": "9eb32c5200147a87722553c274cde8810a590e1a6c96f4d0c1dfd2c106786a7d",
+    "final_status": "valid"
+}

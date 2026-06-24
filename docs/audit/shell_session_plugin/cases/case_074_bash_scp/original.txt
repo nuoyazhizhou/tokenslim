@@ -1,0 +1,9 @@
+user@host:~$ scp -P 22 release.tar.gz admin@backup.example.com:/backups/
+release.tar.gz                                    100%   10MB   5.0MB/s   00:02
+user@host:~$ scp -i ~/.ssh/id_ed25519 -r ./deploy root@prod-01.example.com:/srv/app
+config.json                                       100%  512     0.5KB/s   00:00
+docker-compose.yml                                100% 2048     2.0KB/s   00:00
+README.md                                         100% 1024     1.0KB/s   00:00
+user@host:~$ echo "uploaded"
+uploaded
+user@host:~$

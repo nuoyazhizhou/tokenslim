@@ -1,0 +1,63 @@
+{
+    "case_id": "case_260_git_diff_word_diff",
+    "filename": "case_260_git_diff_word_diff.log",
+    "size_bytes": 513,
+    "line_count": 18,
+    "registered": true,
+    "registered_title": "diff",
+    "title_consistent": null,
+    "deterministic": {
+        "ok_length": true,
+        "length_reason": "",
+        "anchor_ok": true,
+        "anchor_token": "git diff --word-diff",
+        "anchor_reason": "",
+        "mojibake": [],
+        "secrets": [],
+        "signals": [],
+        "blocking_issues": [],
+        "routing_boundary_tool": "",
+        "routing_boundary_ratio": 0.0,
+        "routing_boundary_segments": "0/0",
+        "title_consistent": null,
+        "title_assertions_checked": 0,
+        "title_assertions_satisfied": 0,
+        "title_assertions_missing": [],
+        "case_id_families": [],
+        "case_id_family_overlap": [],
+        "case_id_family_mismatch": false,
+        "sidecar_keep_mismatch": [],
+        "sidecar_compress_mismatch": [],
+        "sidecar_scenario_empty": false
+    },
+    "llm_judgment": {
+        "status": "valid",
+        "confidence": 0.0,
+        "explanation": "LLM 未参与（无 OPENAI_API_KEY 或调用失败），仅依赖确定性 lint。",
+        "fix_hint": "",
+        "duplicate_of": "case_258_git_diff_head",
+        "realism_audit": {
+            "shell_personality_ok": null,
+            "line_length_entropy_ok": null,
+            "error_cause_effect_ok": null,
+            "error_multiline_ok": null,
+            "empty_output_authentic": null,
+            "exit_stderr_consistent": null,
+            "locale_plausible": null,
+            "fabrication_indicators": []
+        },
+        "sidecar_accuracy": {
+            "scenario_accurate": null,
+            "target_capability_accurate": null,
+            "expected_keep_accurate": null,
+            "expected_compress_accurate": null,
+            "inaccurate_fields": []
+        },
+        "llm_invoked": false
+    },
+    "command_tokens": [],
+    "command_families": [],
+    "routing_boundary_tool": "",
+    "content_hash": "768f9bb6d73411cdbb4cfe3cde5618996bee622a2acefa29c810be89604f687a",
+    "final_status": "duplicate"
+}

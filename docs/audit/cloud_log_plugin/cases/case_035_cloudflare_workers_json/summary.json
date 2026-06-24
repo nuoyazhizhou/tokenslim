@@ -1,0 +1,12 @@
+{
+    "case_id": "case_035_cloudflare_workers_json",
+    "case_file": "case_035_cloudflare_workers_json.log",
+    "original_lines": 3,
+    "original_bytes": 538,
+    "compact_lines": 2,
+    "compact_bytes": 352,
+    "compression_pct": 34.6,
+    "compact_hash": "5429b3fc49d34a0322591370af269a58ed77821b9948af5c16fd36b232595093",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

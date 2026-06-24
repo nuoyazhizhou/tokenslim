@@ -1,0 +1,9 @@
+user@host:~$ zip -r archive.zip project/
+  adding: project/ (stored 0%)
+  adding: project/main.py (deflated 45%)
+  adding: project/utils.py (deflated 38%)
+  adding: project/README.md (deflated 12%)
+  adding: project/tests/test_main.py (deflated 51%)
+user@host:~$ ls -la archive.zip
+-rw-r--r-- 1 user user 8192 Oct 10 10:00 archive.zip
+user@host:~$

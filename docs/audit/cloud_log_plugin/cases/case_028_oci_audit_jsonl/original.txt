@@ -1,0 +1,3 @@
+{"eventTime":"2026-05-13T08:33:01Z","source":"oraclecloud.audit","type":"com.oraclecloud.audit","data":{"message":"CreateInstance compartment=prod principal=alice result=SUCCESS"}}
+{"eventTime":"2026-05-13T08:33:21Z","source":"oraclecloud.audit","type":"ERROR","data":{"message":"UpdateSecurityList denied: user bob is not authorized"}}
+{"eventTime":"2026-05-13T08:33:41Z","source":"oraclecloud.audit","type":"com.oraclecloud.audit","data":{"message":"DeleteObject bucket=tmp principal=cleanup result=SUCCESS"}}

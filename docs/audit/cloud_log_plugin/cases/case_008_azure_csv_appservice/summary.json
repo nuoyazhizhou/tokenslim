@@ -1,0 +1,12 @@
+{
+    "case_id": "case_008_azure_csv_appservice",
+    "case_file": "case_008_azure_csv_appservice.log",
+    "original_lines": 4,
+    "original_bytes": 474,
+    "compact_lines": 4,
+    "compact_bytes": 388,
+    "compression_pct": 18.1,
+    "compact_hash": "69253006cda9f02c6cae29e99369e5a23e7ad5ac5776695dd83fcfeda9b9197d",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

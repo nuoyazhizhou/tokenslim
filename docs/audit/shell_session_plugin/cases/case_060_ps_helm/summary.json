@@ -1,0 +1,12 @@
+{
+    "case_id": "case_060_ps_helm",
+    "case_file": "case_060_ps_helm.log",
+    "original_lines": 4,
+    "original_bytes": 286,
+    "compact_lines": 4,
+    "compact_bytes": 284,
+    "compression_pct": 0.7,
+    "compact_hash": "de33d19080f8c238db7ac4a348e579d457bd1744a549fd997d07e82abb5c9620",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

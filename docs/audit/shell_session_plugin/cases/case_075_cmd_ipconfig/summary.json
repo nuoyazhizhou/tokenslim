@@ -1,0 +1,12 @@
+{
+    "case_id": "case_075_cmd_ipconfig",
+    "case_file": "case_075_cmd_ipconfig.log",
+    "original_lines": 25,
+    "original_bytes": 980,
+    "compact_lines": 25,
+    "compact_bytes": 980,
+    "compression_pct": 0.0,
+    "compact_hash": "5fb0142b6a507f987b9ced647f586b8031d0d481c714117987116ad6ed08f462",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

@@ -1,0 +1,2 @@
+$CL|WEB_HEALTH|provider=tencent|2026-05-13 08:34:01..2026-05-13 08:34:31|source=backend|GET /health|200 OK|hits=2|ips=10.3.0.1:1,10.3.0.2:1|level=INFO
+!$CL|WEB_ACCESS|provider=tencent|2026-05-13 08:34:45..2026-05-13 08:34:45|source=backend|POST /api/upload|502 Bad Gateway|hits=1|ips=10.3.0.3:1|level=ERROR

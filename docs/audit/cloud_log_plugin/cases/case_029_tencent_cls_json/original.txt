@@ -1,0 +1,3 @@
+{"timestamp":"2026-05-13T08:34:01Z","logsetName":"prod-cls","topic":"backend","level":"INFO","logContent":"INFO:     10.3.0.1:0 - \"GET /health HTTP/1.1\" 200 OK"}
+{"timestamp":"2026-05-13T08:34:31Z","logsetName":"prod-cls","topic":"backend","level":"INFO","logContent":"INFO:     10.3.0.2:0 - \"GET /health HTTP/1.1\" 200 OK"}
+{"timestamp":"2026-05-13T08:34:45Z","logsetName":"prod-cls","topic":"backend","level":"ERROR","logContent":"ERROR:    10.3.0.3:0 - \"POST /api/upload HTTP/1.1\" 502 Bad Gateway"}

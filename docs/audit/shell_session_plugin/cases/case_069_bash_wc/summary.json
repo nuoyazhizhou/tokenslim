@@ -1,0 +1,12 @@
+{
+    "case_id": "case_069_bash_wc",
+    "case_file": "case_069_bash_wc.log",
+    "original_lines": 9,
+    "original_bytes": 214,
+    "compact_lines": 9,
+    "compact_bytes": 214,
+    "compression_pct": 0.0,
+    "compact_hash": "5bb79c6503ee0d4a33f9b341e71c03754fe0ce688ac7dc918dcc279d8d192778",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

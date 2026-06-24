@@ -1,0 +1,4 @@
+$CL|META|providers=aws|sources=eni-0123456789abcdef|records=3
+$CL|REC|t=2026-05-13 08:23:01|src=eni-0123456789abcdef|msg=ACCEPT src=10.0.1.10 dst=10.0.2.20 proto=6 packets=12 bytes=840 action=ACCEPT
+$CL|REC|t=2026-05-13 08:23:06|lvl=WARN|src=eni-0123456789abcdef|msg=REJECT src=10.0.1.44 dst=10.0.9.9 proto=6 packets=3 bytes=180 action=REJECT
+$CL|REC|t=2026-05-13 08:23:12|src=eni-0123456789abcdef|msg=ACCEPT src=10.0.1.11 dst=10.0.2.20 proto=6 packets=9 bytes=612 action=ACCEPT

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_036_bash_rsync",
+    "case_file": "case_036_bash_rsync.log",
+    "original_lines": 9,
+    "original_bytes": 220,
+    "compact_lines": 9,
+    "compact_bytes": 213,
+    "compression_pct": 3.2,
+    "compact_hash": "aa8b6508e004a00a081f09d3e91af061c786421f00b6afb20c03c02db1df059f",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

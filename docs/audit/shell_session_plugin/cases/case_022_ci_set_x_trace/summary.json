@@ -1,0 +1,12 @@
+{
+    "case_id": "case_022_ci_set_x_trace",
+    "case_file": "case_022_ci_set_x_trace.log",
+    "original_lines": 43,
+    "original_bytes": 1758,
+    "compact_lines": 43,
+    "compact_bytes": 1715,
+    "compression_pct": 2.4,
+    "compact_hash": "2b50c4ab6bb2e6081acfdefe02a5992b88286fce9206cecc2192cb47d4b5e147",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

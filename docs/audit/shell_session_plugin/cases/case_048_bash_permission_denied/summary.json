@@ -1,0 +1,12 @@
+{
+    "case_id": "case_048_bash_permission_denied",
+    "case_file": "case_048_bash_permission_denied.log",
+    "original_lines": 5,
+    "original_bytes": 108,
+    "compact_lines": 5,
+    "compact_bytes": 105,
+    "compression_pct": 2.8,
+    "compact_hash": "92d36497394ea6d6913fa69f9f8f72d8cd7ba5757900cd970af476df4200f73a",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

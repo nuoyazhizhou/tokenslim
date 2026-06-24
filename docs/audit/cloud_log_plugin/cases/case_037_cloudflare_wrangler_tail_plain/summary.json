@@ -1,0 +1,12 @@
+{
+    "case_id": "case_037_cloudflare_wrangler_tail_plain",
+    "case_file": "case_037_cloudflare_wrangler_tail_plain.log",
+    "original_lines": 6,
+    "original_bytes": 677,
+    "compact_lines": 3,
+    "compact_bytes": 436,
+    "compression_pct": 35.6,
+    "compact_hash": "505fa998e0c49293ed1922a696b8227bc2e3883d1feea48770e679245cf8df2e",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

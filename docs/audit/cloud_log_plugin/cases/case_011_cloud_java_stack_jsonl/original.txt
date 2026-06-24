@@ -1,0 +1,2 @@
+{"timestamp":"2026-05-13T08:13:41.100000+00:00","logStream":"ecs/backend/f6bf6a1fb38440c992e4e33e1691b589","message":"Exception in thread \"main\" java.lang.NullPointerException: user is null\n    at com.example.app.Main.process(Main.java:45)\n    at com.example.app.Main.main(Main.java:10)"}
+{"timestamp":"2026-05-13T08:13:42.100000+00:00","logStream":"ecs/backend/f6bf6a1fb38440c992e4e33e1691b589","message":"Caused by: java.lang.IllegalStateException: session closed\n    at com.example.app.Session.load(Session.java:22)"}

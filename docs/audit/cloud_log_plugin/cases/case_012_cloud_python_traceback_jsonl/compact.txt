@@ -1,0 +1,6 @@
+!$CL|REC|t=2026-05-13 08:13:41|lvl=ERROR|src=projects/cloud-document/run.goog|msg=Traceback (most recent call last):
+  File "/app/main.py", line 42, in handler
+    parse(payload)
+  File "/app/parser.py", line 17, in parse
+    raise ValueError("invalid document")
+ValueError: invalid document

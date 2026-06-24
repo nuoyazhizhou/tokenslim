@@ -1,0 +1,8 @@
+user@host:~$ rmdir old_logs/2024 old_logs/2023
+user@host:~$ ls old_logs/
+2025
+2026
+user@host:~$ echo done
+done
+user@host:~$
+

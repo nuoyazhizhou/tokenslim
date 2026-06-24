@@ -1,0 +1,7 @@
+PS C:\> '{"name": "test", "value": 123}' | ConvertFrom-Json
+
+name value
+---- -----
+test   123
+
+PS C:\> 

@@ -1,0 +1,9 @@
+__time__,__source__,__topic__,message
+1684481300,10.0.0.1,default,Starting job
+1684481301,10.0.0.1,default,"Traceback (most recent call last):
+  File ""app.py"", line 42, in <module>
+    main()
+  File ""app.py"", line 15, in main
+    raise ValueError(""Database timeout after 30s"")
+ValueError: Database timeout after 30s"
+1684481302,10.0.0.1,default,Job failed

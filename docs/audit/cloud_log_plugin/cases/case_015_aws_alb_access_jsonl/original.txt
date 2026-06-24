@@ -1,0 +1,3 @@
+{"timestamp":"2026-05-13T08:22:01.000Z","logGroup":"/aws/elasticloadbalancing/app/backend","logStream":"app/alb/50dc6c495c0c9188","message":"INFO:     198.51.100.10:0 - \"GET /health HTTP/1.1\" 200 OK"}
+{"timestamp":"2026-05-13T08:22:31.000Z","logGroup":"/aws/elasticloadbalancing/app/backend","logStream":"app/alb/50dc6c495c0c9188","message":"INFO:     198.51.100.11:0 - \"GET /health HTTP/1.1\" 200 OK"}
+{"timestamp":"2026-05-13T08:22:35.000Z","logGroup":"/aws/elasticloadbalancing/app/backend","logStream":"app/alb/50dc6c495c0c9188","level":"ERROR","message":"ERROR:    198.51.100.12:0 - \"POST /api/upload HTTP/1.1\" 502 Bad Gateway"}

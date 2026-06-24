@@ -1,0 +1,7 @@
+$CL|META|providers=aliyun|sources=192.168.1.100|records=3
+$CL|REC|t=1717560600|lvl=INFO|src=192.168.1.100|msg=Starting database migration
+!$CL|REC|t=1717560601|lvl=ERROR|src=192.168.1.100|msg=Error executing migration script:
+java.sql.SQLException: Access denied for user 'db_user'@'localhost'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:129)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+$CL|REC|t=1717560602|lvl=INFO|src=192.168.1.100|msg=Migration script aborted.

@@ -1,0 +1,12 @@
+{
+    "case_id": "case_078_bash_ss",
+    "case_file": "case_078_bash_ss.log",
+    "original_lines": 15,
+    "original_bytes": 995,
+    "compact_lines": 15,
+    "compact_bytes": 995,
+    "compression_pct": 0.0,
+    "compact_hash": "05dd41baf866a1db5e7d1359a18f3493b9023fe73368e2f87a20e41cf0dbd5e2",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

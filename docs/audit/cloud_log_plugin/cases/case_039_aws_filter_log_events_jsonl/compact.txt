@@ -1,0 +1,1 @@
+$CL|WEB_HEALTH|provider=aws|2026-05-13 08:13:39..2026-05-13 08:14:10|source=ecs/backend/f6bf6a1|GET /health|200 OK|hits=4|ips=10.0.0.231:2,10.0.1.94:2|level=INFO

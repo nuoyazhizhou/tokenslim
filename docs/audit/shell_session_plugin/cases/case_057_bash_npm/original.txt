@@ -1,0 +1,6 @@
+user@linux:~$ npm install express
+
+added 50 packages, and audited 51 packages in 2s
+
+found 0 vulnerabilities
+user@linux:~$ 

@@ -1,0 +1,6 @@
+$CL|META|providers=aws|sources=ecs/backend/f6bf6a1f|records=2
+!$CL|REC|t=2026-05-13 08:13:41|src=ecs/backend/f6bf6a1f|msg=Exception in thread "main" java.lang.NullPointerException: user is null
+    at com.example.app.Main.process(Main.java:45)
+    at com.example.app.Main.main(Main.java:10)
+!$CL|REC|t=2026-05-13 08:13:42|src=ecs/backend/f6bf6a1f|msg=Caused by: java.lang.IllegalStateException: session closed
+    at com.example.app.Session.load(Session.java:22)

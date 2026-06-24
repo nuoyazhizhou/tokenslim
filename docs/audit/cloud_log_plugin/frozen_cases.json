@@ -1,0 +1,526 @@
+{
+    "track": "cloud_log_plugin",
+    "updated_at": "2026-06-24T17:55:02.333460",
+    "cases": [
+        {
+            "case_id": "case_001_aws_logs_tail_health",
+            "version": "v20260623_r1",
+            "compression_pct": 68.8,
+            "compact_hash": "d9ba4089429530ac931cdd25362e716dc460bbfa39a4d853f2827d79251fbd6d",
+            "original_hash": "f75be2a9297b7e8d12b09caad0ee2fc2bb35934f791b26bfd34b1ba2911ea463",
+            "original_bytes": 920,
+            "compact_bytes": 287,
+            "frozen_at": "2026-06-23T16:22:32.339340"
+        },
+        {
+            "case_id": "case_002_cloudwatch_table_health",
+            "version": "all_20260606-012658",
+            "compression_pct": 85.9,
+            "compact_hash": "a394e86801cf1da755659ba7fec522bdd3190659391144009e194e39701872ca",
+            "original_hash": "b4bbbeaf0bc62c8d476e9a5c52f170289f768d76ca8e990998dc7f349346da3c",
+            "original_bytes": 1040,
+            "compact_bytes": 147,
+            "frozen_at": "2026-06-06T02:12:04.379915"
+        },
+        {
+            "case_id": "case_003_aws_logs_tail_mixed",
+            "version": "v20260623_r1",
+            "compression_pct": 33.7,
+            "compact_hash": "a7abfd8a8ed9176f1fb086ad60b5e1e07159a5c4f9ccdb960a93f33fc57224e4",
+            "original_hash": "8b5f2b34f866e156db856798f54f311c81a8ad776f184350afe03e1df7089606",
+            "original_bytes": 968,
+            "compact_bytes": 642,
+            "frozen_at": "2026-06-23T16:20:52.787518"
+        },
+        {
+            "case_id": "case_004_aws_csv_health",
+            "version": "all_20260606-012658",
+            "compression_pct": 72.8,
+            "compact_hash": "e2519cd389724ac45bbb5804df01b58c3d678d002b5e4cc00b2737429a2d2123",
+            "original_hash": "b031794f5372fda71fe2b3dbc0e46071871e881bdcf65e8ce1c90e8dd26e97b9",
+            "original_bytes": 600,
+            "compact_bytes": 163,
+            "frozen_at": "2026-06-06T02:13:55.005836"
+        },
+        {
+            "case_id": "case_005_aws_jsonl_message",
+            "version": "20260606-025525",
+            "compression_pct": 41.8,
+            "compact_hash": "7d09102ec0bcc711fe7e25a51f47f825899159d1e1ac942ce7549c3769022af2",
+            "original_hash": "11f361952fd659461c3536ccd3278242a57d5d0d26557b6529a1e2cbe23bdccf",
+            "original_bytes": 595,
+            "compact_bytes": 346,
+            "frozen_at": "2026-06-06T02:56:11.918002"
+        },
+        {
+            "case_id": "case_006_gcp_jsonl_textpayload",
+            "version": "20260606-025525",
+            "compression_pct": 46.2,
+            "compact_hash": "dea71867878648fbdb0d49ce4f2a36429da3f678e03fcf010f2917a3765e416a",
+            "original_hash": "f71b3810d370bea4ce5838368bd2f217261eca745b8f7c569776f0640ca1177c",
+            "original_bytes": 766,
+            "compact_bytes": 412,
+            "frozen_at": "2026-06-06T02:56:53.549989"
+        },
+        {
+            "case_id": "case_007_gcp_plain_logging",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "7f4e4811598cd111c942e18115d05cd6e9b9b5ef31a9e1a33b71752359b1ab4c",
+            "original_hash": "7f4e4811598cd111c942e18115d05cd6e9b9b5ef31a9e1a33b71752359b1ab4c",
+            "original_bytes": 333,
+            "compact_bytes": 333,
+            "frozen_at": "2026-06-06T02:57:00.186230"
+        },
+        {
+            "case_id": "case_008_azure_csv_appservice",
+            "version": "20260606-025525",
+            "compression_pct": 18.1,
+            "compact_hash": "69253006cda9f02c6cae29e99369e5a23e7ad5ac5776695dd83fcfeda9b9197d",
+            "original_hash": "55bf961c9239b395c2eb35a51239d35fadcfdb2ed1073d9bed5fb2c62a6cfc7c",
+            "original_bytes": 474,
+            "compact_bytes": 388,
+            "frozen_at": "2026-06-06T02:57:33.032338"
+        },
+        {
+            "case_id": "case_009_azure_table_appservice",
+            "version": "20260606-025525",
+            "compression_pct": 40.4,
+            "compact_hash": "56d1447b1276691e74c6c5846b921d9dd94a94567ecbfc5417ffef6b149380fc",
+            "original_hash": "dfaf3445589c498959e7b9bbb288cf80020364d77e7ad2e3a9c9bd9dc0c69acf",
+            "original_bytes": 455,
+            "compact_bytes": 271,
+            "frozen_at": "2026-06-06T02:57:54.633310"
+        },
+        {
+            "case_id": "case_010_aliyun_sls_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 9.4,
+            "compact_hash": "dfa51e57dbff291987080912f9f8ad0ca44d766b9b58267b07511a3fe6aebf6f",
+            "original_hash": "2f1239cfd71db1b0d69cebe4c0e3d2d47bac64f7c1a5a28860ac1701f28ebefe",
+            "original_bytes": 340,
+            "compact_bytes": 308,
+            "frozen_at": "2026-06-06T02:58:16.149891"
+        },
+        {
+            "case_id": "case_011_cloud_java_stack_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 12.0,
+            "compact_hash": "cb5599e14c0a5f4faff2320d522cdfd65a3fae4a8057273d63a1400fc68ebdde",
+            "original_hash": "d6006b93aaa16dfb46d69df6de840c376902902c601b02d1bccde57ea46edbf1",
+            "original_bytes": 526,
+            "compact_bytes": 463,
+            "frozen_at": "2026-06-06T02:58:54.160717"
+        },
+        {
+            "case_id": "case_012_cloud_python_traceback_jsonl",
+            "version": "20260606-032328",
+            "compression_pct": 20.2,
+            "compact_hash": "f19e453c02838dd219bb38865e00fb38846eabb9b60b2d389a972a5e0c9f6b12",
+            "original_hash": "61c1800ab79ba599d7a602df869ebace086d6bb3c0fb0eda6eea73c084de44b3",
+            "original_bytes": 366,
+            "compact_bytes": 292,
+            "frozen_at": "2026-06-06T03:23:47.025144"
+        },
+        {
+            "case_id": "case_013_aws_lambda_report_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 26.3,
+            "compact_hash": "a3f27b85617976594fd36c7ee516a3ce1961f5120ab62243e0bb734aed083cae",
+            "original_hash": "dbfb819d6b7f8efe9f70b53d95cc1303a35d9567a6420ff375a4c3027a73bfe6",
+            "original_bytes": 631,
+            "compact_bytes": 465,
+            "frozen_at": "2026-06-06T03:00:49.711436"
+        },
+        {
+            "case_id": "case_014_aws_cloudtrail_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 14.8,
+            "compact_hash": "bf949a84d6bc9548ebd3e27d66c30de140d9393cd4b75fbd05842e141a0e7d72",
+            "original_hash": "7be8e2df224815f4217c3edf99346891bead6ba3b3cfb66571cf7e7b9cff4d27",
+            "original_bytes": 683,
+            "compact_bytes": 582,
+            "frozen_at": "2026-06-06T03:01:27.881020"
+        },
+        {
+            "case_id": "case_015_aws_alb_access_jsonl",
+            "version": "all_20260606-012658",
+            "compression_pct": 48.0,
+            "compact_hash": "689f9ba56be1cc6b77f646ab5da1d0c371db0afc1af90e4303401a1ae479e1e7",
+            "original_hash": "c39507e4322c9fc5b57bc9fcbd968742c5a6260e96b425142f31e7de2873695d",
+            "original_bytes": 639,
+            "compact_bytes": 332,
+            "frozen_at": "2026-06-06T02:20:57.946190"
+        },
+        {
+            "case_id": "case_016_aws_vpc_flow_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 19.0,
+            "compact_hash": "fed5591d0449d733d3289aebbd8d9caf357f5f5f1ea32aa7bd8ea44a9fd2cc5b",
+            "original_hash": "169127b04f9cd8d7e8c0d8b166d47f662f8482b428c7f9873b6c83b30754daeb",
+            "original_bytes": 591,
+            "compact_bytes": 479,
+            "frozen_at": "2026-06-06T03:01:50.478016"
+        },
+        {
+            "case_id": "case_017_gcp_jsonpayload_node_error",
+            "version": "20260606-025525",
+            "compression_pct": 33.4,
+            "compact_hash": "d75b4180f028b13b163c63178dcb2adedfc6d369bdba0e01a06c2a06a3a351bc",
+            "original_hash": "6b733e1617637df5b1a5b20e22ec11c1c7145522b63a2ab683f5731be18bc463",
+            "original_bytes": 661,
+            "compact_bytes": 440,
+            "frozen_at": "2026-06-06T03:02:32.812283"
+        },
+        {
+            "case_id": "case_018_gcp_audit_protopayload",
+            "version": "20260606-025525",
+            "compression_pct": 38.7,
+            "compact_hash": "f4d2941e47abaabe1f6256fda8b9c0dda863872a7414eb2aa7c0e8fd7a60f301",
+            "original_hash": "2ec41761b40202423066ce03a5f60be124561f90f62d581bfcefd2e457cceb85",
+            "original_bytes": 653,
+            "compact_bytes": 400,
+            "frozen_at": "2026-06-06T03:03:22.378775"
+        },
+        {
+            "case_id": "case_019_gcp_gke_plain",
+            "version": "all_20260606-012658",
+            "compression_pct": 36.2,
+            "compact_hash": "8d0bc77324520139a94cc8b908df6dc4646ec3f975f69a1cf401fadc3f4e80bb",
+            "original_hash": "44bdd0b4fe49488891988db93e8de7b1f328493459494c29bb68f641f7fc9ae6",
+            "original_bytes": 705,
+            "compact_bytes": 450,
+            "frozen_at": "2026-06-06T02:22:59.947345"
+        },
+        {
+            "case_id": "case_020_azure_monitor_json",
+            "version": "all_20260606-012658",
+            "compression_pct": 59.4,
+            "compact_hash": "ecdfee590b29f76387fd8af2e8d6c0f254c338c4718c61c35efe05491516c7e8",
+            "original_hash": "ffb8f6584010bf2f490955cb48699e38e3c6ff970e26b4066c07673f1f603bc6",
+            "original_bytes": 837,
+            "compact_bytes": 340,
+            "frozen_at": "2026-06-06T02:23:22.064546"
+        },
+        {
+            "case_id": "case_021_azure_appinsights_exception_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 23.3,
+            "compact_hash": "6d8897adaafc2c8bed8290b487690bc9d12ddac572ed983ff5dcc103e22c867f",
+            "original_hash": "5c4986c12bdd88142dc9720727c42749b50d4ff9a51b6496983224f5fd3b5502",
+            "original_bytes": 635,
+            "compact_bytes": 487,
+            "frozen_at": "2026-06-06T03:03:50.622141"
+        },
+        {
+            "case_id": "case_022_azure_containerapps_plain",
+            "version": "all_20260606-012658",
+            "compression_pct": 28.7,
+            "compact_hash": "b4d929b237c834f0d25dd76cb39b33deb50b1222e80a9ee4a3a3abc7f36317b3",
+            "original_hash": "7d0cbf73a7eab0533cd64875f55fa21d85d0599bc1f6e2bc723e225bbca79d56",
+            "original_bytes": 627,
+            "compact_bytes": 447,
+            "frozen_at": "2026-06-06T02:24:12.048389"
+        },
+        {
+            "case_id": "case_023_aliyun_sls_csv_nginx",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "aea460c89d2b60708b49ff418c6ff9d3e9e592965ce8226f4d235a4c87ef94e9",
+            "original_hash": "aea460c89d2b60708b49ff418c6ff9d3e9e592965ce8226f4d235a4c87ef94e9",
+            "original_bytes": 460,
+            "compact_bytes": 460,
+            "frozen_at": "2026-06-06T03:03:59.909038"
+        },
+        {
+            "case_id": "case_024_aliyun_sls_table_syslog",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "7786298cea0ee6548600d375667dc67a04e56899fa64b5cd9dfa36c58051d374",
+            "original_hash": "7786298cea0ee6548600d375667dc67a04e56899fa64b5cd9dfa36c58051d374",
+            "original_bytes": 395,
+            "compact_bytes": 395,
+            "frozen_at": "2026-06-06T03:04:21.679238"
+        },
+        {
+            "case_id": "case_025_aliyun_sls_db_jsonl",
+            "version": "20260606-032328",
+            "compression_pct": 6.9,
+            "compact_hash": "a00004a52a797e2829914276df35e1a7c614d409ca874eb900b9f94fcada380b",
+            "original_hash": "bef93011810fbca8b3c17b6580f2d5b3471c7d5f9873d896f62b8c4019e1d185",
+            "original_bytes": 475,
+            "compact_bytes": 442,
+            "frozen_at": "2026-06-06T03:24:46.723519"
+        },
+        {
+            "case_id": "case_026_oci_logging_json",
+            "version": "all_20260606-012658",
+            "compression_pct": 39.9,
+            "compact_hash": "b5712619523f9445ee6644f591660dbbe08060b4a83b8ec773b0bfcf75b7dfa0",
+            "original_hash": "61fbebbadf03f9acaa2c91e9c55d52458b5e5f7425b491aed32901e458b275c4",
+            "original_bytes": 579,
+            "compact_bytes": 348,
+            "frozen_at": "2026-06-06T02:27:12.778525"
+        },
+        {
+            "case_id": "case_027_oci_logging_cli_plain",
+            "version": "all_20260606-012658",
+            "compression_pct": 32.6,
+            "compact_hash": "fdb00e3ca5e3cfbbdaa88c4af264a861b3800af830a7f3b7da884d4369058fd7",
+            "original_hash": "a32220d8b3a7066987dda8a4f7147eb34430a4935cfb465ff86217a08532099f",
+            "original_bytes": 628,
+            "compact_bytes": 423,
+            "frozen_at": "2026-06-06T02:28:00.985991"
+        },
+        {
+            "case_id": "case_028_oci_audit_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 9.4,
+            "compact_hash": "aca240da14b71a14836849f1aae07605d8382943d5c7427528512ff36a6a6637",
+            "original_hash": "b0c21df56c238f6777aba1e670b4c2c891b7983294db33375646d83fc05749ed",
+            "original_bytes": 512,
+            "compact_bytes": 464,
+            "frozen_at": "2026-06-06T03:05:23.467835"
+        },
+        {
+            "case_id": "case_029_tencent_cls_json",
+            "version": "all_20260606-012658",
+            "compression_pct": 39.4,
+            "compact_hash": "17c18a58999332e2eea96e388897081268ca3da897635a8f633799e9c8ad402b",
+            "original_hash": "c021e6c1a58ab0b6174969e54ee28eccbb3955305f244e970c8aa0fca25d256d",
+            "original_bytes": 507,
+            "compact_bytes": 307,
+            "frozen_at": "2026-06-06T02:29:20.773549"
+        },
+        {
+            "case_id": "case_030_tencent_cls_csv",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "57981e71425bf656f00787c78aa01ec132323b9fb8e989950ef21b17f77fffd5",
+            "original_hash": "57981e71425bf656f00787c78aa01ec132323b9fb8e989950ef21b17f77fffd5",
+            "original_bytes": 350,
+            "compact_bytes": 350,
+            "frozen_at": "2026-06-06T03:05:30.609705"
+        },
+        {
+            "case_id": "case_031_tencent_cls_table",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "e6823e065374f65466bca80a74e7880e77e5e86331ef6e814a966a983642cefc",
+            "original_hash": "e6823e065374f65466bca80a74e7880e77e5e86331ef6e814a966a983642cefc",
+            "original_bytes": 420,
+            "compact_bytes": 420,
+            "frozen_at": "2026-06-06T03:05:36.268515"
+        },
+        {
+            "case_id": "case_032_huawei_lts_json",
+            "version": "all_20260606-012658",
+            "compression_pct": 43.8,
+            "compact_hash": "a75de29e6d3363b13255e7a63b462f91f4d13a216deeda7a8546691de24e74f1",
+            "original_hash": "97f0156545a61ba12a45a8313ed5a22c38a2f2e2156c5df5dbef8efdaf70bdf6",
+            "original_bytes": 559,
+            "compact_bytes": 314,
+            "frozen_at": "2026-06-06T02:31:06.321331"
+        },
+        {
+            "case_id": "case_033_huawei_lts_csv",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "f163233acfca15af0e42c13561979b5f6e79871ca04ebbe50a245d15324699d5",
+            "original_hash": "f163233acfca15af0e42c13561979b5f6e79871ca04ebbe50a245d15324699d5",
+            "original_bytes": 628,
+            "compact_bytes": 628,
+            "frozen_at": "2026-06-06T03:05:43.185299"
+        },
+        {
+            "case_id": "case_034_huawei_lts_plain",
+            "version": "all_20260606-012658",
+            "compression_pct": 30.6,
+            "compact_hash": "03d3273a42c5db401478bddcefdd96cc13fac79a5c42a5d8eaa119ca51931a2d",
+            "original_hash": "2217d18ece5e8db530fd9ebf4f599e7defdc3ed1806e880bf899cda7ddd864da",
+            "original_bytes": 591,
+            "compact_bytes": 410,
+            "frozen_at": "2026-06-06T02:32:47.520550"
+        },
+        {
+            "case_id": "case_035_cloudflare_workers_json",
+            "version": "all_20260606-012658",
+            "compression_pct": 34.6,
+            "compact_hash": "5429b3fc49d34a0322591370af269a58ed77821b9948af5c16fd36b232595093",
+            "original_hash": "630c022e8b9681c15656d3cb304a8dd91d7f077816a2a25b4c5d696be46ce139",
+            "original_bytes": 538,
+            "compact_bytes": 352,
+            "frozen_at": "2026-06-06T02:33:24.322233"
+        },
+        {
+            "case_id": "case_036_cloudflare_http_json",
+            "version": "20260606-025525",
+            "compression_pct": 17.9,
+            "compact_hash": "9e14780f21347797615986d45f27596dcfa2e8d998fb865d219c45fd44488bcf",
+            "original_hash": "9ce49381e1dc31590d251cc0bc7215ec4b89df9bd9c8c3b8d792d2b0003d19d8",
+            "original_bytes": 447,
+            "compact_bytes": 367,
+            "frozen_at": "2026-06-06T03:06:08.645803"
+        },
+        {
+            "case_id": "case_037_cloudflare_wrangler_tail_plain",
+            "version": "all_20260606-012658",
+            "compression_pct": 35.6,
+            "compact_hash": "505fa998e0c49293ed1922a696b8227bc2e3883d1feea48770e679245cf8df2e",
+            "original_hash": "8439623c0f450421dc7f927ee7ad8084c4170821d0b3e47f1d2e4316e7e4c689",
+            "original_bytes": 677,
+            "compact_bytes": 436,
+            "frozen_at": "2026-06-06T02:35:26.233635"
+        },
+        {
+            "case_id": "case_038_aws_logs_insights_table",
+            "version": "all_20260606-012658",
+            "compression_pct": 56.2,
+            "compact_hash": "e9b57882aaf5b26dd665c0bf2ac204dfd481688d54e45d675752880ee6d41f6b",
+            "original_hash": "731e56cbb904e9310f2e177d6350b8abe40155baf00d87a48840f7959ce0c192",
+            "original_bytes": 616,
+            "compact_bytes": 270,
+            "frozen_at": "2026-06-06T02:35:59.808277"
+        },
+        {
+            "case_id": "case_039_aws_filter_log_events_jsonl",
+            "version": "all_20260606-012658",
+            "compression_pct": 77.2,
+            "compact_hash": "2a30662a5a595ac3cafbdfbdbdd29f75cf852f77a23847d7adcd883ad49afb9d",
+            "original_hash": "ee1710a7797d67f32ca19bdbf32ecf7094d3865b94bc579ea8a5a81cd5fea91a",
+            "original_bytes": 710,
+            "compact_bytes": 162,
+            "frozen_at": "2026-06-06T02:36:20.285114"
+        },
+        {
+            "case_id": "case_040_gcp_http_request_jsonl",
+            "version": "20260606-025525",
+            "compression_pct": 59.3,
+            "compact_hash": "e7b34dfbe2526cf116bf8a8ed4b368b2f17d7bd169f417463f493f5b08c1b130",
+            "original_hash": "5d6491a8d07815c17594e5b6e40fecaa1d3f2946fe01d0a27a748cf0899a95ec",
+            "original_bytes": 815,
+            "compact_bytes": 332,
+            "frozen_at": "2026-06-06T03:06:36.428585"
+        },
+        {
+            "case_id": "case_041_azure_appinsights_traces_csv",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "cc526cdb8e862e7e8ba429f60b36794de0084e71dfb2d3f382a7ed3e3b391bf4",
+            "original_hash": "cc526cdb8e862e7e8ba429f60b36794de0084e71dfb2d3f382a7ed3e3b391bf4",
+            "original_bytes": 303,
+            "compact_bytes": 303,
+            "frozen_at": "2026-06-06T03:06:46.341504"
+        },
+        {
+            "case_id": "case_042_oci_logging_table",
+            "version": "20260606-025525",
+            "compression_pct": 0.0,
+            "compact_hash": "2d588d54339dc64cbff0196917ced58e9e4fa70244198043f7cb4acfd3ca4fb7",
+            "original_hash": "2d588d54339dc64cbff0196917ced58e9e4fa70244198043f7cb4acfd3ca4fb7",
+            "original_bytes": 511,
+            "compact_bytes": 511,
+            "frozen_at": "2026-06-06T03:06:52.825720"
+        },
+        {
+            "case_id": "case_043_cloudflare_logpush_http_jsonl",
+            "version": "all_20260606-012658",
+            "compression_pct": 31.4,
+            "compact_hash": "13e92567b960dca81d4229223a6a3dd7c39a2757386525c9abd9b781891229cf",
+            "original_hash": "e29ef88ec6b231db1325fb754cd0e0a57944f436d016c06064cc20cc1be8436d",
+            "original_bytes": 687,
+            "compact_bytes": 471,
+            "frozen_at": "2026-06-06T02:39:40.019371"
+        },
+        {
+            "case_id": "case_044_non_cloud_plain",
+            "version": "all_20260606-012658",
+            "compression_pct": 0.0,
+            "compact_hash": "5c83fad2a210f5770ca41bb5d2a31b27b6231a0a3307732cbc805412e28b7528",
+            "original_hash": "5c83fad2a210f5770ca41bb5d2a31b27b6231a0a3307732cbc805412e28b7528",
+            "original_bytes": 87,
+            "compact_bytes": 87,
+            "frozen_at": "2026-06-06T02:39:47.077813"
+        },
+        {
+            "case_id": "case_045_aws_logs_insights_table",
+            "version": "v20260623_r1",
+            "compression_pct": 93.1,
+            "compact_hash": "585679968eb009ff2b78f43b7c81efe533e02598e5ff58578d9a996ebbe877c5",
+            "original_hash": "25f1b6dbd0f540a588953eec397720df4c4269376a291e9bee0f8cbc9d9d08a4",
+            "original_bytes": 70730,
+            "compact_bytes": 4859,
+            "frozen_at": "2026-06-23T16:22:08.024098"
+        },
+        {
+            "case_id": "case_046_aws_logs_insights_table",
+            "version": "v20260623_r1",
+            "compression_pct": 92.1,
+            "compact_hash": "385bd0d345ef386a11a76e836c3841caf9bbdacc89fcf4ded000904c38d57363",
+            "original_hash": "67a9fd4485f0cbbf6c3a936447e4275ca17d04c248b7670682d72163bc1e4684",
+            "original_bytes": 1494302,
+            "compact_bytes": 118034,
+            "frozen_at": "2026-06-23T16:22:19.607416"
+        },
+        {
+            "case_id": "case_047_aws_logs_insights_table",
+            "version": "v20260623_r1",
+            "compression_pct": 51.3,
+            "compact_hash": "93a4eec261b283a10c6d59779653d1d7b26dcf1583258717ffe5209a7ec551a1",
+            "original_hash": "e9280366acafaad4abc41df29d9b264ad1789cc5f6b7c5fc5e0a3ad38e07d526",
+            "original_bytes": 313730,
+            "compact_bytes": 152653,
+            "frozen_at": "2026-06-23T16:22:30.434366"
+        },
+        {
+            "case_id": "case_048_aws_logs_insights_table",
+            "version": "v20260623_r1",
+            "compression_pct": 51.0,
+            "compact_hash": "f0ad28d232623d297ab0006c894f01e10e23b65bd074e2ee63af7ba24f76fe5e",
+            "original_hash": "166f6d64d1ef2f844bc5c5a53dfdeb6926c54d03eca804e87e4a7a89352af015",
+            "original_bytes": 169313,
+            "compact_bytes": 82996,
+            "frozen_at": "2026-06-23T16:20:35.857032"
+        },
+        {
+            "case_id": "case_049_gcp_jsonl_multiline",
+            "version": "20260606-033339",
+            "compression_pct": 48.5,
+            "compact_hash": "eb8fa91deb1bc0aee6395e4da6bd3362c136963a2f94c78ce27e84d2830f610a",
+            "original_hash": "0606c37b10bf1615de21b81749eadd352116ab9d54e5c127fa9cc9db27498c38",
+            "original_bytes": 1022,
+            "compact_bytes": 526,
+            "frozen_at": "2026-06-06T03:42:33.505180"
+        },
+        {
+            "case_id": "case_050_aliyun_sls_multiline",
+            "version": "20260606-025525",
+            "compression_pct": 18.5,
+            "compact_hash": "8a1dec4c4125095998604c6ae8b79dece3b01e8657e8927ae96422fb56655404",
+            "original_hash": "5e1ff0e9f9f78e20dc01b66c99e9b3149b567c65a57af0df439413b3909aab0e",
+            "original_bytes": 682,
+            "compact_bytes": 556,
+            "frozen_at": "2026-06-06T03:10:59.153441"
+        },
+        {
+            "case_id": "case_051_tencent_cls_multiline",
+            "version": "20260606-025525",
+            "compression_pct": 41.1,
+            "compact_hash": "f70e5922197afa4aa8223446a5760d5d522b3345965d2f4d809f883dfa8bd500",
+            "original_hash": "5df262de8f93c477427d25fc97155be861921e19fad122f7d0263492735471a7",
+            "original_bytes": 754,
+            "compact_bytes": 444,
+            "frozen_at": "2026-06-06T03:12:21.350561"
+        },
+        {
+            "case_id": "case_052_aliyun_csv_multiline",
+            "version": "v20260623_r1",
+            "compression_pct": 0.0,
+            "compact_hash": "f51e810cd9b4dc61a9a22d860d67743064e82e898514ddeb356bf55445672748",
+            "original_hash": "f51e810cd9b4dc61a9a22d860d67743064e82e898514ddeb356bf55445672748",
+            "original_bytes": 362,
+            "compact_bytes": 362,
+            "frozen_at": "2026-06-23T16:22:32.323088"
+        }
+    ]
+}

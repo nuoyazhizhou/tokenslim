@@ -1,0 +1,12 @@
+{
+    "case_id": "case_041_azure_appinsights_traces_csv",
+    "case_file": "case_041_azure_appinsights_traces_csv.log",
+    "original_lines": 4,
+    "original_bytes": 303,
+    "compact_lines": 4,
+    "compact_bytes": 303,
+    "compression_pct": 0.0,
+    "compact_hash": "cc526cdb8e862e7e8ba429f60b36794de0084e71dfb2d3f382a7ed3e3b391bf4",
+    "semantic_gate_pass": true,
+    "semantic_gate_failures": ""
+}

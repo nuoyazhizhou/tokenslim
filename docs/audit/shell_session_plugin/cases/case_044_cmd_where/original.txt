@@ -1,0 +1,4 @@
+C:\> where python
+C:\Python39\python.exe
+C:\Users\user\AppData\Local\Programs\Python\Python39\python.exe
+C:\> 

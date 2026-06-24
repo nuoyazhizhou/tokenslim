@@ -1,0 +1,6 @@
+user@cloudshell:~$ gcloud logging read 'resource.type="k8s_container"' --limit 3
+2026-05-13T08:26:01.000Z INFO projects/cloud-document/logs/stdout INFO:     10.4.0.11:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:26:11.000Z INFO projects/cloud-document/logs/stdout INFO:     10.4.0.12:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:26:21.000Z INFO projects/cloud-document/logs/stdout INFO:     10.4.0.13:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:26:31.000Z INFO projects/cloud-document/logs/stdout INFO:     10.4.0.12:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:26:42.000Z ERROR projects/cloud-document/logs/stderr ERROR:    10.4.0.13:0 - "GET /api/orders HTTP/1.1" 500 Internal Server Error

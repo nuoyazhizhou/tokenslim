@@ -1,0 +1,5 @@
+user@linux:~$ cat /etc/shadow
+cat: /etc/shadow: Permission denied
+user@linux:~$ echo $?
+1
+user@linux:~$ 

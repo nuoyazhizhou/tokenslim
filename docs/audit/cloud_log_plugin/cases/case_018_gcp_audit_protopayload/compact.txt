@@ -1,0 +1,3 @@
+$CL|META|providers=gcp|sources=projects/cloud-document/cloudaud|records=2
+$CL|REC|t=2026-05-13 08:25:01|lvl=NOTICE|src=projects/cloud-document/cloudaud|msg=SetIamPolicy serviceAccount=backend@project.iam.gserviceaccount.com principal=user:alice@example.com
+!$CL|REC|t=2026-05-13 08:25:09|lvl=ERROR|src=projects/cloud-document/cloudaud|msg=CreateInstance denied: quota exceeded for region us-central1

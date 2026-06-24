@@ -1,0 +1,4 @@
+user@linux:~$ ps aux | grep nginx
+root      1234  0.0  0.1  12345  6789 ?        Ss   00:00   0:00 nginx: master process /usr/sbin/nginx -g daemon off;
+www-data  1235  0.0  0.2  12345  8765 ?        S    00:00   0:00 nginx: worker process
+user@linux:~$ 

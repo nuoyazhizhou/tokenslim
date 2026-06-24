@@ -1,0 +1,529 @@
+{
+    "track": "cloud_log_plugin",
+    "version": "all_20260624-175500",
+    "generated_at": "2026-06-24T17:55:02.234557",
+    "report_path": "target\\cloud_log_plugin_compact_showcase_report.txt",
+    "case_count": 52,
+    "cases": [
+        {
+            "case_id": "case_001_aws_logs_tail_health",
+            "original_lines": 8,
+            "original_bytes": 920,
+            "compact_lines": 2,
+            "compact_bytes": 287,
+            "compression_pct": 68.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_002_cloudwatch_table_health",
+            "original_lines": 10,
+            "original_bytes": 1040,
+            "compact_lines": 1,
+            "compact_bytes": 147,
+            "compression_pct": 85.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_003_aws_logs_tail_mixed",
+            "original_lines": 8,
+            "original_bytes": 968,
+            "compact_lines": 4,
+            "compact_bytes": 642,
+            "compression_pct": 33.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_004_aws_csv_health",
+            "original_lines": 5,
+            "original_bytes": 600,
+            "compact_lines": 1,
+            "compact_bytes": 163,
+            "compression_pct": 72.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_005_aws_jsonl_message",
+            "original_lines": 3,
+            "original_bytes": 595,
+            "compact_lines": 4,
+            "compact_bytes": 346,
+            "compression_pct": 41.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_006_gcp_jsonl_textpayload",
+            "original_lines": 3,
+            "original_bytes": 766,
+            "compact_lines": 4,
+            "compact_bytes": 412,
+            "compression_pct": 46.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_007_gcp_plain_logging",
+            "original_lines": 4,
+            "original_bytes": 333,
+            "compact_lines": 4,
+            "compact_bytes": 333,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_008_azure_csv_appservice",
+            "original_lines": 4,
+            "original_bytes": 474,
+            "compact_lines": 4,
+            "compact_bytes": 388,
+            "compression_pct": 18.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_009_azure_table_appservice",
+            "original_lines": 5,
+            "original_bytes": 455,
+            "compact_lines": 4,
+            "compact_bytes": 271,
+            "compression_pct": 40.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_010_aliyun_sls_jsonl",
+            "original_lines": 3,
+            "original_bytes": 340,
+            "compact_lines": 4,
+            "compact_bytes": 308,
+            "compression_pct": 9.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_011_cloud_java_stack_jsonl",
+            "original_lines": 2,
+            "original_bytes": 526,
+            "compact_lines": 6,
+            "compact_bytes": 463,
+            "compression_pct": 12.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_012_cloud_python_traceback_jsonl",
+            "original_lines": 1,
+            "original_bytes": 366,
+            "compact_lines": 6,
+            "compact_bytes": 292,
+            "compression_pct": 20.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_013_aws_lambda_report_jsonl",
+            "original_lines": 3,
+            "original_bytes": 631,
+            "compact_lines": 4,
+            "compact_bytes": 465,
+            "compression_pct": 26.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_014_aws_cloudtrail_jsonl",
+            "original_lines": 3,
+            "original_bytes": 683,
+            "compact_lines": 4,
+            "compact_bytes": 582,
+            "compression_pct": 14.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_015_aws_alb_access_jsonl",
+            "original_lines": 3,
+            "original_bytes": 639,
+            "compact_lines": 2,
+            "compact_bytes": 332,
+            "compression_pct": 48.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_016_aws_vpc_flow_jsonl",
+            "original_lines": 3,
+            "original_bytes": 591,
+            "compact_lines": 4,
+            "compact_bytes": 479,
+            "compression_pct": 19.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_017_gcp_jsonpayload_node_error",
+            "original_lines": 2,
+            "original_bytes": 661,
+            "compact_lines": 5,
+            "compact_bytes": 440,
+            "compression_pct": 33.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_018_gcp_audit_protopayload",
+            "original_lines": 2,
+            "original_bytes": 653,
+            "compact_lines": 3,
+            "compact_bytes": 400,
+            "compression_pct": 38.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_019_gcp_gke_plain",
+            "original_lines": 6,
+            "original_bytes": 705,
+            "compact_lines": 3,
+            "compact_bytes": 450,
+            "compression_pct": 36.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_020_azure_monitor_json",
+            "original_lines": 3,
+            "original_bytes": 837,
+            "compact_lines": 2,
+            "compact_bytes": 340,
+            "compression_pct": 59.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_021_azure_appinsights_exception_jsonl",
+            "original_lines": 2,
+            "original_bytes": 635,
+            "compact_lines": 5,
+            "compact_bytes": 487,
+            "compression_pct": 23.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_022_azure_containerapps_plain",
+            "original_lines": 4,
+            "original_bytes": 627,
+            "compact_lines": 3,
+            "compact_bytes": 447,
+            "compression_pct": 28.7,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_023_aliyun_sls_csv_nginx",
+            "original_lines": 5,
+            "original_bytes": 460,
+            "compact_lines": 5,
+            "compact_bytes": 460,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_024_aliyun_sls_table_syslog",
+            "original_lines": 5,
+            "original_bytes": 395,
+            "compact_lines": 5,
+            "compact_bytes": 395,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_025_aliyun_sls_db_jsonl",
+            "original_lines": 3,
+            "original_bytes": 475,
+            "compact_lines": 4,
+            "compact_bytes": 442,
+            "compression_pct": 6.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_026_oci_logging_json",
+            "original_lines": 3,
+            "original_bytes": 579,
+            "compact_lines": 2,
+            "compact_bytes": 348,
+            "compression_pct": 39.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_027_oci_logging_cli_plain",
+            "original_lines": 6,
+            "original_bytes": 628,
+            "compact_lines": 3,
+            "compact_bytes": 423,
+            "compression_pct": 32.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_028_oci_audit_jsonl",
+            "original_lines": 3,
+            "original_bytes": 512,
+            "compact_lines": 4,
+            "compact_bytes": 464,
+            "compression_pct": 9.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_029_tencent_cls_json",
+            "original_lines": 3,
+            "original_bytes": 507,
+            "compact_lines": 2,
+            "compact_bytes": 307,
+            "compression_pct": 39.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_030_tencent_cls_csv",
+            "original_lines": 5,
+            "original_bytes": 350,
+            "compact_lines": 5,
+            "compact_bytes": 350,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_031_tencent_cls_table",
+            "original_lines": 5,
+            "original_bytes": 420,
+            "compact_lines": 5,
+            "compact_bytes": 420,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_032_huawei_lts_json",
+            "original_lines": 3,
+            "original_bytes": 559,
+            "compact_lines": 2,
+            "compact_bytes": 314,
+            "compression_pct": 43.8,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_033_huawei_lts_csv",
+            "original_lines": 7,
+            "original_bytes": 628,
+            "compact_lines": 7,
+            "compact_bytes": 628,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_034_huawei_lts_plain",
+            "original_lines": 6,
+            "original_bytes": 591,
+            "compact_lines": 3,
+            "compact_bytes": 410,
+            "compression_pct": 30.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_035_cloudflare_workers_json",
+            "original_lines": 3,
+            "original_bytes": 538,
+            "compact_lines": 2,
+            "compact_bytes": 352,
+            "compression_pct": 34.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_036_cloudflare_http_json",
+            "original_lines": 3,
+            "original_bytes": 447,
+            "compact_lines": 4,
+            "compact_bytes": 367,
+            "compression_pct": 17.9,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_037_cloudflare_wrangler_tail_plain",
+            "original_lines": 6,
+            "original_bytes": 677,
+            "compact_lines": 3,
+            "compact_bytes": 436,
+            "compression_pct": 35.6,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_038_aws_logs_insights_table",
+            "original_lines": 7,
+            "original_bytes": 616,
+            "compact_lines": 2,
+            "compact_bytes": 270,
+            "compression_pct": 56.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_039_aws_filter_log_events_jsonl",
+            "original_lines": 4,
+            "original_bytes": 710,
+            "compact_lines": 1,
+            "compact_bytes": 162,
+            "compression_pct": 77.2,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_040_gcp_http_request_jsonl",
+            "original_lines": 3,
+            "original_bytes": 815,
+            "compact_lines": 2,
+            "compact_bytes": 332,
+            "compression_pct": 59.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_041_azure_appinsights_traces_csv",
+            "original_lines": 4,
+            "original_bytes": 303,
+            "compact_lines": 4,
+            "compact_bytes": 303,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_042_oci_logging_table",
+            "original_lines": 6,
+            "original_bytes": 511,
+            "compact_lines": 6,
+            "compact_bytes": 511,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_043_cloudflare_logpush_http_jsonl",
+            "original_lines": 3,
+            "original_bytes": 687,
+            "compact_lines": 3,
+            "compact_bytes": 471,
+            "compression_pct": 31.4,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_044_non_cloud_plain",
+            "original_lines": 3,
+            "original_bytes": 87,
+            "compact_lines": 3,
+            "compact_bytes": 87,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_045_aws_logs_insights_table",
+            "original_lines": 50,
+            "original_bytes": 70730,
+            "compact_lines": 26,
+            "compact_bytes": 4859,
+            "compression_pct": 93.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_046_aws_logs_insights_table",
+            "original_lines": 1056,
+            "original_bytes": 1494302,
+            "compact_lines": 529,
+            "compact_bytes": 118034,
+            "compression_pct": 92.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_047_aws_logs_insights_table",
+            "original_lines": 3251,
+            "original_bytes": 313730,
+            "compact_lines": 2440,
+            "compact_bytes": 152653,
+            "compression_pct": 51.3,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_048_aws_logs_insights_table",
+            "original_lines": 1395,
+            "original_bytes": 169313,
+            "compact_lines": 1048,
+            "compact_bytes": 82996,
+            "compression_pct": 51.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_049_gcp_jsonl_multiline",
+            "original_lines": 3,
+            "original_bytes": 1022,
+            "compact_lines": 9,
+            "compact_bytes": 526,
+            "compression_pct": 48.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_050_aliyun_sls_multiline",
+            "original_lines": 3,
+            "original_bytes": 682,
+            "compact_lines": 7,
+            "compact_bytes": 556,
+            "compression_pct": 18.5,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_051_tencent_cls_multiline",
+            "original_lines": 3,
+            "original_bytes": 754,
+            "compact_lines": 7,
+            "compact_bytes": 444,
+            "compression_pct": 41.1,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        },
+        {
+            "case_id": "case_052_aliyun_csv_multiline",
+            "original_lines": 9,
+            "original_bytes": 362,
+            "compact_lines": 9,
+            "compact_bytes": 362,
+            "compression_pct": 0.0,
+            "semantic_gate_pass": true,
+            "semantic_gate_failures": ""
+        }
+    ]
+}
