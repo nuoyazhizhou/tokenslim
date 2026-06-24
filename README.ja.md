@@ -332,6 +332,26 @@ String compressed = client.compress(logText);
 String report = client.decompress(compressed, "ai-export");
 ```
 
+## ログ並べ替え（Log Reordering）
+
+![Log Reordering: BEFORE vs AFTER](docs/webui-screenshots/reorder-before-after.png)
+
+`make -jN` / `ninja` / Bazel / MSBuild などの並列ビルドツールは、複数ターゲットのログを**非決定的に**インターリーブして出力するため、Diff・キャッシュ・回帰比較がすべて破綻します。TokenSlim は**決定論的なグローバル並べ替え器**を内蔵しており、アクティブなビルドターゲットをストリーミングで追跡し、ターゲットごとに安定した順序で行を再構成します。
+
+```bash
+# 内蔵：--reorder フラグで並べ替え器を強制し、シリアルモードにフォールバック
+tokenslim -i build.log -o output.json --reorder
+
+# スタンドアロン：純粋な log→log diff（Jenkins / CI 環境向け）
+cargo build --release --bin log_reorder
+./target/release/log_reorder -i messy_build.log -o sorted_build.log --deterministic -n -p
+#   --deterministic  : モジュール / ビルドターゲットで行をグループ化
+#   -n  (--normalize) : フラグの順序を揃え、メモリアドレスとランダムハッシュを伏字化
+#   -p  (--shorten-paths) : /home/userA/workspace/... を末尾 3 セグメントに短縮
+```
+
+同じエンジンは `POST /compress`（リクエストフィールド `reorder: true`）、WebUI の「並び替えを有効化」チェックボックス、Python / Node SDK でも公開されています。
+
 ## プラグイン
 
 TokenSlim には **60+ プラグイン** が付属し、実 LLM トラフィックを支配する入力をカバーします。各プラグインはデータ駆動（`config/plugins/` 下の JSON / TOML 設定）で、ディスパッチはルートベースのため、新しいソースフォーマットの追加はほとんどの場合設定変更だけで済みます。
@@ -345,16 +365,16 @@ tokenslim explain-plugin --explain-command "cargo build"
 
 ## 統合
 
-| サーフェス | パス | ステータス |
-|---|---|---|
-| CLI | `src/bin/tokenslim-server.rs`, `src/cli/` | Stable |
-| REST Server | `src/bin/tokenslim-server.rs` | Stable |
-| VS Code | `vscode-extension/` | Stable |
-| Chrome | `chrome-extension/` | Stable |
-| JetBrains | `jetbrains-plugin/` | Stable |
-| Python SDK | `crates/tokenslim-py/` | Stable |
-| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.1.0`) | Stable |
-| Java SDK | `sdk/java/` | Stable |
+| サーフェス  | パス                                            | ステータス |
+| ----------- | ----------------------------------------------- | ---------- |
+| CLI         | `src/bin/tokenslim-server.rs`, `src/cli/`       | Stable     |
+| REST Server | `src/bin/tokenslim-server.rs`                   | Stable     |
+| VS Code     | `vscode-extension/`                             | Stable     |
+| Chrome      | `chrome-extension/`                             | Stable     |
+| JetBrains   | `jetbrains-plugin/`                             | Stable     |
+| Python SDK  | `crates/tokenslim-py/`                          | Stable     |
+| Node.js SDK | `packages/sdk-nodejs/` (npm: `tokenslim@0.1.0`) | Stable     |
+| Java SDK    | `sdk/java/`                                     | Stable     |
 
 ## アーキテクチャ
 

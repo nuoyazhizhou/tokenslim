@@ -311,6 +311,26 @@ String compressed = client.compress(logText);
 String report = client.decompress(compressed, "ai-export");
 ```
 
+## إعادة ترتيب السجلات (Log Reordering)
+
+![Log Reordering: BEFORE vs AFTER](docs/webui-screenshots/reorder-before-after.png)
+
+أدوات البناء المتوازي (`make -jN` و`ninja` وBazel وMSBuild …) تُشابك سجلات عدة أهداف بترتيب **غير حتمي** يُفسد كل مقارنات الـdiff والـcache والـregression. يأتي TokenSlim مزودًا بـ**مُعيد ترتيب عام حتمي** يعالج السجل بشكل تيارّي، ويتتبع هدف البناء النشط، ويُخرج الأسطر بترتيب ثابت مجمّع حسب الهدف.
+
+```bash
+# مدمج: علم ‎--reorder‎ يُجبر مُعيد الترتيب ويُسقط إلى الوضع التتابعي
+tokenslim -i build.log -o output.json --reorder
+
+# أداة مستقلة: diff log→log صرف (لبيئات Jenkins / CI) بدون المسار الكامل
+cargo build --release --bin log_reorder
+./target/release/log_reorder -i messy_build.log -o sorted_build.log --deterministic -n -p
+#   --deterministic  : تجميع الأسطر حسب الوحدة / هدف البناء
+#   -n  (--normalize) : ترتيب الأعلام غير المرتبة، وإخفاء العناوين وقيم الـhash العشوائية
+#   -p  (--shorten-paths) : اختصار /home/userA/workspace/... إلى آخر 3 مقاطع
+```
+
+نفس المحرك متاح عبر `POST /compress` (حقل `reorder: true`)، ومربع الاختيار «تمكين إعادة الترتيب» في WebUI، وحزم SDK لـPython وNode.
+
 ## الإضافات
 
 يأتي TokenSlim مع **60+ إضافة** تغطي المدخلات التي تهيمن على حركة LLM الحقيقية. كل إضافة قائمة على البيانات (تكوين JSON / TOML تحت `config/plugins/`) والتوجيه قائم على المسار، لذا فإن إضافة تنسيق مصدر جديد هي في معظم الحالات مجرد تغيير في التكوين.

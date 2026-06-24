@@ -175,6 +175,11 @@ const back = await slim.decompress(r.compressed, r.dictionary ?? {});
 | 看某个插件怎么压 | `tokenslim explain-plugin vcs_git_plugin` |
 | 跑自带的测试样本 | `tokenslim run pytest tests/` |
 | 看压缩为什么这样 | `tokenslim run --explain-route -- git status` |
+| 并行构建日志做 diff（开启重排） | `tokenslim -i build.log -o out.json --reorder` |
+
+> **提示**：拿到 `make -jN` / `ninja` / Bazel / MSBuild 这类并行构建的交错日志时，
+> 加上 `--reorder` 即可获得**确定性按目标分组**的输出，两次构建的压缩结果字节级一致，
+> 方便做 diff / cache / 回归比对。完整说明见 [USER_GUIDE §七](./USER_GUIDE.md#七日志重排模式--reorder)。
 
 ---
 

@@ -1,0 +1,46 @@
+{
+  "input": "benchmarks/input_20mb.txt",
+  "input_size_bytes": 20985400,
+  "iterations": 3,
+  "original_tokens": 8211144,
+  "recommended_parallel_threshold": 1048576,
+  "recommended_stream_mmap_threshold": 18446744073709551615,
+  "rows": [
+    {
+      "avg_ms": 189.92600000000002,
+      "avg_output_bytes_json": 6137626.0,
+      "avg_token_ratio": 0.090896104123859,
+      "max_ms": 270.18969999999996,
+      "min_ms": 100.80160000000001,
+      "scenario": "mmap+parallel",
+      "throughput_mb_s": 105.37386666128765
+    },
+    {
+      "avg_ms": 4328.4421,
+      "avg_output_bytes_json": 18455109.0,
+      "avg_token_ratio": 0.7966277293395415,
+      "max_ms": 5739.5124,
+      "min_ms": 2733.9913,
+      "scenario": "mmap+serial",
+      "throughput_mb_s": 4.6236582440392855
+    },
+    {
+      "avg_ms": 113.70193333333334,
+      "avg_output_bytes_json": 6145324.666666667,
+      "avg_token_ratio": 0.09062805377667228,
+      "max_ms": 126.3841,
+      "min_ms": 96.0805,
+      "scenario": "non_mmap+parallel",
+      "throughput_mb_s": 176.01492263847507
+    },
+    {
+      "avg_ms": 2220.3591333333334,
+      "avg_output_bytes_json": 18454055.666666668,
+      "avg_token_ratio": 0.7966211529112143,
+      "max_ms": 2582.6757000000002,
+      "min_ms": 1690.9421,
+      "scenario": "non_mmap+serial",
+      "throughput_mb_s": 9.013513489354613
+    }
+  ]
+}

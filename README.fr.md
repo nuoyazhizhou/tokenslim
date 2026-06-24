@@ -309,6 +309,26 @@ String compressed = client.compress(logText);
 String report = client.decompress(compressed, "ai-export");
 ```
 
+## Réordonnancement des logs (Log Reordering)
+
+![Log Reordering: BEFORE vs AFTER](docs/webui-screenshots/reorder-before-after.png)
+
+Les outils de build parallèles (`make -jN`, `ninja`, Bazel, MSBuild, …) entrelacent les logs de plusieurs cibles dans un ordre **non déterministe** qui casse toute comparaison par diff / cache / régression. TokenSlim embarque un **réordonnanceur global déterministe** qui stream les logs, suit la cible de build active, et émet les lignes dans un ordre stable groupé par cible.
+
+```bash
+# Intégré : le flag --reorder force le réordonnanceur et bascule en mode série
+tokenslim -i build.log -o output.json --reorder
+
+# Outil autonome : diff log→log pur (CI / Jenkins), sans pipeline complet
+cargo build --release --bin log_reorder
+./target/release/log_reorder -i messy_build.log -o sorted_build.log --deterministic -n -p
+#   --deterministic  : regroupe les lignes par module / cible de build
+#   -n  (--normalize) : trie les flags désordonnés, masque adresses & hashes
+#   -p  (--shorten-paths) : réduit /home/userA/workspace/... aux 3 derniers segments
+```
+
+Le même moteur est exposé via `POST /compress` (champ `reorder: true`), la case « Activer le réordonnancement » de la WebUI, et les SDK Python / Node.
+
 ## Plugins
 
 TokenSlim embarque **60+ plugins** couvrant les entrées qui dominent le trafic LLM réel. Chaque plugin est data-driven (config JSON / TOML sous `config/plugins/`) et le dispatch est basé sur la route, donc ajouter un nouveau format de source est, dans la plupart des cas, un simple changement de config.
@@ -322,16 +342,16 @@ tokenslim explain-plugin --explain-command "cargo build"
 
 ## Intégrations
 
-| Surface | Chemin | Statut |
-|---|---|---|
-| CLI | `src/bin/tokenslim-server.rs`, `src/cli/` | Stable |
-| REST Server | `src/bin/tokenslim-server.rs` | Stable |
-| VS Code | `vscode-extension/` | Stable |
-| Chrome | `chrome-extension/` | Stable |
-| JetBrains | `jetbrains-plugin/` | Stable |
-| Python SDK | `crates/tokenslim-py/` | Stable |
+| Surface     | Chemin                                           | Statut |
+| ----------- | ------------------------------------------------ | ------ |
+| CLI         | `src/bin/tokenslim-server.rs`, `src/cli/`        | Stable |
+| REST Server | `src/bin/tokenslim-server.rs`                    | Stable |
+| VS Code     | `vscode-extension/`                              | Stable |
+| Chrome      | `chrome-extension/`                              | Stable |
+| JetBrains   | `jetbrains-plugin/`                              | Stable |
+| Python SDK  | `crates/tokenslim-py/`                           | Stable |
 | Node.js SDK | `packages/sdk-nodejs/` (npm : `tokenslim@0.1.0`) | Stable |
-| Java SDK | `sdk/java/` | Stable |
+| Java SDK    | `sdk/java/`                                      | Stable |
 
 ## Architecture
 

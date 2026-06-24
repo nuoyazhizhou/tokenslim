@@ -292,14 +292,14 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 
 ##### 环境变量
 
-| 变量名                    | 默认值         | 说明                                                      |
-| ------------------------- | -------------- | --------------------------------------------------------- |
-| `TOKENSLIM_HOST`          | `127.0.0.1`    | 绑定地址。                                                |
-| `TOKENSLIM_PORT`          | `10086`        | TCP 端口。                                                |
-| `TOKENSLIM_WEBUI_DIR`     | `webui`        | 静态 SPA 目录；目录缺失时禁用 UI。                        |
-| `TOKENSLIM_API_KEY`       | _未设置_       | 设置后要求 `Authorization: Bearer <key>`。                |
-| `TOKENSLIM_CONFIG_PATH`   | _未设置_       | 热加载配置文件路径。                                      |
-| `RUST_LOG`                | `info`         | 标准 env-log 过滤（`debug`、`info`、`warn` ...）。        |
+| 变量名                  | 默认值      | 说明                                               |
+| ----------------------- | ----------- | -------------------------------------------------- |
+| `TOKENSLIM_HOST`        | `127.0.0.1` | 绑定地址。                                         |
+| `TOKENSLIM_PORT`        | `10086`     | TCP 端口。                                         |
+| `TOKENSLIM_WEBUI_DIR`   | `webui`     | 静态 SPA 目录；目录缺失时禁用 UI。                 |
+| `TOKENSLIM_API_KEY`     | _未设置_    | 设置后要求 `Authorization: Bearer <key>`。         |
+| `TOKENSLIM_CONFIG_PATH` | _未设置_    | 热加载配置文件路径。                               |
+| `RUST_LOG`              | `info`      | 标准 env-log 过滤（`debug`、`info`、`warn` ...）。 |
 
 ##### 功能要点
 
@@ -340,6 +340,26 @@ String compressed = client.compress(logText);
 String report = client.decompress(compressed, "ai-export");
 ```
 
+## 📑 日志重排
+
+![Log Reordering: BEFORE vs AFTER](docs/webui-screenshots/reorder-before-after.png)
+
+`make -jN` / `ninja` / Bazel / MSBuild 等并行构建工具会把多个 target 的日志**非确定性地交错**输出，导致 Diff、缓存、回归比对全部失效。TokenSlim 内置**全局确定性重排器**，流式追踪当前构建目标，把日志按稳定的 target 顺序重新整理输出。
+
+```bash
+# 内置：--reorder 标志强制走重排器，并降级到串行模式
+tokenslim -i build.log -o output.json --reorder
+
+# 独立工具：仅做日志重排（适合 Jenkins / CI 环境跑纯 log→log diff）
+cargo build --release --bin log_reorder
+./target/release/log_reorder -i messy_build.log -o sorted_build.log --deterministic -n -p
+#   --deterministic  : 按模块 / 构建目标分组
+#   -n  (--normalize) : 排序乱序的编译参数，抹除内存地址与随机哈希
+#   -p  (--shorten-paths) : 把 /home/userA/workspace/... 截断到倒数 3 段
+```
+
+同样的引擎在 `POST /compress`（请求字段 `reorder: true`）、WebUI 复选框"启用重排"、以及 Python / Node SDK 中均已暴露。
+
 ## 🔌 插件
 
 TokenSlim 自带 **60+ 插件**，覆盖 LLM 真实流量里最常见的输入源。每个插件都是数据驱动的（JSON / TOML 配置在 `config/plugins/` 下），分派走路由匹配，因此添加新源格式在大多数情况下是**纯配置改动**。
@@ -353,17 +373,17 @@ tokenslim explain-plugin --explain-command "cargo build"
 
 ## 🔗 集成
 
-| 入口 | 路径 | 状态 |
-|---|---|---|
-| CLI | `src/bin/tokenslim-server.rs`, `src/cli/` | 稳定 |
-| REST Server | `src/bin/tokenslim-server.rs` | 稳定 |
-| MCP Server | `mcp-server/` | Beta |
-| VS Code | `vscode-extension/` | 稳定 |
-| Chrome | `chrome-extension/` | 稳定 |
-| JetBrains | `jetbrains-plugin/` | 稳定 |
-| Python SDK | `crates/tokenslim-py/` | 稳定 |
-| Node.js SDK | `sdk/nodejs/` | 稳定 |
-| Java SDK | `sdk/java/` | 稳定 |
+| 入口        | 路径                                      | 状态 |
+| ----------- | ----------------------------------------- | ---- |
+| CLI         | `src/bin/tokenslim-server.rs`, `src/cli/` | 稳定 |
+| REST Server | `src/bin/tokenslim-server.rs`             | 稳定 |
+| MCP Server  | `mcp-server/`                             | Beta |
+| VS Code     | `vscode-extension/`                       | 稳定 |
+| Chrome      | `chrome-extension/`                       | 稳定 |
+| JetBrains   | `jetbrains-plugin/`                       | 稳定 |
+| Python SDK  | `crates/tokenslim-py/`                    | 稳定 |
+| Node.js SDK | `sdk/nodejs/`                             | 稳定 |
+| Java SDK    | `sdk/java/`                               | 稳定 |
 
 ### MCP Server（AI Agent 集成）
 
@@ -373,7 +393,7 @@ TokenSlim 内置了一个 [MCP (Model Context Protocol)](https://modelcontextpro
 cd mcp-server && npm install && npm run build
 ```
 
-然后将以下内容加入你的 Agent 的 MCP 配置（以 Cursor `.cursor/mcp.json` 为例）：
+然后在 Agent 的 MCP 配置中添加（Cursor 例子：`.cursor/mcp.json`）：
 
 ```json
 {
@@ -386,7 +406,7 @@ cd mcp-server && npm install && npm run build
 }
 ```
 
-> 📖 完整安装指南、工具参数说明与各 Agent 配置示例：[`mcp-server/README.md`](./mcp-server/README.md)
+> 📖 完整安装指南、工具清单与 Agent 配置示例：[`mcp-server/README.md`](./mcp-server/README.md)
 
 ## 🏗 架构
 
