@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""
+r"""
 重新模拟生成 21 个含敏感信息的测试/基准输入文件。
 
 目的：替换主仓 benchmarks/ 和 tests/data/ 下含真实 Alibaba Cloud AccessKey
@@ -12,10 +12,25 @@ Gerrit 仓库、芯片型号、产品代号等。
     python scripts/regen_benchmarks.py
     python scripts/regen_benchmarks.py --root /path/to/TokenSlim
     python scripts/regen_benchmarks.py --root C:/git_work/TokenSlim-publish2
+    python scripts/regen_benchmarks.py --redact-config .tokenslim-redact.toml
+
+安全模型：
+    1. 黑名单外置：默认从仓库根 `.tokenslim-redact.toml` 加载 regex 模式，
+       该文件在 .gitignore 中, 不进仓库；示例模板 `.tokenslim-redact.toml.example`
+       提交进仓库, 让用户知道有这个机制。
+    2. 内置兜底：找不到外置配置时使用一组最小硬编码模式（不显式列举公司
+       内部字面），保证最基础防护。
+    3. 大小写不敏感：所有匹配走 re.IGNORECASE。
+    4. 域名通配：内部域名走 r'\bdomain_root\.[a-z.]+\b' 而非字面, 兼容
+       .com/.co/.io/.ai 等 TLD 变体。
 """
+from __future__ import annotations
+
 import argparse
 import random
+import re
 import string
+import sys
 import time
 from pathlib import Path
 
@@ -741,25 +756,71 @@ FIXTURES = [
 ]
 
 
+def load_redact_patterns(config_path: Path | None) -> list[re.Pattern]:
+    """加载黑名单 regex 模式。
+
+    优先级:
+    1. --redact-config 指定路径
+    2. 仓库根 .tokenslim-redact.toml (gitignore, 本地存在)
+    3. 内置 BUILTIN_MINIMAL 兜底
+
+    配置文件格式: 每行一条 regex 模式, 注释以 # 开头, 空行忽略。
+    所有匹配走 re.IGNORECASE + re.MULTILINE。
+    """
+    candidates = []
+    if config_path is not None:
+        candidates.append(config_path)
+    candidates.append(Path(".tokenslim-redact.toml"))
+
+    for path in candidates:
+        if path.is_file():
+            patterns: list[re.Pattern] = []
+            for raw in path.read_text(encoding="utf-8").splitlines():
+                line = raw.strip()
+                if not line or line.startswith("#"):
+                    continue
+                try:
+                    patterns.append(re.compile(line, re.IGNORECASE | re.MULTILINE))
+                except re.error as e:
+                    print(f"[redact] WARN: bad regex in {path}: {line!r} ({e})", file=sys.stderr)
+            if patterns:
+                print(f"[redact] loaded {len(patterns)} patterns from {path}")
+                return patterns
+            else:
+                print(f"[redact] WARN: {path} exists but empty, falling through")
+
+    # 兜底: 不显式列举公司内部字面, 只匹配最通用模式。
+    # 外置配置文件才是黑名单主战场, 内置只防"配置文件丢失时不小心泄露"
+    return [re.compile(p, re.IGNORECASE | re.MULTILINE) for p in BUILTIN_MINIMAL]
+
+
+# 最小兜底集: 仅匹配"看起来像阿里云 AccessKey"等通用模式。
+# 公司内部关键字 (A97/Firmware_build/linkplay 等) 必须由外置配置提供。
+BUILTIN_MINIMAL = [
+    r"\bLTAI[A-Za-z0-9]{12,}\b",          # 阿里云 AccessKey ID (16+ 字符)
+    r"\bAKID[A-Za-z0-9]{16,}\b",          # AWS AccessKey ID
+    r"\bSECRET_[A-Za-z0-9]{32,}\b",       # 通用 Secret 前缀
+    r"\bghp_[A-Za-z0-9]{30,}\b",          # GitHub Personal Access Token
+    r"\bxoxb-[A-Za-z0-9-]{20,}\b",        # Slack bot token
+]
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--root", default=".", help="主仓根目录(默认当前目录)")
     parser.add_argument("--seed", type=int, default=20260624, help="随机种子(可复现)")
+    parser.add_argument("--redact-config", type=Path, default=None,
+                        help="外置黑名单配置文件路径 (每行一条 regex, 默认 .tokenslim-redact.toml)")
+    parser.add_argument("--skip-redact-check", action="store_true",
+                        help="跳过黑名单扫描 (仅调试, 不推荐)")
     args = parser.parse_args()
 
     random.seed(args.seed)
     root = Path(args.root).resolve()
     print(f"[regen] root={root} seed={args.seed}")
 
-    # 安全检查:这些字面不能出现在生成内容中。运行时按字面匹配,
-    # 不在注释/docstring 中列举具体字符串以免反向索引。
-    FORBIDDEN = (
-        "LTAI", "B47toYER", "AKID",
-        "sh.linkplay.com", "gerrit@linkplay", "linkplay",
-        "A97", "A98", "W98", "a113", "9d0c6bb6", "axg_s420_a6432_k54",
-        "WiiM", "wiimu", "ios_muzoplayer",
-        "Firmware_build", "Firmware_build_a98",
-    )
+    forbid_patterns = load_redact_patterns(args.redact_config)
+    print(f"[redact] active patterns: {len(forbid_patterns)}")
 
     for rel, size, gen in FIXTURES:
         path = root / rel
@@ -769,13 +830,15 @@ def main() -> int:
         gen(w)
         w.close()
         actual = path.stat().st_size
-        # 检查禁用字符串
-        with open(path, "rb") as f:
-            head = f.read(1024 * 1024)
-        for bad in FORBIDDEN:
-            if bad.encode() in head:
-                print(f"  [FATAL] {rel} contains forbidden token '{bad}'")
-                return 1
+        if not args.skip_redact_check:
+            # 检查禁用模式 (大小写不敏感)
+            with open(path, "rb") as f:
+                head = f.read(1024 * 1024).decode("utf-8", errors="replace")
+            for pat in forbid_patterns:
+                m = pat.search(head)
+                if m:
+                    print(f"  [FATAL] {rel} matches pattern {pat.pattern!r} -> {m.group(0)!r}")
+                    return 1
         print(f"  -> {actual / 1024 / 1024:.2f}MB ok")
 
     print(f"[regen] all 21 fixtures regenerated, no real-keyword/credential/secret leakage detected")

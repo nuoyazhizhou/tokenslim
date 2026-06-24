@@ -149,3 +149,6 @@ docs/prompts/vcs_prompts_delta.md
 
 # Qoder AI IDE 自动生成的仓库 wiki (本地缓存, 不发布)
 .qoder/
+
+# TokenSlim redact blacklist (本地黑名单, 不入仓库, 见 .tokenslim-redact.toml.example)
+.tokenslim-redact.toml
