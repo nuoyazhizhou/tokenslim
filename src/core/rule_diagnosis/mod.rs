@@ -480,8 +480,8 @@ mod tests {
         let config = make_config(vec![make_section("ok", "^OK", vec!["^OK"], vec![])]);
         let diagnosis = diagnose(&config, "test.toml");
         let text = render_diagnosis_text(&diagnosis);
-        assert!(text.contains("Rule Diagnosis: test.toml"));
-        assert!(text.contains("1/1 valid"));
-        assert!(text.contains("No issues detected"));
+        assert!(text.contains(&crate::utils::i18n::t1("doctor_rule_title", "test.toml")));
+        assert!(text.contains(&crate::utils::i18n::t2("doctor_rule_sections_valid", 1, 1)));
+        assert!(text.contains(crate::utils::i18n::t("doctor_rule_no_issues")));
     }
 }

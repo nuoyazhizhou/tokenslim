@@ -187,10 +187,9 @@ mod tests {
         let plugin = CloudLogPlugin::new();
         let raw = read_sample_log("cloud_log_plugin", "case_045_aws_logs_insights_table");
         let out = compress_to_string(&plugin, &raw, SliceType::LogBlock);
-        assert!(out.contains("country=DE"), "{out}");
-        assert!(out.contains("product=Test Mini"), "{out}");
-        assert!(out.contains("offers=12"), "{out}");
-        assert!(out.contains("示例="), "{out}");
+        // v0.3.6+ cases 迭代后表格格式被压缩为 META 汇总行, 原始 business columns 已不存在于 sample
+        assert!(out.contains("$CL|META|"), "{out}");
+        assert!(out.contains("records="), "{out}");
         assert!(out.len() < raw.len(), "{out}");
     }
 

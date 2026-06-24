@@ -12,7 +12,7 @@ fn main() {
         "tests/data/gcc_build_failure-2.txt",
         "tests/data/gcc_build_failure-3.txt",
         "tests/data/gcc_build_failure-4.txt",
-        "tests/data/gcc_build_success.txt.txt",
+        "tests/data/gcc_build_success.txt",
         "tests/data/gcc_build_utf8.txt",
         "tests/data/gcc_coverity_success-1.txt",
         "tests/data/gcc_coverity_success-2.txt",

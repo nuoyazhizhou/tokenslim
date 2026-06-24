@@ -728,6 +728,10 @@ def save_state(state_file, track, state_map):
 
 def save_frozen(freeze_file, track, freeze_map):
     frozen_list = sorted(list(freeze_map.values()), key=lambda x: x["case_id"])
+    # 向后兼容: 旧 frozen 条目无 frozen_by 标记, 统一补 "hash"
+    for f in frozen_list:
+        if not f.get("frozen_by"):
+            f["frozen_by"] = "hash"
     frozen_out = {
         "track": track,
         "updated_at": datetime.now().isoformat(),
@@ -817,6 +821,11 @@ def main():
             raise ValueError(f"Invalid plugin name: '{plugin}'. Must be lowercase, digits, underscores.")
         if not report_path:
             report_path = f"target/{plugin}_compact_showcase_report.txt"
+            # 兼容 showcase test 输出命名: 有些插件去掉 _plugin 后缀
+            if not os.path.exists(report_path):
+                alt_path = f"target/{plugin.removesuffix('_plugin')}_compact_showcase_report.txt"
+                if os.path.exists(alt_path):
+                    report_path = alt_path
         if not out_dir:
             out_dir = f"docs/audit/{plugin}"
         if not track:
@@ -913,6 +922,7 @@ def main():
         )
 
         # LLM semantic gate (only if credentials exist, require-semantic-gate is active, and case is not frozen/changed)
+        llm_audited = False
         if args.require_semantic_gate and has_llm and len(failures) == 0 and not is_empty_case:
             state_status = state_map.get(c["case_id"], {}).get("status", "")
 
@@ -920,6 +930,7 @@ def main():
             if not is_frozen or state_status in ("todo", "auditing") or args.llm_force_audit:
                 print(f"Running LLM semantic audit for case: {c['case_id']}...")
                 llm_pass, llm_fails, explanation = test_llm_gate(env, track, c, tactical_rules)
+                llm_audited = True
                 if not llm_pass:
                     failures.append("G5_LLM_SEMANTIC")
                     print(f"  [FAIL] LLM audit failed for {c['case_id']}: {', '.join(llm_fails)}")
@@ -929,6 +940,7 @@ def main():
                     
         c["semantic_gate_pass"] = (len(failures) == 0)
         c["semantic_gate_failures"] = ",".join(failures)
+        c["llm_audited"] = llm_audited
         
         # Incremental state & frozen cases saving
         if c["semantic_gate_pass"]:
@@ -942,6 +954,9 @@ def main():
                     should_freeze = True
             
             if should_freeze:
+                frozen_by = freeze_map.get(c["case_id"], {}).get("frozen_by", "")
+                if not frozen_by:
+                    frozen_by = "llm" if c.get("llm_audited") else "hash"
                 freeze_map[c["case_id"]] = {
                     "case_id": c["case_id"],
                     "version": version,
@@ -950,6 +965,7 @@ def main():
                     "original_hash": original_hash,
                     "original_bytes": c["original_bytes"],
                     "compact_bytes": c["compact_bytes"],
+                    "frozen_by": frozen_by,
                     "frozen_at": datetime.now().isoformat()
                 }
                 state_map[c["case_id"]] = {
@@ -1117,6 +1133,7 @@ def main():
             "original_hash": sha256_hex(target["original_text"]),
             "original_bytes": target["original_bytes"],
             "compact_bytes": target["compact_bytes"],
+            "frozen_by": "llm" if target.get("llm_audited") else "hash",
             "frozen_at": datetime.now().isoformat()
         }
         
@@ -1132,10 +1149,15 @@ def main():
                     "original_hash": sha256_hex(target["original_text"]),
                     "original_bytes": target["original_bytes"],
                     "compact_bytes": target["compact_bytes"],
+                    "frozen_by": "llm" if target.get("llm_audited") else "hash",
                     "frozen_at": datetime.now().isoformat()
                 }
                 
     frozen_list = sorted(list(freeze_map.values()), key=lambda x: x["case_id"])
+    # 向后兼容: 旧 frozen 条目无 frozen_by 标记, 统一补 "hash"
+    for f in frozen_list:
+        if not f.get("frozen_by"):
+            f["frozen_by"] = "hash"
     frozen_out = {
         "track": track,
         "updated_at": datetime.now().isoformat(),

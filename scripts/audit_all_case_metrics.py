@@ -447,12 +447,19 @@ def main():
     for plugin in sorted(list(set(plugin_names))):
         print(f"audit_plugin={plugin}")
         
+        # 构造 report path, 兼容两种命名: target/<plugin>_compact_showcase_report.txt 或 target/<bare>_compact_showcase_report.txt
+        report_path = os.path.join(reports_dir, f"{plugin}_compact_showcase_report.txt")
+        if not os.path.exists(report_path):
+            alt_path = os.path.join(reports_dir, f"{plugin.removesuffix('_plugin')}_compact_showcase_report.txt")
+            if os.path.exists(alt_path):
+                report_path = alt_path
+
         # Build command args
         cmd = [
             sys.executable,
             "scripts/audit_case_metrics.py",
             "--plugin", plugin,
-            "--report-path", os.path.join(reports_dir, f"{plugin}_compact_showcase_report.txt"),
+            "--report-path", report_path,
             "--out-dir", os.path.join(out_dir, plugin),
             "--version", version,
             "--export-cases"

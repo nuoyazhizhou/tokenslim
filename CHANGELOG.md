@@ -7,7 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > **Legend**: `+` Added · `~` Changed · `-` Removed · `!` Fixed · `^` Security
 >
-> **Range covered**: v0.2.6 → v0.3.6 → HEAD. 0.2.6 / 0.3.0 are scaffold releases (no user-facing changes).
+> **Range covered**: v0.2.6 → v0.3.7 → v0.4.0 → HEAD. 0.2.6 / 0.3.0 are scaffold releases (no user-facing changes).
+
+---
+
+## [0.4.0] — 2026-06-24 (双清单 + ConPTY 转发, 替代启发式黑名单)
+
+### Added
+- **`compress_whitelist` + `tty_support_list` 双清单机制** — v0.4.0 核心新设计. `run` 入口的 3 路分发不再依赖 v0.3.7 的启发式黑名单 (`is_git_program` / `detect_git_interactive`), 改用"已知可压缩 / 已知支持 tty"两个白名单 + 三层配置合并 (L1 代码默认 / L2 项目 `config/whitelist.toml` / L3 用户 `~/.tokenslim-whitelist.toml`). 命令在 `compress_whitelist` → 走 plugin 压缩; 命令在 `tty_support_list` 且 ConPTY 可用 → 走 ConPTY 转发; 其余命令 → 走 passthrough 兜底.
+- **L1 默认 compress 清单 (~50 个)** — `git` / `svn` / `hg` / `fossil` / `p4` / `bzr` / `cvs` / `darcs` / `git-lfs` / `glab` / `gh` / `make` / `cmake` / `ninja` / `meson` / `gradle` / `mvn` / `ant` / `sbt` / `msbuild` / `dotnet` / `cargo` / `rustc` / `npm` / `yarn` / `pnpm` / `npx` / `pip` / `go` / `javac` / `ls` / `dir` / `cat` / `type` / `head` / `tail` / `wc` / `grep` / `find` / `where` / `which` / `tree` / `du` / `df` / `sort` 等.
+- **L1 默认 tty 清单 (58 个)** — 编辑器 (vim / vi / nvim / emacs / nano / pico / code / subl / micro / helix / hx / kak / kakoune / neovide) + REPL/脚本语言 (python / python3 / ipython / node / deno / bun / irb / ruby / pry / scala / ghci / ghcup / julia / R / Rscript / lua / perl / php / sqlite3 / mysql / psql / mongosh / redis-cli) + 远程 (ssh / telnet / ftp / sftp / scp / rsync / mosh) + 分页器 (less / more / most) + Subshell (bash / zsh / fish / sh / dash / ksh / csh / tcsh / powershell / pwsh / cmd / wsl).
+- **L2 项目配置 `config/whitelist.toml`** — 模板包含 4 段 (`[compress.extra]` / `[compress.remove]` / `[tty.extra]` / `[tty.remove]`), 通过 `include_str!` 嵌入 binary, 编译期固定.
+- **L3 用户配置 `~/.tokenslim-whitelist.toml`** — 用户级配置, 启动时动态读盘, 解析失败自动降级为空 (fail-soft).
+- **ConPTY 转发 (`portable-pty`)** — 新增 `src/cli/pty_runner.rs`, 用 `portable-pty` (Windows ConPTY / Unix pty) 启动子进程, 把 stdio 桥接到真 tty, 支持 vim / ssh / REPL 等全屏交互. 主线程做 stdio 桥接, 用 mpsc 把 reader 线程字节发回主线程, 解决 Windows `StdoutLock` 的 `!Send` 问题.
+- **ConPTY 可用性探测** — 新增 `src/cli/conpty_probe.rs`, 启动时一次性探测 (`cmd /c ver` + 1 秒超时, `OnceLock` 缓存结果), 沙箱环境 (Trae IDE / Windows Server Core) 自动返回 `false`, 触发 fallback.
+- **`tokenslim-whitelist.toml.example`** 模板 — 仓库内提供 L3 配置示例 (`tokenslim-whitelist.toml.example`), 列出 `k9s` / `lazygit` / `tig` 等典型 L3 扩展项.
+- **`config/whitelist.toml`** 模板 — 仓库内提供 L2 项目级双清单模板, 默认全空, 4 段结构完整.
+
+### Changed
+- **`run_run_mode` 重写为 3 路分发** — `src/cli/commands/run.rs` 内的 `run_run_mode` 不再有 `if detect_git_interactive(...)` 启发式短路, 改为先查 `compress_whitelist` → 再查 `tty_support_list` → 兜底 passthrough. 决策逻辑从"我们不支持什么"变成"我们支持什么", 维护负担大幅降低.
+- **拆分 `run_compress_route` + `run_tty_route` 子函数** — 3 路分发逻辑提到 `run_run_mode` 主体, 两个 route 函数分别负责压缩路径与 tty 路径, 关注点分离.
+- **CLI 入口处理 `unknown` 命令** — 任何不在两个清单的命令 (例如 `my-random-tool` / `foobar`) 自动走 passthrough, 退出码 1:1 透传.
+
+### Removed
+- **`is_git_program` 函数** — v0.3.7 启发式黑名单的 git 路径识别函数, 12 个 unit test 随之一并删除.
+- **`detect_git_interactive` 函数** — v0.3.7 启发式黑名单的交互式参数检测函数 (`commit` / `rebase` / `tag` / `add -p` / `checkout -p` / `clean -i` 等), 12 个 unit test 随之一并删除.
+- **v0.3.7 黑名单相关的 `eprintln!` 调试输出** — `run_external_command_passthrough` 注释从"git 交互式子命令的 fallback"更新为"未知命令的通用 fallback".
+
+### Fixed
+- **Trae IDE 沙箱下 ConPTY 不可用** — 之前 `tokenslim run vim` 在 Trae IDE 终端会卡死, 现在自动降级为 stdio passthrough, 至少不卡死.
+- **未知命令的"我们不支持什么"漏洞** — v0.3.7 黑名单只能枚举已知坏命令, 新版白名单 + fallback 反向安全: 不知道的命令永远不会硬性走错路线.
+
+### Security
+- **白名单思想** — "我们支持什么自己知道, 我们不支持什么不知道". 任何不在 L1/L2/L3 清单的命令永远走 passthrough, 退出码 1:1 透传, 不会因为"猜错分类"而丢失用户数据.
+
+---
+
+## [0.3.7] — 2026-06-24 (interactive git fallback hotfix)
+
+### Fixed
+- **`tokenslim run git <subcmd>` 卡死 bug** — 之前 `run` 接管 stdout/stderr 时不转发 tty, 任何交互式 git 子命令 (`commit` 无 `-m`、`rebase -i`、`tag -a` 无 `-m`、`add -p`、`checkout -p`、`clean -i` 等) 都会因为子进程读不到 tty 而卡住. 新增启发式检测 + 透明 fallback: 命中黑名单时放弃压缩, 直接 `Command::new("git").args(...).stdin/stdout/stderr(Stdio::inherit())` 透传 stdio, 退出码 1:1 透传给调用方. 非 git 命令完全不受影响, `git status` / `git log` / `git diff` 等非交互子命令照常走压缩.
 
 ---
 
@@ -127,7 +166,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Concept commit: 50-line Python script that grepped `Error:` lines and reported count.
 
-[Unreleased]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.6...HEAD
+[Unreleased]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.7...HEAD
+[0.3.7]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.3...v0.3.6
 [0.3.3]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.1...v0.3.2

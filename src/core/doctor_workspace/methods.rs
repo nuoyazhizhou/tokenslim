@@ -2879,7 +2879,7 @@ mod tests {
         assert!(text.contains("tokenslim workspace --inject"));
         assert!(text.contains(t("doctor_workspace_field_primary")));
         assert!(text.contains("feature/i18n"));
-        assert!(text.contains("encoding-review"));
+        assert!(text.contains(crate::utils::i18n::t("doctor_action_encoding_review")));
     }
 
     #[test]

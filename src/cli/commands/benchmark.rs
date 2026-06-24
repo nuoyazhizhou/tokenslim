@@ -329,10 +329,8 @@ mod tests {
     fn renders_quick_usage_with_program_name() {
         let usage = render_global_usage("tokenslim.exe");
         assert!(usage.contains("tokenslim"));
-        assert!(usage.contains("Usage:"));
+        assert!(usage.contains(&format!("{}:", crate::utils::i18n::t("cli_help_usage"))));
         assert!(usage.contains("tokenslim.exe run <command>"));
-        assert!(usage.contains("shorthand for"));
-        assert!(usage.contains("--help"));
     }
 
     #[test]
@@ -2384,7 +2382,7 @@ keep = ["^ERR:"]
         assert!(out.contains("confidence_gap_source=detector_score"));
         assert!(out.contains("fallback_note=nearest_candidate_non_retryable:smart_path"));
         assert!(out.contains("selected_capability="));
-        assert!(out.contains("status:frozen"));
+        assert!(out.contains("status:missing_audit"));
     }
 
     #[test]

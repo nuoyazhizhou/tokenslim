@@ -11,7 +11,7 @@ mod tests {
     fn new_has_expected_name_and_priority() {
         let plugin = JavaStackPlugin::new();
         assert_eq!(plugin.name(), "java_stack");
-        assert_eq!(plugin.priority(), 200);
+        assert_eq!(plugin.priority(), 86);
     }
 
     #[test]

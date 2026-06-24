@@ -13,7 +13,10 @@
 pub mod commands;
 pub mod common;
 mod app;
+pub mod conpty_probe;
+pub mod pty_runner;
 mod types;
+pub mod whitelist;
 
 pub use app::{get_plugins, run_cli};
 pub(crate) use common::*;
