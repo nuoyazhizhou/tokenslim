@@ -10,7 +10,14 @@
 //! - 协调各子组件的工作流程
 //! - 对外提供统一的 API 接口
 
-mod methods;
+pub mod commands;
+pub mod common;
+mod app;
 mod types;
-pub use methods::*;
-pub use types::{CliArgs, CliError, CliMode, InputSource, OutputTarget};
+
+pub use app::{get_plugins, run_cli};
+pub(crate) use common::*;
+pub use types::{
+    CliArgs, CliError, CliMode, DoctorKind, DoctorOutputFormat, HookShell, InputSource, OutputFormat,
+    OutputTarget, Preset,
+};

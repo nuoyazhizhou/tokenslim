@@ -78,6 +78,10 @@ pub struct CliRawArgs {
     #[clap(short, long, default_value = "json")]
     pub format: String,
 
+    /// 以结构化 JSON 格式输出所有命令结果
+    #[clap(long)]
+    pub json: bool,
+
     /// 配置文件路径
     #[clap(short, long)]
     pub config: Option<PathBuf>,
@@ -289,6 +293,7 @@ pub struct CliArgs {
     pub ai_export: bool,
     pub ai_signal: bool,
     pub output_format: OutputFormat,
+    pub json: bool,
     pub verify_rule: Option<PathBuf>,
     pub verify_fixture: Option<PathBuf>,
     pub verify_expected: Option<PathBuf>,
