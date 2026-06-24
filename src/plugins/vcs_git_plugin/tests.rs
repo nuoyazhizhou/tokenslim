@@ -540,6 +540,66 @@ Changes not staged for commit:
 
     // ==================== Phase 2 P2 增强功能测试 ====================
 
+    /// 测试 git status 在 merge/rebase/cherry-pick 冲突时必须保留 Unmerged paths 区块。
+    /// 这是核心防失忆红线：5 种冲突标记 (both modified / added by us / added by them /
+    /// deleted by us / deleted by them) 必须全部按 U=Unmerged 状态保留到压缩输出。
+    #[test]
+    fn git_status_preserves_unmerged_paths() {
+        let raw = read_case("case_330_git_status_unmerged");
+        let compacted = compact_git_status_for_ai(&raw);
+
+        // 1. 命令锚点保留
+        assert!(compacted.starts_with("git status"), "{}", compacted);
+
+        // 2. 分支信息保留
+        assert!(compacted.contains("BR:main"), "{}", compacted);
+
+        // 3. Unmerged paths 区块的 5 种冲突标记必须全部保留（核心回归测试）
+        // 状态码遵循 git porcelain v1 规范：UU/AU/UA/DU/UD
+        assert!(compacted.contains("UU src/core/parser.rs"), "{}", compacted);
+        assert!(
+            compacted.contains("UU packages/sdk-nodejs/package-lock.json"),
+            "{}",
+            compacted
+        );
+        assert!(compacted.contains("AU src/core/new_module.rs"), "{}", compacted);
+        assert!(compacted.contains("UA src/core/their_module.rs"), "{}", compacted);
+        assert!(
+            compacted.contains("DU src/legacy/old_module.rs"),
+            "{}",
+            compacted
+        );
+        assert!(
+            compacted.contains("UD src/legacy/their_old_module.rs"),
+            "{}",
+            compacted
+        );
+
+        // 4. 其他章节也必须保留（不是只保留 unmerged）
+        // 暂存区 staged new file / modified
+        assert!(compacted.contains("A src/core/new_feature.rs"), "{}", compacted);
+        assert!(compacted.contains("M docs/CHANGELOG.md"), "{}", compacted);
+        // 工作区 unstaged modified
+        assert!(compacted.contains("M src/cli/methods.rs"), "{}", compacted);
+        assert!(compacted.contains("M Cargo.toml"), "{}", compacted);
+        // 未跟踪文件
+        assert!(compacted.contains("? tmp/draft.txt"), "{}", compacted);
+        assert!(compacted.contains("? .qoder/"), "{}", compacted);
+
+        // 5. 噪声被压缩
+        assert!(!compacted.contains("(use \"git"), "{}", compacted);
+        assert!(
+            !compacted.contains("no changes added to commit"),
+            "{}",
+            compacted
+        );
+        assert!(
+            !compacted.contains("Your branch is up to date"),
+            "{}",
+            compacted
+        );
+    }
+
     #[test]
     fn compresses_merge_conflicts() {
         let raw = read_case("case_081_merge_conflict");
