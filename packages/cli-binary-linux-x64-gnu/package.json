@@ -1,6 +1,6 @@
 {
   "name": "@tokenslim/cli-binary-linux-x64-gnu",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Prebuilt TokenSlim CLI + server binaries (Linux x64, glibc).",
   "author": "nuoyazhizhou",
   "license": "MIT",

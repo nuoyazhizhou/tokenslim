@@ -1,6 +1,6 @@
 {
     "name": "tokenslim",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "description": "Node.js / TypeScript SDK for TokenSlim — REST client for compressing LLM inputs (also ships the `tokenslim` / `tokenslim-server` binaries for one-stop install).",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -48,12 +48,12 @@
         "node": ">=18.0.0"
     },
     "optionalDependencies": {
-        "@tokenslim/cli-binary-linux-x64-gnu": "0.3.5",
-        "@tokenslim/cli-binary-linux-arm64-gnu": "0.3.5",
-        "@tokenslim/cli-binary-darwin-x64": "0.3.5",
-        "@tokenslim/cli-binary-darwin-arm64": "0.3.5",
-        "@tokenslim/cli-binary-windows-x64": "0.3.5",
-        "@tokenslim/cli-binary-windows-arm64": "0.3.5"
+        "@tokenslim/cli-binary-linux-x64-gnu": "0.3.6",
+        "@tokenslim/cli-binary-linux-arm64-gnu": "0.3.6",
+        "@tokenslim/cli-binary-darwin-x64": "0.3.6",
+        "@tokenslim/cli-binary-darwin-arm64": "0.3.6",
+        "@tokenslim/cli-binary-windows-x64": "0.3.6",
+        "@tokenslim/cli-binary-windows-arm64": "0.3.6"
     },
     "devDependencies": {
         "typescript": "^5.4.0",
