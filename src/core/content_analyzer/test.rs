@@ -16,6 +16,7 @@ mod tests {
         let rules = vec![];
         let config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules,
             fallback_type: SliceType::Unknown,
@@ -27,6 +28,7 @@ mod tests {
 
         let analyzer = ContentAnalyzer::new(config).unwrap();
         assert!(analyzer.config.enable_rules);
+        #[cfg(feature = "experimental")]
         assert!(!analyzer.config.enable_embedding);
         assert!(analyzer.config.rules.is_empty());
     }
@@ -51,6 +53,7 @@ mod tests {
 
         let config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules,
             fallback_type: SliceType::Unknown,
@@ -108,6 +111,7 @@ mod tests {
 
         let config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules,
             fallback_type: SliceType::Unknown,
@@ -147,6 +151,7 @@ mod tests {
 
         let config = AnalyzerConfig {
             enable_rules: false,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules,
             fallback_type: SliceType::Unknown,
@@ -180,6 +185,7 @@ mod tests {
         let rules = vec![];
         let config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules,
             fallback_type: SliceType::Unknown,

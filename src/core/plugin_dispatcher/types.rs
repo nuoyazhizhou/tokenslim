@@ -128,6 +128,7 @@ pub struct PluginDispatcher {
     pub(crate) dict_manager: Arc<DictionaryManager>,
     pub(crate) keyword_scanner: Arc<aho_corasick::AhoCorasick>,
     pub(crate) plugin_failures: Mutex<HashMap<String, u32>>,
+    #[cfg(feature = "experimental")]
     #[allow(dead_code)]
     pub(crate) semantic_classifier: Option<Arc<crate::core::embedding_engine::SemanticClassifier>>,
 }

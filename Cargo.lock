@@ -631,15 +631,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "crossbeam-channel"
-version = "0.5.15"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "82b8f8f868b36967f9606790d1903570de9ceaf870a7bf9fbbd3016d636a2cb2"
-dependencies = [
- "crossbeam-utils",
-]
-
-[[package]]
 name = "crossbeam-deque"
 version = "0.8.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2361,7 +2352,7 @@ dependencies = [
 
 [[package]]
 name = "plugin-interface"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "serde",
  "serde_json",
@@ -3454,7 +3445,7 @@ dependencies = [
 
 [[package]]
 name = "tokenslim"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "aho-corasick",
  "axum",
@@ -3466,7 +3457,6 @@ dependencies = [
  "chrono",
  "clap",
  "criterion",
- "crossbeam-channel",
  "dashmap",
  "encoding_rs",
  "env_logger",
@@ -3506,7 +3496,7 @@ dependencies = [
 
 [[package]]
 name = "tokenslim-py"
-version = "0.3.2"
+version = "0.3.3"
 dependencies = [
  "pyo3",
  "serde_json",

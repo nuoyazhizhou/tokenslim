@@ -1,16 +1,16 @@
-#[cfg(feature = "candle-core")]
+#[cfg(feature = "experimental")]
 pub mod methods;
-#[cfg(feature = "candle-core")]
+#[cfg(feature = "experimental")]
 pub mod types;
 
-#[cfg(feature = "candle-core")]
+#[cfg(feature = "experimental")]
 pub use types::*;
 
 // Dummy implementation when feature is disabled
-#[cfg(not(feature = "candle-core"))]
+#[cfg(not(feature = "experimental"))]
 pub struct SemanticClassifier;
 
-#[cfg(not(feature = "candle-core"))]
+#[cfg(not(feature = "experimental"))]
 impl SemanticClassifier {
     pub fn new() -> Option<Self> {
         None

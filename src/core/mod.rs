@@ -34,6 +34,7 @@ pub mod dictionary_manager;
 pub mod doctor_encoding;
 pub mod doctor_workspace;
 pub mod dynamic_plugin_loader;
+#[cfg(feature = "experimental")]
 pub mod embedding_engine;
 pub mod encoding_fallback;
 pub mod error_isolation;

@@ -27,6 +27,7 @@ pub struct DedupConfig {
     pub stack_frame_threshold: usize,
     pub path_threshold: usize,
     pub pattern_threshold: usize,
+    // TODO: fuzzy_threshold 目前未被使用，保留以备模糊去重功能实现
     pub fuzzy_threshold: f32,
 }
 
@@ -47,6 +48,7 @@ pub struct DedupEngine {
     pub config: DedupConfig,
     pub(crate) global_cache: HashMap<u64, String>,
     pub(crate) seen_hashes: std::collections::HashSet<u64>,
+    // TODO: fuzzy_cache 目前未被使用，保留以备模糊去重功能实现
     #[allow(dead_code)]
     pub(crate) fuzzy_cache: HashMap<u64, (String, String)>,
 }
@@ -56,6 +58,7 @@ pub struct SharedDedupEngine {
     pub config: DedupConfig,
     pub(crate) global_cache: DashMap<u64, String>,
     pub(crate) seen_hashes: DashSet<u64>,
+    // TODO: fuzzy_cache 目前未被使用，保留以备模糊去重功能实现
     #[allow(dead_code)]
     pub(crate) fuzzy_cache: DashMap<u64, (String, String)>,
 }

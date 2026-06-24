@@ -174,6 +174,7 @@ pub struct Rule {
 #[derive(Clone)]
 pub struct AnalyzerConfig {
     pub enable_rules: bool,
+    #[cfg(feature = "experimental")]
     pub enable_embedding: bool,
     pub enable_vocabulary: bool,       // 启用词表识别
     pub enable_script_detection: bool, // 启用脚本/多语言检测
@@ -203,6 +204,7 @@ impl Default for AnalyzerConfig {
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
             confidence_threshold: 0.5,
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             enable_vocabulary: true,
             enable_script_detection: true,

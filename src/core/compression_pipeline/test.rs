@@ -75,6 +75,7 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
@@ -132,6 +133,7 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
@@ -197,6 +199,7 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
@@ -266,6 +269,7 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
+            #[cfg(feature = "experimental")]
             enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,

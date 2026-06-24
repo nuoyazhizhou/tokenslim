@@ -97,6 +97,7 @@ impl PluginDispatcher {
             dict_manager,
             keyword_scanner,
             plugin_failures: std::sync::Mutex::new(HashMap::new()),
+            #[cfg(feature = "experimental")]
             semantic_classifier: None,
         }
     }
