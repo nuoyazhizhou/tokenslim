@@ -1,0 +1,53 @@
+# TokenSlim 双清单项目级配置 (L2) —— 入仓, 默认全部为空
+#
+# 作用:  本文件给项目级 (workspace 仓库) 提供扩展 / 缩减 TokenSlim 默认双清单的能力。
+#        通过 `include_str!` 嵌入 binary, 不存在时使用 L1 代码默认。
+# 优先级: L3 (用户) > L2 (本文件) > L1 (代码默认)
+#
+# 段定义:
+#   [compress.extra]   - 追加到 compress_whitelist (可压缩命令), 与 L1 取并集
+#   [compress.remove]  - 从 compress_whitelist 移除 (关闭已知支持)
+#   [tty.extra]        - 追加到 tty_support_list (交互式命令), 与 L1 取并集
+#   [tty.remove]       - 从 tty_support_list 移除 (关闭已知支持)
+#
+# 用途场景:
+#   - 项目内自定义 watch / repl / tui 工具, L1 没列, 用 [compress.extra] / [tty.extra] 补上
+#   - 项目里某类工具 (例如 ls / man) 没人用, 用 [compress.remove] / [tty.remove] 关掉
+#   - 名字必须用 L1 同样的"程序基名" (例如 "git" 而不是 "C:\Program Files\Git\bin\git.exe")
+#
+# 注意:
+#   - 每行一个命令基名 (不含路径, 不含参数)
+#   - 大小写敏感, 但匹配时不区分大小写 (见 Whitelist::matches 实现)
+#   - 注释行 (以 # 开头) 和空行忽略
+#   - 不要在这里添加内部敏感命令 (例如自研 audit 工具), 用 L3 用户配置
+
+# 已知可压缩命令 —— 项目自定义扩展
+# (默认情况: L1 已覆盖 ~50 个常用命令, 这里通常留空)
+[compress.extra]
+commands = [
+    # "my-repl",          # 项目自定义 REPL
+    # "make-watch",       # 项目自定义 watch 工具
+    # "npm-dev",          # = npm run dev
+]
+
+# 从 L1 移除 (关闭已知支持)
+[compress.remove]
+commands = [
+    # "ls",               # 项目里没人用 ls, 关掉
+    # "cat",              # 同上
+]
+
+# 已知交互式命令 —— 项目自定义扩展
+# (默认情况: L1 已覆盖 58 个常用交互式命令, 这里通常留空)
+[tty.extra]
+commands = [
+    # "my-tui",           # 项目自定义 TUI
+    # "project-repl",     # 项目自定义 REPL
+]
+
+# 从 L1 移除 (关闭已知支持)
+[tty.remove]
+commands = [
+    # "man",              # 项目里没人用 man, 关掉
+    # "less",             # 同上
+]

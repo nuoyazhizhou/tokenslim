@@ -1,0 +1,63 @@
+# TokenSlim 双清单用户级配置 (L3) —— 模板, 复制为 ~/.tokenslim-whitelist.toml 后填入
+#
+# 用法:   复制本文件为 ~/.tokenslim-whitelist.toml (用户主目录), 按需填入。
+#         TokenSlim 启动时会优先加载该文件 (优先级最高)。
+#         本文件在 .gitignore 中, 不会进仓库。
+#
+# 优先级: L3 (本文件) > L2 (config/whitelist.toml) > L1 (代码默认)
+#
+# 段定义 (与 L2 项目级一致):
+#   [compress.extra]   - 追加到 compress_whitelist
+#   [compress.remove]  - 从 compress_whitelist 移除
+#   [tty.extra]        - 追加到 tty_support_list
+#   [tty.remove]       - 从 tty_support_list 移除
+#
+# 典型用途:
+#   1. 添加个人常用的可压缩命令, 例如 `make-watch` / `cargo-watch` / `entr`
+#   2. 添加个人常用的交互式命令, 例如 `taskwarrior` / `k9s` / `lazygit`
+#   3. 关掉你不想用 ConPTY 的命令 (例如本机 conemu/cmder 工具链已经接管)
+#   4. 修复 L1 默认值里漏掉的命令 (例如 `tig`、`gitui`)
+#
+# 调试:
+#   运行 `tokenslim explain-runner -- <command>` 查看当前命令路由结果。
+#   运行 `tokenslim run --explain-route -- <command>` 也可看实时路由。
+#
+# 注意:
+#   - 每行一个命令基名 (不含路径, 不含参数)
+#   - 不要在这里写内部凭据 / 真实命令路径, 只写基名
+#   - 列表里只放 TokenSlim 支持的命令, 未知命令会自动走 fallback (passthrough),
+#     不会"加了反而坏"。但 remove 列表要谨慎, 误移会导致命令走错的分发路径
+
+# ===== 模板示例 (取消注释并替换为你的实际值) =====
+
+# 已知可压缩命令 —— 个人扩展
+[compress.extra]
+commands = [
+    # "tig",              # git 文本 UI, 输出可压缩
+    # "gitui",            # git TUI (注意: 严格 TUI 走 tty.extra)
+    # "cargo-watch",      # cargo-watch 工具
+    # "entr",             # find ... | entr sh
+]
+
+# 从 L1 移除 (个人关闭)
+[compress.remove]
+commands = [
+    # "ps",               # 本人用 conemu 接管, 关掉
+]
+
+# 已知交互式命令 —— 个人扩展
+[tty.extra]
+commands = [
+    # "k9s",              # k8s TUI
+    # "lazygit",          # git TUI
+    # "htop",             # 任务管理器
+    # "btop",             # 任务管理器 (新版)
+    # "taskwarrior-tui",  # 任务管理
+]
+
+# 从 L1 移除 (个人关闭)
+[tty.remove]
+commands = [
+    # "ssh",              # 本人用 Xshell 接管, 关掉
+    # "vim",              # 本人用 Neovide GUI, 关掉
+]

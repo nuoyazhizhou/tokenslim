@@ -1,6 +1,6 @@
 {
   "name": "@tokenslim/cli-binary-windows-x64",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Prebuilt TokenSlim CLI + server binaries (Windows x64).",
   "author": "nuoyazhizhou",
   "license": "MIT",

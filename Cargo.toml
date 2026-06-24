@@ -1,6 +1,6 @@
 [package]
 name = "tokenslim"
-version = "0.3.6"
+version = "0.4.0"
 edition = "2021"
 
 [workspace]
@@ -18,7 +18,7 @@ libloading = "0.9.0"
 log = "0.4"
 rayon = "1.8"
 memmap2 = "0.9"
-plugin-interface = { path = "./crates/plugin-interface", version = "0.3.6" }
+plugin-interface = { path = "./crates/plugin-interface", version = "0.4.0" }
 pyo3 = { version = "0.28.2", features = ["extension-module"] }
 
 [dependencies]
@@ -69,6 +69,8 @@ candle-transformers = { version = "0.9.2", optional = true }
 dashmap = "6.1.0"
 bumpalo = { version = "3.16", features = ["collections"] }
 rusqlite = { version = "0.34", features = ["bundled"] }
+# v0.4.0 PoC: portable-pty 用于跨平台 tty 转发。当前用于 Windows Git Bash 透明透传。
+portable-pty = "0.8"
 
 [dev-dependencies]
 criterion = "0.8.2"

@@ -9,7 +9,7 @@
 - 响应编码：UTF-8 JSON（指标端点除外，`/metrics` 为 Prometheus 文本）。
 - 运行参数：`TOKENSLIM_HOST` / `TOKENSLIM_PORT`。
 
-## 3. 路由契约（当前 9 个端点）
+## 3. 路由契约（当前 12 个端点）
 
 ### 3.1 健康与指标
 - `GET /health`
@@ -30,15 +30,35 @@
 ### 3.3 核心能力
 - `POST /compress`
   - 用途：文本压缩（支持 AI Export、重排等参数）。
+- `POST /compress/stream`
+  - 用途：Server-Sent Events 流式压缩，进度实时推送，避免大输入阻塞。
 - `POST /decompress`
   - 用途：压缩结果回放/解压。
 - `POST /reload`
   - 用途：重新加载配置（热更新）。
 
+### 3.4 插件元数据
+- `GET /plugins`
+  - 用途：列出全部已注册插件（id、版本、压缩/解压端点、是否启用）。
+
+### 3.5 实时流
+- `GET /ws/tail`
+  - 用途：WebSocket 长连接，订阅日志/文件变更流，前端 tail 模式后端。
+
 ## 4. 核心结构与处理器
 - 状态结构：`AppState`
 - 请求结构：`CompressRequest`, `DecompressRequest`
-- 关键处理器：`compress_handler()`, `decompress_handler()`, `metrics_handler()`, `metrics_detail_handler()`, `reload_config_handler()`
+- 关键处理器：
+  - `compress_handler()` — `POST /compress`
+  - `compress_stream_handler()` — `POST /compress/stream`（SSE）
+  - `decompress_handler()` — `POST /decompress`
+  - `metrics_handler()` — `GET /metrics`（Prometheus 文本）
+  - `metrics_detail_handler()` — `GET /metrics/detail`（JSON）
+  - `stats_aggregate_handler()` / `stats_daily_handler()` / `stats_by_filter_handler()` — 统计三件套
+  - `reload_config_handler()` — `POST /reload`
+  - `plugins_handler()` — `GET /plugins`
+  - `tail_ws_handler()` — `GET /ws/tail`（WebSocket upgrade）
+  - `static_handler()` — SPA fallback（rust-embed `webui/`）
 
 ## 5. 变更约束
 - 新增/修改端点时，必须同步更新：

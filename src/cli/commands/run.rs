@@ -93,6 +93,102 @@ pub(crate) fn parse_run_target<'a>(
 }
 
 
+/// 判断 `prog` 是否是 `git` 可执行 (兼容绝对/相对路径与 Windows 扩展名)。
+///
+/// 例如全部返回 `true`:
+/// - `"git"`
+/// - `"/usr/bin/git"`
+/// - `"C:\\Program Files\\Git\\bin\\git.exe"`
+pub(crate) fn is_git_program(prog: &str) -> bool {
+    let lower = prog.to_ascii_lowercase();
+    if lower == "git" {
+        return true;
+    }
+    // 取 basename (兼容 / 与 \)
+    let basename = lower.rsplit(['/', '\\']).next().unwrap_or(&lower);
+    // 去掉 Windows 可执行扩展名 (.exe / .cmd / .bat)
+    let stem = basename
+        .strip_suffix(".exe")
+        .or_else(|| basename.strip_suffix(".cmd"))
+        .or_else(|| basename.strip_suffix(".bat"))
+        .unwrap_or(basename);
+    stem == "git"
+}
+
+
+/// 检测 `git <subcmd> [args...]` 是否需要交互式输入 (vim/merge-tool/hunk 选择器等)。
+///
+/// 命中后调用方应放弃 stdout 压缩, 直接透传 stdio 给原生命令, 否则子进程会卡死。
+///
+/// 黑名单规则 (与 `git --help` 行为对齐):
+/// - `commit` 无 `-m` / `-F` / `--file` / `--message` → 打开 vim
+/// - `rebase` 含 `-i` / `--interactive` → 打开 todo list 编辑器
+/// - `tag` 含 `-a` / `--annotate` 且无 `-m` / `-F` → 打开 vim
+/// - `add` 含 `-p` / `--patch` → hunk 选择器
+/// - `checkout` / `restore` 含 `-p` / `--patch` → hunk 选择器
+/// - `clean` 含 `-i` / `--interactive` → 文件选择器
+///
+/// **不**进黑名单 (无冲突/无 flag 时不进入交互):
+/// - `merge` / `pull` / `cherry-pick` / `stash` — 无冲突时无 tty 需求
+/// - `push` — 协议层 (HTTP/SSH agent) 处理认证
+/// - `branch` / `log` / `diff` / `show` / `fetch` / `clone`
+///
+/// 注意: 这是启发式检测, 别名/外部 `git-foo` 工具可能漏判。漏判的最坏后果是
+/// 用户再次卡住, 不会损坏数据。
+pub(crate) fn detect_git_interactive(prog: &str, args: &[String]) -> bool {
+    if !is_git_program(prog) {
+        return false;
+    }
+    let sub = match args.first().map(String::as_str) {
+        Some(s) => s,
+        None => return false, // 裸 `git` 本身是 help, 不交互
+    };
+
+    // 通用 flag 命中检测: 完全相等 / 短/长 flag / 带 `=` 的形式
+    let has = |flag: &str| -> bool {
+        let eq_form = format!("{flag}=");
+        args.iter().any(|a| a == flag || a.starts_with(&eq_form))
+    };
+
+    match sub {
+        "commit" => {
+            // `-m` / `-F` / `--file` / `--message` / `--no-edit` 都能跳过 vim
+            !(has("-m")
+                || has("-F")
+                || has("--file")
+                || has("--message")
+                || has("--no-edit"))
+        }
+        "rebase" => has("-i") || has("--interactive"),
+        "tag" => (has("-a") || has("--annotate")) && !(has("-m") || has("-F")),
+        "add" => has("-p") || has("--patch"),
+        "checkout" | "restore" | "rm" => has("-p") || has("--patch"),
+        "clean" => has("-i") || has("--interactive"),
+        _ => false,
+    }
+}
+
+
+/// 透传 stdio 跑外部命令 (无压缩, 无 tty 转发)。
+///
+/// 用于 `git` 交互式子命令的 fallback: 不接管 stdout/stderr/stdin, 让子进程
+/// 看到真实的 tty, vim/merge-tool 等能正常工作。退出码透传给调用方。
+pub(crate) fn run_external_command_passthrough(
+    prog: &str,
+    cmd_args: &[String],
+) -> Result<std::process::ExitStatus, CliError> {
+    use std::process::Stdio;
+    let mut child = std::process::Command::new(prog);
+    child
+        .args(cmd_args)
+        .stdin(Stdio::inherit())
+        .stdout(Stdio::inherit())
+        .stderr(Stdio::inherit());
+    let status = child.spawn().map_err(CliError::Io)?.wait().map_err(CliError::Io)?;
+    Ok(status)
+}
+
+
 pub(crate) fn run_external_command_capture(
     prog: &str,
     cmd_args: &[String],
@@ -1374,6 +1470,20 @@ pub(crate) fn run_run_mode(
         return Ok(());
     }
 
+    // 启发式检测: git 交互式子命令 (commit 无 -m / rebase -i / tag -a 无 -m /
+    // add -p / checkout -p / clean -i) → 放弃压缩, 透传 stdio 给 git 原生命令。
+    // 不透传会让 vim/merge-tool 等编辑器读不到 tty 而卡死。
+    if detect_git_interactive(prog, cmd_args) {
+        eprintln!(
+            "[tokenslim] 检测到交互式 git 命令 (`{} {}`), fallback 到 git 原生命令 (该命令输出含用户决策输入, 压缩无意义)。",
+            prog,
+            cmd_args.join(" ")
+        );
+        eprintln!("[tokenslim] 提示: 如需查看压缩后的输出, 请改用 `git -c color.ui=always ... | tokenslim compress` 形式。");
+        let status = run_external_command_passthrough(prog, cmd_args)?;
+        std::process::exit(status.code().unwrap_or(1));
+    }
+
     let (status, combined) = run_external_command_capture(prog, cmd_args)?;
 
     if combined.trim().is_empty() {
@@ -1407,3 +1517,15 @@ pub(crate) fn run_run_mode(
     Ok(())
 }
 
+
+#[cfg(test)]
+#[allow(clippy::needless_raw_string_hashes)]
+mod tests {
+    use super::*;
+
+    // v0.3.7 的 is_git_program / detect_git_interactive heuristic 已在 v0.4.0
+    // 删除 (改用 crate::cli::whitelist 双清单 + ConPTY 转发). 相关 12 个
+    // unit test 一并删除, 新的双清单 / ConPTY / 3 路分发 unit test 放在
+    // crate::cli::whitelist / crate::cli::conpty_probe / crate::cli::pty_runner
+    // 各自模块的 #[cfg(test)] mod tests 段.
+}

@@ -8,7 +8,7 @@ use std::time::Instant;
 fn main() {
     println!("=== 并行文件读取性能测试 ===\n");
 
-    let test_file = "tests/data/gcc_build_success.txt.txt";
+    let test_file = "tests/data/gcc_build_success.txt";
 
     // 打开文件并创建 mmap
     let file = File::open(test_file).expect("Failed to open file");
