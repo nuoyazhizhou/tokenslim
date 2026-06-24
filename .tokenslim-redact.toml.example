@@ -1,0 +1,44 @@
+# TokenSlim redact blacklist —— 本地黑名单模板
+#
+# 用法:  复制本文件为 .tokenslim-redact.toml, 在下面按需填入自己的内部字面。
+#        .tokenslim-redact.toml 已在 .gitignore 中, 不会进仓库。
+#
+# 格式:  每行一条 Python regex 模式, 匹配走 re.IGNORECASE + re.MULTILINE
+#        以 # 开头的行视为注释, 空行忽略
+#        长模式可拆多行? 不支持, 只能一行一条
+#
+# 校验:  运行 regen_benchmarks.py 时会自动加载, 命中任意模式立即失败并打印匹配位置。
+#
+# 安全提示:
+#   - 域名/邮箱/URL 一律用通配符 (\. 任意 TLD), 避免 "linkplay.com" 漏掉 "linkplay.co"
+#   - 产品代号/芯片型号 用 \b...\b 词边界, 避免 project_axg_s420 部分匹配命中
+#   - 短关键字 (< 5 字符) 务必加 \b 边界, 否则会大量误伤普通英文词
+#   - 哈希/ID 类关键字可用 \bprefix[hex]pattern, 例如 \bLTAI[A-Za-z0-9]{12,}\b
+#   - 不要把真实凭据值写进来 (AccessKey、Token、密码等), 本文件用于"关键字"
+#     模式匹配, 不是凭据替换。若需要替换真实值, 在生成器源码里实现
+#     str.replace() 而不是用本文件。
+#
+# ===== 模板示例 (取消注释并替换为你的实际值) =====
+#
+# # 阿里云 AccessKey ID (16+ 字符, 通用模式, 通常不需要改动)
+# \bLTAI[A-Za-z0-9]{12,}\b
+#
+# # AWS AccessKey ID
+# \bAKID[A-Za-z0-9]{16,}\b
+#
+# # GitHub Personal Access Token
+# \bghp_[A-Za-z0-9]{30,}\b
+#
+# # 内部 SCM 域名 (示例: 用通配符兼容多个 TLD)
+# # \bintranet-scm\.[a-z]+\b
+#
+# # 内部仓库路径 (示例)
+# # /path/to/internal/.*\.(c|h|rs)
+#
+# # 产品代号 / 芯片型号 (示例: 多个产品可拆多行)
+# # \bproduct_xyz\b
+# # \bchip_abc\d+\b
+#
+# # 内部 Gerrit / 邮箱前缀 (示例)
+# # scm@intranet-scm
+# # ssh://[^/@]*@intranet-scm
