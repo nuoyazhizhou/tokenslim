@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TokenSlim</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      padding: 16px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #333;
+    }
+    .header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .header .version {
+      font-size: 11px;
+      color: #888;
+      background: #2a2a3e;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 8px 10px;
+      background: #2a2a3e;
+      border-radius: 6px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #555;
+    }
+    .status-dot.online { background: #4caf50; }
+    .status-dot.offline { background: #f44336; }
+    .status-text { font-size: 13px; }
+    .section {
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: #aaa;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 0;
+    }
+    .toggle-row label {
+      font-size: 13px;
+    }
+    .toggle {
+      position: relative;
+      width: 36px;
+      height: 20px;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background: #444;
+      border-radius: 10px;
+      transition: 0.2s;
+    }
+    .toggle .slider::before {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      left: 2px;
+      bottom: 2px;
+      background: #fff;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    .toggle input:checked + .slider {
+      background: #4caf50;
+    }
+    .toggle input:checked + .slider::before {
+      transform: translateX(16px);
+    }
+    .platform-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px;
+    }
+    .platform-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 0;
+      font-size: 13px;
+    }
+    .platform-item input[type="checkbox"] {
+      accent-color: #4caf50;
+    }
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: #4caf50;
+    }
+    .slider-value {
+      font-size: 12px;
+      color: #aaa;
+      min-width: 50px;
+      text-align: right;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .stat-card {
+      background: #2a2a3e;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #4caf50;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .input-row {
+      margin-top: 6px;
+    }
+    .input-row input[type="text"] {
+      width: 100%;
+      padding: 6px 8px;
+      background: #2a2a3e;
+      border: 1px solid #444;
+      border-radius: 4px;
+      color: #e0e0e0;
+      font-size: 12px;
+      outline: none;
+    }
+    .input-row input[type="text"]:focus {
+      border-color: #4caf50;
+    }
+  </style>
+</head>
+<body>
+  <!-- 头部 -->
+  <div class="header">
+    <h1>TokenSlim</h1>
+    <span class="version">v0.3.0</span>
+  </div>
+
+  <!-- Server 状态 -->
+  <div class="status">
+    <div class="status-dot" id="statusDot"></div>
+    <span class="status-text" id="statusText">Checking...</span>
+  </div>
+
+  <!-- 无感压缩开关 -->
+  <div class="section">
+    <div class="section-title">Seamless Compression</div>
+    <div class="toggle-row">
+      <label>Enable Auto-Compress</label>
+      <div class="toggle">
+        <input type="checkbox" id="enableToggle">
+        <span class="slider"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 平台选择 -->
+  <div class="section">
+    <div class="section-title">Platforms</div>
+    <div class="platform-grid">
+      <label class="platform-item"><input type="checkbox" id="p_chatgpt"> ChatGPT</label>
+      <label class="platform-item"><input type="checkbox" id="p_claude"> Claude</label>
+      <label class="platform-item"><input type="checkbox" id="p_gemini"> Gemini</label>
+      <label class="platform-item"><input type="checkbox" id="p_qianwen"> \u901a\u4e49\u5343\u95ee</label>
+      <label class="platform-item"><input type="checkbox" id="p_wenxin"> \u6587\u5fc3\u4e00\u8a00</label>
+    </div>
+  </div>
+
+  <!-- 压缩阈值 -->
+  <div class="section">
+    <div class="section-title">Compression Threshold</div>
+    <div class="slider-row">
+      <input type="range" id="thresholdSlider" min="100" max="5000" step="100">
+      <span class="slider-value" id="thresholdValue">500 chars</span>
+    </div>
+  </div>
+
+  <!-- Server URL -->
+  <div class="section">
+    <div class="section-title">Server URL</div>
+    <div class="input-row">
+      <input type="text" id="serverUrl" placeholder="http://127.0.0.1:10086">
+    </div>
+  </div>
+
+  <!-- 统计 -->
+  <div class="section">
+    <div class="section-title">Statistics</div>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-value" id="statCommands">--</div>
+        <div class="stat-label">Commands</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="statSaved">--</div>
+        <div class="stat-label">Tokens Saved</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="dist/popup.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 # Plugin Capability Matrix
 
-- generated_at: 2026-06-24T17:56:01.050197
+- generated_at: 2026-06-24T23:32:13.161732
 - plugins_total: 63
 - audited_plugins: 0
 - frozen_plugins: 0

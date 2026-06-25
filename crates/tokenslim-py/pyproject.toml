@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "tokenslim"
-version = "0.4.0"
+version = "0.4.1"
 description = "High-performance Rust token compression engine for LLM inputs."
 readme = "../../README.md"
 authors = [{ name = "nuoyazhizhou" }]

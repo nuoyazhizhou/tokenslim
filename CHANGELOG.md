@@ -11,6 +11,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.4.1] — 2026-06-25 (IDE 插件全家桶与 Chrome 扩展)
+
+### Added
+- **Chrome 无感压缩扩展 v0.3.0** — 新增 `chrome-extension/`。提供对常见 AI Web 应用 (ChatGPT / Claude / Gemini / 通义千问 / 文心一言) 聊天输入框的无感拦截与压缩。包含 Popup 控制面板、状态指示器及基于 MV3 的 Background Service Worker。
+- **VS Code 扩展 v0.3.0 更新** — 在 `vscode-extension/` 中新增 `decompressSelection` 和 `decompressFile` 命令，并新增了终端输出的自动压缩拦截功能。
+- **JetBrains 插件更新** — 在 `jetbrains-plugin/` 中新增 `DecompressAction`（支持解压选区/全文）。
+- **SDK 全功能化补齐** —
+  - **Java**: 引入 Builder 模式构建配置，新增 `compressFile`、`batchCompress` 和 `decompress` 支持。
+  - **Node.js**: 新增 `compressStream`、`batchCompress`，支持自动重连并完善了 TypeScript 类型定义。
+  - **Python**: 新增 `compress_file`、`batch_compress` 和原生的 `AsyncTokenSlimClient`。
+- **文档更新** — 更新 `FEATURE_ROADMAP` 路线图至 v1.3。
+
+---
+
 ## [0.4.0] — 2026-06-24 (双清单 + ConPTY 转发, 替代启发式黑名单)
 
 ### Added
