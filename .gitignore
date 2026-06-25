@@ -152,3 +152,9 @@ docs/prompts/vcs_prompts_delta.md
 
 # TokenSlim redact blacklist (本地黑名单, 不入仓库, 见 .tokenslim-redact.toml.example)
 .tokenslim-redact.toml
+
+plan-en.md
+plan-zh-cn.md
+计划.md
+讨论.md
+benchmarks/input_*.txt

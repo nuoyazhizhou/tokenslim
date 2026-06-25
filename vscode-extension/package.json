@@ -1,8 +1,8 @@
 {
   "name": "tokenslim-vscode",
   "displayName": "TokenSlim",
-  "description": "AI Input Decompression Engine for VS Code",
-  "version": "0.1.0",
+  "description": "AI Log Compression & Decompression for VS Code",
+  "version": "0.4.1",
   "publisher": "tokenslim",
   "engines": {
     "vscode": "^1.80.0"
@@ -21,6 +21,14 @@
       {
         "command": "tokenslim.compressSelection",
         "title": "TokenSlim: Compress Selection"
+      },
+      {
+        "command": "tokenslim.decompressSelection",
+        "title": "TokenSlim: Decompress Selection"
+      },
+      {
+        "command": "tokenslim.decompressFile",
+        "title": "TokenSlim: Decompress Current File"
       },
       {
         "command": "tokenslim.restartServer",

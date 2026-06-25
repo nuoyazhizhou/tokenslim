@@ -1,12 +1,17 @@
 {
   "name": "tokenslim-chrome",
-  "version": "0.1.0",
-  "description": "TokenSlim Browser Extension",
+  "version": "0.4.1",
+  "description": "TokenSlim Browser Extension - AI Chat Seamless Compression & Log Rehydration",
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "npm run build:content && npm run build:background && npm run build:popup",
+    "build:content": "esbuild src/content.ts --bundle --outfile=dist/content.js --format=iife --target=es2020",
+    "build:background": "esbuild src/background.ts --bundle --outfile=dist/background.js --format=esm --target=es2020",
+    "build:popup": "esbuild src/popup.ts --bundle --outfile=dist/popup.js --format=iife --target=es2020",
+    "watch": "npm run build:content -- --watch & npm run build:background -- --watch & npm run build:popup -- --watch"
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "@types/chrome": "^0.0.237"
+    "@types/chrome": "^0.0.237",
+    "esbuild": "^0.20.0"
   }
 }

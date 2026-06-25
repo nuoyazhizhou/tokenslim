@@ -60,6 +60,8 @@ const NPM_PACKAGE_FILES = [
   "packages/cli-binary-darwin-arm64/package.json",
   "packages/cli-binary-windows-x64/package.json",
   "packages/cli-binary-windows-arm64/package.json",
+  "vscode-extension/package.json",
+  "chrome-extension/package.json",
 ];
 
 const TOML_FILES = [
