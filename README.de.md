@@ -365,14 +365,18 @@ TokenSlim folgt einer geschichteten Pipeline:
 
 Siehe `docs/development/ARCHITECTURE.md` für das vollständige Design.
 
-## Quality Gates & Audit-Pipeline
+## 🛡️ AI Agent Governance & Anti-Drift Sandbox
 
-TokenSlim bewahrt null semantischen Verlust und hohe Zuverlässigkeit durch eine strenge, datengesteuerte 4-Schritte-Audit-Pipeline. Jede Änderung an Parsern oder Regeln muss diese automatisierten Qualitätskontrollen passieren:
+Das schwierigste Problem bei der autonomen Codegenerierung durch KI besteht darin, **„zu verhindern, dass der Coding Agent Code schreibt und gleichzeitig seine eigenen, selbstgefälligen Mock-Tests schreibt (Garbage In, Garbage Out)“** und **„zu verhindern, dass nachfolgende Refactorings zu einem stillen Ziel-Drift (Verhaltensregressionen) führen.“**
 
-1. **Sample Quality Gate (`audit_sample_case_quality.py`)**: Überprüft, ob Rohdaten (z. B. CI-Protokolle, Stacktraces) realistisch sind, richtig gekennzeichnet wurden und einen hohen diagnostischen Wert haben, bevor das Testen beginnt.
-2. **Semantic Fidelity & Metrics Gate (`audit_case_metrics.py`)**: Vergleicht Originaleingaben mit ihren komprimierten Ausgaben. Es setzt strenge Richtlinien (wie Anchor Guard und Anti-Amnesia) durch, um sicherzustellen, dass sich das Komprimierungsverhältnis verbessert, ohne dass kritischer Fehlerkontext verloren geht. Bestandene Fälle werden kryptografisch "eingefroren".
-3. **Global Health Check (`audit_all_case_metrics.py`)**: Läuft gleichzeitig über alle 60+ Plugins und fungiert als finales CI-Gate. Der Build schlägt fehl, wenn ein einzelnes Plugin eine Komprimierungsregression einführt oder die semantische Genauigkeit verletzt.
-4. **Capability Matrix Sync (`generate_plugin_capability_index.py`)**: Baut den globalen Plugin-Routing-Index basierend auf den eingefrorenen Fällen automatisch neu auf und stellt sicher, dass der dynamische Router immer perfekt mit den tatsächlich getesteten Funktionen synchronisiert ist.
+In einem komplexen Ökosystem mit über **105k+ LOC Kernquellcode, 60+ Plugins und 1000+ physischen Testfällen** bleibt TokenSlim robust – nicht durch manuelles Debugging, sondern durch eine automatisierte, geschlossene **Quality Sandbox**, die das Verhalten der KI-Code-Generierung zähmt:
+
+1. **Absichtsextraktion & Code-Dokumentationsinjektion ([`extract_plugin_design.py`](scripts/extract_plugin_design.py))**: Scannt den Parser-Quellcode, nutzt LLMs zur Extraktion von Kerndesign-Verträgen (`design_intent`/`keep_signals`) und **injiziert diese automatisch als Modul-Ebene `//!` Dokumentationskommentare zurück in `mod.rs`**! Dies zwingt zukünftige KI- und menschliche Entwickler, die Designgrenzen als einzige Wahrheit (Source of Truth) zu respektieren.
+2. **Mehrsprachiger automatischer Übersetzungssync ([`translate_messages_fields.py`](scripts/translate_messages_fields.py))**: Überprüft die Übersetzungsdateien für Chinesisch und Englisch kreuzweise und gleicht fehlende Einträge automatisch per LLM-Übersetzung ab, um den Verlust von Schlüsseln zu vermeiden.
+3. **Qualitätsprüfung physischer Testfälle ([`audit_sample_case_quality.py`](scripts/audit_sample_case_quality.py))**: Der Mikro-Richter (Micro-Judge). Validiert den Realismus und die Übereinstimmung physischer Rohlog-Fälle mit dem extrahierten Design-Vertrag und filtert gefälschte/synthetisierte KI-Fälle heraus. Scannt Beispielordner und **gibt automatisch Codezeilen aus, die an `showcase.rs` angehängt werden**, falls neue physische Logs nicht registriert sind.
+4. **Kompressions-Fidelitätsprüfung ([`audit_case_metrics.py`](scripts/audit_case_metrics.py))**: Der Meso-Richter (Meso-Judge). Erzwingt die Übereinstimmung von **`showcase.rs`-Registrierung**, **physischen Dateien in `samples/`** und **in `target/` generierten Berichten**. Verifiziert deterministische G1-G4-Gatter (stellt sicher, dass kritische Fehler und Befehlsanker niemals verloren gehen) und nutzt LLMs, um die Kompression mit dem Design-Vertrag abzugleichen.
+5. **Status-Einfrierung & Regressionsvermeidung (State Freeze)**: Nach der Prüfung wird die Ausgabe mit einem SHA256-Hash gesperrt. Wenn zukünftige KI-Änderungen die erwartete Ausgabe verändern, **weist die CI/CD-Pipeline das Release sofort ab und blockiert es**, um einen stillen Drift zu verhindern.
+6. **Globale Health Governance ([`audit_all_case_metrics.py`](scripts/audit_all_case_metrics.py))**: Der Makro-Richter (Macro-Judge). Orchestriert parallele Audits über alle 60+ Plugins hinweg in der CI/CD und stellt eine globale Gesundheitsmatrix (`audit_health.md`) zusammen, um die Qualitätsabsicherung final abzuschließen.
 
 ## Beitragen
 

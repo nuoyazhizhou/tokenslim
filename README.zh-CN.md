@@ -420,14 +420,18 @@ TokenSlim 走分层流水线：
 
 完整设计见 `docs/development/ARCHITECTURE.md`。
 
-## 质量门禁与审计流水线
+## 🛡️ AI 编码 Agent 质量防御与防漂移体系 (AI Agent Governance Sandbox)
 
-为了保证“零语义丢失”和极致的可靠性，TokenSlim 采用了一套严格的 4 步数据驱动审计流水线。任何解析器或规则的修改都必须完整通过以下质量门禁：
+AI 自动编码时代最大的痛点是 **“AI 自动生成的用例往往在自编自导自演（自造假数据跑通自己写的测试）”**，以及 **“后续迭代中 AI 修改代码导致既有行为发生悄无声息的目标漂移 (Target Drift)”**。
 
-1. **物理用例质量门禁 (`audit_sample_case_quality.py`)**：在测试前，校验原始输入数据（如 CI 日志、堆栈报错）的真实性、标签分类准确度以及是否具备诊断价值，防止“假数据”污染。
-2. **压缩语义与冻结门禁 (`audit_case_metrics.py`)**：逐字节对比压缩前后的结果，严格执行防遗忘（Anti-Amnesia）和锚点保护等准则。确保在压缩率提升的同时，绝不丢失任何关键的报错上下文。通过测试的用例会被哈希“冻结”。
-3. **全局健康大盘审查 (`audit_all_case_metrics.py`)**：最终的 CI 关卡，聚合所有 60+ 插件的健康状态。任何一个插件出现退步（Regression）或语义破坏，都会直接熔断发布流水线。
-4. **能力地图自动同步 (`generate_plugin_capability_index.py`)**：基于已冻结的成功用例，自动重构全局插件路由索引，确保动态路由器（Router）与实际测试过的能力完全保持同步。
+在由超 **10 万行核心源码 (105k+ LOC)、60+ 插件、1000+ 物理测试用例**组成的复杂生态中，TokenSlim 维持极致可靠性并不靠人肉 Debug，而是设计了一套**闭环 of 自动质量沙盒体系**，彻底降伏了 AI 编码智能体的随意性：
+
+1. **意图提炼与代码注入 ([`extract_plugin_design.py`](scripts/extract_plugin_design.py))**：扫描解析器源码，由大模型提炼出核心设计契约（`design_intent`/`keep_signals`），并**自动作为 `//!` 模块级文档注释反向注入回 `mod.rs` 源码头部**！这强迫后续的开发和 AI 必须阅读这套最权威的契约底线。
+2. **多语言自动翻译对齐 ([`translate_messages_fields.py`](scripts/translate_messages_fields.py))**：双向核对中英文 JSON 翻译文件，自动调用翻译大模型对齐缺失字段，防止多语言丢三落四。
+3. **物理用例静态打假 ([`audit_sample_case_quality.py`](scripts/audit_sample_case_quality.py))**：初审法官。依据提炼出的契约，让大模型作为客观第三方审计物理 Case 的真实性和覆盖程度（拦截 AI 的自造用例）；同时自动扫描物理用例与 `showcase.rs` 注册状态，**对未注册物理用例自动输出追加代码行建议**。
+4. **压缩保真中观把关 ([`audit_case_metrics.py`](scripts/audit_case_metrics.py))**：终审法官。强力校验 **`showcase.rs` 声明**、**`samples/` 物理日志** 和 **`target/` 生成报告** 三向对齐（排除幽灵用例）。执行 G1-G4 正则门禁（报错信号和命令锚点绝对不能丢），并让大模型根据第 1 步注入源码的契约做保真度复核。
+5. **压缩哈希状态固化 (State Freeze)**：通过审计后，锁定压缩结果的 SHA256 值。如果之后的 AI 编码改动破坏了既有行为，导致输出哈希不符，CI/CD 将会**当场拒绝并强行阻断发布**，防止发生无意识的行为漂移。
+6. **全局并行健康检查 ([`audit_all_case_metrics.py`](scripts/audit_all_case_metrics.py))**：在 CI 关卡通过 `--fail-on-any-failure` 串行调度全插件审计大盘，生成全局健康看板（`audit_health.md`）完成最终质量封顶。
 
 ## 🤝 贡献
 
