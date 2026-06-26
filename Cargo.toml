@@ -28,7 +28,7 @@ tokio = { version = "1.36", features = ["full"] }
 tokio-stream = "0.1"
 tower-http = { version = "0.6.8", features = ["cors", "trace", "fs"] }
 notify = "7.0"
-clap = { version = "4.0", features = ["derive"] }
+clap = { version = "4.0", features = ["derive", "env"] }
 rust-embed = "8.5"
 mime_guess = "2.0"
 thiserror = "2.0.18"
