@@ -91,6 +91,9 @@ pub(crate) fn is_tokenslim_builtin_command(cmd: &str) -> bool {
             | "doctor"
             | "hooks"
             | "hooks-status"
+            | "config"
+            | "serve-static"
+            | "serve_static"
     )
 }
 
@@ -128,6 +131,41 @@ pub(crate) fn should_show_quick_usage(argv: &[String], stdin_is_terminal: bool) 
 }
 
 
+pub(crate) fn render_config_usage(program: &str) -> String {
+    format!(
+        "{} config
+
+管理全局与项目级配置项
+
+{}:
+  {} config <subcommand> [args...]
+
+子命令:
+  set <key> <value> [--global|-g]   设置配置项的值
+  get <key>                         获取合并后的配置项值
+  list                              列出所有合并生效的配置项
+  unset <key> [--global|-g]         移除配置项
+  reset [--global|-g]               重置/清空配置文件
+  wizard [--global|-g]              进入交互式配置向导
+  plugin <subcommand> [args...]     管理插件启用/禁用和参数配置
+
+{}:
+  {} config set general.preset fast --global
+  {} config get general.preset
+  {} config list
+  {} config wizard",
+        program,
+        t("cli_help_usage"),
+        program,
+        t("cli_help_examples"),
+        program,
+        program,
+        program,
+        program
+    )
+}
+
+
 pub(crate) fn render_global_usage(program: &str) -> String {
     let capability_summary = String::new();
     let shorthand_text = t("cli_help_shorthand").replace("{program}", program);
@@ -152,6 +190,8 @@ pub(crate) fn render_global_usage(program: &str) -> String {
   {program} {:<32} {}
 
 {}:
+  {program} {:<32} {}
+  {program} {:<32} {}
   {program} {:<32} {}
   {program} {:<32} {}
   {program} {:<32} {}
@@ -196,8 +236,43 @@ pub(crate) fn render_global_usage(program: &str) -> String {
         t("cli_desc_explain_plugin"),
         "hooks",
         t("cli_desc_hooks"),
+        "config",
+        "管理全局与项目级配置项 / Manage configurations",
+        "serve-static",
+        "启动静态文件服务器 / Start a static file server",
         t("cli_help_common_examples"),
         capability_summary
+    )
+}
+
+
+pub(crate) fn render_serve_static_usage(program: &str) -> String {
+    format!(
+        "{} serve-static
+
+启动静态文件服务以托管指定目录下的文件。
+
+用法:
+  {} serve-static [目录路径] [选项]
+
+参数:
+  [目录路径]                          静态服务根目录（默认：当前目录 \".\"）
+
+选项:
+  --port <PORT>                      绑定的端口（默认：8080）
+  --bind <IP>                        绑定的 IP 地址（默认：127.0.0.1）
+  --open                             是否在启动后自动打开浏览器
+  -h, --help                         显示此帮助信息
+
+示例:
+  {} serve-static                      # 托管当前目录，绑定到 127.0.0.1:8080
+  {} serve-static ./dist --port 9000   # 托管 ./dist 目录，绑定到端口 9000
+  {} serve-static --open               # 托管当前目录并自动打开浏览器",
+        program,
+        program,
+        program,
+        program,
+        program
     )
 }
 
@@ -247,6 +322,8 @@ pub(crate) fn intercept_help_request(argv: &[String], program: &str) -> Option<S
         Some("hooks") => render_hooks_usage(program),
         Some("plugins") => render_plugins_usage(program),
         Some("explain-plugin") | Some("explain_plugin") => render_explain_plugin_usage(program),
+        Some("config") => render_config_usage(program),
+        Some("serve-static") | Some("serve_static") => render_serve_static_usage(program),
         _ => render_global_usage(program),
     };
 
@@ -269,9 +346,13 @@ pub(crate) fn render_compress_usage(program: &str) -> String {
   {:<23} {}
   {:<23} {}
   {:<23} {}
+  {:<23} {}
+  {:<23} {}
+  {:<23} {}
 
 {}:
-  {} compress -i input.log -o output.json --format json",
+  {} compress -i input.log -o output.json --format json
+  {} compress --stream",
         program,
         t("cli_desc_compress"),
         t("cli_help_usage"),
@@ -286,9 +367,16 @@ pub(crate) fn render_compress_usage(program: &str) -> String {
         t("cli_opt_format_compress"),
         "--preset <PRESET>",
         t("cli_opt_preset"),
+        "--stream",
+        t("cli_opt_stream"),
+        "--flush-interval <MS>",
+        t("cli_opt_flush_interval"),
+        "--merge",
+        t("cli_opt_merge"),
         "-h, --help",
         t("cli_opt_help"),
         t("cli_help_examples"),
+        program,
         program
     )
 }
@@ -385,19 +473,30 @@ pub(crate) fn render_run_usage(program: &str) -> String {
 
 {}:
   {:<23} {}
+  {:<23} {}
+  {:<23} {}
+  {:<23} {}
 
 {}:
   {} run cargo test
-  {} run git status",
+  {} run git status
+  {} run --stream -- cargo test",
         program,
         t("cli_desc_run"),
         t("cli_help_usage"),
         program,
         t("cli_run_external_command"),
         t("cli_help_options"),
+        "--stream",
+        t("cli_opt_stream"),
+        "--flush-interval <MS>",
+        t("cli_opt_flush_interval"),
+        "--merge",
+        t("cli_opt_merge"),
         "-h, --help",
         t("cli_opt_help"),
         t("cli_help_examples"),
+        program,
         program,
         program
     )
@@ -693,16 +792,29 @@ pub(crate) fn render_init_usage(program: &str) -> String {
 }
 
 
-pub(crate) fn split_run_explain_route_flag(mut run_cmd: Vec<String>) -> (bool, Vec<String>) {
-    if run_cmd.first().is_some_and(|arg| arg == "--explain-route") {
-        run_cmd.remove(0);
-        if run_cmd.first().is_some_and(|arg| arg == "--") {
-            run_cmd.remove(0);
+pub(crate) fn split_run_explain_route_flag(run_cmd: Vec<String>) -> (bool, Vec<String>) {
+    let mut explain_route = false;
+    let mut remain = Vec::new();
+    let mut i = 0;
+    while i < run_cmd.len() {
+        let arg = &run_cmd[i];
+        if arg == "--explain-route" {
+            explain_route = true;
+            i += 1;
+            // 如果紧跟在其后的是 "--"，也一并剥离
+            if i < run_cmd.len() && run_cmd[i] == "--" {
+                i += 1;
+            }
+        } else if arg == "--" {
+            // 遇到 "--" 标志，说明后面的都是实际命令参数，不再剥离
+            remain.extend(run_cmd[i..].to_vec());
+            break;
+        } else {
+            remain.push(arg.clone());
+            i += 1;
         }
-        (true, run_cmd)
-    } else {
-        (false, run_cmd)
     }
+    (explain_route, remain)
 }
 
 
@@ -881,6 +993,62 @@ pub(crate) fn rewrite_command_alias_to_flags(args: &[String]) -> Result<Option<V
                 _ => Err(CliError::InvalidArgs("Invalid hooks action".to_string())),
             }
         }
+        "config" => {
+            rewritten.push("--mode".to_string());
+            rewritten.push("config".to_string());
+            for arg in rest {
+                rewritten.push("--config-args".to_string());
+                rewritten.push(arg);
+            }
+            Ok(Some(rewritten))
+        }
+        "serve-static" | "serve_static" => {
+            rewritten.push("--mode".to_string());
+            rewritten.push("serve-static".to_string());
+            let mut i = 0;
+            let mut has_dir = false;
+            while i < rest.len() {
+                let arg = &rest[i];
+                if arg == "--port" {
+                    rewritten.push("--serve-port".to_string());
+                    if i + 1 < rest.len() {
+                        rewritten.push(rest[i + 1].clone());
+                        i += 2;
+                    } else {
+                        i += 1;
+                    }
+                } else if arg.starts_with("--port=") {
+                    let val = arg.strip_prefix("--port=").unwrap();
+                    rewritten.push(format!("--serve-port={}", val));
+                    i += 1;
+                } else if arg == "--bind" {
+                    rewritten.push("--serve-bind".to_string());
+                    if i + 1 < rest.len() {
+                        rewritten.push(rest[i + 1].clone());
+                        i += 2;
+                    } else {
+                        i += 1;
+                    }
+                } else if arg.starts_with("--bind=") {
+                    let val = arg.strip_prefix("--bind=").unwrap();
+                    rewritten.push(format!("--serve-bind={}", val));
+                    i += 1;
+                } else if arg == "--open" {
+                    rewritten.push("--serve-open".to_string());
+                    i += 1;
+                } else if !arg.starts_with('-') && !has_dir {
+                    // 第一个不以 '-' 开头的参数认为是静态根目录
+                    rewritten.push("--serve-static".to_string());
+                    rewritten.push(arg.clone());
+                    has_dir = true;
+                    i += 1;
+                } else {
+                    rewritten.push(arg.clone());
+                    i += 1;
+                }
+            }
+            Ok(Some(rewritten))
+        }
         "doctor" => Err(CliError::InvalidArgs(
             "`doctor` command has been removed. Use one of: `workspace`, `encoding`, `rule`, `env`"
                 .to_string(),
@@ -1002,7 +1170,16 @@ pub(crate) fn reject_legacy_flags(args: &[String]) -> Result<(), CliError> {
 }
 
 
-pub(crate) fn build_run_mode_args(run_command: Vec<String>, explain_route: bool) -> CliArgs {
+pub(crate) fn build_run_mode_args(
+    run_command: Vec<String>,
+    explain_route: bool,
+    stream: bool,
+    merge: bool,
+    flush_interval: u64,
+    run_plugin: Option<String>,
+    passthrough: bool,
+    tee: Option<std::path::PathBuf>,
+) -> CliArgs {
     CliArgs {
         mode: CliMode::Run,
         input: InputSource::Stdin,
@@ -1050,6 +1227,17 @@ pub(crate) fn build_run_mode_args(run_command: Vec<String>, explain_route: bool)
         include: Vec::new(),
         exclude: Vec::new(),
         json: false,
+        stream,
+        flush_interval,
+        merge,
+        config_args: Vec::new(),
+        serve_static: None,
+        serve_port: None,
+        serve_bind: None,
+        serve_open: false,
+        run_plugin,
+        passthrough,
+        tee,
     }
 }
 
@@ -1138,6 +1326,17 @@ pub(crate) fn build_cli_args_from_raw(
         backup: cli.backup,
         include: cli.include,
         exclude: cli.exclude,
+        stream: cli.stream,
+        flush_interval: cli.flush_interval,
+        merge: cli.merge,
+        config_args: cli.config_args,
+        serve_static: cli.serve_static,
+        serve_port: cli.serve_port,
+        serve_bind: cli.serve_bind,
+        serve_open: cli.serve_open,
+        run_plugin: cli.run_plugin,
+        passthrough: cli.passthrough,
+        tee: cli.tee,
     }
 }
 
@@ -1189,13 +1388,107 @@ pub(crate) fn parse_args_from_argv(argv: &[String]) -> Result<CliArgs, CliError>
 }
 
 
+pub(crate) fn extract_run_wrapper_args_from_run_cmd(
+    run_cmd: Vec<String>,
+) -> (bool, bool, u64, Option<String>, bool, Option<std::path::PathBuf>, Vec<String>) {
+    let mut stream = false;
+    let mut merge = false;
+    let mut flush_interval = 500;
+    let mut run_plugin = None;
+    let mut passthrough = false;
+    let mut tee = None;
+    let mut filtered = Vec::new();
+    let mut i = 0;
+    while i < run_cmd.len() {
+        let arg = &run_cmd[i];
+        if arg == "--stream" {
+            stream = true;
+            i += 1;
+        } else if arg == "--merge" {
+            merge = true;
+            i += 1;
+        } else if arg == "--flush-interval" {
+            if i + 1 < run_cmd.len() {
+                if let Ok(val) = run_cmd[i + 1].parse::<u64>() {
+                    flush_interval = val;
+                }
+                i += 2;
+            } else {
+                i += 1;
+            }
+        } else if arg.starts_with("--flush-interval=") {
+            if let Some(val_str) = arg.strip_prefix("--flush-interval=") {
+                if let Ok(val) = val_str.parse::<u64>() {
+                    flush_interval = val;
+                }
+            }
+            i += 1;
+        } else if arg == "--run-plugin" || arg == "--plugin" {
+            if i + 1 < run_cmd.len() {
+                run_plugin = Some(run_cmd[i + 1].clone());
+                i += 2;
+            } else {
+                i += 1;
+            }
+        } else if arg.starts_with("--run-plugin=") {
+            run_plugin = arg.strip_prefix("--run-plugin=").map(String::from);
+            i += 1;
+        } else if arg.starts_with("--plugin=") {
+            run_plugin = arg.strip_prefix("--plugin=").map(String::from);
+            i += 1;
+        } else if arg == "--passthrough" {
+            passthrough = true;
+            i += 1;
+        } else if arg == "--tee" {
+            if i + 1 < run_cmd.len() {
+                tee = Some(std::path::PathBuf::from(run_cmd[i + 1].clone()));
+                i += 2;
+            } else {
+                i += 1;
+            }
+        } else if arg.starts_with("--tee=") {
+            tee = arg.strip_prefix("--tee=").map(std::path::PathBuf::from);
+            i += 1;
+        } else if arg == "--" {
+            filtered.extend(run_cmd[i + 1..].to_vec());
+            break;
+        } else {
+            filtered.push(arg.clone());
+            i += 1;
+        }
+    }
+    (stream, merge, flush_interval, run_plugin, passthrough, tee, filtered)
+}
+
 pub(crate) fn parse_run_mode_args_from_argv(argv: &[String]) -> Option<CliArgs> {
     if let Some(run_cmd) = maybe_parse_run_subcommand_from_argv(argv) {
         let (explain_route, run_cmd) = split_run_explain_route_flag(run_cmd);
-        return Some(build_run_mode_args(run_cmd, explain_route));
+        let (stream, merge, flush_interval, run_plugin, passthrough, tee, run_cmd) =
+            extract_run_wrapper_args_from_run_cmd(run_cmd);
+        return Some(build_run_mode_args(
+            run_cmd,
+            explain_route,
+            stream,
+            merge,
+            flush_interval,
+            run_plugin,
+            passthrough,
+            tee,
+        ));
     }
     if let Some(run_cmd) = maybe_parse_implicit_run_command_from_argv(argv) {
-        return Some(build_run_mode_args(run_cmd, false));
+        let (stream, merge, flush_interval, run_plugin, passthrough, tee, run_cmd) =
+            extract_run_wrapper_args_from_run_cmd(run_cmd);
+        return Some(build_run_mode_args(
+            run_cmd,
+            false,
+            stream,
+            merge,
+            flush_interval,
+            run_plugin,
+            passthrough,
+            tee,
+        ));
     }
     None
 }
@@ -1213,6 +1506,8 @@ pub(crate) fn resolve_cli_mode(cli: &CliRawArgs) -> CliMode {
         Some("compress") => CliMode::Compress,
         Some("decompress") => CliMode::Decompress,
         Some("init") => CliMode::Init,
+        Some("config") => CliMode::Config,
+        Some("serve-static") | Some("serve_static") => CliMode::ServeStatic,
 
         Some("run") => CliMode::Run,
         Some("hooks-status") => CliMode::HooksStatus,
@@ -1412,6 +1707,8 @@ pub(crate) enum PrePipelineAction {
     ExplainPlugin,
     Plugins,
     RepairFile,
+    Config,
+    ServeStatic,
 }
 
 
@@ -1462,6 +1759,12 @@ pub(crate) fn select_pre_pipeline_action(args: &CliArgs) -> PrePipelineAction {
     }
     if matches!(args.mode, CliMode::RepairFile) {
         return PrePipelineAction::RepairFile;
+    }
+    if matches!(args.mode, CliMode::Config) {
+        return PrePipelineAction::Config;
+    }
+    if matches!(args.mode, CliMode::ServeStatic) {
+        return PrePipelineAction::ServeStatic;
     }
     PrePipelineAction::Continue
 }
@@ -1532,6 +1835,14 @@ pub(crate) fn handle_pre_pipeline_action(args: &CliArgs) -> Result<bool, CliErro
             run_repair_file_command(args)?;
             Ok(true)
         }
+        PrePipelineAction::Config => {
+            crate::cli::commands::config::handle_config_command(args)?;
+            Ok(true)
+        }
+        PrePipelineAction::ServeStatic => {
+            crate::cli::commands::serve_static::handle_serve_static_command(args)?;
+            Ok(true)
+        }
     }
 }
 
@@ -1539,7 +1850,7 @@ pub(crate) fn handle_pre_pipeline_action(args: &CliArgs) -> Result<bool, CliErro
 pub(crate) fn resolve_plugins_for_args(args: &CliArgs) -> Vec<Box<dyn Plugin>> {
     if matches!(args.mode, CliMode::Run) {
         if let Some(prog) = args.run_command.first() {
-            return plugins_for_run_command(prog, &args.run_command[1..]);
+            return plugins_for_run_command(prog, &args.run_command[1..], args.run_plugin.as_deref());
         }
     }
     get_plugins()
@@ -1547,16 +1858,23 @@ pub(crate) fn resolve_plugins_for_args(args: &CliArgs) -> Vec<Box<dyn Plugin>> {
 
 
 pub(crate) fn build_pipeline_config_for_args(args: &CliArgs) -> PipelineConfig {
+    use crate::core::config_manager::ConfigManager;
+
     let mut pipeline_config = PipelineConfig::default();
     pipeline_config.dispatcher_config.fallback_plugin = "git_diff".to_string();
 
+    let active_preset = args.preset.or_else(|| {
+        ConfigManager::get_value("compression.preset")
+            .or_else(|| ConfigManager::get_value("general.preset"))
+            .and_then(|p| p.parse::<Preset>().ok())
+    });
+
     // Apply preset configuration
-    if let Some(preset) = args.preset {
+    if let Some(preset) = active_preset {
         match preset {
             crate::cli::types::Preset::Fast => {
                 // Speed priority: disable heavy features, reduce thresholds
                 pipeline_config.reorder_config.enabled = false;
-                pipeline_config.dispatcher_config.enable_semantic_fallback = false;
                 pipeline_config.dictionary_threshold = 50; // Lower threshold for small files
                 pipeline_config.dedup_config.pattern_threshold = 5; // Less aggressive pattern dedup
             }
@@ -1567,13 +1885,18 @@ pub(crate) fn build_pipeline_config_for_args(args: &CliArgs) -> PipelineConfig {
             crate::cli::types::Preset::Ai => {
                 // Signal priority: enable all semantic features, keep more context
                 pipeline_config.reorder_config.enabled = true;
-                pipeline_config.dispatcher_config.enable_semantic_fallback = true;
                 pipeline_config.dictionary_threshold = 0; // Always use dictionary for max context
                 pipeline_config.dedup_config.pattern_threshold = 2; // More aggressive dedup
             }
         }
     } else if args.reorder {
         pipeline_config.reorder_config.enabled = true;
+    }
+
+    if args.preset.is_none() {
+        if let Some(reorder) = ConfigManager::get_bool("compression.reorder") {
+            pipeline_config.reorder_config.enabled = reorder;
+        }
     }
 
     // Run 模式以可读性为先：保留空行分隔，避免帮助文本段落粘连。
@@ -1642,6 +1965,12 @@ pub fn run_cli() -> Result<(), CliError> {
             }
             CliMode::RepairFile => {
                 unreachable!("repair-file mode should return before pipeline execution")
+            }
+            CliMode::Config => {
+                unreachable!("config mode should return before pipeline execution")
+            }
+            CliMode::ServeStatic => {
+                unreachable!("serve-static mode should return before pipeline execution")
             }
         }
         Ok(())

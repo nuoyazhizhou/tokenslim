@@ -1,7 +1,7 @@
 # TokenSlim 使用手册
 
 > 面向第一次使用 TokenSlim 的开发者。  
-> 最后更新: 2026-06-21  
+> 最后更新: 2026-06-26  
 > 配套：[5 分钟 Quickstart](./QUICKSTART.md) · [SDK 使用文档](./SDK_USAGE.md)
 
 ---
@@ -44,6 +44,9 @@ tokenslim run cmake --build build
 
 ```bash
 TOKENSLIM_PORT=10086 tokenslim-server
+
+# Docker 方式
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
 ```
 
 ### ③ 压缩文件到 JSON
@@ -149,6 +152,27 @@ tokenslim --preset ai --format text -- <cmd> # 输出格式 text / json
 ```bash
 TOKENSLIM_PORT=10086 tokenslim-server                 # 起 HTTP server
 TOKENSLIM_HOST=0.0.0.0 TOKENSLIM_PORT=10086 tokenslim-server  # 监听所有网卡
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim   # Docker 方式
+```
+
+### 安全防护
+
+```bash
+TOKENSLIM_MAX_BODY=50 tokenslim-server                 # 最大请求体 50MB
+TOKENSLIM_RATE_LIMIT=100 tokenslim-server               # 每 IP 每分钟 100 次
+TOKENSLIM_AUTH_MODE=jwt TOKENSLIM_JWT_SECRET=xxx tokenslim-server  # JWT 鉴权
+```
+
+### 插件配置管理
+
+```bash
+tokenslim config plugin status                       # 查看所有插件状态
+tokenslim config plugin disable gcc_log_plugin       # 禁用某个插件
+tokenslim config plugin enable gcc_log_plugin        # 启用某个插件
+tokenslim config plugin list-params gcc_log_plugin   # 查看可配参数
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin get gcc_log_plugin convert_timestamps
+tokenslim config plugin reset                        # 重置所有插件配置
 ```
 
 ### 文件级
@@ -223,6 +247,7 @@ tokenslim gain --json                       # JSON 输出
 | -------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------- |
 | **CLI 主程序** | 走完整压缩管线，顺便重排 | `tokenslim -i build.log -o out.json --reorder`                                                                       |
 | **Server**     | 服务端压缩，CI 友好      | `POST /compress`，JSON 字段 `"reorder": true`                                                                        |
+| **WebSocket** | 双向流式压缩          | `WS /ws/compress`，Binary 帧发数据，Text 帧发控制指令                                                         |
 | **WebUI**      | 交互式勾选               | 复选框 "启用重排"                                                                                                    |
 | **独立二进制** | 纯 log→log diff，不压缩  | `cargo build --release --bin log_reorder && ./target/release/log_reorder -i in.log -o out.log --deterministic -n -p` |
 

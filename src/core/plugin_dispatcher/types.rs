@@ -80,7 +80,6 @@ pub trait Plugin: Send + Sync + Any {
 pub struct DispatcherConfig {
     pub fallback_plugin: String,
     pub plugin_timeout_ms: u64,
-    pub enable_semantic_fallback: bool,
 }
 
 impl Default for DispatcherConfig {
@@ -88,7 +87,6 @@ impl Default for DispatcherConfig {
         Self {
             plugin_timeout_ms: 1000,
             fallback_plugin: String::new(),
-            enable_semantic_fallback: false,
         }
     }
 }
@@ -128,7 +126,4 @@ pub struct PluginDispatcher {
     pub(crate) dict_manager: Arc<DictionaryManager>,
     pub(crate) keyword_scanner: Arc<aho_corasick::AhoCorasick>,
     pub(crate) plugin_failures: Mutex<HashMap<String, u32>>,
-    #[cfg(feature = "experimental")]
-    #[allow(dead_code)]
-    pub(crate) semantic_classifier: Option<Arc<crate::core::embedding_engine::SemanticClassifier>>,
 }

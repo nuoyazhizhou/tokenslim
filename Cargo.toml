@@ -14,6 +14,7 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 serde_yaml = "0.9"
 toml = "1.0.6"
+toml_edit = "0.22"
 libloading = "0.9.0"
 log = "0.4"
 rayon = "1.8"
@@ -40,6 +41,7 @@ serde.workspace = true
 serde_json.workspace = true
 serde_yaml.workspace = true
 toml.workspace = true
+toml_edit = { version = "0.22", features = ["serde"] }
 libloading.workspace = true
 log.workspace = true
 rayon.workspace = true
@@ -61,14 +63,11 @@ sys-locale = "0.3"
 chardetng = "0.1"
 encoding_rs = "0.8"
 lazy_static = "1.4"
-candle-core = { version = "0.9.2", optional = true }
-candle-nn = { version = "0.9.2", optional = true }
-tokenizers = { version = "0.22.2", optional = true }
-hf-hub = { version = "0.5.0", optional = true }
-candle-transformers = { version = "0.9.2", optional = true }
+
 dashmap = "6.1.0"
 bumpalo = { version = "3.16", features = ["collections"] }
 rusqlite = { version = "0.34", features = ["bundled"] }
+jsonwebtoken = "9"
 # v0.4.0 PoC: portable-pty 用于跨平台 tty 转发。当前用于 Windows Git Bash 透明透传。
 portable-pty = "0.8"
 
@@ -76,15 +75,9 @@ portable-pty = "0.8"
 criterion = "0.8.2"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 serde_json = "1.0"
+tower = { version = "0.5", features = ["util"] }
 
-[features]
-experimental = ["ml"]
-ml = ["candle-core", "candle-nn", "tokenizers", "hf-hub", "candle-transformers"]
-candle-core = ["dep:candle-core"]
-candle-nn = ["dep:candle-nn"]
-tokenizers = ["dep:tokenizers"]
-hf-hub = ["dep:hf-hub"]
-candle-transformers = ["dep:candle-transformers"]
+
 
 # 独立工具类 bin，不加测试（避免 rlib 依赖格式冲突）
 [[bin]]
@@ -93,4 +86,8 @@ test = false
 
 [[bin]]
 name = "pipeline_bench"
+test = false
+
+[[bin]]
+name = "log_miner"
 test = false

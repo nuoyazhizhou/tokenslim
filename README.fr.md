@@ -286,6 +286,65 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 # TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 
+#### Docker
+
+```bash
+# Image officielle (multi-architecture : linux/amd64 + linux/arm64)
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# Avec authentification par clé API
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# Avec authentification JWT
+docker run -d -p 10086:10086 \
+  -e TOKENSLIM_AUTH_MODE=jwt \
+  -e TOKENSLIM_JWT_SECRET=my-secret \
+  -e TOKENSLIM_API_KEY=my-key \
+  ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
+#### Authentification JWT
+
+TokenSlim Server prend en charge trois modes d'authentification :
+
+| Mode | Description |
+|---|---|
+| `static` (par défaut) | Clé API traditionnelle via `Authorization: Bearer <key>` |
+| `jwt` | Échanger la clé API contre un jeton JWT via `POST /auth/token`, puis utiliser le JWT |
+| `none` | Pas d'authentification (développement uniquement) |
+
+```bash
+# Obtenir un jeton JWT
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# Rafraîchir avant expiration
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+#### WebSocket — Canal bidirectionnel de compression
+
+Le point de terminaison `/ws/compress` fournit un canal bidirectionnel persistant :
+
+- **Trames Binary** → données brutes → compressées → réponse en trame Binary
+- **Trames Text** → commandes de contrôle JSON :
+  - `{"action":"flush"}` — compresser immédiatement et vider le tampon
+  - `{"action":"reset"}` — vider le tampon et réinitialiser la session
+  - `{"plugin":"<name>"}` — changer le plugin de compression
+
+#### Gestion de la configuration des plugins
+
+```bash
+tokenslim config plugin status                       # Voir l'état de tous les plugins
+tokenslim config plugin disable gcc_log_plugin       # Désactiver un plugin
+tokenslim config plugin enable gcc_log_plugin        # Activer un plugin
+tokenslim config plugin list-params gcc_log_plugin   # Voir les paramètres configurables
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # Réinitialiser toute la configuration des plugins
+```
+
 ### SDK
 
 ```python

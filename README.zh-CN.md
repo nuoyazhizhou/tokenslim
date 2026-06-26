@@ -263,6 +263,23 @@ tokenslim-server
 # 监听 127.0.0.1:<port>，见 /health, /compress, /decompress
 ```
 
+#### Docker
+
+```bash
+# 官方镜像（多架构：linux/amd64 + linux/arm64）
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# 带 API Key 鉴权
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# JWT 鉴权模式
+docker run -d -p 10086:10086 \
+  -e TOKENSLIM_AUTH_MODE=jwt \
+  -e TOKENSLIM_JWT_SECRET=my-secret \
+  -e TOKENSLIM_API_KEY=my-key \
+  ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
 #### Web UI
 
 Sidecar 内置一个单页 Web UI，方便手动压缩日志、实时 tail。
@@ -299,6 +316,13 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 | `TOKENSLIM_WEBUI_DIR`   | `webui`     | 静态 SPA 目录；目录缺失时禁用 UI。                 |
 | `TOKENSLIM_API_KEY`     | _未设置_    | 设置后要求 `Authorization: Bearer <key>`。         |
 | `TOKENSLIM_CONFIG_PATH` | _未设置_    | 热加载配置文件路径。                               |
+| `TOKENSLIM_AUTH_MODE`   | `static`    | 鉴权模式：`static`（API Key）/ `jwt` / `none`。   |
+| `TOKENSLIM_JWT_SECRET`  | _未设置_    | JWT 签名密钥（`auth_mode=jwt` 时必填）。          |
+| `TOKENSLIM_JWT_EXPIRY`  | `3600`      | JWT 令牌有效期（秒）。                            |
+| `TOKENSLIM_MAX_BODY`    | `50`        | 最大请求体大小（MB），超出返回 413。               |
+| `TOKENSLIM_RATE_LIMIT`  | `100`       | 每 IP 每分钟最大请求数，超出返回 429。             |
+| `TOKENSLIM_WS_MAX_CONNECTIONS` | `100` | WebSocket 最大并发连接数。                       |
+| `TOKENSLIM_WS_TIMEOUT`  | `3600`      | WebSocket 单连接最大存活时间（秒）。               |
 | `RUST_LOG`              | `info`      | 标准 env-log 过滤（`debug`、`info`、`warn` ...）。 |
 
 ##### 功能要点
@@ -316,6 +340,48 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 
 E2E 测试（`tests/server_webui_e2e.rs`）覆盖了静态资源加载和
 `/compress` 往返，可用 `cargo test --test server_webui_e2e` 跑一遍。
+
+#### JWT 鉴权
+
+服务端支持三种鉴权模式：
+
+| 模式 | 说明 |
+|---|---|
+| `static`（默认） | 传统 API Key，通过 `Authorization: Bearer <key>` 传递 |
+| `jwt` | 用 API Key 换取 JWT 令牌（`POST /auth/token`），后续请求携带 JWT |
+| `none` | 无鉴权（仅限开发环境） |
+
+```bash
+# 用 API Key 换取 JWT
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# 过期前刷新
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+#### WebSocket 双向压缩通道
+
+`/ws/compress` 端点提供持久化双向通道：
+
+- **Binary 帧** → 原始数据 → 压缩后 Binary 帧返回
+- **Text 帧** → JSON 控制指令：
+  - `{"action":"flush"}` — 立即压缩并清空 buffer
+  - `{"action":"reset"}` — 清空 buffer 重置会话
+  - `{"plugin":"<name>"}` — 切换压缩插件
+
+#### 插件配置管理
+
+```bash
+tokenslim config plugin status                       # 查看所有插件状态
+tokenslim config plugin disable gcc_log_plugin       # 禁用某个插件
+tokenslim config plugin enable gcc_log_plugin        # 启用某个插件
+tokenslim config plugin list-params gcc_log_plugin   # 查看可配参数
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # 重置所有插件配置
+```
 
 ### SDK
 

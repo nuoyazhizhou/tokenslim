@@ -309,6 +309,65 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 # TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 
+#### Docker
+
+```bash
+# 공식 이미지 (멀티 아키텍처: linux/amd64 + linux/arm64)
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# API Key 인증 포함
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# JWT 인증 모드
+docker run -d -p 10086:10086 \
+  -e TOKENSLIM_AUTH_MODE=jwt \
+  -e TOKENSLIM_JWT_SECRET=my-secret \
+  -e TOKENSLIM_API_KEY=my-key \
+  ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
+#### JWT 인증
+
+TokenSlim 서버는 세 가지 인증 모드를 지원합니다:
+
+| 모드 | 설명 |
+|---|---|
+| `static` (기본값) | 기존 API Key를 `Authorization: Bearer <key>`로 전달 |
+| `jwt` | API Key로 JWT 토큰을 교환 (`POST /auth/token`), 이후 요청에서 JWT 사용 |
+| `none` | 인증 없음 (개발 환경 전용) |
+
+```bash
+# API Key로 JWT 토큰 획득
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# 만료 전 갱신
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+#### WebSocket 양방향 압축 채널
+
+`/ws/compress` 엔드포인트는 영구적인 양방향 채널을 제공합니다:
+
+- **Binary 프레임** → 원본 데이터 → 압축 후 Binary 프레임으로 반환
+- **Text 프레임** → JSON 제어 명령:
+  - `{"action":"flush"}` — 즉시 압축하고 버퍼 비우기
+  - `{"action":"reset"}` — 버퍼 비우고 세션 초기화
+  - `{"plugin":"<name>"}` — 압축 플러그인 전환
+
+#### 플러그인 설정 관리
+
+```bash
+tokenslim config plugin status                       # 모든 플러그인 상태 확인
+tokenslim config plugin disable gcc_log_plugin       # 플러그인 비활성화
+tokenslim config plugin enable gcc_log_plugin        # 플러그인 활성화
+tokenslim config plugin list-params gcc_log_plugin   # 설정 가능한 매개변수 확인
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # 모든 플러그인 설정 초기화
+```
+
 ### SDK
 
 ```python

@@ -24,12 +24,6 @@ preset = "balanced"
 # 强制 UTF-8 输出 (避免 Windows 下的编码问题)
 force_utf8 = true
 
-[plugins]
-# 启用语义回退 (当正则匹配失败时使用 embedding 路由)
-semantic_fallback = true
-# 启用动态插件链 (允许多个插件连续处理同一文本)
-plugin_chain = true
-
 [token_optimizer]
 # 全局 token 优化开关（字典经济模型）
 enabled = true

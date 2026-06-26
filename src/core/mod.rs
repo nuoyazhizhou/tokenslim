@@ -26,6 +26,7 @@
 
 pub mod compression;
 pub mod compression_context;
+pub mod config_manager;
 pub mod compression_pipeline;
 pub mod content_analyzer;
 pub mod dedup_engine;
@@ -34,8 +35,7 @@ pub mod dictionary_manager;
 pub mod doctor_encoding;
 pub mod doctor_workspace;
 pub mod dynamic_plugin_loader;
-#[cfg(feature = "experimental")]
-pub mod embedding_engine;
+
 pub mod encoding_fallback;
 pub mod error_isolation;
 pub mod filter_discover;
