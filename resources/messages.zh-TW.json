@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "沒有輸入的部分：{}",
     "server_webui_enabled": "Web UI 已啟用: {}",
     "server_webui_disabled": "Web UI 目錄不存在或不可讀: {}",
-    "server_endpoint_plugins": "GET /plugins - 列出所有註冊插件"
+    "server_endpoint_plugins": "GET /plugins - 列出所有註冊插件",
+    "cli_opt_stream": "啟用串流管道模式，即時處理輸入日誌",
+    "cli_opt_flush_interval": "串流最大緩衝延遲時間（毫秒，預設：500）",
+    "cli_opt_merge": "流式結束時將所有分塊合併為單一壓縮結果輸出"
 }

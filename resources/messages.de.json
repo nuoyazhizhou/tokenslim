@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "Abschnitte ohne Eingabe: {}",
     "server_webui_enabled": "Web-UI aktiviert: {}",
     "server_webui_disabled": "Das Web-UI-Verzeichnis existiert nicht oder ist nicht lesbar: {}",
-    "server_endpoint_plugins": "GET /plugins – Alle registrierten Plugins auflisten"
+    "server_endpoint_plugins": "GET /plugins – Alle registrierten Plugins auflisten",
+    "cli_opt_stream": "Aktivieren Sie den Streaming-Pipeline-Modus, um Eingabeprotokolle in Echtzeit zu verarbeiten",
+    "cli_opt_flush_interval": "Maximale Streaming-Pufferverzögerung (ms, Standard: 500)",
+    "cli_opt_merge": "Am Ende des Streamings werden alle Blöcke zu einer einzigen komprimierten Ergebnisausgabe zusammengeführt"
 }

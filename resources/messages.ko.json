@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "Enter가 없는 섹션: {}",
     "server_webui_enabled": "웹 UI 활성화됨: {}",
     "server_webui_disabled": "웹 UI 디렉터리가 존재하지 않거나 읽을 수 없습니다: {}",
-    "server_endpoint_plugins": "GET /plugins - 등록된 모든 플러그인 나열"
+    "server_endpoint_plugins": "GET /plugins - 등록된 모든 플러그인 나열",
+    "cli_opt_stream": "입력 로그를 실시간으로 처리하려면 스트리밍 파이프라인 모드를 활성화하세요.",
+    "cli_opt_flush_interval": "스트리밍 최대 버퍼링 지연(ms, 기본값: 500)",
+    "cli_opt_merge": "스트리밍이 끝나면 모든 청크가 단일 압축 결과 출력으로 병합됩니다."
 }

@@ -94,6 +94,18 @@ pub struct CliRawArgs {
     #[clap(long)]
     pub ai_signal: bool,
 
+    /// 是否开启流式管道模式
+    #[clap(long)]
+    pub stream: bool,
+
+    /// 流式最大缓冲延迟时间（毫秒，默认 500）
+    #[clap(long, default_value_t = 500)]
+    pub flush_interval: u64,
+
+    /// 流式结束时是否合并为单个压缩结果
+    #[clap(long)]
+    pub merge: bool,
+
     /// 验证静态规则插件的 TOML 文件路径
     #[clap(long)]
     pub verify_rule: Option<PathBuf>,
@@ -210,9 +222,41 @@ pub struct CliRawArgs {
     #[clap(long)]
     pub include: Vec<String>,
 
-    /// repair-file: 排除匹配模式的文件（可重复）
+    /// 排除包装执行外部命令时过滤匹配模式的文件（可重复）
     #[clap(long)]
     pub exclude: Vec<String>,
+
+    /// 统一配置子命令的后续透传参数
+    #[clap(long)]
+    pub config_args: Vec<String>,
+
+    /// 静态文件服务：服务的目录路径
+    #[clap(long)]
+    pub serve_static: Option<PathBuf>,
+
+    /// 静态文件服务：绑定的端口
+    #[clap(long)]
+    pub serve_port: Option<u16>,
+
+    /// 静态文件服务：绑定的 IP
+    #[clap(long)]
+    pub serve_bind: Option<String>,
+
+    /// 静态文件服务：是否自动在浏览器中打开页面
+    #[clap(long)]
+    pub serve_open: bool,
+
+    /// 包装执行：强制指定用于压缩输出的插件名称（跳过自动检测）
+    #[clap(long)]
+    pub run_plugin: Option<String>,
+
+    /// 包装执行：在 stderr 中同时输出未经压缩的原始输出
+    #[clap(long)]
+    pub passthrough: bool,
+
+    /// 包装执行：将子进程的原始未经压缩的输出保存到指定文件
+    #[clap(long)]
+    pub tee: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -328,6 +372,17 @@ pub struct CliArgs {
     pub backup: bool,
     pub include: Vec<String>,
     pub exclude: Vec<String>,
+    pub stream: bool,
+    pub flush_interval: u64,
+    pub merge: bool,
+    pub config_args: Vec<String>,
+    pub serve_static: Option<PathBuf>,
+    pub serve_port: Option<u16>,
+    pub serve_bind: Option<String>,
+    pub serve_open: bool,
+    pub run_plugin: Option<String>,
+    pub passthrough: bool,
+    pub tee: Option<PathBuf>,
 }
 
 /// 预设配置
@@ -363,6 +418,8 @@ pub enum CliMode {
     ExplainPlugin,
     Plugins,
     RepairFile,
+    Config,
+    ServeStatic,
 }
 
 /// 输入源

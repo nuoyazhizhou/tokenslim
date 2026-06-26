@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "Secciones sin ingresar: {}",
     "server_webui_enabled": "Interfaz de usuario web habilitada: {}",
     "server_webui_disabled": "El directorio de la interfaz de usuario web no existe o no es legible: {}",
-    "server_endpoint_plugins": "GET /plugins: enumera todos los complementos registrados"
+    "server_endpoint_plugins": "GET /plugins: enumera todos los complementos registrados",
+    "cli_opt_stream": "Habilite el modo de canalización de transmisión para procesar registros de entrada en tiempo real",
+    "cli_opt_flush_interval": "Retraso máximo de almacenamiento en búfer de transmisión (ms, predeterminado: 500)",
+    "cli_opt_merge": "Al final de la transmisión, todos los fragmentos se fusionan en un único resultado comprimido"
 }

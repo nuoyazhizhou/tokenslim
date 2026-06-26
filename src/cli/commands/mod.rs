@@ -8,3 +8,4 @@ pub mod doctor;
 pub mod export;
 pub mod repair;
 pub mod run;
+pub mod serve_static;

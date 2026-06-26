@@ -306,7 +306,10 @@ mod tests {
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         }
     }
 
@@ -719,7 +722,7 @@ keep = ["^ERR:"]
 
     #[test]
     fn build_run_mode_args_applies_run_defaults() {
-        let args = build_run_mode_args(vec!["git".to_string(), "status".to_string()], true);
+        let args = build_run_mode_args(vec!["git".to_string(), "status".to_string()], true, false, false, 500, None, false, None);
         assert!(matches!(args.mode, CliMode::Run));
         assert_eq!(
             args.run_command,
@@ -984,7 +987,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let result = CliArgs::from_raw(raw);
@@ -1039,7 +1045,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let parsed = CliArgs::from_raw(raw).expect("ai-signal should be accepted");
@@ -1095,7 +1104,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         let parsed = CliArgs::from_raw(raw).expect("init mode should parse");
         assert!(matches!(parsed.mode, CliMode::Init));
@@ -1149,7 +1161,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let parsed = CliArgs::from_raw(raw).expect("run mode should be inferred");
@@ -1208,7 +1223,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         let parsed = CliArgs::from_raw(raw).expect("repair-file mode should parse");
         assert!(matches!(parsed.mode, CliMode::RepairFile));
@@ -1336,7 +1354,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         let result = CliArgs::from_raw(raw);
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
@@ -1390,7 +1411,10 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.log".to_string()],
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         let result = CliArgs::from_raw(raw);
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
@@ -1494,7 +1518,10 @@ keep = ["^ERR:"]
             backup: true,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         run_repair_file_command(&args).expect("repair-file should succeed");
@@ -1577,7 +1604,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("dry run should succeed");
 
@@ -1649,7 +1679,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("directory repair should succeed");
         let c1 = std::fs::read_to_string(&f1).expect("read f1");
@@ -1720,7 +1753,10 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.log".to_string()],
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("directory repair with include should succeed");
 
@@ -1794,7 +1830,10 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.log".to_string()],
             exclude: vec!["a.log".to_string()],
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("directory repair with exclude should succeed");
 
@@ -1866,7 +1905,10 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.txt".to_string()],
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         run_repair_file_command(&args)
             .expect("single-file repair with non-matching include should succeed");
@@ -1946,7 +1988,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let result = CliArgs::from_raw(raw);
@@ -2001,7 +2046,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
         let result = CliArgs::from_raw(raw);
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
@@ -2123,7 +2171,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let out = explain_run_route("cargo", &["test".to_string()], &args);
@@ -2190,7 +2241,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let cmd_args = vec![
@@ -2254,7 +2308,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let out = explain_plugin_for_command_line("az pipelines runs show", &args);
@@ -2470,7 +2527,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let out = explain_plugin_for_command_line(&command_line, &args);
@@ -2574,7 +2634,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let raw = explain_plugin_for_command_line("az pipelines runs show", &args);
@@ -2654,7 +2717,7 @@ keep = ["^ERR:"]
 
     #[test]
     fn plugins_for_run_command_excludes_vcs_for_cargo_build_commands() {
-        let plugins = plugins_for_run_command("cargo", &["build".to_string()]);
+        let plugins = plugins_for_run_command("cargo", &["build".to_string()], None);
         let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
         assert!(names.contains(&"generic_text"));
         assert!(names.contains(&"gcc_log"));
@@ -2748,7 +2811,7 @@ keep = ["^ERR:"]
                 RunPluginRoute::Build,
                 "{prog} should use the non-VCS build/data route"
             );
-            let plugins = plugins_for_run_command(prog, &args);
+            let plugins = plugins_for_run_command(prog, &args, None);
             let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
             assert!(
                 names.contains(&expected_plugin),
@@ -2766,14 +2829,14 @@ keep = ["^ERR:"]
             RunPluginRoute::Vcs
         );
 
-        let plugins = plugins_for_run_command("az", &["repos".to_string(), "show".to_string()]);
+        let plugins = plugins_for_run_command("az", &["repos".to_string(), "show".to_string()], None);
         let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
         assert!(names.contains(&"vcs"));
     }
 
     #[test]
     fn plugins_for_run_command_excludes_vcs_for_node_commands() {
-        let plugins = plugins_for_run_command("npm", &["-g".to_string()]);
+        let plugins = plugins_for_run_command("npm", &["-g".to_string()], None);
         let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
         assert!(names.contains(&"nodejs"));
         assert!(names.contains(&"generic_text"));
@@ -2784,7 +2847,7 @@ keep = ["^ERR:"]
 
     #[test]
     fn plugins_for_run_command_uses_generic_chain_for_unknown_commands() {
-        let plugins = plugins_for_run_command("foobar", &["hello".to_string()]);
+        let plugins = plugins_for_run_command("foobar", &["hello".to_string()], None);
         let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
         assert!(names.contains(&"generic_text"));
         assert!(names.contains(&"ansi_cleaner"));
@@ -3000,7 +3063,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let argv = vec!["tokenslim".to_string(), "--".to_string(), "git".to_string()];
@@ -3058,7 +3124,10 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false,
+            json: false, stream: false, flush_interval: 500, merge: false,
+            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
+            run_plugin: None, passthrough: false, tee: None,
+            config_args: Vec::new(),
         };
 
         let argv = vec![

@@ -373,5 +373,8 @@
     "doctor_env_fs": "文件系统: {}",
     "doctor_rule_hit_rate": "规则命中率: {}/{} 模式有效 ({}%)",
     "doctor_rule_agg_sections": "  包含聚合的规则块: {}",
-    "doctor_rule_no_enter": "  未定义 enter 模式的规则块: {}"
+    "doctor_rule_no_enter": "  未定义 enter 模式的规则块: {}",
+    "cli_opt_stream": "启用流式管道模式，实时处理输入日志",
+    "cli_opt_flush_interval": "流式最大缓冲延迟时间（毫秒，默认：500）",
+    "cli_opt_merge": "流式结束时将所有分块合并为单个压缩结果输出"
 }
