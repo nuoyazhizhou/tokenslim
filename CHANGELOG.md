@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 > **Legend**: `+` Added · `~` Changed · `-` Removed · `!` Fixed · `^` Security
 >
-> **Range covered**: v0.2.6 → v0.3.7 → v0.4.0 → HEAD. 0.2.6 / 0.3.0 are scaffold releases (no user-facing changes).
+> **Range covered**: v0.2.6 → v0.3.7 → v0.4.0 → v0.4.1 → HEAD. 0.2.6 / 0.3.0 are scaffold releases (no user-facing changes).
+
+---
+
+## [0.5.0] — 2026-06-26 (Docker 官方镜像 · JWT 鉴权 · WebSocket 双向通道 · 插件配置管理)
+
+### Added
+- **Docker 多架构官方镜像** — 新增 `Dockerfile` 多阶段构建 + `.github/workflows/docker-publish.yml` GHCR 自动发布流程。支持 `linux/amd64` + `linux/arm64` 双架构，提供 3 种启动方式（基础/API Key 鉴权/JWT 鉴权）。
+- **JWT 三模式鉴权** — Server 新增 `TOKENSLIM_AUTH_MODE` 环境变量，支持 `static`（默认，传统 API Key）/ `jwt`（令牌交换）/ `none`（开发模式）三种鉴权模式。JWT 模式通过 `POST /auth/token` 用 API Key 换取令牌，`POST /auth/refresh` 刷新令牌。
+- **WebSocket 双向压缩通道** — 新增 `/ws/compress` 端点，提供持久化双向通道。Binary 帧传输原始压缩数据，Text 帧发送 JSON 控制指令（`flush`/`reset`/`plugin` 切换）。支持 `TOKENSLIM_WS_MAX_CONNECTIONS` 和 `TOKENSLIM_WS_TIMEOUT` 环境变量。
+- **插件配置管理 CLI** — 新增 `tokenslim config plugin` 子命令组：`status`（查看所有插件状态）、`enable`/`disable`（启用/禁用插件）、`list-params`（查看可配参数）、`set`（设置参数）、`reset`（重置所有配置）。
+- **Server 安全防护** — 新增 `TOKENSLIM_MAX_BODY`（最大请求体大小，默认 50MB，返回 413）和 `TOKENSLIM_RATE_LIMIT`（每 IP 每分钟最大请求数，默认 100，返回 429）环境变量。
+- **15 个新测试用例** — 为 JWT 鉴权（10 个）和 WebSocket（5 个）补充专用测试，覆盖正常流程、异常场景、边界条件。Server 测试从 6 个增长到 21 个。
+
+### Changed
+- **TOML 解析引擎切换** — 插件配置管理从 `toml` crate 切换到 `toml_edit::DocumentMut`，修复无法解析含中文注释的 `config/plugins.toml` 问题。
+- **文档全面更新** — 更新 `README.md` 及 7 个语言版本（zh-CN/ja/ko/de/es/fr/ar），新增 Docker、JWT、WebSocket、插件配置管理章节。更新 `docs/guides/QUICKSTART.md`、`SDK_USAGE.md`、`USER_GUIDE.md` 三个指南文档。
+
+### Removed
+- **Embedding 引擎彻底移除** — 删除 `src/core/embedding_engine/` 目录（`methods.rs`、`mod.rs`、`types.rs`），清理所有相关引用和依赖。
+
+### Fixed
+- **插件配置管理运行时 bug** — 修复 `tokenslim config plugin status` 报 "无法读取内置插件列表" 的问题，根因是 `toml` crate 无法解析含中文注释的 TOML 文件。
+- **JWT 过期测试稳定性** — 修复 `test_jwt_expired_token_rejected` 测试因 `jsonwebtoken` crate 默认 60 秒 leeway 导致的不稳定，改用手动构造 `JwtPayload { exp: now - 120 }` 确保超过 leeway。
+- **WebSocket 连接上限测试** — 修复 `test_ws_max_connections_rejects_at_limit` 测试，axum 的 `WebSocketUpgrade` 提取器在 handler 之前执行协议验证，改为逻辑验证而非 HTTP 路由测试。
 
 ---
 
