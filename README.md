@@ -435,14 +435,18 @@ TokenSlim follows a layered pipeline:
 
 See `docs/development/ARCHITECTURE.md` for the full design.
 
-## Quality Gates & Auditing Pipeline
+## 🛡️ AI Agent Governance & Anti-Drift Sandbox
 
-TokenSlim maintains zero semantic loss and high reliability through a strict, 4-step data-driven auditing pipeline. Every parser or rule change must pass these automated quality gates:
+The hardest problem in autonomous AI code generation is **"preventing the Coding Agent from writing code and writing its own self-congratulatory mock tests (garbage in, garbage out)"**, and **"preventing subsequent refactoring from introducing silent target drift (behavior regressions)."**
 
-1. **Sample Quality Gate (`audit_sample_case_quality.py`)**: Validates that raw input cases (e.g., CI logs, stack traces) are realistic, correctly labeled, and have high diagnostic value before testing begins.
-2. **Semantic Fidelity & Metrics Gate (`audit_case_metrics.py`)**: Compares original inputs against their compressed outputs. It enforces strict policies (like Anchor Guard and Anti-Amnesia) to ensure the compression ratio improves without losing any critical error context. Passing cases are cryptographically "frozen".
-3. **Global Health Check (`audit_all_case_metrics.py`)**: Runs concurrently across all 60+ plugins, acting as the final CI gate. It fails the build if any single plugin introduces a compression regression or violates semantic fidelity.
-4. **Capability Matrix Sync (`generate_plugin_capability_index.py`)**: Automatically rebuilds the global plugin routing index based on the frozen cases, ensuring the dynamic router is always perfectly synced with the actual tested capabilities.
+In a complex ecosystem with over **105k+ LOC of core source code, 60+ plugins, and 1000+ physical test cases**, TokenSlim remains robust not by manual debugging, but through an automated, closed-loop **Quality Sandbox** that tames AI code-gen behavior:
+
+1. **Intent Extraction & Code Documentation Injection ([`extract_plugin_design.py`](scripts/extract_plugin_design.py))**: Scans parser source code, leverages LLMs to extract core design contracts (`design_intent`/`keep_signals`), and **automatically injects them back into `mod.rs` as module-level `//!` doc comments**! This forces future AI and human coders to respect the source of truth design boundaries.
+2. **Multi-Language Automatic Translation Sync ([`translate_messages_fields.py`](scripts/translate_messages_fields.py))**: Double-checks translation files for Chinese and English, automatically aligning missing entries via LLM translation to avoid key dropouts.
+3. **Physical Case Quality Audit ([`audit_sample_case_quality.py`](scripts/audit_sample_case_quality.py))**: The Micro-Judge. Validates the realism and alignment of physical raw log cases against the extracted design contract, filtering out fake/synthesized AI cases. It scans sample folders and **automatically outputs code lines to append to `showcase.rs`** if new physical logs are unregistered.
+4. **Compression Fidelity Audit ([`audit_case_metrics.py`](scripts/audit_case_metrics.py))**: The Meso-Judge. Enforces **`showcase.rs` registration**, **`samples/` physical files**, and **`target/` generated reports** alignment. It verifies G1-G4 deterministic gates (ensuring critical errors and command anchors are never lost) and uses LLMs to cross-check compression against the design contract.
+5. **State Freeze & Regression Prevention**: Once audited, the output is locked with a SHA256 hash. If future AI changes break the expected output, the CI/CD pipeline **instantly rejects and blocks the release**, preventing silent drift.
+6. **Global Health Governance ([`audit_all_case_metrics.py`](scripts/audit_all_case_metrics.py))**: The Macro-Judge. Orchestrates parallel audits across all 60+ plugins in CI/CD, compiling a global health matrix (`audit_health.md`) to finalize quality blockings.
 
 ## Contributing
 

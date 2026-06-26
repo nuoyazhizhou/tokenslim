@@ -365,14 +365,18 @@ TokenSlim suit un pipeline en couches :
 
 Voir `docs/development/ARCHITECTURE.md` pour le design complet.
 
-## Portes de Qualité et Pipeline d'Audit
+## 🛡️ Gouvernance des Agents IA & Sandbox Anti-Dérive (AI Agent Governance & Anti-Drift Sandbox)
 
-TokenSlim maintient zéro perte sémantique et une haute fiabilité grâce à un pipeline d'audit strict en 4 étapes basé sur les données. Chaque modification de l'analyseur ou de la règle doit passer ces portes de qualité automatisées :
+Le problème le plus difficile dans la génération autonome de code par IA est **« d'empêcher l'agent de codage de s'auto-féliciter en écrivant à la fois le code et ses propres tests simulés (mock tests) (génération de données biaisées par et pour lui-même) »**, et **« d'empêcher les refactorisations ultérieures d'introduire une dérive d'objectif silencieuse (régressions comportementales). »**
 
-1. **Porte de Qualité des Échantillons (`audit_sample_case_quality.py`)** : Valide que les cas d'entrée bruts (ex. journaux d'intégration continue, traces de pile) sont réalistes, correctement étiquetés et ont une valeur diagnostique élevée avant le début des tests.
-2. **Fidélité Sémantique et Porte de Métriques (`audit_case_metrics.py`)** : Compare les entrées originales avec leurs sorties compressées. Il applique des politiques strictes (comme Anchor Guard et Anti-Amnesia) pour s'assurer que le taux de compression s'améliore sans perdre aucun contexte d'erreur critique. Les cas réussis sont cryptographiquement "gelés".
-3. **Vérification de Santé Globale (`audit_all_case_metrics.py`)** : S'exécute simultanément sur les plus de 60 plugins, agissant comme la porte d'intégration continue finale. La compilation échoue si un seul plugin introduit une régression de compression ou viole la fidélité sémantique.
-4. **Synchronisation de la Matrice de Capacités (`generate_plugin_capability_index.py`)** : Reconstruit automatiquement l'index global de routage des plugins en fonction des cas gelés, garantissant que le routeur dynamique est toujours parfaitement synchronisé avec les capacités réelles testées.
+Dans un écosystème complexe comprenant plus de **105k+ lignes de code (LOC) source de cœur, 60+ plug-ins et 1000+ cas de test physiques**, TokenSlim reste robuste non pas grâce à un débogage manuel, mais via une **Sandbox de Qualité** automatisée en boucle fermée qui dompte le comportement de génération de code de l'IA :
+
+1. **Extraction d'intention & Injection de documentation de code ([`extract_plugin_design.py`](scripts/extract_plugin_design.py))** : Scanne le code source de l'analyseur (parser), s'appuie sur des LLM pour extraire les contrats de conception fondamentaux (`design_intent`/`keep_signals`), et **les réinjecte automatiquement dans `mod.rs` sous forme de commentaires de documentation `//!` au niveau du module** ! Cela oblige les futurs développeurs humains et IA à respecter ces limites de conception comme unique source de vérité.
+2. **Synchronisation automatique de la traduction multilingue ([`translate_messages_fields.py`](scripts/translate_messages_fields.py))** : Vérifie de manière croisée les fichiers de traduction en chinois et en anglais, en alignant automatiquement les entrées manquantes via la traduction LLM pour éviter les oublis de clés.
+3. **Audit de qualité des cas physiques ([`audit_sample_case_quality.py`](scripts/audit_sample_case_quality.py))** : Le Micro-Juge (Micro-Judge). Valide le réalisme et l'alignement des cas de logs physiques bruts par rapport au contrat de conception extrait, éliminant les cas factices ou synthétisés par l'IA. Il scanne les dossiers d'échantillons et **génère automatiquement des lignes de code à ajouter à `showcase.rs`** si de nouveaux logs physiques ne sont pas enregistrés.
+4. **Audit de fidélité de compression ([`audit_case_metrics.py`](scripts/audit_case_metrics.py))** : Le Meso-Juge (Meso-Judge). Impose l'alignement strict entre la **déclaration dans `showcase.rs`**, les **fichiers physiques de `samples/`** et les **rapports générés dans `target/`**. Il vérifie les barrières déterministes G1-G4 (garantissant que les erreurs critiques et les ancres de commande ne soient jamais perdues) et utilise des LLM pour contre-vérifier la fidélité de la compression par rapport au contrat de conception.
+5. **Gel de l'état & Prévention des régressions (State Freeze)** : Une fois audité, le résultat est verrouillé par un hash SHA256. Si de futures modifications de l'IA altèrent la sortie attendue, le pipeline CI/CD **rejette instantanément et bloque le déploiement**, empêchant toute dérive comportementale inconsciente.
+6. **Gouvernance globale de la santé ([`audit_all_case_metrics.py`](scripts/audit_all_case_metrics.py))** : Le Macro-Juge (Macro-Judge). Orchestre des audits parallèles sur l'ensemble des 60+ plug-ins dans la CI/CD, compilant une matrice de santé globale (`audit_health.md`) pour assurer le verrouillage final de la qualité.
 
 ## Contribuer
 
