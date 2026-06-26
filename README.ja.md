@@ -309,6 +309,65 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 # TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 
+#### Docker
+
+```bash
+# 公式イメージ（マルチアーキテクチャ: linux/amd64 + linux/arm64）
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# API Key 認証付き
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# JWT 認証モード
+docker run -d -p 10086:10086 \
+  -e TOKENSLIM_AUTH_MODE=jwt \
+  -e TOKENSLIM_JWT_SECRET=my-secret \
+  -e TOKENSLIM_API_KEY=my-key \
+  ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
+#### JWT 認証
+
+TokenSlim サーバーは3つの認証モードをサポートします：
+
+| モード | 説明 |
+|---|---|
+| `static`（デフォルト） | 従来の API Key を `Authorization: Bearer <key>` で渡す |
+| `jwt` | API Key で JWT トークンを取得（`POST /auth/token`）、以降のリクエストで JWT を使用 |
+| `none` | 認証なし（開発環境専用） |
+
+```bash
+# API Key で JWT トークンを取得
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# 有効期限前にリフレッシュ
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+#### WebSocket 双方向圧縮チャネル
+
+`/ws/compress` エンドポイントは永続的な双方向チャネルを提供します：
+
+- **Binary フレーム** → 生データ → 圧縮後 Binary フレームで返却
+- **Text フレーム** → JSON 制御コマンド：
+  - `{"action":"flush"}` — 即座に圧縮しバッファをクリア
+  - `{"action":"reset"}` — バッファをクリアしセッションをリセット
+  - `{"plugin":"<name>"}` — 圧縮プラグインを切り替え
+
+#### プラグイン設定管理
+
+```bash
+tokenslim config plugin status                       # すべてのプラグイン状態を表示
+tokenslim config plugin disable gcc_log_plugin       # プラグインを無効化
+tokenslim config plugin enable gcc_log_plugin        # プラグインを有効化
+tokenslim config plugin list-params gcc_log_plugin   # 設定可能なパラメータを表示
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # すべてのプラグイン設定をリセット
+```
+
 ### SDK
 
 ```python

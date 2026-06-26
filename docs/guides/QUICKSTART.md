@@ -93,7 +93,56 @@ Decompress: POST /decompress
 
 ```bash
 curl http://127.0.0.1:10086/health
-# {"status":"UP","version":"0.1.0","plugin_count":55}
+# {"status":"UP","version":"0.5.0","plugin_count":55}
+```
+
+### Docker 方式（一行起服务）
+
+```bash
+# 官方镜像
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# 带 API Key 鉴权
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
+### 安全防护 & JWT 鉴权（可选）
+
+```bash
+# 请求体大小限制 + 频率限制
+TOKENSLIM_MAX_BODY=50 TOKENSLIM_RATE_LIMIT=100 tokenslim-server
+
+# JWT 模式（用 API Key 换 JWT 令牌）
+TOKENSLIM_AUTH_MODE=jwt TOKENSLIM_JWT_SECRET=my-secret TOKENSLIM_API_KEY=my-key tokenslim-server
+
+# 用 API Key 换取 JWT
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer my-key"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# 后续请求用 JWT
+curl -X POST http://127.0.0.1:10086/compress \
+  -H "Authorization: Bearer eyJ..." \
+  -H "Content-Type: application/json" \
+  -d '{"text":"..."}'
+```
+
+### WebSocket 双向压缩通道
+
+```bash
+# 客户端连接 ws://127.0.0.1:10086/ws/compress
+# Binary 帧 → 原始数据 → 压缩后 Binary 帧返回
+# Text 帧 → JSON 控制指令：{"action":"flush"} / {"action":"reset"}
+```
+
+### 插件配置管理
+
+```bash
+tokenslim config plugin status                       # 查看所有插件状态
+tokenslim config plugin disable gcc_log_plugin       # 禁用某个插件
+tokenslim config plugin list-params gcc_log_plugin   # 查看可配参数
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # 重置所有插件配置
 ```
 
 ---
@@ -170,12 +219,15 @@ const back = await slim.decompress(r.compressed, r.dictionary ?? {});
 |---|---|
 | 包装任何命令并压缩输出 | `tokenslim run <cmd>` |
 | 起 HTTP 服务 | `TOKENSLIM_PORT=10086 tokenslim-server` |
+| Docker 起服务 | `docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim` |
 | 健康检查 | `curl localhost:10086/health` |
 | 看所有插件 | `tokenslim plugins` |
+| 插件启停管理 | `tokenslim config plugin status / enable / disable` |
 | 看某个插件怎么压 | `tokenslim explain-plugin vcs_git_plugin` |
 | 跑自带的测试样本 | `tokenslim run pytest tests/` |
 | 看压缩为什么这样 | `tokenslim run --explain-route -- git status` |
 | 并行构建日志做 diff（开启重排） | `tokenslim -i build.log -o out.json --reorder` |
+| 用 API Key 换 JWT | `curl -X POST localhost:10086/auth/token -H "Authorization: Bearer <key>"` |
 
 > **提示**：拿到 `make -jN` / `ninja` / Bazel / MSBuild 这类并行构建的交错日志时，
 > 加上 `--reorder` 即可获得**确定性按目标分组**的输出，两次构建的压缩结果字节级一致，

@@ -276,6 +276,23 @@ tokenslim-server
 # Listens on 127.0.0.1:<port>, see /health, /compress, /decompress
 ```
 
+#### Docker
+
+```bash
+# Official image (multi-arch: linux/amd64 + linux/arm64)
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# With API Key authentication
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# With JWT authentication
+docker run -d -p 10086:10086 \
+  -e TOKENSLIM_AUTH_MODE=jwt \
+  -e TOKENSLIM_JWT_SECRET=my-secret \
+  -e TOKENSLIM_API_KEY=my-key \
+  ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
 #### Web UI
 
 The sidecar ships a built-in single-page UI for interactive compression
@@ -312,6 +329,13 @@ are exposed under the JSON API — the UI is just a thin client on top.
 | `TOKENSLIM_WEBUI_DIR`   | `webui`     | Directory of static SPA files; missing dir = UI disabled. |
 | `TOKENSLIM_API_KEY`     | _unset_     | When set, requires `Authorization: Bearer <key>`.         |
 | `TOKENSLIM_CONFIG_PATH` | _unset_     | Hot-reload config file path.                              |
+| `TOKENSLIM_AUTH_MODE`   | `static`    | Auth mode: `static` (API Key) / `jwt` / `none`.           |
+| `TOKENSLIM_JWT_SECRET`  | _unset_     | JWT signing key (required when `auth_mode=jwt`).          |
+| `TOKENSLIM_JWT_EXPIRY`  | `3600`      | JWT token lifetime in seconds.                            |
+| `TOKENSLIM_MAX_BODY`    | `50`        | Max request body size in MB (returns 413).                |
+| `TOKENSLIM_RATE_LIMIT`  | `100`       | Max requests per IP per minute (returns 429).             |
+| `TOKENSLIM_WS_MAX_CONNECTIONS` | `100` | Max concurrent WebSocket connections.                  |
+| `TOKENSLIM_WS_TIMEOUT`  | `3600`      | Max WebSocket connection lifetime in seconds.             |
 | `RUST_LOG`              | `info`      | Standard env-log filter (`debug`, `info`, `warn`, ...).   |
 
 ##### Features
@@ -331,6 +355,48 @@ are exposed under the JSON API — the UI is just a thin client on top.
 A E2E test (`tests/server_webui_e2e.rs`) covers the static asset
 loading and the `/compress` round-trip; run it with
 `cargo test --test server_webui_e2e`.
+
+#### JWT Authentication
+
+TokenSlim Server supports three authentication modes:
+
+| Mode | Description |
+|---|---|
+| `static` (default) | Traditional API Key via `Authorization: Bearer <key>` |
+| `jwt` | Exchange API Key for JWT via `POST /auth/token`, then use JWT for subsequent requests |
+| `none` | No authentication (development only) |
+
+```bash
+# Get a JWT token
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# Refresh before expiry
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+#### WebSocket Bidirectional Compression
+
+The `/ws/compress` endpoint provides a persistent bidirectional channel:
+
+- **Binary frames** → raw data → compressed → Binary frame response
+- **Text frames** → JSON control commands:
+  - `{"action":"flush"}` — immediately compress and clear buffer
+  - `{"action":"reset"}` — clear buffer and reset session
+  - `{"plugin":"<name>"}` — switch compression plugin
+
+#### Plugin Configuration Management
+
+```bash
+tokenslim config plugin status                       # View all plugin states
+tokenslim config plugin disable gcc_log_plugin       # Disable a plugin
+tokenslim config plugin enable gcc_log_plugin        # Enable a plugin
+tokenslim config plugin list-params gcc_log_plugin   # List configurable params
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # Reset all plugin config
+```
 
 ### SDK
 

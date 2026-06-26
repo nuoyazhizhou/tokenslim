@@ -159,8 +159,6 @@ preset = "balanced"
 force_utf8 = true
 
 [plugins]
-# 启用语义回退 (当正则匹配失败时使用 embedding 路由)
-semantic_fallback = true
 # 启用动态插件链 (允许多个插件连续处理同一文本)
 plugin_chain = true
 

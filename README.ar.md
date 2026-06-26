@@ -288,6 +288,65 @@ TOKENSLIM_PORT=10086 TOKENSLIM_HOST=127.0.0.1 tokenslim-server
 # TOKENSLIM_API_KEY=changeme tokenslim-server
 ```
 
+#### Docker
+
+```bash
+# الصورة الرسمية (متعدد البنيات: linux/amd64 + linux/arm64)
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# مع مصادقة مفتاح API
+docker run -d -p 10086:10086 -e TOKENSLIM_API_KEY=my-secret ghcr.io/nuoyazhizhou/tokenslim:latest
+
+# مع مصادقة JWT
+docker run -d -p 10086:10086 \
+  -e TOKENSLIM_AUTH_MODE=jwt \
+  -e TOKENSLIM_JWT_SECRET=my-secret \
+  -e TOKENSLIM_API_KEY=my-key \
+  ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
+#### مصادقة JWT
+
+يدعم TokenSlim Server ثلاثة أوضاع مصادقة:
+
+| الوضع | الوصف |
+|---|---|
+| `static` (الافتراضي) | مفتاح API تقليدي عبر `Authorization: Bearer <key>` |
+| `jwt` | استبدال مفتاح API برمز JWT عبر `POST /auth/token`، ثم استخدام JWT |
+| `none` | بدون مصادقة (للتطوير فقط) |
+
+```bash
+# الحصول على رمز JWT
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+# {"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+
+# تجديد قبل الانتهاء
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+#### WebSocket — قناة ضغط ثنائية الاتجاه
+
+توفر نقطة النهاية `/ws/compress` قناة ثنائية الاتجاه مستمرة:
+
+- **إطارات Binary** → بيانات خام → مضغوطة → استجابة بإطار Binary
+- **إطارات Text** → أوامر تحكم JSON:
+  - `{"action":"flush"}` — ضغط فوري وتفريغ المخزن المؤقت
+  - `{"action":"reset"}` — تفريغ المخزن المؤقت وإعادة تعيين الجلسة
+  - `{"plugin":"<name>"}` — تبديل إضافة الضغط
+
+#### إدارة تكوين الإضافات
+
+```bash
+tokenslim config plugin status                       # عرض حالة جميع الإضافات
+tokenslim config plugin disable gcc_log_plugin       # تعطيل إضافة
+tokenslim config plugin enable gcc_log_plugin        # تفعيل إضافة
+tokenslim config plugin list-params gcc_log_plugin   # عرض المعلمات القابلة للتكوين
+tokenslim config plugin set gcc_log_plugin convert_timestamps false
+tokenslim config plugin reset                        # إعادة تعيين تكوين جميع الإضافات
+```
+
 ### SDK
 
 ```python

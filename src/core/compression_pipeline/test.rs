@@ -75,8 +75,6 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
-            #[cfg(feature = "experimental")]
-            enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
             confidence_threshold: 0.5,
@@ -88,7 +86,6 @@ mod tests {
         let dispatcher_config = DispatcherConfig {
             fallback_plugin: "test".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dedup_config = DedupConfig {
@@ -133,8 +130,6 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
-            #[cfg(feature = "experimental")]
-            enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
             confidence_threshold: 0.5,
@@ -146,7 +141,6 @@ mod tests {
         let dispatcher_config = DispatcherConfig {
             fallback_plugin: "test".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dedup_config = DedupConfig {
@@ -199,8 +193,6 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
-            #[cfg(feature = "experimental")]
-            enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
             confidence_threshold: 0.5,
@@ -212,7 +204,6 @@ mod tests {
         let dispatcher_config = DispatcherConfig {
             fallback_plugin: "test".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dedup_config = DedupConfig {
@@ -269,8 +260,6 @@ mod tests {
 
         let analyzer_config = AnalyzerConfig {
             enable_rules: true,
-            #[cfg(feature = "experimental")]
-            enable_embedding: false,
             rules: vec![],
             fallback_type: crate::core::text_slicer::SliceType::Unknown,
             confidence_threshold: 0.5,
@@ -282,7 +271,6 @@ mod tests {
         let dispatcher_config = DispatcherConfig {
             fallback_plugin: "test".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dedup_config = DedupConfig {

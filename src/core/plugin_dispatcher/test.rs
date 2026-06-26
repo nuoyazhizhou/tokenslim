@@ -126,7 +126,6 @@ mod tests {
         let config = DispatcherConfig {
             fallback_plugin: "test1".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dict_manager = Arc::new(DictionaryManager::new());
@@ -165,7 +164,6 @@ mod tests {
         let config = DispatcherConfig {
             fallback_plugin: "test1".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dict_manager = Arc::new(DictionaryManager::new());
@@ -210,7 +208,6 @@ mod tests {
         let config = DispatcherConfig {
             fallback_plugin: "test1".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dict_manager = Arc::new(DictionaryManager::new());
@@ -284,7 +281,6 @@ mod tests {
         let config = DispatcherConfig {
             fallback_plugin: "context_aware".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dict_manager = Arc::new(DictionaryManager::new());
@@ -365,7 +361,6 @@ mod tests {
         let config = DispatcherConfig {
             fallback_plugin: "test1".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dict_manager = Arc::new(DictionaryManager::new());
@@ -503,7 +498,6 @@ mod tests {
         let config = DispatcherConfig {
             fallback_plugin: "fallback".to_string(),
             plugin_timeout_ms: 1000,
-            enable_semantic_fallback: false,
         };
 
         let dict_manager = Arc::new(DictionaryManager::new());

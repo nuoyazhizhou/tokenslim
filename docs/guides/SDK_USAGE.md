@@ -29,7 +29,54 @@ docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim
 
 ```bash
 curl http://127.0.0.1:10086/health
-# {"status":"UP","version":"0.1.0","plugin_count":55}
+# {"status":"UP","version":"0.5.0","plugin_count":55}
+```
+
+### Docker 方式起服务
+
+```bash
+docker run -d -p 10086:10086 ghcr.io/nuoyazhizhou/tokenslim:latest
+```
+
+### JWT 鉴权模式
+
+当服务端启用 JWT 鉴权（`TOKENSLIM_AUTH_MODE=jwt`）时，SDK 调用需要先获取 JWT 令牌：
+
+```bash
+# 1. 用 API Key 换取 JWT
+TOKEN=$(curl -s -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY" | jq -r .token)
+
+# 2. 后续请求携带 JWT
+curl -X POST http://127.0.0.1:10086/compress \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"text":"..."}'
+
+# 3. 刷新 JWT（过期前）
+NEW_TOKEN=$(curl -s -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer $TOKEN" | jq -r .token)
+```
+
+### WebSocket 双向压缩通道
+
+除 REST API 外，服务端还支持 WebSocket 双向流式压缩：
+
+```javascript
+const ws = new WebSocket('ws://127.0.0.1:10086/ws/compress');
+
+// 发送原始数据块（Binary 帧）
+ws.send(new Blob([rawData]));
+
+// 接收压缩结果（Text 帧，JSON 格式）
+ws.onmessage = (e) => {
+  const result = JSON.parse(e.data);
+  // { compressed: true, output: {...}, ratio: 0.35 }
+};
+
+// 控制指令（Text 帧）
+ws.send(JSON.stringify({ action: 'flush' }));  // 立即压缩
+ws.send(JSON.stringify({ action: 'reset' }));   // 清空缓存
 ```
 
 ---
@@ -250,7 +297,53 @@ curl http://127.0.0.1:10086/health
 ```
 
 ```json
-{"status":"UP","version":"0.1.0","plugin_count":55}
+{"status":"UP","version":"0.5.0","plugin_count":55}
+```
+
+### `POST /auth/token`（JWT 模式）
+
+```bash
+curl -X POST http://127.0.0.1:10086/auth/token \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+```json
+{"token":"eyJ...","expires_in":3600,"token_type":"Bearer"}
+```
+
+### `POST /auth/refresh`（刷新 JWT）
+
+```bash
+curl -X POST http://127.0.0.1:10086/auth/refresh \
+  -H "Authorization: Bearer YOUR_CURRENT_JWT"
+```
+
+```json
+{"token":"eyJ...new...","expires_in":3600,"token_type":"Bearer"}
+```
+
+### `WS /ws/compress`（WebSocket 双向压缩）
+
+```
+ws://127.0.0.1:10086/ws/compress
+
+协议：
+  Binary 帧 → 原始数据 → 压缩后 Binary 帧返回
+  Text 帧   → JSON 控制指令：
+    {"action":"flush"}  → 立即压缩并清空 buffer
+    {"action":"reset"}  → 清空 buffer 重置会话
+    {"plugin":"<name>"} → 切换压缩插件
+  服务端 Text 帧 → JSON 状态信息 {"compressed":true,"ratio":0.3,...}
+```
+
+### `GET /plugins`
+
+```bash
+curl http://127.0.0.1:10086/plugins
+```
+
+```json
+{"plugins":["android_gradle_plugin","gcc_log_plugin",...],"count":44}
 ```
 
 ### `POST /compress`
@@ -302,8 +395,10 @@ curl http://127.0.0.1:10086/describe
 |---|---|
 | 看 server 选了哪个插件 | 服务端开 `RUST_LOG=debug` 重启 |
 | 强制走某个插件 | `client.compress(text, { plugin_hint: 'vcs_git_plugin' })` |
-| 看压缩前后的 diff | 服务端开 `RUST_LOG=tokenslim=trace` |
+| 看压缩前的 diff | 服务端开 `RUST_LOG=tokenslim=trace` |
 | 跑自带测试样本 | `tokenslim run pytest samples/pytest_plugin/` |
+| 管理插件启停 | `tokenslim config plugin status / enable / disable` |
+| JWT 鉴权调试 | `TOKENSLIM_AUTH_MODE=jwt RUST_LOG=debug tokenslim-server` |
 
 ---
 
