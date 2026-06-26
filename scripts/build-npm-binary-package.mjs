@@ -55,11 +55,13 @@ const PLATFORM_DISPLAY = {
   "windows-arm64": "Windows ARM64",
 };
 
-// Filenames for the two binaries we ship in every platform package.
+// Filenames for the binaries we ship in every platform package.
 const EXE = process.platform === "win32" ? ".exe" : "";
 const BINARIES = [
   { src: `tokenslim${EXE}`, dst: `tokenslim${EXE}` },
   { src: `tokenslim-server${EXE}`, dst: `tokenslim-server${EXE}` },
+  { src: `log_reorder${EXE}`, dst: `log_reorder${EXE}` },
+  { src: `log_miner${EXE}`, dst: `log_miner${EXE}` },
 ];
 
 function parseArgs(argv) {

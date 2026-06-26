@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "  Sections without enter: {}",
     "server_webui_enabled": "Web UI enabled: {}",
     "server_webui_disabled": "Web UI directory does not exist or is not readable: {}",
-    "server_endpoint_plugins": "GET /plugins - List all registered plugins"
+    "server_endpoint_plugins": "GET /plugins - List all registered plugins",
+    "cli_opt_stream": "Enable stream mode for processing log flow in real-time",
+    "cli_opt_flush_interval": "Max delay before flushing buffering data (in milliseconds, default: 500)",
+    "cli_opt_merge": "Merge all stream chunks into a single JSON compression output when stream ends"
 }

@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "Sections sans entrée : {}",
     "server_webui_enabled": "Interface utilisateur Web activée : {}",
     "server_webui_disabled": "Le répertoire de l'interface utilisateur Web n'existe pas ou n'est pas lisible : {}",
-    "server_endpoint_plugins": "GET /plugins - Liste tous les plugins enregistrés"
+    "server_endpoint_plugins": "GET /plugins - Liste tous les plugins enregistrés",
+    "cli_opt_stream": "Activer le mode pipeline de streaming pour traiter les journaux d'entrée en temps réel",
+    "cli_opt_flush_interval": "Délai de mise en mémoire tampon maximal du streaming (ms, par défaut : 500)",
+    "cli_opt_merge": "À la fin du streaming, tous les morceaux sont fusionnés en un seul résultat compressé."
 }

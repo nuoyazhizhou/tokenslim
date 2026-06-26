@@ -359,8 +359,13 @@ impl PluginConfigLoader {
         let content =
             fs::read_to_string(path).map_err(|e| format!("{E_PLUGIN_CONFIG_READ}:{e}"))?;
 
-        let config: PluginConfigFile =
+        let mut config: PluginConfigFile =
             serde_json::from_str(&content).map_err(|e| format!("{E_PLUGIN_CONFIG_PARSE}:{e}"))?;
+
+        let override_key = format!("plugins.{}.enabled", config.name);
+        if let Some(enabled_override) = crate::core::config_manager::ConfigManager::get_bool(&override_key) {
+            config.enabled = enabled_override;
+        }
 
         Ok(config)
     }

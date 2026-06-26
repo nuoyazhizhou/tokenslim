@@ -373,5 +373,8 @@
     "doctor_rule_no_enter": "Enter のないセクション: {}",
     "server_webui_enabled": "ウェブ UI が有効になっています: {}",
     "server_webui_disabled": "Web UI ディレクトリが存在しないか、読み取り不能です: {}",
-    "server_endpoint_plugins": "GET /plugins - 登録されているすべてのプラグインをリストします。"
+    "server_endpoint_plugins": "GET /plugins - 登録されているすべてのプラグインをリストします。",
+    "cli_opt_stream": "入力ログをリアルタイムで処理するストリーミング パイプライン モードを有効にする",
+    "cli_opt_flush_interval": "ストリーミング最大バッファリング遅延 (ミリ秒、デフォルト: 500)",
+    "cli_opt_merge": "ストリーミングの最後に、すべてのチャンクが 1 つの圧縮された結果出力にマージされます。"
 }

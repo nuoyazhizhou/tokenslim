@@ -25,6 +25,7 @@ use serde::Serialize;
 use serde_json::json;
 use std::borrow::Cow;
 use std::io::{self, IsTerminal, Read};
+use crate::cli::commands::compress::merge_compression_outputs;
 
 
 pub(crate) fn parse_run_target<'a>(
@@ -192,7 +193,13 @@ pub(crate) fn run_external_command_passthrough(
 pub(crate) fn run_external_command_capture(
     prog: &str,
     cmd_args: &[String],
+    passthrough: bool,
+    tee_file: Option<&std::path::Path>,
 ) -> Result<(std::process::ExitStatus, String), CliError> {
+    use std::sync::{Arc, Mutex};
+    use std::io::Write;
+    use std::fs::File;
+
     let mut child = if cfg!(target_os = "windows") {
         let mut c = std::process::Command::new("cmd");
         c.arg("/C");
@@ -211,21 +218,100 @@ pub(crate) fn run_external_command_capture(
         .spawn()
         .map_err(CliError::Io)?;
 
-    let mut stdout_bytes = Vec::new();
-    if let Some(mut out) = child.stdout.take() {
-        let _ = out.read_to_end(&mut stdout_bytes);
-    }
+    let child_stdout = child.stdout.take().ok_or_else(|| {
+        CliError::Io(std::io::Error::new(std::io::ErrorKind::Other, "Failed to capture stdout"))
+    })?;
+    let child_stderr = child.stderr.take().ok_or_else(|| {
+        CliError::Io(std::io::Error::new(std::io::ErrorKind::Other, "Failed to capture stderr"))
+    })?;
 
-    let mut stderr_bytes = Vec::new();
-    if let Some(mut err) = child.stderr.take() {
-        let _ = err.read_to_end(&mut stderr_bytes);
-    }
+    // 初始化 tee 物理输出文件句柄
+    let tee_writer = if let Some(path) = tee_file {
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let file = File::create(path).map_err(CliError::Io)?;
+        Some(Arc::new(Mutex::new(file)))
+    } else {
+        None
+    };
+
+    let stdout_bytes = Arc::new(Mutex::new(Vec::new()));
+    let stderr_bytes = Arc::new(Mutex::new(Vec::new()));
+
+    // 开启线程 1 并发读取 stdout 流
+    let stdout_bytes_clone = stdout_bytes.clone();
+    let tee_writer_clone = tee_writer.clone();
+    let stdout_handle = std::thread::spawn(move || {
+        let mut reader = child_stdout;
+        let mut buf = [0u8; 8192];
+        loop {
+            match std::io::Read::read(&mut reader, &mut buf) {
+                Ok(0) => break,
+                Ok(n) => {
+                    let chunk = &buf[..n];
+                    stdout_bytes_clone.lock().unwrap().extend_from_slice(chunk);
+                    
+                    if passthrough {
+                        let mut stderr = std::io::stderr();
+                        let _ = stderr.write_all(chunk);
+                        let _ = stderr.flush();
+                    }
+                    if let Some(ref file_arc) = tee_writer_clone {
+                        if let Ok(mut file) = file_arc.lock() {
+                            let _ = file.write_all(chunk);
+                            let _ = file.flush();
+                        }
+                    }
+                }
+                Err(_) => break,
+            }
+        }
+    });
+
+    // 开启线程 2 并发读取 stderr 流
+    let stderr_bytes_clone = stderr_bytes.clone();
+    let tee_writer_clone = tee_writer.clone();
+    let stderr_handle = std::thread::spawn(move || {
+        let mut reader = child_stderr;
+        let mut buf = [0u8; 8192];
+        loop {
+            match std::io::Read::read(&mut reader, &mut buf) {
+                Ok(0) => break,
+                Ok(n) => {
+                    let chunk = &buf[..n];
+                    stderr_bytes_clone.lock().unwrap().extend_from_slice(chunk);
+                    
+                    if passthrough {
+                        let mut stderr = std::io::stderr();
+                        let _ = stderr.write_all(chunk);
+                        let _ = stderr.flush();
+                    }
+                    if let Some(ref file_arc) = tee_writer_clone {
+                        if let Ok(mut file) = file_arc.lock() {
+                            let _ = file.write_all(chunk);
+                            let _ = file.flush();
+                        }
+                    }
+                }
+                Err(_) => break,
+            }
+        }
+    });
+
+    // 等待双路读取完毕
+    let _ = stdout_handle.join();
+    let _ = stderr_handle.join();
 
     let status = child.wait().map_err(CliError::Io)?;
+    
+    let out_buf = stdout_bytes.lock().unwrap().clone();
+    let err_buf = stderr_bytes.lock().unwrap().clone();
+
     let (out_str, _out_enc, _out_fix_steps) =
-        crate::core::encoding_fallback::decode_and_repair_for_display(&stdout_bytes);
+        crate::core::encoding_fallback::decode_and_repair_for_display(&out_buf);
     let (err_str, _err_enc, _err_fix_steps) =
-        crate::core::encoding_fallback::decode_and_repair_for_display(&stderr_bytes);
+        crate::core::encoding_fallback::decode_and_repair_for_display(&err_buf);
 
     let combined = if err_str.is_empty() {
         out_str.to_string()
@@ -577,14 +663,28 @@ pub(crate) fn keep_generic_run_plugins(plugins: Vec<Box<dyn Plugin>>) -> Vec<Box
 }
 
 
-pub(crate) fn plugins_for_run_command(prog: &str, cmd_args: &[String]) -> Vec<Box<dyn Plugin>> {
-    let route = detect_run_plugin_route(prog, cmd_args);
+pub(crate) fn plugins_for_run_command(
+    prog: &str,
+    cmd_args: &[String],
+    run_plugin: Option<&str>,
+) -> Vec<Box<dyn Plugin>> {
     let plugins = get_plugins();
-
-    match route {
-        RunPluginRoute::Vcs => plugins,
-        RunPluginRoute::Node | RunPluginRoute::Build => remove_vcs_plugins(plugins),
-        RunPluginRoute::Generic => keep_generic_run_plugins(plugins),
+    if let Some(target_plugin_name) = run_plugin {
+        // 如果强制指定了某个插件，仅使用它及基本清洗辅助插件
+        plugins
+            .into_iter()
+            .filter(|p| {
+                p.name() == target_plugin_name
+                    || matches!(p.name(), "ansi_cleaner" | "noise_filter")
+            })
+            .collect()
+    } else {
+        let route = detect_run_plugin_route(prog, cmd_args);
+        match route {
+            RunPluginRoute::Vcs => plugins,
+            RunPluginRoute::Node | RunPluginRoute::Build => remove_vcs_plugins(plugins),
+            RunPluginRoute::Generic => keep_generic_run_plugins(plugins),
+        }
     }
 }
 
@@ -594,7 +694,7 @@ pub(crate) fn explain_run_route(prog: &str, cmd_args: &[String], args: &CliArgs)
     let route = plugin_config_loader::resolve_run_route(&caps, prog, cmd_args);
     let route_candidates =
         plugin_config_loader::explain_run_route_candidates(&caps, prog, cmd_args);
-    let plugins = plugins_for_run_command(prog, cmd_args);
+    let plugins = plugins_for_run_command(prog, cmd_args, args.run_plugin.as_deref());
     let plugin_names = plugins
         .iter()
         .map(|plugin| plugin.name())
@@ -1470,6 +1570,10 @@ pub(crate) fn run_run_mode(
         return Ok(());
     }
 
+    if args.stream {
+        return run_run_stream_mode(args, pipeline, prog, cmd_args);
+    }
+
     // 启发式检测: git 交互式子命令 (commit 无 -m / rebase -i / tag -a 无 -m /
     // add -p / checkout -p / clean -i) → 放弃压缩, 透传 stdio 给 git 原生命令。
     // 不透传会让 vim/merge-tool 等编辑器读不到 tty 而卡死。
@@ -1484,12 +1588,23 @@ pub(crate) fn run_run_mode(
         std::process::exit(status.code().unwrap_or(1));
     }
 
-    let (status, combined) = run_external_command_capture(prog, cmd_args)?;
+    let (status, combined) = run_external_command_capture(prog, cmd_args, args.passthrough, args.tee.as_deref())?;
+
+    #[cfg(unix)]
+    let exit_code = if let Some(code) = status.code() {
+        code
+    } else {
+        use std::os::unix::process::ExitStatusExt;
+        status.signal().map(|s| 128 + s).unwrap_or(1)
+    };
+
+    #[cfg(not(unix))]
+    let exit_code = status.code().unwrap_or(1);
 
     if combined.trim().is_empty() {
         if !status.success() {
             eprintln!("{}", t1("run_command_failed_exit", status));
-            std::process::exit(status.code().unwrap_or(1));
+            std::process::exit(exit_code);
         }
         return Ok(());
     }
@@ -1499,7 +1614,6 @@ pub(crate) fn run_run_mode(
 
     let cmd_str = build_run_command_string(prog, cmd_args);
     let filter_name = resolve_run_filter_name(prog, cmd_args, context.vcs_intent);
-    let exit_code = status.code().unwrap_or(1);
     record_tracking_event(&cmd_str, Some(filter_name.as_str()), &output, exit_code);
     let formatted =
         render_run_mode_output(args, &output, context.vcs_intent, &context.path_options)?;
@@ -1512,8 +1626,283 @@ pub(crate) fn run_run_mode(
     args.emit_text(&formatted, Some(stats))?;
 
     if !status.success() {
-        std::process::exit(status.code().unwrap_or(1));
+        std::process::exit(exit_code);
     }
+    Ok(())
+}
+
+
+pub(crate) fn run_run_stream_mode(
+    args: &CliArgs,
+    pipeline: &mut CompressionPipeline,
+    prog: &str,
+    cmd_args: &[String],
+) -> Result<(), CliError> {
+    use std::sync::mpsc;
+    use std::thread;
+    use std::time::Duration;
+    use std::process::Stdio;
+
+    let mut child = std::process::Command::new(prog)
+        .args(cmd_args)
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .map_err(CliError::Io)?;
+
+    let stdout = child.stdout.take().ok_or_else(|| {
+        CliError::Compression("Failed to open child stdout".to_string())
+    })?;
+    let stderr = child.stderr.take().ok_or_else(|| {
+        CliError::Compression("Failed to open child stderr".to_string())
+    })?;
+
+    use std::sync::{Arc, Mutex};
+    use std::io::Write;
+    let tee_writer = if let Some(ref path) = args.tee {
+        if let Some(parent) = path.parent() {
+            let _ = std::fs::create_dir_all(parent);
+        }
+        let file = std::fs::File::create(path).map_err(CliError::Io)?;
+        Some(Arc::new(Mutex::new(file)))
+    } else {
+        None
+    };
+
+    let (tx, rx) = mpsc::channel::<Vec<u8>>();
+
+    let tx_out = tx.clone();
+    let passthrough = args.passthrough;
+    let tee_writer_clone = tee_writer.clone();
+    thread::spawn(move || {
+        let mut reader = stdout;
+        let mut buf = [0u8; 8192];
+        loop {
+            match reader.read(&mut buf) {
+                Ok(0) => break,
+                Ok(n) => {
+                    let chunk = &buf[..n];
+                    if passthrough {
+                        let mut stderr = std::io::stderr();
+                        let _ = stderr.write_all(chunk);
+                        let _ = stderr.flush();
+                    }
+                    if let Some(ref file_arc) = tee_writer_clone {
+                        if let Ok(mut file) = file_arc.lock() {
+                            let _ = file.write_all(chunk);
+                            let _ = file.flush();
+                        }
+                    }
+                    if tx_out.send(chunk.to_vec()).is_err() {
+                        break;
+                    }
+                }
+                Err(_) => break,
+            }
+        }
+    });
+
+    let tx_err = tx;
+    let tee_writer_clone = tee_writer.clone();
+    thread::spawn(move || {
+        let mut reader = stderr;
+        let mut buf = [0u8; 8192];
+        loop {
+            match reader.read(&mut buf) {
+                Ok(0) => break,
+                Ok(n) => {
+                    let chunk = &buf[..n];
+                    if passthrough {
+                        let mut stderr = std::io::stderr();
+                        let _ = stderr.write_all(chunk);
+                        let _ = stderr.flush();
+                    }
+                    if let Some(ref file_arc) = tee_writer_clone {
+                        if let Ok(mut file) = file_arc.lock() {
+                            let _ = file.write_all(chunk);
+                            let _ = file.flush();
+                        }
+                    }
+                    if tx_err.send(chunk.to_vec()).is_err() {
+                        break;
+                    }
+                }
+                Err(_) => break,
+            }
+        }
+    });
+
+    let vcs_intent = detect_vcs_run_intent(prog, cmd_args);
+    let path_preset = resolve_run_path_preset(args.preset);
+    let path_options =
+        crate::core::path_optimizer::methods::resolve_path_dictionary_options_from_files(
+            path_preset,
+            args.config.as_deref(),
+        );
+
+    let flush_interval = Duration::from_millis(args.flush_interval);
+    let mut pending_bytes = Vec::new();
+    let mut chunk_text = String::new();
+    let mut chunk_outputs = Vec::new();
+    let mut is_first_chunk = true;
+
+    loop {
+        let msg = rx.recv_timeout(flush_interval);
+        match msg {
+            Ok(bytes) => {
+                pending_bytes.extend(bytes);
+                if let Some(last_nl) = pending_bytes.iter().rposition(|&b| b == b'\n') {
+                    let complete_part = &pending_bytes[..=last_nl];
+                    let complete_str = String::from_utf8_lossy(complete_part);
+                    chunk_text.push_str(&complete_str);
+                    pending_bytes = pending_bytes[last_nl + 1..].to_vec();
+                }
+
+                if chunk_text.len() >= 64 * 1024 {
+                    flush_run_chunk(
+                        &chunk_text,
+                        pipeline,
+                        args,
+                        prog,
+                        cmd_args,
+                        vcs_intent,
+                        &path_options,
+                        &mut chunk_outputs,
+                        is_first_chunk,
+                    )?;
+                    is_first_chunk = false;
+                    chunk_text.clear();
+                }
+            }
+            Err(mpsc::RecvTimeoutError::Timeout) => {
+                if !chunk_text.is_empty() {
+                    flush_run_chunk(
+                        &chunk_text,
+                        pipeline,
+                        args,
+                        prog,
+                        cmd_args,
+                        vcs_intent,
+                        &path_options,
+                        &mut chunk_outputs,
+                        is_first_chunk,
+                    )?;
+                    is_first_chunk = false;
+                    chunk_text.clear();
+                }
+            }
+            Err(mpsc::RecvTimeoutError::Disconnected) => {
+                if !pending_bytes.is_empty() {
+                    let remaining_str = String::from_utf8_lossy(&pending_bytes);
+                    chunk_text.push_str(&remaining_str);
+                    pending_bytes.clear();
+                }
+                if !chunk_text.is_empty() {
+                    flush_run_chunk(
+                        &chunk_text,
+                        pipeline,
+                        args,
+                        prog,
+                        cmd_args,
+                        vcs_intent,
+                        &path_options,
+                        &mut chunk_outputs,
+                        is_first_chunk,
+                    )?;
+                }
+                break;
+            }
+        }
+    }
+
+    let status = child.wait().map_err(CliError::Io)?;
+
+    if args.merge {
+        if let Some(merged) = merge_compression_outputs(chunk_outputs) {
+            let cmd_str = build_run_command_string(prog, cmd_args);
+            let filter_name = resolve_run_filter_name(prog, cmd_args, vcs_intent);
+            let exit_code = status.code().unwrap_or(1);
+            record_tracking_event(&cmd_str, Some(filter_name.as_str()), &merged, exit_code);
+
+            let formatted = render_run_mode_output(args, &merged, vcs_intent, &path_options)?;
+            let (original_size, compressed_size) = tracking_bytes(&merged);
+            let stats = json!({
+                "original_size": original_size,
+                "compressed_size": compressed_size,
+            });
+            args.emit_text(&formatted, Some(stats))?;
+        }
+    }
+
+    if !status.success() {
+        #[cfg(unix)]
+        let exit_code = if let Some(code) = status.code() {
+            code
+        } else {
+            use std::os::unix::process::ExitStatusExt;
+            status.signal().map(|s| 128 + s).unwrap_or(1)
+        };
+
+        #[cfg(not(unix))]
+        let exit_code = status.code().unwrap_or(1);
+
+        std::process::exit(exit_code);
+    }
+
+    Ok(())
+}
+
+
+fn flush_run_chunk(
+    text: &str,
+    pipeline: &mut CompressionPipeline,
+    args: &CliArgs,
+    prog: &str,
+    cmd_args: &[String],
+    vcs_intent: Option<VcsRunIntent>,
+    path_options: &crate::core::path_optimizer::methods::PathDictionaryOptions,
+    chunk_outputs: &mut Vec<CompressionOutput>,
+    is_first_chunk: bool,
+) -> Result<(), CliError> {
+    let mut context = build_run_mode_compression_context(args, prog, cmd_args, text);
+    if !is_first_chunk {
+        context.run_input = text.to_string();
+    }
+
+    let output = compress_run_mode_text(pipeline, &context)?;
+
+    if args.merge {
+        chunk_outputs.push(output);
+    } else {
+        let cmd_str = build_run_command_string(prog, cmd_args);
+        let filter_name = resolve_run_filter_name(prog, cmd_args, vcs_intent);
+        record_tracking_event(&cmd_str, Some(filter_name.as_str()), &output, 0);
+
+        let formatted = render_run_mode_output(args, &output, vcs_intent, path_options)?;
+        let (original_size, compressed_size) = tracking_bytes(&output);
+        let stats = json!({
+            "original_size": original_size,
+            "compressed_size": compressed_size,
+        });
+
+        match args.output_format {
+            OutputFormat::Json => {
+                if args.json {
+                    let mut obj = serde_json::Map::new();
+                    obj.insert("status".to_string(), "success".into());
+                    obj.insert("data".to_string(), serde_json::to_value(&output)?);
+                    obj.insert("stats".to_string(), stats);
+                    println!("{}", serde_json::to_string(&obj)?);
+                } else {
+                    println!("{}", serde_json::to_string(&output)?);
+                }
+            }
+            _ => {
+                println!("{}", formatted);
+            }
+        }
+    }
+
     Ok(())
 }
 

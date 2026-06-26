@@ -833,7 +833,7 @@ pub(crate) fn build_command_explain_context(command_line: &str) -> Option<Comman
     let route = plugin_config_loader::resolve_run_route(&caps, &prog, &cmd_args);
     let route_candidates =
         plugin_config_loader::explain_run_route_candidates(&caps, &prog, &cmd_args);
-    let chain = plugins_for_run_command(&prog, &cmd_args)
+    let chain = plugins_for_run_command(&prog, &cmd_args, None)
         .iter()
         .map(|plugin| plugin.name())
         .collect::<Vec<_>>()
