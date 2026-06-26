@@ -2,7 +2,7 @@
   "name": "tokenslim-vscode",
   "displayName": "TokenSlim",
   "description": "AI Log Compression & Decompression for VS Code",
-  "version": "0.4.1",
+  "version": "0.5.0",
   "publisher": "tokenslim",
   "engines": {
     "vscode": "^1.80.0"
