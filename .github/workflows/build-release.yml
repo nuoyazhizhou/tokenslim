@@ -147,6 +147,8 @@ jobs:
           mkdir -p artifacts/bin
           cp "target/${{ matrix.target }}/release/tokenslim"      "artifacts/bin/tokenslim"
           cp "target/${{ matrix.target }}/release/tokenslim-server" "artifacts/bin/tokenslim-server"
+          cp "target/${{ matrix.target }}/release/log_reorder"     "artifacts/bin/log_reorder"
+          cp "target/${{ matrix.target }}/release/log_miner"       "artifacts/bin/log_miner"
           ls -lh artifacts/bin/
 
       - name: Build platform npm package
