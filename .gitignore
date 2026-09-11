@@ -175,3 +175,10 @@ TokenSlim-Context-Source-Delivery.zip
 tokenslim-context-delivery/
 docs/分片审计者操作指南.md
 benchmarks/input_100mb.txt
+
+# 2026-09-11 历史重写后封禁：内部工具/个人路径/大数据文件不入公开仓
+scripts/code_graph/
+scripts/test_v3.py
+scripts/private-sweep-verify.ps1
+tests/data/
+benchmarks/
