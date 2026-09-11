@@ -93,7 +93,7 @@ Decompress: POST /decompress
 
 ```bash
 curl http://127.0.0.1:10086/health
-# {"status":"UP","version":"0.5.0","plugin_count":55}
+# {"status":"UP","version":"0.5.1","plugin_count":70}
 ```
 
 ### Docker 方式（一行起服务）
