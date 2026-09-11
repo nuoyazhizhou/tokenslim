@@ -19,6 +19,13 @@ COPY webui/ webui/
 COPY resources/ resources/
 COPY plugins_registry.md ./
 
+# 构建脚本与语料：build.rs 在编译期为内容分类器聚合特征并写入 OUT_DIR，
+# lib 侧以 env!("OUT_DIR") include! 该产物——缺任一者都会导致编译失败
+# （2026-09-11 修复：Docker 发布曾因漏 COPY build.rs 报 OUT_DIR not defined）。
+# 语料缺失时 build.rs 会降级为种子特征，但保留 samples/ 可与本地/CI 构建同口径。
+COPY build.rs ./
+COPY samples/ samples/
+
 # 编译 release（CLI + Server + 独立工具）
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/usr/local/cargo/git \
