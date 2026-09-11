@@ -63,10 +63,21 @@ jobs:
           packages-dir: dist
           skip-existing: true
 
+  # TODO(P3-211): tokenslim-client（sdk/python）为 0.4 时代的 REST 客户端 SDK，
+  # 从未发布过、README 无文档、版本未纳入 scripts/bump-version.mjs（停在 0.4.0）。
+  # 2026-09-11 v0.5.1 发布时该 job 因 PyPI Trusted Publishing 未注册 pending
+  # publisher 而 400 失败（项目名首次发布必须先在 pypi.org 注册）。
+  # 处置：临时置 continue-on-error，避免把发布流水线拖红；正式发布需三步——
+  #   1) pypi.org 注册 pending publisher（tokenslim-client / nuoyazhizhou /
+  #      tokenslim / pypi-publish.yml）
+  #   2) 将其版本纳入 bump-version.mjs 并升到当前版本
+  #   3) 补 README 文档承诺后去掉本行的 continue-on-error
+  # 或直接退役该 job（主包 tokenslim 已支持进程内压缩，REST 客户端非必需）。
   publish-sdk:
     name: Publish tokenslim-client Python SDK to PyPI
     needs: [publish]
     runs-on: ubuntu-latest
+    continue-on-error: true  # TODO(P3-211)：见上，注册 pending publisher 后移除
     permissions:
       id-token: write
       contents: read
