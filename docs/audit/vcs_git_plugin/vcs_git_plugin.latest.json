@@ -1,9 +1,9 @@
 {
     "track": "vcs_git_plugin",
-    "version": "20260624-175436",
-    "generated_at": "2026-06-24T17:54:39.132013",
-    "report_path": "target/vcs_git_compact_showcase_report.txt",
-    "case_count": 88,
+    "version": "v20260911_r2",
+    "generated_at": "2026-09-11T14:35:45.507788",
+    "report_path": "target\\vcs_git_compact_showcase_report.txt",
+    "case_count": 86,
     "cases": [
         {
             "case_id": "case_23_git_status",
@@ -139,9 +139,9 @@
             "case_id": "case_48_git_revert",
             "original_lines": 12,
             "original_bytes": 420,
-            "compact_lines": 10,
-            "compact_bytes": 381,
-            "compression_pct": 9.3,
+            "compact_lines": 7,
+            "compact_bytes": 222,
+            "compression_pct": 47.1,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -149,9 +149,9 @@
             "case_id": "case_49_git_pull",
             "original_lines": 9,
             "original_bytes": 235,
-            "compact_lines": 8,
-            "compact_bytes": 229,
-            "compression_pct": 2.6,
+            "compact_lines": 7,
+            "compact_bytes": 203,
+            "compression_pct": 13.6,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -279,9 +279,9 @@
             "case_id": "case_128_git_remote",
             "original_lines": 5,
             "original_bytes": 217,
-            "compact_lines": 5,
-            "compact_bytes": 201,
-            "compression_pct": 7.4,
+            "compact_lines": 3,
+            "compact_bytes": 118,
+            "compression_pct": 45.6,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -310,8 +310,8 @@
             "original_lines": 4,
             "original_bytes": 183,
             "compact_lines": 4,
-            "compact_bytes": 183,
-            "compression_pct": 0.0,
+            "compact_bytes": 150,
+            "compression_pct": 18.0,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -339,9 +339,9 @@
             "case_id": "case_165_git_worktree",
             "original_lines": 4,
             "original_bytes": 107,
-            "compact_lines": 4,
-            "compact_bytes": 107,
-            "compression_pct": 0.0,
+            "compact_lines": 5,
+            "compact_bytes": 87,
+            "compression_pct": 18.7,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -420,8 +420,8 @@
             "original_lines": 2,
             "original_bytes": 86,
             "compact_lines": 2,
-            "compact_bytes": 86,
-            "compression_pct": 0.0,
+            "compact_bytes": 44,
+            "compression_pct": 48.8,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -430,8 +430,8 @@
             "original_lines": 3,
             "original_bytes": 124,
             "compact_lines": 3,
-            "compact_bytes": 124,
-            "compression_pct": 0.0,
+            "compact_bytes": 82,
+            "compression_pct": 33.9,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -466,16 +466,6 @@
             "semantic_gate_failures": ""
         },
         {
-            "case_id": "case_248_git_status_short",
-            "original_lines": 5,
-            "original_bytes": 138,
-            "compact_lines": 5,
-            "compact_bytes": 134,
-            "compression_pct": 2.9,
-            "semantic_gate_pass": true,
-            "semantic_gate_failures": ""
-        },
-        {
             "case_id": "case_249_git_status_long",
             "original_lines": 19,
             "original_bytes": 612,
@@ -487,11 +477,11 @@
         },
         {
             "case_id": "case_250_git_status_ignored",
-            "original_lines": 23,
-            "original_bytes": 660,
-            "compact_lines": 9,
-            "compact_bytes": 180,
-            "compression_pct": 72.7,
+            "original_lines": 29,
+            "original_bytes": 728,
+            "compact_lines": 15,
+            "compact_bytes": 254,
+            "compression_pct": 65.1,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -586,16 +576,6 @@
             "semantic_gate_failures": ""
         },
         {
-            "case_id": "case_260_git_diff_word_diff",
-            "original_lines": 18,
-            "original_bytes": 513,
-            "compact_lines": 14,
-            "compact_bytes": 358,
-            "compression_pct": 30.2,
-            "semantic_gate_pass": true,
-            "semantic_gate_failures": ""
-        },
-        {
             "case_id": "case_261_git_diff_branches",
             "original_lines": 30,
             "original_bytes": 850,
@@ -650,8 +630,8 @@
             "original_lines": 5,
             "original_bytes": 213,
             "compact_lines": 5,
-            "compact_bytes": 206,
-            "compression_pct": 3.3,
+            "compact_bytes": 195,
+            "compression_pct": 8.5,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -849,9 +829,9 @@
             "case_id": "case_329_git_help",
             "original_lines": 32,
             "original_bytes": 1476,
-            "compact_lines": 31,
-            "compact_bytes": 1400,
-            "compression_pct": 5.1,
+            "compact_lines": 26,
+            "compact_bytes": 1338,
+            "compression_pct": 9.3,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -879,9 +859,9 @@
             "case_id": "case_tree_status",
             "original_lines": 17,
             "original_bytes": 659,
-            "compact_lines": 17,
-            "compact_bytes": 659,
-            "compression_pct": 0.0,
+            "compact_lines": 9,
+            "compact_bytes": 267,
+            "compression_pct": 59.5,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         }

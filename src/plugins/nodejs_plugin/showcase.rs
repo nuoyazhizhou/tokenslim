@@ -6,8 +6,10 @@ mod tests {
     use crate::core::plugin_dispatcher::Plugin;
     use crate::core::text_slicer::{Slice, SliceType};
     use crate::plugins::nodejs_plugin::NodeJsPlugin;
+    use crate::plugins::test_utils::full_dict_json;
     use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/nodejs_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,7 +19,9 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &NodeJsPlugin, text: &str) -> String {
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本；
+    /// 同时返回压缩过程中产生的可逆 token->原文 字典快照 JSON，供审计侧通道携带。
+    fn compress_text(plugin: &NodeJsPlugin, text: &str) -> (String, String) {
         let slice = Slice {
             id: 1,
             text: Cow::Borrowed(text),
@@ -32,16 +36,20 @@ mod tests {
         let mut dedup = DedupEngine::new(DedupConfig::default());
         let arena = bumpalo::Bump::new();
         let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
+        let compacted = result
             .tokens
             .iter()
             .filter_map(|t| match t {
                 Token::Text(s) => Some(s.as_ref()),
                 _ => None,
             })
-            .collect::<String>()
+            .collect::<String>();
+        // 字典侧通道：截取压缩词典快照为 token->原文 JSON，仅保留 compact 中实际引用的映射。
+        let dict_json = full_dict_json(&dict, &compacted);
+        (compacted, dict_json)
     }
 
+    /// 测试：遍历样例生成 nodejs 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_nodejs_showcase_report() {
         let plugin = NodeJsPlugin::new();
@@ -72,6 +80,8 @@ mod tests {
                 "npm webpack CI failure",
             ),
             ("case_022_pnpm_eslint_ci.log", "pnpm ESLint CI failure"),
+            ("case_023_vitest_pass.log", "vitest 全通过"),
+            ("case_024_vitest_fail.log", "vitest 部分失败"),
         ];
 
         let mut all_output = String::new();
@@ -94,7 +104,7 @@ mod tests {
             let case_id = file_name.trim_end_matches(".log");
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
-            let compacted = compress_text(&plugin, &raw);
+            let (compacted, dict_json) = compress_text(&plugin, &raw);
             let compact_lines = if compacted.is_empty() {
                 0
             } else {
@@ -128,6 +138,16 @@ mod tests {
             all_output.push_str("\n");
             all_output.push_str(&compacted);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 字典侧通道：仅在压缩产生可逆 token（`$PK/$P/$D/$M/$C/$FL`）时，追加
+            // token->原文 JSON 映射段，供审计解析；不改变上方 compact 段内容（哈希不变）。
+            if !dict_json.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push_str("\n");
+                all_output.push_str(&dict_json);
                 all_output.push('\n');
             }
         }

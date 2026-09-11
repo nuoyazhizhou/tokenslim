@@ -2,13 +2,14 @@ use super::types::SyslogPlugin;
 use crate::core::compression::Token;
 use crate::core::dedup_engine::DedupEngine;
 use crate::core::dictionary_engine::{Dictionary, DictionaryEngine};
-use crate::core::plugin_dispatcher::{CompressResult, Plugin};
+use crate::core::plugin_dispatcher::{CompressResult, DocumentSkin, Plugin};
 use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
 use std::sync::Arc;
 
 impl SyslogPlugin {
+    /// 创建 SyslogPlugin 实例（名称 syslog，优先级 160），预编译 syslog 行解析正则。
     pub fn new() -> Self {
         Self {
             name: "syslog",
@@ -24,19 +25,23 @@ impl SyslogPlugin {
 }
 
 impl Default for SyslogPlugin {
+    /// Default 实现：等价于 new()。
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl Plugin for SyslogPlugin {
+    /// 返回插件名称 "syslog"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 160。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：前 5 行中 syslog 格式匹配占比 ≥50% 时命中。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lines: Vec<&str> = slice.text.lines().take(5).collect();
         if lines.is_empty() {
@@ -56,6 +61,7 @@ impl Plugin for SyslogPlugin {
         }
     }
 
+    /// 压缩切片：syslog 行 host/proc 字典化并编码为 $SYS| 行，ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -109,6 +115,59 @@ impl Plugin for SyslogPlugin {
         }
     }
 
+    /// 文档级剥皮（P1-06）：把 syslog 头部外壳与内层非 syslog 正文分离。
+    ///
+    /// - 外壳摘要：首行锚点（法则 0）+ 其余 syslog 行的 `$SYS|` 紧凑形式。
+    ///   与行级 compress 同一编码但**无字典化**——peel 阶段拿不到字典引擎，
+    ///   host/proc 保留明文，解压侧 `resolve_or_self` 原样透传，保证可还原。
+    /// - 内层正文：非 syslog 行（如嵌入的多行堆栈/裸工具输出），交内层管线
+    ///   重新切片定向压缩。
+    /// - 无内层正文（纯 syslog 流）返回 `None`，回退行级压缩路径，避免行为漂移。
+    fn peel_document(&self, text: &str) -> Option<DocumentSkin> {
+        let mut skin_lines = Vec::new();
+        let mut inner_lines = Vec::new();
+        for (i, line) in text.lines().enumerate() {
+            let is_skin = i == 0 // 首行锚点留在皮侧（法则 0）
+                || self.syslog_pattern.is_match(line);
+            if is_skin {
+                skin_lines.push(line);
+            } else {
+                inner_lines.push(line);
+            }
+        }
+
+        if inner_lines.is_empty() {
+            return None;
+        }
+
+        let mut summary = String::with_capacity(text.len() / 2);
+        if let Some(anchor) = skin_lines.first() {
+            summary.push_str(anchor);
+            summary.push('\n');
+        }
+        for line in skin_lines.iter().skip(1) {
+            if let Some(caps) = self.syslog_pattern.captures(line) {
+                summary.push_str(&format!(
+                    "$SYS|{}|{}|{}|{}|{}\n",
+                    caps.name("time").unwrap().as_str(),
+                    caps.name("host").unwrap().as_str(),
+                    caps.name("proc").unwrap().as_str(),
+                    caps.name("pid").map(|m| m.as_str()).unwrap_or(""),
+                    caps.name("msg").unwrap().as_str()
+                ));
+            } else {
+                summary.push_str(line);
+                summary.push('\n');
+            }
+        }
+
+        Some(DocumentSkin {
+            summary,
+            inner_body: inner_lines.join("\n"),
+        })
+    }
+
+    /// 解压：将 $SYS| 行还原为 syslog 原文（host/proc 用词典还原）。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         let mut out = String::new();
         for line in compressed.lines() {
@@ -137,6 +196,7 @@ impl Plugin for SyslogPlugin {
         out
     }
 
+    /// 返回后续插件列表（smart_path）。
     fn next_plugins(&self) -> Vec<&'static str> {
         vec!["smart_path"]
     }

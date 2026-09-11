@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::node_error_plugin::types::NodeErrorPlugin;
     use crate::plugins::test_utils::*;
 
+    /// 验证 Node 类型错误样本能被 `detect` 命中且置信度高于 0.5。
     #[test]
     fn detects_type_error_sample() {
         let plugin = NodeErrorPlugin::new();
@@ -16,6 +17,7 @@ mod tests {
         assert!(score.unwrap() > 0.5);
     }
 
+    /// 验证 Node 长堆栈样本压缩产出 `$ND|` 标记，且压缩后不得显著扩张。
     #[test]
     fn compresses_long_stack_sample_produces_nd_token() {
         let plugin = NodeErrorPlugin::new();

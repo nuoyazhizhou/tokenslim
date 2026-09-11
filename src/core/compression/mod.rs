@@ -1,14 +1,11 @@
-//! compression 模块
+//! 压缩核心模块
 //!
-//! # 模块概述
+//! 汇总压缩产物的核心数据结构（类型定义在 [`types`] 子模块）与压缩能力编排入口，
+//! 是 `CompressionPipeline` 等上层流程依赖的基础数据层。
 //!
-//! 本模块实现了 TokenSlim 的 compression 功能。
+//! ## 子模块
 //!
-//! ## 主要功能
-//!
-//! - 提供核心类型定义和接口
-//! - 协调各子组件的工作流程
-//! - 对外提供统一的 API 接口
+//! - [`types`]：压缩产物类型（`Token`/`MarkerKind`/`CompressionOutput`/`CompressionMetadata` 等）。
 
 mod types;
 pub use types::*;

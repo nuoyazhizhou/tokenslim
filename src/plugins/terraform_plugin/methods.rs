@@ -16,6 +16,7 @@ use std::borrow::Cow;
 use std::sync::OnceLock;
 
 impl TerraformPlugin {
+    /// 创建 TerraformPlugin 实例（名称 terraform，优先级 90）。
     pub fn new() -> Self {
         Self {
             name: "terraform",
@@ -25,14 +26,17 @@ impl TerraformPlugin {
 }
 
 impl Plugin for TerraformPlugin {
+    /// 返回插件名称 "terraform"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 90。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：含 terraform will perform/plan/apply 或 Plan: 特征得 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(
@@ -47,6 +51,7 @@ impl Plugin for TerraformPlugin {
         .then_some(0.9)
     }
 
+    /// 压缩切片：剥离 ANSI，压缩 terraform 计划为摘要，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -65,11 +70,14 @@ impl Plugin for TerraformPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：解析资源变更行（# 注释行）与 Plan 汇总，资源名字典化，
+/// 无压缩收益时回退原文；针对无变化/导入/工作区/版本场景输出单行摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_terraform(text: &str, dict_engine: &mut DictionaryEngine) -> String {
     static RES_RE: OnceLock<Regex> = OnceLock::new();
@@ -126,6 +134,7 @@ fn compact_terraform(text: &str, dict_engine: &mut DictionaryEngine) -> String {
     fallback_if_anchor_only(lines, text)
 }
 
+/// 将资源操作描述映射为动作码（created→A、destroyed→D、updated→M、replaced→R）。
 fn terraform_action_code(action: &str) -> &'static str {
     let lower = action.to_ascii_lowercase();
     if lower.contains("created") {

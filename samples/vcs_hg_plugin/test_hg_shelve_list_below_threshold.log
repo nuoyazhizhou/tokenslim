@@ -1,0 +1,3 @@
+hg shelve --list
+default (10 files, 2 days ago)
+feature (5 files, 1 week ago)

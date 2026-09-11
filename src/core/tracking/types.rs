@@ -140,6 +140,7 @@ pub struct FilterGain {
 mod tests {
     use super::*;
 
+    /// 测试：TrackingEvent::new 自动估算 token（bytes/4）并计算节省数与百分比。
     #[test]
     fn test_tracking_event_new() {
         let event = TrackingEvent::new("git status", Some("vcs_git"), 1024, 256, 0);
@@ -153,6 +154,7 @@ mod tests {
         assert!((event.savings_pct() - 75.0).abs() < 0.01);
     }
 
+    /// 测试：输入为 0 时节省数与百分比均为 0。
     #[test]
     fn test_tracking_event_zero_input() {
         let event = TrackingEvent::new("empty", None, 0, 0, 0);
@@ -160,12 +162,14 @@ mod tests {
         assert!((event.savings_pct() - 0.0).abs() < 0.01);
     }
 
+    /// 测试：输入等于输出时节省数为 0。
     #[test]
     fn test_tracking_event_no_savings() {
         let event = TrackingEvent::new("passthrough", None, 100, 100, 0);
         assert_eq!(event.tokens_saved(), 0);
     }
 
+    /// 测试：with_filter_time 设置过滤器耗时。
     #[test]
     fn test_tracking_event_with_filter_time() {
         let event =

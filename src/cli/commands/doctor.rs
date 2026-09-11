@@ -23,7 +23,8 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::io::{self, IsTerminal, Read};
 
-
+/// 处理 doctor encoding 子命令：若指定 --fix 则生成编码修复命令并输出；
+/// 否则运行编码诊断(encoding doctor)，按 text/json 格式输出诊断报告。
 pub(crate) fn handle_doctor_encoding_action(args: &CliArgs) -> Result<bool, CliError> {
     use crate::core::doctor_encoding::{
         generate_fix_commands, run_encoding_doctor, DoctorReportFormat,
@@ -50,7 +51,8 @@ pub(crate) fn handle_doctor_encoding_action(args: &CliArgs) -> Result<bool, CliE
     Ok(true)
 }
 
-
+/// 处理 doctor workspace 子命令：运行工作区诊断(workspace doctor)，
+/// 支持 text/json/llm/jsonmin 四种报告格式，并按 --doctor-strict 控制严格模式。
 pub(crate) fn handle_doctor_workspace_action(args: &CliArgs) -> Result<bool, CliError> {
     use crate::core::doctor_workspace::{run_workspace_doctor, WorkspaceReportFormat};
 
@@ -66,7 +68,8 @@ pub(crate) fn handle_doctor_workspace_action(args: &CliArgs) -> Result<bool, Cli
     Ok(true)
 }
 
-
+/// 处理 doctor rule 子命令：在 cwd 中查找规则配置文件(plugins.toml/rules.toml/.tokenslim.toml)，
+/// 解析为 StaticRuleConfig 后执行诊断，按 text/json 输出结果；未找到则提示已搜索路径。
 pub(crate) fn handle_doctor_rule_action(args: &CliArgs) -> Result<bool, CliError> {
     use crate::core::rule_diagnosis::{diagnose, render_diagnosis_text};
     let cwd =
@@ -106,7 +109,8 @@ pub(crate) fn handle_doctor_rule_action(args: &CliArgs) -> Result<bool, CliError
     Ok(true)
 }
 
-
+/// 处理 doctor env 子命令：收集系统环境信息(操作系统/版本/区域/文件系统)，
+/// 按 text 或 json 格式渲染并输出环境诊断报告。
 pub(crate) fn handle_doctor_env_action(args: &CliArgs) -> Result<bool, CliError> {
     use crate::core::sys_env::get_environment_info;
     let env = get_environment_info();
@@ -131,4 +135,3 @@ pub(crate) fn handle_doctor_env_action(args: &CliArgs) -> Result<bool, CliError>
     args.emit_text(&output, None)?;
     Ok(true)
 }
-

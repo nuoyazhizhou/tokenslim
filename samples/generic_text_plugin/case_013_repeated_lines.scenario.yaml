@@ -1,0 +1,15 @@
+scenario: '经典状态轮询重复刷屏日志：连续多行完全相同，压缩后应收敛为一行并保留次数。'
+target_capability: '重复行收敛（collapse_repeats）'
+expected_keep: 'sync started / all batches processed successfully / processing batch 1 ×5'
+expected_compress: '连续 5 行相同的 processing batch 1 收敛为 1 行'
+source: 'manual'
+generated_at: '2026-09-04T07:35:32Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'c61055d9a68511a917d5c9fbb557afeaf909577c844ed9c96b0e92fcdcfb4831'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:14.186822'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

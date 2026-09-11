@@ -46,6 +46,7 @@ pub enum VcsRecord {
 }
 
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -100,6 +101,7 @@ pub struct VcsDocument {
 }
 
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 
@@ -114,28 +116,48 @@ fn shorten_hash(hash: &str) -> &str {
     }
 }
 
-/// 缩短行中出现的 40 位全长 hex hash 至 10 字符
-fn shorten_long_hashes_in_line(line: &str) -> String {
-    let mut result = String::with_capacity(line.len());
-    let chars: Vec<char> = line.chars().collect();
-    let mut i = 0;
-    while i < chars.len() {
-        if i + 40 <= chars.len() && chars[i..i + 40].iter().all(|c| c.is_ascii_hexdigit()) {
-            // 找到 40 位 hex hash，缩短为 10 位
-            result.push_str(&chars[i..i + 10].iter().collect::<String>());
-            i += 40;
+/// 折叠字符串中连续 2 个及以上空格为单个空格（用于 branch -v 多列对齐压缩）。
+fn collapse_multi_spaces(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    let mut in_run = false;
+    for c in s.chars() {
+        if c == ' ' {
+            if !in_run {
+                out.push(' ');
+                in_run = true;
+            }
         } else {
-            result.push(chars[i]);
-            i += 1;
+            out.push(c);
+            in_run = false;
         }
     }
-    result
+    out
 }
 
-fn shortest_unique_prefix_len(values: &[String], idx: usize, min_len: usize) -> usize {
+/// 计算指定哈希在候选集合中的最短唯一前缀长度（从 min_len 起逐步加长）。
+///
+/// P2-69（D-1）：oneline 模式把多字节首词（如中文 commit 首 token）放入候选集，
+/// 旧版按字节递增 `&cur[..l]` 会切断 UTF-8 字符生产 panic。改经 `char_indices`
+/// 遍历字符边界，避免在多字节字符中间切片。
+pub(super) fn shortest_unique_prefix_len(values: &[String], idx: usize, min_len: usize) -> usize {
     let cur = &values[idx];
+    // 字节长度仅用于封顶范围；实际切片一律落在 char 边界上
     let start = min_len.min(cur.len()).max(1);
-    for l in start..=cur.len() {
+    // 收集所有 ≤cur 的字符边界字节偏移（含 0 与 cur.len()）
+    let mut boundaries = vec![0usize];
+    for (byte_off, _) in cur.char_indices() {
+        if byte_off > 0 {
+            boundaries.push(byte_off);
+        }
+    }
+    if !boundaries.contains(&cur.len()) {
+        boundaries.push(cur.len());
+    }
+    let start_off = match boundaries.iter().position(|&b| b >= start) {
+        Some(p) => boundaries[p],
+        None => cur.len(),
+    };
+    for &l in boundaries.iter().filter(|&&b| b >= start_off) {
         let p = &cur[..l];
         let mut unique = true;
         for (j, other) in values.iter().enumerate() {
@@ -154,7 +176,8 @@ fn shortest_unique_prefix_len(values: &[String], idx: usize, min_len: usize) -> 
     cur.len()
 }
 
-fn build_shortest_unique_prefix_map(
+/// 为去重后的哈希集合构建「哈希→最短唯一前缀」映射（冲突时加长）。
+pub(super) fn build_shortest_unique_prefix_map(
     hashes: &[String],
     default_len: usize,
 ) -> std::collections::HashMap<String, String> {
@@ -171,12 +194,14 @@ fn build_shortest_unique_prefix_map(
         let h = &unique_hashes[i];
         let dynamic = shortest_unique_prefix_len(&unique_hashes, i, 7);
         let target_len = dynamic.max(default_len.min(h.len()));
-        let short = h[..target_len].to_string();
+        // P2-69（D-1）：target_len 可能落在多字节字符中间，用 get(..) 保底回退整串
+        let short = h.get(..target_len).unwrap_or(h).to_string();
         map.insert(h.clone(), short);
     }
     map
 }
 
+/// 从 git log 输出收集提交哈希候选（commit/reflog/oneline 三种形态）。
 fn collect_git_log_hash_candidates(raw: &str) -> Vec<String> {
     let mut hashes = Vec::new();
     let is_oneline_mode = raw.to_ascii_lowercase().contains("--oneline");
@@ -217,6 +242,7 @@ fn collect_git_log_hash_candidates(raw: &str) -> Vec<String> {
     hashes
 }
 
+/// 从 git blame 输出收集行首哈希候选。
 fn collect_git_blame_hash_candidates(raw: &str) -> Vec<String> {
     let mut hashes = Vec::new();
     for line in raw.lines() {
@@ -369,6 +395,7 @@ fn is_git_hint_line(trimmed: &str) -> bool {
         || trimmed.starts_with("(use \"git")
 }
 
+/// 非空记录列表包装为 VcsDocument；空列表返回 None。
 pub fn to_doc_if_any(
     tool: VcsTool,
     kind: VcsDocKind,
@@ -385,6 +412,7 @@ pub fn to_doc_if_any(
     }
 }
 
+/// 判断字符串是否为 VCS 路径形态。
 pub fn looks_like_vcs_path(path: &str) -> bool {
     let lower = path.to_ascii_lowercase();
     path.contains('/')
@@ -394,6 +422,7 @@ pub fn looks_like_vcs_path(path: &str) -> bool {
         || lower.ends_with(".txt")
 }
 
+/// 解析状态码前缀（XY 双字符）与路径。
 pub fn parse_simple_status_path(line: &str) -> Option<(String, String)> {
     let t = line.trim();
     // 格式 1：XY path（porcelain 双字符，如 " M src/file.rs" 或 "A  src/file.rs"）
@@ -421,6 +450,7 @@ pub fn parse_simple_status_path(line: &str) -> Option<(String, String)> {
     None
 }
 
+/// 紧凑化 git 汇总行（折叠空白）。
 pub fn compact_git_summary_line(line: &str) -> String {
     let s = line
         .replace(" files changed", " files")
@@ -432,14 +462,17 @@ pub fn compact_git_summary_line(line: &str) -> String {
     s.trim().to_string()
 }
 
+/// 判断是否为 diff stat 行（含 " | " 分隔）。
 pub fn looks_like_diff_stat_line(line: &str) -> bool {
     line.contains('|') && (line.contains('+') || line.contains('-'))
 }
 
+/// 紧凑化 diff stat 行：折叠连续空白。
 pub fn compact_diff_stat_line(line: &str) -> String {
     line.trim().to_string()
 }
 
+/// 压缩 git reflog 行：checkout: moving from A to B 映射为 co:A->B。
 fn compact_git_reflog_line(line: &str) -> String {
     let s = line.trim();
     let Some((head, rest)) = s.split_once(": ") else {
@@ -454,6 +487,7 @@ fn compact_git_reflog_line(line: &str) -> String {
     s.to_string()
 }
 
+/// 解析 shortlog 头部行（"Name (N):" 格式）。
 fn parse_git_shortlog_header(line: &str) -> Option<String> {
     let s = line.trim();
     if !s.ends_with("):") {
@@ -471,6 +505,7 @@ fn parse_git_shortlog_header(line: &str) -> Option<String> {
     Some(format!("{}({}):", name, count))
 }
 
+/// 将 shortlog 桶冲刷为 CompactLine 记录（头部 + 消息合并）。
 fn flush_git_shortlog_bucket(
     records: &mut Vec<VcsRecord>,
     shortlog_header: &mut String,
@@ -492,6 +527,7 @@ fn flush_git_shortlog_bucket(
     shortlog_msgs.clear();
 }
 
+/// 解析 git remote 传输记录：保留 keyword 行与 ".. ->" 行，过滤传输噪音。
 pub fn parse_git_remote_transfer_records(raw: &str, keyword: &str) -> Vec<VcsRecord> {
     let mut records = Vec::new();
     let mut saw_remote = false;
@@ -520,6 +556,7 @@ pub fn parse_git_remote_transfer_records(raw: &str, keyword: &str) -> Vec<VcsRec
     records
 }
 
+/// 解析 git pull 记录：过滤命令行与传输噪音。
 pub fn parse_git_pull_records(raw: &str) -> Vec<VcsRecord> {
     let mut records = Vec::new();
     for line in raw.lines() {
@@ -531,6 +568,14 @@ pub fn parse_git_pull_records(raw: &str) -> Vec<VcsRecord> {
         if is_git_transfer_noise(t) {
             continue;
         }
+        // 折叠 "Updating X..Y" 中间进度行：无尾随句号的中间进度与结尾完成行语义重复，
+        // 且 range 已由上方的 "X..Y  main -> origin/main" 摘要行承载，直接丢弃避免 hash 区间
+        // 三处重复造成 token 冗余；仅保留带句号的完成态行（"Updating X..Y."）。
+        if let Some(rest) = t.strip_prefix("Updating ") {
+            if !rest.ends_with('.') {
+                continue;
+            }
+        }
         records.push(VcsRecord::CompactLine(t.to_string()));
     }
     records
@@ -540,6 +585,7 @@ pub fn parse_git_pull_records(raw: &str) -> Vec<VcsRecord> {
 
 pub struct GitStatusParser;
 impl VcsParser for GitStatusParser {
+    /// 解析 `git status` 输出：识别分支（On branch / ##）、ahead/behind 计数与未跟踪/已忽略/变更/未合并区块，将文件状态行归为记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut in_untracked = false;
@@ -1161,6 +1207,7 @@ impl VcsParser for GitDiffParser {
 // ... 以此类推集成其它 Git 特有 Parser，无需改动其核心行为
 pub struct GitAddParser;
 impl VcsParser for GitAddParser {
+    /// 解析 `git add` 输出：将 `add 'path'`/`new file: path` 等归为 A 状态文件（HashSet 去重），交互模式 `-p` 下提取 diff 路径，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         // HashSet 去重：同一路径的相同状态只保留一次
@@ -1305,21 +1352,69 @@ impl VcsParser for GitTagParser {
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
     }
 }
+/// git remote -v 单行解析结果：remote 名 + URL + 角色(fetch/push)。
+enum GitRemoteRow {
+    /// 形如 `name url (fetch)`，同 name+url 的 fetch/push 行可合并。
+    Remote(String, String, Vec<String>),
+    /// 其它行（如 `git remote` 裸列表）：原样保留。
+    Plain(String),
+}
+
+/// 解析 `name url (role)` 单行；无法识别返回 None。
+fn parse_git_remote_row(s: &str) -> Option<(String, String, String)> {
+    let s = s.trim();
+    let rest = s.strip_suffix(')')?.trim_end();
+    let (head, role) = rest.rsplit_once('(')?;
+    let role = role.trim();
+    let mut it = head.split_whitespace();
+    let name = it.next()?;
+    let url: Vec<&str> = it.collect();
+    if url.is_empty() {
+        return None;
+    }
+    Some((name.to_string(), url.join(" "), role.to_string()))
+}
+
 pub struct GitRemoteParser;
 impl VcsParser for GitRemoteParser {
     /// 解析 git remote -v 输出：
-    /// "origin  https://url (fetch)" → CompactLine("origin https://url (fetch)")
+    /// - 合并同一 remote 同 name+url 的 `(fetch)/(push)` 两行为单行 `name url (fetch/push)`
+    /// - 其余行压缩连续空白为单空格
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
-        let mut records = Vec::new();
+        let mut combined: Vec<GitRemoteRow> = Vec::new();
         for line in raw.lines() {
             let t = line.trim();
             if t.is_empty() || t.to_ascii_lowercase().starts_with("git remote") {
                 continue;
             }
-            // 压缩连续空白为单空格
             let compacted = t.split_whitespace().collect::<Vec<_>>().join(" ");
-            records.push(VcsRecord::CompactLine(compacted));
+            if let Some((name, url, role)) = parse_git_remote_row(&compacted) {
+                // 若已存在同 name+url 的 Remote 行，追加角色；否则新建
+                let found = combined.iter_mut().find_map(|item| match item {
+                    GitRemoteRow::Remote(n, u, roles) if *n == name && *u == url => Some(roles),
+                    _ => None,
+                });
+                match found {
+                    Some(roles) => {
+                        if !roles.contains(&role) {
+                            roles.push(role);
+                        }
+                    }
+                    None => combined.push(GitRemoteRow::Remote(name, url, vec![role])),
+                }
+            } else {
+                combined.push(GitRemoteRow::Plain(compacted));
+            }
         }
+        let records: Vec<VcsRecord> = combined
+            .into_iter()
+            .map(|item| match item {
+                GitRemoteRow::Remote(name, url, roles) => {
+                    VcsRecord::CompactLine(format!("{} {} ({})", name, url, roles.join("/")))
+                }
+                GitRemoteRow::Plain(s) => VcsRecord::CompactLine(s),
+            })
+            .collect();
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
     }
 }
@@ -1327,6 +1422,7 @@ impl VcsParser for GitRemoteParser {
 // --- Git Merge / Rebase / Bisect 扩展 ---
 pub struct GitMergeParser;
 impl VcsParser for GitMergeParser {
+    /// 解析 `git merge` 输出：过滤 hint 教学行、标准化错误（fatal/error/CONFLICT），提取 `Auto-merging`/`Merge made by` 等，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1369,6 +1465,7 @@ impl VcsParser for GitMergeParser {
 
 pub struct GitRebaseParser;
 impl VcsParser for GitRebaseParser {
+    /// 解析 `git rebase` 输出：过滤 hint 与 `#` 教学注释行，压缩 `Applying:`/`Successfully rebased` 等，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1418,6 +1515,7 @@ impl VcsParser for GitRebaseParser {
 
 pub struct GitFetchParser;
 impl VcsParser for GitFetchParser {
+    /// 解析 `git fetch` 输出：委托远端传输记录解析（以 `From ` 识别源），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_git_remote_transfer_records(raw, "From ");
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
@@ -1426,6 +1524,7 @@ impl VcsParser for GitFetchParser {
 
 pub struct GitPushParser;
 impl VcsParser for GitPushParser {
+    /// 解析 `git push` 输出：委托远端传输记录解析（以 `To ` 识别目标），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_git_remote_transfer_records(raw, "To ");
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
@@ -1434,6 +1533,7 @@ impl VcsParser for GitPushParser {
 
 pub struct GitPullParser;
 impl VcsParser for GitPullParser {
+    /// 解析 `git pull` 输出：委托 pull 记录解析，将拉取结果归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_git_pull_records(raw);
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
@@ -1442,6 +1542,7 @@ impl VcsParser for GitPullParser {
 
 pub struct GitResetParser;
 impl VcsParser for GitResetParser {
+    /// 解析 `git reset` 输出：将 `Commit 'hash'` 归为 Commit 记录，其余状态行归为文件记录，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1470,6 +1571,7 @@ impl VcsParser for GitResetParser {
 
 pub struct GitRestoreParser;
 impl VcsParser for GitRestoreParser {
+    /// 解析 `git restore` 输出：将 `Restored path:`/`Discarded changes in` 归为单行记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1559,7 +1661,8 @@ impl VcsParser for GitBisectParser {
                         continue;
                     }
                 }
-                records.push(VcsRecord::CompactLine(t.to_string()));
+                // Bisecting 模板行压缩：折叠重复模板文字，仅保留剩余修订数 N 与预估步数 M
+                records.push(VcsRecord::CompactLine(compact_bisecting_line(t)));
                 continue;
             }
             if t.starts_with("HEAD is now at") {
@@ -1574,6 +1677,28 @@ impl VcsParser for GitBisectParser {
             records.push(VcsRecord::CompactLine(t.to_string()));
         }
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
+    }
+}
+
+/// 压缩 `Bisecting: N revisions left to test after this (roughly M steps)` 模板行。
+///
+/// 该行是 git bisect 的固定文案，重复出现，仅剩余修订数 N 与预估步数 M 是
+/// 决策相关数字；折叠模板文字仅保留两者以去冗余。
+#[tracing::instrument(level = "debug", skip_all)]
+fn compact_bisecting_line(line: &str) -> String {
+    let body = line.strip_prefix("Bisecting: ").unwrap_or(line);
+    // 剩余修订数：第一个独立的十进制数字
+    let n = body.split_whitespace().find_map(|w| w.parse::<u64>().ok());
+    // 预估步数：`roughly` 后的第一个十进制数字
+    let m = body
+        .split("roughly ")
+        .nth(1)
+        .and_then(|s| s.split_whitespace().next())
+        .and_then(|w| w.parse::<u64>().ok());
+    match (n, m) {
+        (Some(n), Some(m)) => format!("Bisecting: {} left (~{})", n, m),
+        // 无法安全提取两个数字时不改写，保留原文
+        _ => line.to_string(),
     }
 }
 
@@ -1734,8 +1859,23 @@ impl VcsParser for GitCherryPickParser {
 pub struct GitRevertParser;
 impl VcsParser for GitRevertParser {
     /// 解析 git revert 输出：revert commit 信息、变更摘要
+    ///
+    /// 将三段等价描述合并为两行保语义：保留 `Reverting commit` / `Reverted commit`
+    /// 短语，删除冗余的整段全 hash 行与 "completed successfully" 样板句，并把日期/作者
+    /// /parent 折叠进 `Reverted commit` 行。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
+        // revert 缓冲：跨行累积冗余信息，待回填到合并行
+        let mut committed_info: Option<String> = None; // "20260401 by alice.chen"
+                                                       // parent 出现在 "Reverted commit" 之后，需预扫描提前捕获
+        let mut parent: Option<String> = None;
+        for l in raw.lines() {
+            if let Some(p) = l.split("with parent ").nth(1) {
+                if let Some(pid) = p.split_whitespace().next() {
+                    parent = Some(pid.to_string());
+                }
+            }
+        }
         for line in raw.lines() {
             let t = line.trim();
             if t.is_empty() || t.to_ascii_lowercase().starts_with("git revert") {
@@ -1749,10 +1889,43 @@ impl VcsParser for GitRevertParser {
                 records.push(VcsRecord::CompactLine(normalize_error_line(t)));
                 continue;
             }
-            // Reverting commit 行（缩短全长 hash）
-            if t.starts_with("Reverting commit ") || t.starts_with("Reverted commit ") {
-                let shortened = shorten_long_hashes_in_line(t);
-                records.push(VcsRecord::CompactLine(shortened));
+            // 起始行：Reverting commit <short>——保留短语本身，等待后续补充信息
+            if let Some(short) = t.strip_prefix("Reverting commit ") {
+                let short = short.trim_end_matches(':').trim();
+                records.push(VcsRecord::CompactLine(format!(
+                    "Reverting commit {}",
+                    short
+                )));
+                continue;
+            }
+            // 冗余描述行：This reverts commit <full hash>——与 <short> 语义重复，丢弃
+            if t.starts_with("This reverts commit ") || t.starts_with("This reverts the commit ") {
+                continue;
+            }
+            // 提交时间/作者行：折叠进合并行（日期符号化去 '-'）
+            if let Some(rest) = t.strip_prefix("which was originally committed on ") {
+                committed_info = Some(rest.trim().replace('-', ""));
+                continue;
+            }
+            // 自动 revert 样板句：parent 已预扫描，该行整句冗余，直接丢弃
+            if t.starts_with("Automatic revert of commit") {
+                continue;
+            }
+            // 结束行：Reverted commit <short>——把日期/作者/parent 折叠成一行输出
+            if let Some(short) = t.strip_prefix("Reverted commit ") {
+                let short = short.trim_end_matches('.').trim();
+                let mut line = format!("Reverted commit {}", short);
+                if let Some(ci) = committed_info.take() {
+                    let mut extra = format!(" (was {}", ci);
+                    if let Some(p) = parent.take() {
+                        extra.push_str(&format!("; parent {}", p));
+                    }
+                    extra.push(')');
+                    line.push_str(&extra);
+                } else if let Some(p) = parent.take() {
+                    line.push_str(&format!(" (parent {})", p));
+                }
+                records.push(VcsRecord::CompactLine(line));
                 continue;
             }
             // 摘要行
@@ -1791,10 +1964,14 @@ impl VcsParser for GitBranchParser {
             // 当前活跃分支：* 开头
             if t.starts_with("* ") {
                 // 分支列表场景保留星标，但不引入 BR: 标签，避免 *BR:main 这种别扭输出
-                records.push(VcsRecord::CompactLine(format!("* {}", t[2..].trim())));
+                records.push(VcsRecord::CompactLine(format!(
+                    "* {}",
+                    collapse_multi_spaces(&t[2..].trim())
+                )));
                 continue;
             }
-            records.push(VcsRecord::CompactLine(t.to_string()));
+            // 普通分支行：折叠列对齐的多空格（branch -v 等多列场景），不丢任何语义 token
+            records.push(VcsRecord::CompactLine(collapse_multi_spaces(&t)));
         }
         to_doc_if_any(VcsTool::Git, VcsDocKind::Log, records)
     }
@@ -1802,6 +1979,7 @@ impl VcsParser for GitBranchParser {
 
 pub struct GitCheckoutParser;
 impl VcsParser for GitCheckoutParser {
+    /// 解析 `git checkout` 输出：识别 `Switched to branch`/分离 HEAD，将分支切换归为 Branch 记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1880,6 +2058,7 @@ fn flush_git_show_commit(
 
 pub struct GitShowParser;
 impl VcsParser for GitShowParser {
+    /// 解析 `git show` 输出：收集提交哈希并构建最短唯一前缀，将提交信息（hash/author/date/message）归并为单行记录，输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let hash_candidates = collect_git_log_hash_candidates(raw);
@@ -2063,6 +2242,7 @@ impl VcsParser for GitBlameParser {
 
 pub struct GitStashParser;
 impl VcsParser for GitStashParser {
+    /// 解析 `git stash` 输出：将 `Saved working directory...` 归为 Subject、diffstat 行压缩，其余回退给 `GitStatusParser` 复用，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut mock_status = String::new();

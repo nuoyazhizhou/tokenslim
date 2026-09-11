@@ -1,0 +1,48 @@
+vitest run --reporter=default
+
+ RUN  v3.2.0 /home/ci/projects/app
+
+ ✓ src/components/Button.test.tsx (4 tests) 125ms
+ ✓ src/components/Modal.test.tsx (2 tests) 87ms
+ ✗ src/components/Input.test.tsx > validation > rejects empty value (67ms)
+ ✓ src/hooks/useAuth.test.ts (1 test) 19ms
+ ✓ src/hooks/useDebounce.test.ts (2 tests) 8ms
+ ✗ src/utils/format.test.ts > currency > formats negative (33ms)
+ ✓ src/utils/validator.test.ts (3 tests) 15ms
+ ✓ src/api/client.test.ts (2 tests) 33ms
+ ✓ src/store/auth.test.ts (2 tests) 25ms
+ ✓ src/store/cart.test.ts (2 tests) 22ms
+ ✓ src/pages/Login.test.tsx (3 tests) 54ms
+ ✓ src/pages/Home.test.tsx (4 tests) 66ms
+ ✗ src/App.test.tsx > render > shows loading state (91ms)
+
+ FAIL  src/components/Input.test.tsx > validation > rejects empty value
+
+ AssertionError: expected 'a' to be ''
+  Expected: ""
+  Received: "a"
+
+  ❯ src/components/Input.test.tsx:14:31
+  ❯ src/components/Input.test.tsx:9:9
+
+ FAIL  src/utils/format.test.ts > currency > formats negative
+
+ AssertionError: expected '-100.00' to be '$-100.00'
+  Expected: "$-100.00"
+  Received: "-100.00"
+
+  ❯ src/utils/format.test.ts:22:31
+  ❯ src/utils/format.test.ts:17:9
+
+ FAIL  src/App.test.tsx > render > shows loading state
+
+ Test timed out in 5000ms.
+
+  ❯ src/App.test.tsx:30:31
+  ❯ src/App.test.tsx:25:9
+
+ Test Files  13 passed (13)
+      Tests  32 passed | 3 failed (35)
+   Duration  3.41s (in 3.60s)
+
+  FAIL  Tests failed. See above for more details.

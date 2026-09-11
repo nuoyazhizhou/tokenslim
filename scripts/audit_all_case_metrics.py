@@ -330,7 +330,7 @@ def write_route_replay_cases(results, out_dir, version, route_replay_path, route
             "status": "sample_not_found"
         })
         
-    with open(route_replay_path, "w", encoding="utf-8") as f:
+    with open(route_replay_path, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(md))
         
     json_doc = {
@@ -340,7 +340,7 @@ def write_route_replay_cases(results, out_dir, version, route_replay_path, route
         "active_replay_cases": json_active,
         "smoke_baseline": json_smoke
     }
-    with open(route_replay_json_path, "w", encoding="utf-8") as f:
+    with open(route_replay_json_path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(json_doc, f, indent=4)
 
 def write_audit_review_prompt(audit_index, results, failed, path, route_replay_path, route_replay_json_path):
@@ -366,8 +366,20 @@ def write_audit_review_prompt(audit_index, results, failed, path, route_replay_p
         "4. If a case needs optimization, update the relevant task board before ending the turn.",
         "5. Do not mark the task complete while any active P0/P1/P2 item remains stale in docs/tasks, docs/plans, or docs/reports.",
         f"6. Review {route_replay_path} and {route_replay_json_path} for route/detector explainability, fallback decisions, retry_plugin suggestions, recommendation fields, and replay templates for suspicious cases.\n",
-        "## Failed Plugins\n"
+        "## Frozen Drift Hard Block\n",
+        "Frozen case drift (frozen_changed / frozen_missing) is a hard blocking condition, not a mild warning. If total_frozen_changed > 0 or total_frozen_missing > 0, you MUST NOT mark the audit pass and MUST resolve before continuing:"
     ]
+    if audit_index['total_frozen_changed'] > 0 or audit_index['total_frozen_missing'] > 0:
+        frozen_blockers = [r for r in results if r['frozen_changed'] > 0 or r['frozen_missing'] > 0]
+        prompt.append("")
+        for r in sorted(frozen_blockers, key=lambda x: x["plugin"]):
+            prompt.append(f"- Blocking: {r['plugin']} frozen_changed={r['frozen_changed']}, frozen_missing={r['frozen_missing']}")
+        prompt.append("Details in docs/audit/audit_health.md 'Frozen Drift Blockers'. Resolve via `--freeze-case` re-freeze or revert-to-baseline; do not delete frozen samples.")
+    else:
+        prompt.append("")
+        prompt.append("- None: no frozen case drift detected.\n")
+    
+    prompt.append("## Failed Plugins\n")
     
     if not failed:
         prompt.append("- None\n")
@@ -393,8 +405,75 @@ def write_audit_review_prompt(audit_index, results, failed, path, route_replay_p
     prompt.append("tokenslim explain-plugin --format json --input docs/audit/<plugin>/cases/<case_id>/original.txt --explain-replay-out docs/audit/<plugin>/cases/<case_id>/route_replay.md")
     prompt.append("~~~\n")
     
-    with open(path, "w", encoding="utf-8") as f:
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(prompt))
+
+def flag_replay_failure(entry):
+    """判断一个 replay 样本是否为失败样本（需要人工跟踪）。"""
+    action = (entry.get("recommendation") or {}).get("action", "") if entry.get("recommendation") else ""
+    decision = entry.get("fallback_decision", "")
+    status = entry.get("status", "")
+    parsed = entry.get("explain_json_parsed", True)
+    if status in ("original_mirror_missing", "needs_manual_case_lookup"):
+        return f"status:{status}"
+    if not parsed:
+        return "explain_parse_failed"
+    if action == "review_and_retry" or decision == "review_recommended":
+        return "review_flagged"
+    return ""
+
+def write_route_replay_tracker(active_cases, smoke_cases, version, tasks_dir="docs/tasks"):
+    """把 route replay 未能自动收口的失败样本写入任务看板，避免审计通过后被遗漏跟踪（P3 action3）。
+
+    每次运行整体重建 tracker 文件，保证幂等，不产生重复项。
+    """
+    holder = []
+    kind_label = {"audit_case": "", "smoke": "[smoke baseline] "}
+    for entry in active_cases:
+        reason = flag_replay_failure(entry)
+        if reason:
+            holder.append((entry, "audit_case", reason))
+    for entry in smoke_cases:
+        reason = flag_replay_failure(entry)
+        if reason:
+            holder.append((entry, "smoke", reason))
+
+    ensure_dir(tasks_dir)
+    path = os.path.join(tasks_dir, "ROUTE_REPLAY_TRACKER.md")
+    lines = [
+        "# Route Replay Failure Tracker (AUTO-GENERATED)",
+        f"- generated_at: {datetime.now().isoformat()}",
+        f"- source_audit_version: {version}",
+        "- 本文件由 audit_all_case_metrics.py 自动生成，覆盖式写入。",
+        "- 汇总所有未能自动收口的 route replay 失败样本，逐项人工复核后勾选。",
+        ""
+    ]
+    if not holder:
+        lines.append("当前审计无 route replay 失败样本需要跟踪。")
+        lines.append("")
+    else:
+        for entry, kind, reason in sorted(holder, key=lambda e: f"{e[0].get('plugin', '')}/{e[0].get('case_id', '')}"):
+            plugin = entry.get("plugin", "?")
+            case_id = entry.get("case_id", "")
+            label = f"- [ ] {kind_label[kind].strip()} `{plugin}/{case_id}`"
+            issue = f"{kind_label[kind]}问题: {reason}"
+            if case_id:
+                replay = entry.get("replay_command", "")
+                if replay:
+                    lines.append(label)
+                    lines.append(f"  - {issue}")
+                    lines.append(f"  - 复现/复核命令: `{replay}`")
+                else:
+                    lines.append(label)
+                    lines.append(f"  - {issue}")
+            else:
+                lines.append(label)
+                lines.append(f"  - {issue}（需先用 audit_case_metrics.py 定位并导出 case）")
+            lines.append("")
+
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write("\n".join(lines))
+    return path
 
 def main():
     parser = argparse.ArgumentParser(description="Aggregated audit run coordinator for all TokenSlim plugins.")
@@ -564,7 +643,7 @@ def main():
     route_replay_path = os.path.join(out_dir, "route_replay_cases.md")
     route_replay_json_path = os.path.join(out_dir, "route_replay_cases.json")
     
-    with open(index_path, "w", encoding="utf-8") as f:
+    with open(index_path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(audit_index, f, indent=4)
         
     # Write health md
@@ -588,7 +667,47 @@ def main():
     ]
     for r in sorted(results, key=lambda x: x["plugin"]):
         md.append(f"| {r['plugin']} | {r['status']} | {r['cases']} | {r['regressed']} | {r['missing']} | {r['frozen_changed']} | {r['frozen_missing']} | {r['semantic_gate_failed']} | {r['showcase_missing']} | {r['state_frozen']} | {r['state_auditing']} | {r['exit_code']} |")
-        
+
+    # 冻结漂移阻断章节：当存在 frozen_changed / frozen_missing 时，单独列出受影响插件，
+    # 并给出可执行的解冻/重新冻结命令，避免与大块失败信息混在一起被忽略（P3 action2）。
+    frozen_drift_plugins = [r for r in results if r["frozen_changed"] > 0 or r["frozen_missing"] > 0]
+    if frozen_drift_plugins:
+        md.append("\n## Frozen Drift Blockers\n")
+        md.append("下列插件存在冻结 case 变更(frozen_changed)或缺失(frozen_missing)，审计视为硬阻断，"
+                  "修复前不允许标记通过。核对各项变更是否属预期压缩产物演进：")
+        md.append("")
+        md.append("| plugin | frozen_changed | frozen_missing | state_frozen | state_auditing |")
+        md.append("| ------ | -------------: | -------------: | -----------: | -------------: |")
+        for r in sorted(frozen_drift_plugins, key=lambda x: x["plugin"]):
+            md.append(f"| {r['plugin']} | {r['frozen_changed']} | {r['frozen_missing']} | {r['state_frozen']} | {r['state_auditing']} |")
+        md.append("")
+        md.append("处理方式（二选一，禁直接删除冻结样本）：")
+        md.append("- 确认演进正确 → 用新版压缩产物更新样本并重新冻结，或对指定 case 执行：")
+        md.append(f"  `tokenslim run python scripts/audit_case_metrics.py --plugin <plugin> --version {version} --freeze-case <case_id> --require-semantic-gate`")
+        md.append("- 属误报 → 还原样本/代码至冻结基线，重跑 `--fail-on-frozen-change` 直到清零。")
+        md.append("")
+
+    # 功能点覆盖附录：把 project_insight 的功能点 goal_score/coverage/优化优先级写入 audit_health，
+    # 使健康报告反映功能点维度的覆盖状态与治理优先级（而非仅插件维度）。
+    cov_path = os.path.join(out_dir, "coverage_matrix.json")
+    if os.path.isfile(cov_path):
+        try:
+            with open(cov_path, "r", encoding="utf-8") as f:
+                cov_source = json.load(f)
+            cov_rows = sorted(cov_source.get("rows", []), key=lambda r: float(r.get("optimization_priority", 0.0)), reverse=True)
+            if cov_rows:
+                md.append("\n## Feature Coverage Appendix\n")
+                md.append("| feature | goal_score | complexity | coverage | opt_priority | review_priority |")
+                md.append("| ------- | ---------: | ---------: | -------: | ------------: | ---------------: |")
+                for r in cov_rows:
+                    md.append(
+                        f"| {r.get('feature_id', '?')} | {r.get('goal_weighted_score', 0):.2f} | "
+                        f"{r.get('complexity_hint', 0):.2f} | {r.get('coverage_score', 0)}/3 | "
+                        f"{r.get('optimization_priority', 0):.3f} | {r.get('review_priority', '?')} |"
+                    )
+        except Exception as e:
+            print(f"WARN: failed to append feature coverage appendix to audit_health: {e}")
+
     if failed:
         md.append("\n## Failed Plugins\n")
         for r in sorted(failed, key=lambda x: x["plugin"]):
@@ -598,7 +717,7 @@ def main():
                 md.append(line)
             md.append("```\n")
             
-    with open(health_path, "w", encoding="utf-8") as f:
+    with open(health_path, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(md))
         
     # Explain review calculations
@@ -608,6 +727,8 @@ def main():
     explain_review_flagged = 0
     explain_review_active_cases = 0
     explain_review_smoke_cases = 0
+    active_cases = []
+    smoke_cases = []
     
     if os.path.exists(route_replay_json_path):
         try:
@@ -630,6 +751,12 @@ def main():
                     explain_review_flagged += 1
         except Exception as e:
             print(f"WARN: unable to parse route replay json for explain-review gate: {e}")
+    
+    # 自动把 route replay 失败样本写入任务看板，避免审计通过后被遗漏跟踪（P3 action3）。
+    tracker_path = write_route_replay_tracker(active_cases, smoke_cases, version)
+    print(f"route_replay_tracker={tracker_path}")
+    tracker_failures = sum(1 for e in active_cases + smoke_cases if flag_replay_failure(e))
+    print(f"route_replay_tracker_failures={tracker_failures}")
             
     # Outputs
     print(f"audit_index={index_path}")
@@ -656,6 +783,13 @@ def main():
     print(f"explain_review_smoke_cases={explain_review_smoke_cases}")
     print(f"explain_review_flagged={explain_review_flagged}")
     
+    if args.fail_on_frozen_change and (total_frozen_changed > 0 or total_frozen_missing > 0):
+        frozen_drift = [r for r in results if r["frozen_changed"] > 0 or r["frozen_missing"] > 0]
+        print(f"ERROR: Frozen drift hard block: frozen_changed={total_frozen_changed}, frozen_missing={total_frozen_missing}. "
+              f"Affected plugin(s): {', '.join(r['plugin'] for r in frozen_drift)}. "
+              "Resolve via re-freeze or revert-to-baseline before retry.", file=sys.stderr)
+        sys.exit(2)
+
     if args.fail_on_any_failure and (len(failed) > 0 or capability_failed):
         print(f"ERROR: Audit failed: {len(failed)} plugin(s) failed, capability_failed={capability_failed}.", file=sys.stderr)
         sys.exit(1)

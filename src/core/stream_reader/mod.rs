@@ -14,7 +14,7 @@ mod methods;
 mod types;
 pub use types::{
     BlockIterator, Bom, CharsetEncoding, FileMetadata, FileType, Inner, LineIterator, SliceInput,
-    StreamError, StreamReadConfig, StreamReader,
+    StreamError, StreamReader,
 };
 #[cfg(test)]
 mod test;

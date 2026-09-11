@@ -1,70 +1,36 @@
 #![allow(dead_code)]
 //! GitLab (glab) 压缩方法 — Compression Protocol V1
-use super::parser::*;
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
 use crate::core::utils::roi::prefer_non_expanding;
 
 // ============================================================================
-// 遗留 parser 集成（保留兼容性）
-// ============================================================================
-#[tracing::instrument(level = "debug", skip_all)]
-pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
-    match parser.parse(raw) {
-        Some(doc) => render_glab_doc(&doc),
-        None => raw.to_string(),
-    }
-}
-
-fn render_glab_doc(doc: &VcsDocument) -> String {
-    let mut lines = Vec::new();
-    for rec in &doc.records {
-        lines.push(render_glab_record(rec));
-    }
-    lines.join("\n")
-}
-
-fn render_glab_record(rec: &VcsRecord) -> String {
-    match rec {
-        VcsRecord::Section(s) => format!("[{}]", s),
-        VcsRecord::Commit(c) => format!("!{}", c),
-        VcsRecord::Subject(s) => s.clone(),
-        VcsRecord::Author(a) => format!("@{}", a),
-        VcsRecord::Date(d) => d.clone(),
-        VcsRecord::Stat(s) => s.clone(),
-        VcsRecord::Raw(r) => r.clone(),
-        VcsRecord::File { status, path } => {
-            if let Some(st) = status {
-                format!("{} {}", st, path)
-            } else {
-                path.clone()
-            }
-        }
-        VcsRecord::LabeledFile { label, path } => format!("[{}] {}", label, path),
-        _ => rec.to_string(),
-    }
-}
-
-// ============================================================================
 // 公开 API
 // ============================================================================
+/// glab 日志的 AI 压缩入口：dispatch 压缩 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_glab_log_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, compact_glab_dispatch(raw))
 }
 
+/// glab 其他输出的 AI 压缩入口：dispatch 压缩 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_glab_other_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, compact_glab_dispatch(raw))
 }
 
+/// 判断是否为 glab 命令块：首个非空行以 glab 命令头开头。
 #[tracing::instrument(level = "debug", skip_all)]
-pub fn is_glab_log_block(_: &str) -> bool {
-    true
+pub fn is_glab_log_block(text: &str) -> bool {
+    text.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim_start().starts_with("glab "))
+        .unwrap_or(false)
 }
 
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：按首行 glab 命令分派到 mr/issue list/view/create 专用压缩。
 fn compact_glab_dispatch(raw: &str) -> String {
     if raw.len() < 50 {
         return raw.to_string();
@@ -99,6 +65,7 @@ fn compact_glab_dispatch(raw: &str) -> String {
 // ============================================================================
 // Case 95: mr list — 保留锚点，列解析，符号化输出
 // ============================================================================
+/// 压缩 glab mr list 输出：保留锚点，跳过表头/分隔线，行解析为 !ID ST: OW: 格式。
 fn compact_glab_mr_list(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -186,6 +153,7 @@ fn parse_glab_mr_row(line: &str) -> Option<String> {
 // ============================================================================
 // Case 110: issue list — 保留锚点，表头清除，列解析
 // ============================================================================
+/// 压缩 glab issue list 输出：行解析为 #ID ST: OW: LB: 格式。
 fn compact_glab_issue_list(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -218,7 +186,9 @@ fn compact_glab_issue_list(raw: &str) -> String {
 /// Issue 行: 1   Fix login bug   bug   alice   alice   Open
 fn parse_glab_issue_row(line: &str) -> Option<String> {
     let tokens: Vec<&str> = line.split_whitespace().collect();
-    if tokens.len() < 4 {
+    // 守卫：至少需要 ID+标题+标签+指派+作者+状态 6 列；len<5 时 tokens[1..len-4]
+    // 会退化为逆序切片（如 tokens[1..0]）直接 panic，故收紧到 <5 提前拒绝。
+    if tokens.len() < 5 {
         return None;
     }
     if tokens[0].parse::<u32>().is_err() {
@@ -251,6 +221,7 @@ fn parse_glab_issue_row(line: &str) -> Option<String> {
 // ============================================================================
 // Case 108: mr view — 保留锚点，K-V 扁平化，DESC 单独行
 // ============================================================================
+/// 压缩 glab mr view 输出：K-V 扁平化（ST/OW/RV/BR/URL），Description 单独 DESC 行。
 fn compact_glab_mr_view(raw: &str) -> String {
     let mut out = Vec::new();
     let mut meta: Vec<String> = Vec::new();
@@ -327,6 +298,7 @@ fn compact_glab_mr_view(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 从标题行提取 MR 编号（!123）。
 fn parse_glab_mr_id(line: &str) -> Option<String> {
     let tokens: Vec<&str> = line.split_whitespace().collect();
     if tokens.is_empty() || !tokens[0].starts_with('!') {
@@ -341,6 +313,7 @@ fn parse_glab_mr_id(line: &str) -> Option<String> {
     }
 }
 
+/// 将 mr view 的 K-V 行映射为符号标记（ST/OW/RV/BR/URL/AS）。
 fn compact_glab_view_kv(line: &str) -> Option<String> {
     let colon = line.find(':')?;
     let key = line[..colon].trim().to_ascii_lowercase();
@@ -379,6 +352,7 @@ fn compact_glab_view_kv(line: &str) -> Option<String> {
 // ============================================================================
 // Case 111: issue view — 保留锚点，K-V 扁平化
 // ============================================================================
+/// 压缩 glab issue view 输出：K-V 扁平化，Description 单独 DESC 行。
 fn compact_glab_issue_view(raw: &str) -> String {
     let mut out = Vec::new();
     let mut meta: Vec<String> = Vec::new();
@@ -448,6 +422,7 @@ fn compact_glab_issue_view(raw: &str) -> String {
 // ============================================================================
 // Case 109/159: mr create — 保留锚点，去除 ✓，A: 映射
 // ============================================================================
+/// 压缩 glab mr create 输出：Created merge request 映射为 A:。
 fn compact_glab_mr_create(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -491,6 +466,7 @@ fn compact_glab_mr_create(raw: &str) -> String {
 // ============================================================================
 // Case 206: issue create — 保留锚点，去除 ✓，A: 映射
 // ============================================================================
+/// 压缩 glab issue create 输出：Created issue 映射为 A:。
 fn compact_glab_issue_create(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -529,6 +505,7 @@ fn compact_glab_issue_create(raw: &str) -> String {
 // ============================================================================
 // 通用噪音过滤与 fallback
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤分隔线/表头/噪音/URL，警报映射。
 fn compact_glab_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -573,24 +550,56 @@ fn compact_glab_generic(raw: &str) -> String {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 判断是否为分隔线（≥10 个 - 或 =）。
 fn is_glab_separator(line: &str) -> bool {
     line.len() >= 10 && line.chars().all(|c| c == '-' || c == '=')
 }
 
+/// 判断是否为表格表头行。对齐 gh 的「全大写 + 表头关键词」双判据（P3-189）：
+/// 旧判据为「首字母大写词 ≥3」，会把 Title Case 普通数据行（如
+/// `Add User Authentication Flow`）误判为表头而在 compact_glab_generic/mr_list 中整行
+/// 丢弃，造成数据丢失。现仅当 ≥3 个「全大写」词或命中 ≥3 个表头关键词时才判表头。
 fn is_glab_table_header(line: &str) -> bool {
-    let header_words: Vec<&str> = line
-        .split_whitespace()
-        .filter(|w| {
-            w.len() >= 2
-                && w.chars()
-                    .next()
-                    .map(|c| c.is_ascii_uppercase())
-                    .unwrap_or(false)
-        })
-        .collect();
-    header_words.len() >= 3
+    let words: Vec<&str> = line.split_whitespace().collect();
+    if words.len() < 3 {
+        return false;
+    }
+    // ALL-CAPS 表头（STATE/STATUS/MILESTONE/LABELS...）
+    let caps_count = words
+        .iter()
+        .filter(|w| w.len() >= 2 && w.chars().all(|c| c.is_ascii_uppercase()))
+        .count();
+    if caps_count >= 3 {
+        return true;
+    }
+    // 表头关键词命中（gitlab mr/issue 表格常见列名）
+    let kw = [
+        "name",
+        "description",
+        "visibility",
+        "updated",
+        "created",
+        "files",
+        "public",
+        "active",
+        "deploy",
+        "environment",
+        "title",
+        "labels",
+        "assignee",
+        "author",
+        "status",
+        "duration",
+        "trigger",
+    ];
+    let kw_count = words
+        .iter()
+        .filter(|w| kw.contains(&w.to_ascii_lowercase().as_str()))
+        .count();
+    kw_count >= 3
 }
 
+/// 判断是否为 mr/issue view 噪音行（created/updated/milestone/labels 等）。
 fn is_glab_view_noise(line: &str) -> bool {
     if line_has_preserved_keyword(line) {
         return false;
@@ -605,6 +614,7 @@ fn is_glab_view_noise(line: &str) -> bool {
         || lower.starts_with("comments:")
 }
 
+/// 判断是否为 glab 噪音行（creating/created merge request 等）。
 fn is_glab_noise(line: &str) -> bool {
     let lower = line.to_ascii_lowercase();
     lower.starts_with("creating merge request")
@@ -614,6 +624,7 @@ fn is_glab_noise(line: &str) -> bool {
         || lower.starts_with("url:")
 }
 
+/// 判断是否为 Description 段边界（Changes/Steps to reproduce/Expected/Actual）。
 fn is_glab_desc_boundary(line: &str) -> bool {
     if line_has_preserved_keyword(line) {
         return false;
@@ -625,6 +636,7 @@ fn is_glab_desc_boundary(line: &str) -> bool {
         || lower.starts_with("actual:")
 }
 
+/// 判断行是否含需保留的错误关键词（error/fatal/panic 等）。
 fn line_has_preserved_keyword(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.contains("error")
@@ -634,6 +646,7 @@ fn line_has_preserved_keyword(line: &str) -> bool {
         || l.contains("uncaught")
 }
 
+/// 缩写 URL 主机名（gitlab/github/azure/bitbucket）。
 fn abbreviate_glab_url(url: &str) -> String {
     url.replace("https://gitlab.com/", "gl:")
         .replace("https://github.com/", "gh:")
@@ -641,10 +654,12 @@ fn abbreviate_glab_url(url: &str) -> String {
         .replace("https://bitbucket.org/", "bb:")
 }
 
+/// 综合噪音判断：is_glab_noise 或 is_glab_view_noise。
 pub(super) fn is_glab_noise_line(line: &str) -> bool {
     is_glab_noise(line) || is_glab_view_noise(line)
 }
 
+/// 将含 conflict/error/failed/rejected 的行标记为警报（前缀 !）。
 pub(super) fn map_glab_alert(line: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
     let triggers = ["conflict", "error:", "failed", "rejected"];

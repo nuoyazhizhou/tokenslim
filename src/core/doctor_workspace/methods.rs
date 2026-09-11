@@ -15,6 +15,7 @@ const E_DOCTOR_WORKSPACE_WRITE_CONTEXT: &str = "E_DOCTOR_WORKSPACE_WRITE_CONTEXT
 const E_DOCTOR_WORKSPACE_CREATE_AUDIT_DIR: &str = "E_DOCTOR_WORKSPACE_CREATE_AUDIT_DIR";
 const E_DOCTOR_WORKSPACE_WRITE_AUDIT: &str = "E_DOCTOR_WORKSPACE_WRITE_AUDIT";
 
+/// 运行工作区诊断并按指定格式输出结果。strict 模式会把 Warn 级信号提升为整体风险；支持 json/text/llm/JsonMin 四种输出。
 pub fn run_workspace_doctor(format: WorkspaceReportFormat, strict: bool) -> Result<String, String> {
     let mut report = collect_workspace_report();
     if strict && report.risk == WorkspaceRiskLevel::Ok {
@@ -22,8 +23,9 @@ pub fn run_workspace_doctor(format: WorkspaceReportFormat, strict: bool) -> Resu
         if report.encoding_risk != WorkspaceRiskLevel::Ok {
             report.risk = report.encoding_risk.clone();
         }
+        // P2-52：unknown 项目只提升风险下限为 Warn，不得覆盖刚升级的编码 Fail
         if report.project.primary == "unknown" {
-            report.risk = WorkspaceRiskLevel::Warn;
+            report.risk = max_risk(&report.risk, &WorkspaceRiskLevel::Warn);
         }
     }
     match format {
@@ -106,6 +108,7 @@ pub fn run_workspace_doctor(format: WorkspaceReportFormat, strict: bool) -> Resu
     }
 }
 
+/// 汇总操作系统、编码、项目、工具链、IDE、仓库等各维度信息，构建完整的 WorkspaceDoctorReport。
 pub fn collect_workspace_report() -> WorkspaceDoctorReport {
     let cwd = std::env::current_dir().unwrap_or_else(|_| Path::new(".").to_path_buf());
     let env = get_environment_info();
@@ -148,6 +151,7 @@ pub fn collect_workspace_report() -> WorkspaceDoctorReport {
     }
 }
 
+/// 将编码风险级别（Ok/Warn/Fail）一对一映射为工作区整体风险级别。
 fn map_encoding_risk(risk: &EncodingRiskLevel) -> WorkspaceRiskLevel {
     match risk {
         EncodingRiskLevel::Fail => WorkspaceRiskLevel::Fail,
@@ -156,17 +160,30 @@ fn map_encoding_risk(risk: &EncodingRiskLevel) -> WorkspaceRiskLevel {
     }
 }
 
+/// 综合项目主类型与编码风险得出工作区总体风险：项目主类型未知只**提升**风险下限为 Warn
+/// （与编码风险取 max），不得覆盖已判定的更高风险（P2-52：编码 Fail 曾被 unknown→Warn 降级）。
 fn resolve_workspace_risk(
     project_primary: &str,
     enc_risk: &EncodingRiskLevel,
 ) -> WorkspaceRiskLevel {
+    let encoding_risk = map_encoding_risk(enc_risk);
     if project_primary == "unknown" {
-        WorkspaceRiskLevel::Warn
+        max_risk(&WorkspaceRiskLevel::Warn, &encoding_risk)
     } else {
-        map_encoding_risk(enc_risk)
+        encoding_risk
     }
 }
 
+/// 风险聚合取 max（Fail > Warn > Ok）：多信号合并只升不降（P2-52）。
+fn max_risk(a: &WorkspaceRiskLevel, b: &WorkspaceRiskLevel) -> WorkspaceRiskLevel {
+    match (a, b) {
+        (WorkspaceRiskLevel::Fail, _) | (_, WorkspaceRiskLevel::Fail) => WorkspaceRiskLevel::Fail,
+        (WorkspaceRiskLevel::Warn, _) | (_, WorkspaceRiskLevel::Warn) => WorkspaceRiskLevel::Warn,
+        _ => WorkspaceRiskLevel::Ok,
+    }
+}
+
+/// 解析工作区编码字符串：若代码页被标记为 UTF-8 则返回 "utf8"，否则返回代码页值或 "unknown"。
 fn resolve_workspace_encoding(enc: &EncodingDoctorReport) -> String {
     if enc.codepage.as_ref().and_then(|c| c.is_utf8) == Some(true) {
         "utf8".to_string()
@@ -178,6 +195,7 @@ fn resolve_workspace_encoding(enc: &EncodingDoctorReport) -> String {
     }
 }
 
+/// 根据项目类型、缺失的工具链、编码风险及目录特征，收集建议的修复/检测动作列表。
 fn build_workspace_actions(
     cwd: &Path,
     project: &ProjectInfo,
@@ -210,6 +228,7 @@ fn build_workspace_actions(
     actions
 }
 
+/// 通过探测各类构建/配置/源码标记文件，识别工作区所使用的编程语言，支持多栈共存。
 fn collect_project_languages(cwd: &Path) -> Vec<String> {
     let has = |name: &str| cwd.join(name).exists();
     let mut langs = Vec::<String>::new();
@@ -338,6 +357,7 @@ fn collect_project_languages(cwd: &Path) -> Vec<String> {
     langs
 }
 
+/// 检测项目主/次级语言、框架、包管理器、构建/测试命令、版本方言、数据库与模块系统，输出 ProjectInfo。
 fn detect_project(cwd: &Path) -> ProjectInfo {
     let has = |name: &str| cwd.join(name).exists();
     let langs = collect_project_languages(cwd);
@@ -438,6 +458,8 @@ fn detect_project(cwd: &Path) -> ProjectInfo {
             framework = Some("remix".to_string());
         } else if pkg_content.contains("\"solid-js\"") {
             framework = Some("solid".to_string());
+        } else if pkg_content.contains("\"@nestjs/core\"") || has("nest-cli.json") {
+            framework = Some("nestjs".to_string());
         }
 
         if has("turbo.json") {
@@ -510,12 +532,6 @@ fn detect_project(cwd: &Path) -> ProjectInfo {
     } else if primary == "ruby" || secondary.iter().any(|s| s == "ruby") {
         if has("bin/rails") || has("config/application.rb") {
             framework = Some("rails".to_string());
-        }
-    } else if primary == "node" || secondary.iter().any(|s| s == "node") {
-        if let Ok(pkg) = std::fs::read_to_string(cwd.join("package.json")) {
-            if pkg.contains("\"@nestjs/core\"") || has("nest-cli.json") {
-                framework = Some("nestjs".to_string());
-            }
         }
     } else if primary == "csharp" || secondary.iter().any(|s| s == "csharp") {
         framework = Some("aspnetcore".to_string());
@@ -749,17 +765,27 @@ fn detect_dialect(cwd: &Path, primary: &str, _framework: &Option<String>) -> Opt
             if let Ok(content) = std::fs::read_to_string(cwd.join("CMakeLists.txt")) {
                 for line in content.lines() {
                     if line.contains("CMAKE_CXX_STANDARD") {
-                        if line.contains("20") {
-                            return Some("c++20".to_string());
-                        }
-                        if line.contains("17") {
-                            return Some("c++17".to_string());
-                        }
-                        if line.contains("14") {
-                            return Some("c++14".to_string());
-                        }
-                        if line.contains("11") {
-                            return Some("c++11".to_string());
+                        // 精确提取标准值而非 contains("20")：避免 2017/23 等误判或漏判（Q449 处置）。
+                        let digits: String = line
+                            .split_once("CMAKE_CXX_STANDARD")
+                            .map(|(_, rest)| {
+                                rest.trim_start_matches([' ', '(', ')', '=', '\t'])
+                                    .chars()
+                                    .take_while(|c| c.is_ascii_digit())
+                                    .collect()
+                            })
+                            .unwrap_or_default();
+                        let std = match digits.as_str() {
+                            "98" => Some("c++98"),
+                            "11" => Some("c++11"),
+                            "14" => Some("c++14"),
+                            "17" => Some("c++17"),
+                            "20" => Some("c++20"),
+                            "23" => Some("c++23"),
+                            _ => None,
+                        };
+                        if let Some(s) = std {
+                            return Some(s.to_string());
                         }
                     }
                     if line.contains("CMAKE_C_STANDARD") {
@@ -1037,6 +1063,7 @@ fn detect_module_system(cwd: &Path, primary: &str) -> Option<String> {
     None
 }
 
+/// 判断给定目录下是否存在文件名以指定后缀结尾的文件，用于懒式探测语言/构建标记。
 fn glob_exists(cwd: &Path, suffix: &str) -> bool {
     std::fs::read_dir(cwd)
         .ok()
@@ -1045,6 +1072,7 @@ fn glob_exists(cwd: &Path, suffix: &str) -> bool {
         .any(|e| e.path().to_string_lossy().ends_with(suffix))
 }
 
+/// 探测并采集各类编译器、运行时与构建工具（rustc/node/python/java/gcc/cl/...）的版本信息。
 fn detect_tools() -> ToolVersions {
     ToolVersions {
         rust: detect_cmd_version("rustc", &["--version"]),
@@ -1127,6 +1155,7 @@ fn detect_msvc_version() -> Option<String> {
     None
 }
 
+/// 执行外部命令并截取首行输出作为版本字符串；stdout 为空时回退到 stderr，过滤空结果。
 fn detect_cmd_version(cmd: &str, args: &[&str]) -> Option<String> {
     Command::new(cmd)
         .args(args)
@@ -1143,11 +1172,13 @@ fn detect_cmd_version(cmd: &str, args: &[&str]) -> Option<String> {
         .filter(|s| !s.is_empty())
 }
 
+/// 解码工具版本输出字节（含 GBK 等编码修复），并截取首行作为版本字符串。
 fn decode_tool_version_output(bytes: &[u8]) -> String {
     let (decoded, _, _) = crate::core::encoding_fallback::decode_and_repair_for_display(bytes);
     decoded.lines().next().unwrap_or("").trim().to_string()
 }
 
+/// 通过目录/配置文件标记探测当前工作区已安装的 IDE 与编辑器集合。
 fn detect_ide(cwd: &Path) -> IdeInfo {
     let has_idea = cwd.join(".idea").exists() || glob_exists(cwd, ".iml");
     IdeInfo {
@@ -1181,6 +1212,7 @@ fn detect_ide(cwd: &Path) -> IdeInfo {
     }
 }
 
+/// 探测版本控制系统（git/svn/hg/p4 及本地标记型 VCS）及其分支、脏工作区等状态。
 fn detect_repo(cwd: &Path) -> RepoInfo {
     let git = Command::new("git")
         .args(["rev-parse", "--is-inside-work-tree"])
@@ -1248,6 +1280,7 @@ fn detect_repo(cwd: &Path) -> RepoInfo {
     }
 }
 
+/// 将机器动作键翻译为本地化文案；未匹配到翻译键时原样返回动作键。
 fn translate_action(action: &str) -> String {
     let _key = format!("doctor_action_{}", action.replace("-", "_"));
     let trans = match action {
@@ -1267,7 +1300,9 @@ fn translate_action(action: &str) -> String {
     }
 }
 
+/// 将工作区报告渲染为人类可读的文本格式，分区输出环境、工具、IDE、仓库、动作与 AI 上下文。
 fn render_workspace_text(report: &WorkspaceDoctorReport) -> String {
+    /// （内部辅助）向文本报告追加一行 "标签: 值"，标签经由 i18n 翻译。
     fn push_field(out: &mut String, label_key: &'static str, value: String) {
         out.push_str(&format!("  {}: {}\n", t(label_key), value));
     }
@@ -1743,6 +1778,7 @@ pub fn generate_context_file() -> Result<String, String> {
     Ok(out)
 }
 
+/// 将原始命令包装为 `tokenslim run <command>`；空命令、unknown 或已包装的命令原样返回。
 fn wrap_workspace_command_for_tokenslim_run(command: &str) -> String {
     let trimmed = command.trim();
     if trimmed.is_empty() || trimmed.eq_ignore_ascii_case("unknown") {
@@ -1754,6 +1790,7 @@ fn wrap_workspace_command_for_tokenslim_run(command: &str) -> String {
     format!("tokenslim run {trimmed}")
 }
 
+/// 去重后向命令列表追加一条 "- 标签: `命令`" 行；空命令或 "unknown" 直接跳过。
 fn push_unique_command(
     lines: &mut Vec<String>,
     seen_commands: &mut BTreeSet<String>,
@@ -1772,6 +1809,7 @@ fn push_unique_command(
     }
 }
 
+/// 依据报告中的语言、框架、数据库、生态等维度生成插件命令作用域候选键列表。
 fn workspace_scope_candidates(report: &WorkspaceDoctorReport) -> Vec<String> {
     let mut keys = Vec::new();
     let primary = report.project.primary.to_ascii_lowercase();
@@ -1899,6 +1937,7 @@ fn workspace_scope_candidates(report: &WorkspaceDoctorReport) -> Vec<String> {
     keys
 }
 
+/// 加载插件能力配置，按作用域候选键匹配并生成 (原始命令, 包装命令) 列表。
 fn configured_workspace_command_pairs(report: &WorkspaceDoctorReport) -> Vec<(String, String)> {
     let config_dir = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("config")
@@ -1926,6 +1965,7 @@ fn configured_workspace_command_pairs(report: &WorkspaceDoctorReport) -> Vec<(St
     out
 }
 
+/// 汇总构建/测试命令与插件命令，生成用于文本/上下文文件的命令说明行列表。
 fn detected_project_command_lines(report: &WorkspaceDoctorReport) -> Vec<String> {
     let mut lines = Vec::new();
     let mut seen_commands = BTreeSet::new();
@@ -1950,6 +1990,7 @@ fn detected_project_command_lines(report: &WorkspaceDoctorReport) -> Vec<String>
     lines
 }
 
+/// 按最大宽度对文本折行（中文按字符计数），返回多行字符串用于对齐输出。
 fn wrap_text(text: &str, indent: usize, max_width: usize) -> Vec<String> {
     let mut lines = Vec::new();
     let mut current_line = String::new();
@@ -1981,6 +2022,7 @@ fn wrap_text(text: &str, indent: usize, max_width: usize) -> Vec<String> {
     lines
 }
 
+/// 按 run_route/filter/other 分组渲染插件能力为对齐的文本行，长描述自动折行。
 fn workspace_plugin_capability_lines(report: &WorkspaceDoctorReport) -> Vec<String> {
     use crate::utils::i18n::t;
     let mut lines = Vec::new();
@@ -2097,6 +2139,7 @@ struct RawAiCommandFinding {
     replacement: String,
 }
 
+/// 将注入动作枚举转为可读英文标签（created/appended/replaced_block/unchanged/read_failed/write_failed）。
 fn action_label(action: &InjectAction) -> &'static str {
     match action {
         InjectAction::Created => "created",
@@ -2108,6 +2151,7 @@ fn action_label(action: &InjectAction) -> &'static str {
     }
 }
 
+/// 返回被检测到的 IDE 名称静态字符串列表；若均未检测到则为 ["unknown"]。
 fn detected_ide_names(ide: &IdeInfo) -> Vec<&'static str> {
     let mut names = Vec::new();
     if ide.vscode {
@@ -2170,6 +2214,7 @@ fn detected_ide_names(ide: &IdeInfo) -> Vec<&'static str> {
     names
 }
 
+/// 返回 AI 指令目标文件清单（AGENTS.md/CLAUDE.md/.cursorrules/.kiro/... 等）。
 fn ai_instruction_targets() -> &'static [&'static str] {
     &[
         "AGENTS.md",
@@ -2187,6 +2232,7 @@ fn ai_instruction_targets() -> &'static [&'static str] {
     ]
 }
 
+/// 从命令说明文本行中解析出 (原始命令, 包装命令) 对，过滤掉未真正包装的项。
 fn detected_project_command_pairs(report: &WorkspaceDoctorReport) -> Vec<(String, String)> {
     detected_project_command_lines(report)
         .into_iter()
@@ -2206,6 +2252,7 @@ fn detected_project_command_pairs(report: &WorkspaceDoctorReport) -> Vec<(String
         .collect()
 }
 
+/// 规范化 AI 指令中的命令行：剥离前导符号/引号/编号并裁剪空白，得到裸命令便于比较。
 fn normalize_ai_command_line(line: &str) -> String {
     let trimmed = line.trim();
     let trimmed = trimmed
@@ -2225,6 +2272,7 @@ fn normalize_ai_command_line(line: &str) -> String {
         .to_string()
 }
 
+/// 判断某行是否以指定原始命令开头，允许后接 && / || / 注释 / 参数等尾随内容。
 fn line_starts_with_raw_command(line: &str, raw_command: &str) -> bool {
     let normalized = normalize_ai_command_line(line);
     if normalized.contains("tokenslim run ") {
@@ -2245,6 +2293,7 @@ fn line_starts_with_raw_command(line: &str, raw_command: &str) -> bool {
         .unwrap_or(false)
 }
 
+/// 在文本中扫描未被 `tokenslim run` 包装的原始项目命令，返回命中的原始/建议命令对列表。
 fn scan_text_for_raw_ai_commands(
     target: &str,
     content: &str,
@@ -2268,6 +2317,7 @@ fn scan_text_for_raw_ai_commands(
     findings
 }
 
+/// 遍历各 AI 指令目标文件，扫描其中未被包装的原始命令，汇总为发现列表。
 fn scan_ai_instruction_raw_commands(
     cwd: &Path,
     report: &WorkspaceDoctorReport,
@@ -2294,6 +2344,7 @@ fn scan_ai_instruction_raw_commands(
     findings
 }
 
+/// 将扫描到的裸命令发现格式化，并追加到文本报告的 AI 命令卫生小节（最多展示 12 条）。
 fn append_raw_ai_command_findings(out: &mut String, report: &WorkspaceDoctorReport, cwd: &Path) {
     let findings = scan_ai_instruction_raw_commands(cwd, report);
     if findings.is_empty() {
@@ -2321,6 +2372,7 @@ fn append_raw_ai_command_findings(out: &mut String, report: &WorkspaceDoctorRepo
     }
 }
 
+/// 渲染上下文注入审计 Markdown 报告，含文件/动作/变更表格与裸命令卫生表。
 fn render_inject_audit_report(
     workspace_report: &WorkspaceDoctorReport,
     entries: &[InjectAuditEntry],
@@ -2502,6 +2554,7 @@ enum ContextBlockPlacement {
     Top,
 }
 
+/// 移除文本中已存在的 tokenslim-context-start/end 标记块，返回去除块后的剩余内容。
 fn remove_existing_context_block(existing: &str) -> Option<String> {
     if let (Some(start), Some(end)) = (
         existing.find("<!-- tokenslim-context-start -->"),
@@ -2517,6 +2570,7 @@ fn remove_existing_context_block(existing: &str) -> Option<String> {
     None
 }
 
+/// 在（去除旧块后的）文本顶部插入新的上下文块，返回拼接结果。
 fn insert_context_block(
     existing_without_block: &str,
     block: &str,
@@ -2535,6 +2589,7 @@ fn insert_context_block(
     }
 }
 
+/// 若已存在旧块则替换、否则追加到顶部，返回 (新文本, 注入动作, 是否变更)。
 fn patch_or_insert_context_block(
     existing: &str,
     block: &str,
@@ -2561,6 +2616,7 @@ fn patch_or_insert_context_block(
     (patched, action, changed)
 }
 
+/// 对单个目标文件应用上下文块；支持 dry_run 预览、缺失时创建嵌套父目录。
 fn apply_context_to_target(
     path: &Path,
     target: &str,
@@ -2628,6 +2684,7 @@ fn apply_context_to_target(
     }
 }
 
+/// 生成轻量的 AI 适配器指针文件内容，仅指向完整的 .tokenslim-context.md 而非重复全部上下文。
 fn generate_ai_adapter_context_file(_report: &WorkspaceDoctorReport) -> String {
     let mut out = String::new();
     out.push_str("# TokenSlim Project AI Context Pointer (AUTO-GENERATED)\n");
@@ -2646,6 +2703,7 @@ fn generate_ai_adapter_context_file(_report: &WorkspaceDoctorReport) -> String {
     out
 }
 
+/// 更新独立的 .tokenslim-context.md 文件内容，返回对应的注入审计条目。
 fn update_standalone_context_entry(
     standalone_path: &Path,
     raw_content: &str,
@@ -2776,6 +2834,7 @@ mod tests {
     };
     use crate::utils::i18n::t;
 
+    /// （测试辅助）构造一个固定的 WorkspaceDoctorReport 样例，供多个单测断言复用。
     fn sample_report() -> WorkspaceDoctorReport {
         WorkspaceDoctorReport {
             plugins: Vec::new(),
@@ -2864,6 +2923,7 @@ mod tests {
         }
     }
 
+    /// 断言 render_workspace_text 的输出包含 i18n 分区标题与字段标签。
     #[test]
     fn render_workspace_text_uses_i18n_labels() {
         let report = sample_report();
@@ -2882,6 +2942,97 @@ mod tests {
         assert!(text.contains(crate::utils::i18n::t("doctor_action_encoding_review")));
     }
 
+    /// 断言可选字段为 None 时渲染层使用 i18n 回退占位（N/A/none），
+    /// 而非空串或裸 "None"。取 sample_report 的 node 工具（None→not_found）
+    /// 与 python 工具（Some→原值）做对照。
+    #[test]
+    fn render_workspace_text_uses_i18n_placeholders_for_missing_optional_fields() {
+        let report = sample_report();
+        let text = render_workspace_text(&report);
+        let na = t("doctor_workspace_na");
+        let not_found = t("doctor_workspace_not_found");
+        let none_text = t("doctor_workspace_none");
+
+        // 有值字段原样输出，不能被回退占位污染
+        assert!(text.contains("1.89"), "rust 工具版本应原样输出");
+        assert!(text.contains("axum"), "framework 应原样输出");
+        assert!(text.contains("3.12"), "python 工具版本应原样输出");
+        // secondary 非空时输出内容而非 none 占位
+        assert!(text.contains("python"), "secondary=python 应原样输出");
+
+        // None 字段渲染回退占位：node 工具缺失→not_found
+        assert!(
+            text.contains(not_found),
+            "tools 缺失时应渲染 {not_found} 占位"
+        );
+        // tools 之外的可选字段缺失→N/A；sample 中无缺失项，这里用 not_found 验证回退机制本身生效
+        assert!(
+            !text.contains("None"),
+            "渲染层禁止泄漏 Rust Debug 值 None（应为 i18n 占位）：{}",
+            &text[..text.len().min(200)]
+        );
+    }
+
+    /// 断言风险等级枚举映射到对应 i18n 文案：
+    /// Ok/Warn/Fail 三档各自渲染专属文案，且互不串扰。
+    #[test]
+    fn render_workspace_text_maps_each_risk_level_to_distinct_i18n_label() {
+        let ok_label = t("doctor_workspace_risk_ok");
+        let warn_label = t("doctor_workspace_risk_warn");
+        let fail_label = t("doctor_workspace_risk_fail");
+
+        for (level, expected) in [
+            (WorkspaceRiskLevel::Ok, ok_label),
+            (WorkspaceRiskLevel::Warn, warn_label),
+            (WorkspaceRiskLevel::Fail, fail_label),
+        ] {
+            let level_dbg = format!("{level:?}");
+            let mut report = sample_report();
+            report.risk = level;
+            let text = render_workspace_text(&report);
+            assert!(
+                text.contains(expected),
+                "risk={level_dbg} 应渲染文案 {expected}"
+            );
+            // 其余两档文案不应出现在同一报告里（三档文案互斥）
+            for other in [ok_label, warn_label, fail_label] {
+                if other != expected {
+                    assert!(
+                        !text.contains(other),
+                        "risk={level_dbg} 报告不应包含其他档位文案 {other}"
+                    );
+                }
+            }
+        }
+    }
+
+    /// 断言 actions 列表按 1 起始编号渲染，且空 actions 时无编号行。
+    #[test]
+    fn render_workspace_text_numbers_actions_from_one_and_skips_empty_list() {
+        // 场景 1：两条 action → "1. xxx" 与 "2. xxx" 逐行编号
+        let report = sample_report();
+        let text = render_workspace_text(&report);
+        let first = crate::utils::i18n::t("doctor_action_encoding_review");
+        // "toolchain-pin" 未注册 i18n key，translate_action 按原文回退输出
+        let second = "toolchain-pin".to_string();
+        assert!(text.contains(&format!("1. {first}")));
+        assert!(text.contains(&format!("2. {second}")));
+        // 不存在 0 起始或 3 号编号
+        assert!(!text.contains("\n0. "));
+        assert!(!text.contains(&format!("3. ")));
+
+        // 场景 2：空 actions → 不产生任何编号行
+        let mut report = sample_report();
+        report.actions = Vec::new();
+        let text = render_workspace_text(&report);
+        assert!(
+            !text.contains("\n1. "),
+            "空 actions 时不应输出编号行：{}",
+            &text[text.len().min(400)..]
+        );
+    }
+
+    /// 断言 generate_context_file 使用新的 `tokenslim workspace` 命令格式且包含命令策略小节。
     #[test]
     fn generate_context_file_uses_new_workspace_command() {
         let context = generate_context_file().expect("context generation should succeed");
@@ -2898,6 +3049,7 @@ mod tests {
         assert!(context.contains("do not inject unrelated toolchains"));
     }
 
+    /// 断言 AI 适配器文件保持轻量，仅指向完整上下文文件，不内联环境/工具等重内容。
     #[test]
     fn generate_ai_adapter_context_file_is_lightweight_and_points_to_full_context() {
         let report = sample_report();
@@ -2915,6 +3067,7 @@ mod tests {
         assert!(!adapter.contains("Rust: 1.89"));
     }
 
+    /// 断言替换旧块后受管块被移动到文件顶部，且全局仅保留唯一一个上下文块。
     #[test]
     fn patch_or_insert_context_block_moves_managed_block_to_top() {
         let existing = "# 开发命令\n\n```bash\ncargo test\n```\n\n<!-- tokenslim-context-start -->\nold\n<!-- tokenslim-context-end -->\n";
@@ -2932,6 +3085,7 @@ mod tests {
         assert_eq!(patched.matches("tokenslim-context-start").count(), 1);
     }
 
+    /// 断言扫描能识别裸 cargo/git 命令并建议用 `tokenslim run` 包装，已包装命令不重复报告。
     #[test]
     fn scan_text_for_raw_ai_commands_reports_unwrapped_project_commands() {
         let report = sample_report();
@@ -2967,6 +3121,7 @@ git status --short
             .any(|finding| finding.command == "cargo test"));
     }
 
+    /// 断言检测到的命令仅限当前项目工具链（cargo/git），不含 mvn/npm/gradle 等无关项。
     #[test]
     fn detected_project_commands_use_only_current_project_toolchain() {
         let report = sample_report();
@@ -2983,6 +3138,7 @@ git status --short
         assert!(!lines.contains("tokenslim run gradle"));
     }
 
+    /// 断言 Java/Maven 项目仅报告 mvn 命令，不含 cargo/gradle/npm。
     #[test]
     fn detected_project_commands_select_maven_for_maven_project() {
         let mut report = sample_report();
@@ -3001,6 +3157,7 @@ git status --short
         assert!(!lines.contains("tokenslim run npm"));
     }
 
+    /// 断言解码工具版本输出时能修复 GBK 编码（如 "C/C++ 编译器选项"）。
     #[test]
     fn decode_tool_version_output_repairs_gbk_msvc_text() {
         let (bytes, _, _) = encoding_rs::GBK.encode("C/C++ 编译器选项\n");
@@ -3008,6 +3165,7 @@ git status --short
         assert_eq!(decoded, "C/C++ 编译器选项");
     }
 
+    /// 断言 build_workspace_actions 能收集到工具链缺失、编码风险、docker、prisma 等预期信号。
     #[test]
     fn build_workspace_actions_collects_expected_signals() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -3082,6 +3240,7 @@ git status --short
         let _ = std::fs::remove_dir_all(&temp_dir);
     }
 
+    /// 断言当代码页被标记为 UTF-8 时，resolve_workspace_encoding 优先返回 "utf8"。
     #[test]
     fn resolve_workspace_encoding_prefers_utf8_flag() {
         let report = EncodingDoctorReport {
@@ -3125,6 +3284,7 @@ git status --short
         assert_eq!(resolve_workspace_encoding(&report), "utf8");
     }
 
+    /// 断言 collect_project_languages 在同时存在 Cargo/package.json/pyproject.toml 时识别多栈。
     #[test]
     fn collect_project_languages_detects_multi_stack_markers() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -3157,6 +3317,146 @@ git status --short
         let _ = std::fs::remove_dir_all(&temp_dir);
     }
 
+    /// 测试辅助：为 detect_project 契约测试创建一次性临时目录，返回其路径。
+    /// 目录名拼接进程 id + 纳秒时间戳保证并发唯一，测试结束由调用方负责清理。
+    fn make_detect_project_dir(tag: &str) -> std::path::PathBuf {
+        let dir = std::env::temp_dir().join(format!(
+            "tokenslim-detect-project-{tag}-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_nanos()
+        ));
+        std::fs::create_dir_all(&dir).expect("create temp dir for detect_project");
+        dir
+    }
+
+    /// 测试辅助：写入指定相对路径的文件（自动创建父目录，支持 "src-tauri/x.json" 子路径）。
+    fn write_project_file(dir: &std::path::Path, rel: &str, content: &str) {
+        let target = dir.join(rel);
+        if let Some(parent) = target.parent() {
+            std::fs::create_dir_all(parent).expect("create parent dir");
+        }
+        std::fs::write(&target, content).unwrap_or_else(|e| panic!("write {rel}: {e}"));
+    }
+
+    /// 断言纯 rust 单栈目录：primary=rust、pm=cargo、build/test 命令映射正确、无框架。
+    #[test]
+    fn detect_project_maps_rust_stack_to_cargo_commands() {
+        let dir = make_detect_project_dir("rust");
+        write_project_file(&dir, "Cargo.toml", "[package]\nname = 'demo'\n");
+
+        let info = detect_project(&dir);
+        assert_eq!(info.primary, "rust");
+        assert!(info.secondary.is_empty(), "单栈不应有次要语言");
+        assert_eq!(info.package_manager.as_deref(), Some("cargo"));
+        assert_eq!(info.framework, None, "无 tauri 标记时 framework 应为 None");
+        assert_eq!(info.build, "cargo build");
+        assert_eq!(info.test, "cargo test");
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 断言 rust + tauri 组合：framework 晋升为 tauri 且 build 命令切换为 cargo tauri build。
+    #[test]
+    fn detect_project_promotes_tauri_framework_and_rewrites_build_command() {
+        let dir = make_detect_project_dir("tauri");
+        write_project_file(&dir, "Cargo.toml", "[package]\nname = 'demo'\n");
+        write_project_file(&dir, "src-tauri/tauri.conf.json", "{}");
+
+        let info = detect_project(&dir);
+        assert_eq!(info.primary, "rust");
+        assert_eq!(info.framework.as_deref(), Some("tauri"));
+        // pm=cargo 时 tauri 覆盖 build，test 保持 cargo test
+        assert_eq!(info.build, "cargo tauri build");
+        assert_eq!(info.test, "cargo test");
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 断言 node 栈的包管理器优先级：pnpm-lock > yarn.lock > bun > npm，
+    /// 且 build/test 命令使用包管理器前缀。三个子场景共享同一断言函数。
+    #[test]
+    fn detect_project_resolves_node_package_manager_priority() {
+        let check = |lock_file: Option<&str>, expected_pm: &str| {
+            let dir = make_detect_project_dir("node-pm");
+            write_project_file(&dir, "package.json", "{\"name\":\"demo\"}");
+            if let Some(lock) = lock_file {
+                write_project_file(&dir, lock, "");
+            }
+            let info = detect_project(&dir);
+            assert_eq!(info.primary, "node");
+            assert_eq!(info.package_manager.as_deref(), Some(expected_pm));
+            assert_eq!(info.build, format!("{expected_pm} run build"));
+            assert_eq!(info.test, format!("{expected_pm} test"));
+            let _ = std::fs::remove_dir_all(&dir);
+        };
+
+        check(Some("pnpm-lock.yaml"), "pnpm");
+        check(Some("yarn.lock"), "yarn");
+        // 无锁文件时回退 npm
+        check(None, "npm");
+    }
+
+    /// 断言 node 框架识别：next.config.js 命中 nextjs；vue.config.js + package.json 含
+    /// "vue" 依赖时命中 vue。
+    #[test]
+    fn detect_project_identifies_nextjs_and_vue_frameworks() {
+        // 场景 1：next.config.js
+        let dir = make_detect_project_dir("next");
+        write_project_file(&dir, "package.json", "{\"name\":\"demo\"}");
+        write_project_file(&dir, "next.config.js", "export default {}\n");
+        let info = detect_project(&dir);
+        assert_eq!(info.framework.as_deref(), Some("nextjs"));
+        let _ = std::fs::remove_dir_all(&dir);
+
+        // 场景 2：vue.config.js + package.json 声明 vue 依赖
+        let dir = make_detect_project_dir("vue");
+        write_project_file(
+            &dir,
+            "package.json",
+            "{\"dependencies\":{\"vue\":\"^3.0.0\"}}",
+        );
+        write_project_file(&dir, "vue.config.js", "module.exports = {}\n");
+        let info = detect_project(&dir);
+        assert_eq!(info.framework.as_deref(), Some("vue"));
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 断言 python 栈：requirements.txt 含 fastapi 时 framework=fastapi，pm 默认 pip。
+    #[test]
+    fn detect_project_detects_python_fastapi_framework_with_pip() {
+        let dir = make_detect_project_dir("fastapi");
+        write_project_file(&dir, "requirements.txt", "fastapi==0.110.0\nuvicorn\n");
+
+        let info = detect_project(&dir);
+        assert_eq!(info.primary, "python");
+        assert_eq!(info.framework.as_deref(), Some("fastapi"));
+        assert_eq!(info.package_manager.as_deref(), Some("pip"));
+        assert_eq!(info.build, "python -m pip install -r requirements.txt");
+        assert_eq!(info.test, "pytest");
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 断言空目录回退：primary=unknown、无包管理器、build/test=unknown。
+    #[test]
+    fn detect_project_falls_back_to_unknown_for_empty_dir() {
+        let dir = make_detect_project_dir("empty");
+
+        let info = detect_project(&dir);
+        assert_eq!(info.primary, "unknown");
+        assert!(info.secondary.is_empty());
+        assert_eq!(info.package_manager, None);
+        assert_eq!(info.framework, None);
+        assert_eq!(info.build, "unknown");
+        assert_eq!(info.test, "unknown");
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 断言 dry_run 下目标文件被标记为 Created 但实际不写入磁盘。
     #[test]
     fn apply_context_to_target_dry_run_marks_created_without_writing() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -3185,6 +3485,7 @@ git status --short
         let _ = std::fs::remove_dir_all(&temp_dir);
     }
 
+    /// 断言 apply_context_to_target 在目标缺失时创建嵌套父目录并成功写入文件。
     #[test]
     fn apply_context_to_target_creates_nested_parent_directories() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -3212,8 +3513,120 @@ git status --short
 
         let _ = std::fs::remove_dir_all(&temp_dir);
     }
+
+    /// 契约测试：`glob_exists` 能按文件后缀命中目录条目，对不存在的后缀返回 false。
+    #[test]
+    fn glob_exists_detects_suffix_entries_in_dir() {
+        let dir = std::env::temp_dir().join(format!(
+            "tokenslim-glob-exists-{}-{}",
+            std::process::id(),
+            std::time::SystemTime::now()
+                .duration_since(std::time::UNIX_EPOCH)
+                .unwrap_or_default()
+                .as_nanos()
+        ));
+        std::fs::create_dir_all(&dir).expect("create temp dir for glob_exists");
+        std::fs::write(dir.join("Cargo.lock"), "# lock").expect("write Cargo.lock");
+        std::fs::write(dir.join("README.md"), "# readme").expect("write README.md");
+
+        assert!(
+            glob_exists(&dir, ".lock"),
+            "应检测到 Cargo.lock 的 .lock 后缀"
+        );
+        assert!(glob_exists(&dir, "Cargo.lock"), "应支持完整文件名后缀");
+        assert!(!glob_exists(&dir, ".rs"), "目录内无 .rs 后缀时应返回 false");
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// 契约测试：`collect_workspace_report` 返回结构完整的工作区报告，
+    /// os / shell / encoding / project.primary 等核心字段均非空。
+    #[test]
+    fn collect_workspace_report_returns_structurally_valid_report() {
+        let report = collect_workspace_report();
+        assert!(!report.os.is_empty(), "os 不应为空");
+        assert!(!report.shell.is_empty(), "shell 不应为空");
+        assert!(!report.encoding.is_empty(), "encoding 不应为空");
+        assert!(
+            !report.project.primary.is_empty(),
+            "project.primary 不应为空"
+        );
+        assert!(
+            !report.project.build.is_empty(),
+            "project.build 不应为空（可回退为 unknown）"
+        );
+    }
+
+    /// 契约测试：`inject_context_file(true)` 以 dry-run 预览模式返回审计报告（不写盘），
+    /// 输出应标注 dry-run 预览并列出受管目标文件。
+    #[test]
+    fn inject_context_file_dry_run_returns_preview_without_writing() {
+        let result = inject_context_file(true);
+        let output = result.expect("dry-run context 注入不应失败");
+        assert!(
+            output.contains("dry-run"),
+            "dry-run 模式应标注 preview，实际输出:\n{output}"
+        );
+        assert!(
+            output.contains("AGENTS.md"),
+            "审计报告应列出 AGENTS.md 目标，实际输出:\n{output}"
+        );
+    }
+
+    /// P2-52 回归：项目主类型 unknown 只把风险下限**提升**为 Warn，不得覆盖已判定的
+    /// 编码 Fail——修复前 `unknown → Warn` 是无条件覆盖，编码 Fail 被降级为 Warn。
+    #[test]
+    fn resolve_workspace_risk_unknown_only_raises_floor_never_lowers() {
+        use crate::core::doctor_encoding::EncodingRiskLevel;
+
+        assert_eq!(
+            resolve_workspace_risk("unknown", &EncodingRiskLevel::Fail),
+            WorkspaceRiskLevel::Fail,
+            "unknown + 编码 Fail 必须保持 Fail（修复前被覆盖为 Warn）"
+        );
+        assert_eq!(
+            resolve_workspace_risk("unknown", &EncodingRiskLevel::Warn),
+            WorkspaceRiskLevel::Warn
+        );
+        assert_eq!(
+            resolve_workspace_risk("unknown", &EncodingRiskLevel::Ok),
+            WorkspaceRiskLevel::Warn,
+            "unknown 应把下限提升为 Warn"
+        );
+        assert_eq!(
+            resolve_workspace_risk("rust", &EncodingRiskLevel::Fail),
+            WorkspaceRiskLevel::Fail,
+            "已知项目类型时风险应完全跟随编码信号"
+        );
+    }
+
+    /// P2-52 回归：max_risk 聚合语义——只升不降（Fail > Warn > Ok）。
+    #[test]
+    fn max_risk_only_escalates() {
+        assert_eq!(
+            max_risk(&WorkspaceRiskLevel::Ok, &WorkspaceRiskLevel::Warn),
+            WorkspaceRiskLevel::Warn
+        );
+        assert_eq!(
+            max_risk(&WorkspaceRiskLevel::Warn, &WorkspaceRiskLevel::Ok),
+            WorkspaceRiskLevel::Warn
+        );
+        assert_eq!(
+            max_risk(&WorkspaceRiskLevel::Fail, &WorkspaceRiskLevel::Ok),
+            WorkspaceRiskLevel::Fail
+        );
+        assert_eq!(
+            max_risk(&WorkspaceRiskLevel::Warn, &WorkspaceRiskLevel::Fail),
+            WorkspaceRiskLevel::Fail
+        );
+        assert_eq!(
+            max_risk(&WorkspaceRiskLevel::Warn, &WorkspaceRiskLevel::Warn),
+            WorkspaceRiskLevel::Warn
+        );
+    }
 }
 
+/// 以插件能力标题打印 workspace 插件能力列表，供 CLI 直接输出到终端。
 pub fn run_plugins_mode() {
     let report = collect_workspace_report();
     let header = crate::utils::i18n::t("cli_help_plugin_capabilities")

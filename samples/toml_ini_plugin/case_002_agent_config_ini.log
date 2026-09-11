@@ -1,0 +1,20 @@
+[agent]
+name = build-runner
+host = 10.20.30.40
+enable_logging = true
+max_retries = 3
+
+[queue]
+driver = redis
+url = redis://localhost:6379/0
+batch_size = 64
+
+[worker]
+concurrency = 8
+timeout_secs = 600
+enable_prefetch = false
+
+[notify]
+endpoint = https://alerts.example.com/api/v1
+channel = ci-failures
+retention_days = 30

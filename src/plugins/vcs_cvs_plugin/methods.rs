@@ -7,6 +7,7 @@ use crate::core::utils::roi::prefer_non_expanding;
 // ============================================================================
 // 遗留 parser 集成
 // ============================================================================
+/// 用遗留 VcsParser 解析文本并渲染为紧凑文档；空记录返回原文。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {
@@ -21,10 +22,12 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
         raw.to_string()
     }
 }
+/// 判断首行 cvs 子命令是否为 status/update/edit。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_cvs_status_block(text: &str) -> bool {
     cvs_subcommand_is(text, &["status", "update", "edit"])
 }
+/// 判断首行 cvs 子命令是否为 log/commit/history/tag/annotate。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_cvs_log_block(text: &str) -> bool {
     cvs_subcommand_is(text, &["log", "commit", "history", "tag", "annotate"])
@@ -33,27 +36,33 @@ pub fn is_cvs_log_block(text: &str) -> bool {
 // ============================================================================
 // 公开 API — 全部 anchor_guard
 // ============================================================================
+/// cvs status 的 AI 压缩入口：dispatch 压缩 + 锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_cvs_status_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, anchor_guard(raw, || compact_cvs_dispatch(raw)))
 }
+/// cvs diff 的 AI 压缩入口：compact_cvs_diff_cmd + 锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_cvs_diff_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, anchor_guard(raw, || compact_cvs_diff_cmd(raw)))
 }
+/// cvs log 的 AI 压缩入口：dispatch 压缩 + 锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_cvs_log_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, anchor_guard(raw, || compact_cvs_dispatch(raw)))
 }
+/// cvs 其他输出的 AI 压缩入口：dispatch 压缩 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_cvs_other_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, compact_cvs_dispatch(raw))
 }
+/// cvs log 家族压缩入口：委托 compact_cvs_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_cvs_log_family_for_ai(raw: &str) -> String {
     compact_cvs_log_for_ai(raw)
 }
 
+/// 锚点守卫：确保压缩结果保留首行命令锚点。
 fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
     let anchor = raw
         .lines()
@@ -73,6 +82,7 @@ fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：按首行 cvs 子命令分派到 update/status/commit/tag/unedit/log 专用压缩。
 fn compact_cvs_dispatch(raw: &str) -> String {
     if raw.len() < 30 {
         return raw.to_string();
@@ -122,6 +132,7 @@ fn cvs_subcommand_is(raw: &str, expected: &[&str]) -> bool {
 // ============================================================================
 // Case 101/314: update/checkout — 保留锚点，状态码映射 U/A/R/?:
 // ============================================================================
+/// 压缩 cvs update 输出：保留锚点，状态码 U/A/R/?/M 映射为 ST: 行。
 fn compact_cvs_update(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -157,6 +168,7 @@ fn compact_cvs_update(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将单字符状态行（U/M/A/R/C/?/P）映射为 ST: 代码 + 路径。
 fn map_cvs_status(line: &str) -> Option<String> {
     let t = line.trim();
     if t.len() < 2 {
@@ -181,6 +193,7 @@ fn map_cvs_status(line: &str) -> Option<String> {
 // ============================================================================
 // Case 315: status -v — 保留锚点，扁平化 KV
 // ============================================================================
+/// 压缩 cvs status 输出：扁平化 KV（WR/RR/Tag/Date/Opts），状态码映射。
 fn compact_cvs_status(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -236,6 +249,7 @@ fn compact_cvs_status(raw: &str) -> String {
 // ============================================================================
 // Case 102: commit — 保留锚点，CM: 映射
 // ============================================================================
+/// 压缩 cvs commit 输出：Checking in 提取文件名，提交信息映射为 CM:file@rev。
 fn compact_cvs_commit(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -288,6 +302,7 @@ fn compact_cvs_commit(raw: &str) -> String {
 // ============================================================================
 // Case 146: tag — 保留锚点，T: 映射
 // ============================================================================
+/// 压缩 cvs tag 输出：T 行映射为 ST:T，其余状态行映射。
 fn compact_cvs_tag(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -328,6 +343,7 @@ fn compact_cvs_tag(raw: &str) -> String {
 // ============================================================================
 // Case 27: log — 保留锚点，CP V1 符号化
 // ============================================================================
+/// 压缩 cvs log 输出：保留 RCS/commit/revision/date/author 等标记行，跳过 boilerplate。
 fn compact_cvs_log_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -383,6 +399,7 @@ fn compact_cvs_log_cmd(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 判断是否为 cvs log 的 boilerplate 行（head/branch/locks/access list 等）。
 fn is_cvs_log_boilerplate(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.starts_with("head:")
@@ -399,6 +416,7 @@ fn is_cvs_log_boilerplate(line: &str) -> bool {
 // ============================================================================
 // 通用 fallback
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤噪音/分隔线，状态映射与警报标记。
 fn compact_cvs_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -437,6 +455,7 @@ fn compact_cvs_generic(raw: &str) -> String {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 判断是否为 cvs 噪音行（updating/checking in/tagging 等）。
 fn is_cvs_noise(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.contains("updating ")
@@ -449,6 +468,7 @@ fn is_cvs_noise(line: &str) -> bool {
         || l.starts_with("you have no outstanding edits")
 }
 
+/// 折叠行内连续空白（含制表符）为单空格。
 fn collapse_ws(s: &str) -> String {
     let mut r = String::with_capacity(s.len());
     let mut last_ws = false;
@@ -549,6 +569,7 @@ fn compact_cvs_unedit(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将含 conflict/error/failed/rejected 的行标记为警报（前缀 !）。
 pub(super) fn map_cvs_alert(line: &str) -> Option<String> {
     let l = line.to_ascii_lowercase();
     if ["conflict", "error:", "failed", "rejected"]
@@ -567,6 +588,7 @@ pub(super) fn map_cvs_alert(line: &str) -> Option<String> {
 }
 
 // legacy compatibility — called from vcs_plugin
+/// cvs history 行压缩（遗留兼容入口）：当前原样返回。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_cvs_history_lines(input: &str) -> String {
     input.to_string()

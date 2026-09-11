@@ -1,2 +1,4 @@
-svn mkdir newdir
+svn mkdir --parents newdir/subdir
 A         newdir
+A         newdir/subdir
+A         newdir/subdir/tmp

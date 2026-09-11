@@ -4,6 +4,7 @@
 mod tests {
     use crate::core::content_analyzer::drain::{DrainConfig, DrainManager};
 
+    /// 验证 Drain 基础模板挖掘：多条含变量的日志能被聚合成带 `<*>` 占位符的模板。
     #[test]
     fn test_drain_basic_mining() {
         let config = DrainConfig {

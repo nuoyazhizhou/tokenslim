@@ -826,6 +826,20 @@ def parse_mod_rs_registry(mod_rs_path: str) -> Set[str]:
 # `case_xxx.log.bak`（备份）被误识别为合法 case。
 _CASE_FILE_RE = re.compile(r'^case_[^.]*\.(?!scenario\.yaml$)[^.]+$')
 
+# samples/ 与 src/plugins/mod.rs 中不作 showcase 压缩审计的非标准插件目录。
+# 这些是元插件 / 预处理插件 / 共享模块 / 测试基座，样例仅作功能夹具，不产生
+# 可冻结的压缩审计 case，因此既不应因「有 samples 未在 mod.rs 声明」被当孤儿插件
+# 告警，也不应因「已在 mod.rs 声明但无 samples」被当缺样例告警。
+# 与 generate_plugin_capability_index.get_coverage_status 的 explain=meta、vcs=orchestrator 口径一致。
+NON_SHOWCASE_PLUGIN_DIRS = {
+    "encoding_fallback",  # 编码兜底（预处理回退），样例为 mojibake/hex 编码夹具
+    "explain",            # 解释插件（后处理），capability 索引标记为 meta
+    "infra_tools_common",  # 共享模块（单文件 infra_tools_common.rs），非插件
+    "privacy",            # 隐私处理（预处理敏感值占位符，irreversible，不参与 showcase 审计）
+    "test_utils",         # 测试基座（cfg(test)），非插件
+    "vcs",                # VCS orchestrator（能力索引标记为 orchestrator）
+}
+
 
 def walk_physical_samples(samples_dir: str = "samples") -> Dict[str, List[str]]:
     """samples/ → {plugin_dir_name: [case_filename, ...]}。
@@ -977,8 +991,8 @@ def drift_audit(
     physical_norm = {p[:-len("_plugin")] if p.endswith("_plugin") else p for p in physical_dirs}
     mod_norm = {p[:-len("_plugin")] if p.endswith("_plugin") else p for p in mod_plugins}
 
-    extra_in_samples = physical_norm - mod_norm
-    missing_in_samples = mod_norm - physical_norm
+    extra_in_samples = physical_norm - mod_norm - NON_SHOWCASE_PLUGIN_DIRS
+    missing_in_samples = mod_norm - physical_norm - NON_SHOWCASE_PLUGIN_DIRS
     for p in sorted(extra_in_samples):
         findings.append({
             "axis": "samples-vs-mod-rs",

@@ -1,0 +1,3 @@
+2026-09-10 08:31:02 [INFO] SELECT * FROM users WHERE username='alice' AND password='S3cr3tPassw0rd!'
+2026-09-10 08:31:03 [WARN] DB connection established with connection_uri: postgres://admin:P@ssw0rd-2026@db.internal:5432/appdb
+2026-09-10 08:31:05 [ERROR] auth failed: Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcGktY2xpZW50In0.7dO8R9v0ZxQ3mK1pL2wE5rT6yU4iO9pA0sD8fG7hJ2k

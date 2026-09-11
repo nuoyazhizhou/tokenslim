@@ -12,6 +12,9 @@
 
 mod methods;
 mod types;
-pub use types::{CompressResult, DispatcherConfig, Plugin, PluginDispatcher, PluginExecutionError};
+pub use types::{
+    CompressResult, DispatcherConfig, DocumentSkin, Plugin, PluginAuditDescriptor,
+    PluginAuditEffect, PluginDispatcher, PluginExecutionError,
+};
 #[cfg(test)]
 mod test;

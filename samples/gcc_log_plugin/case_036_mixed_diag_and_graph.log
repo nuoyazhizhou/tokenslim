@@ -1,0 +1,26 @@
+make -C src all
+gcc -DHAVE_CONFIG_H -I. -Iinclude -c parser.c -o build/parser.o
+gcc -DHAVE_CONFIG_H -I. -Iinclude -c lexer.c -o build/lexer.o
+gcc -DHAVE_CONFIG_H -I. -Iinclude -c emit.c -o build/emit.o
+gcc -DHAVE_CONFIG_H -I. -Iinclude -c diag.c -o build/diag.o
+parser.c:47:9: error: use of undeclared identifier 'parse_depth'
+   47 |     if (parse_depth > MAX_DEPTH) {
+      |         ^
+lexer.c:112:5: error: redefinition of 'token_kind'
+  112 |     typedef enum token_kind kind;
+      |         ^
+emit.c:88:12: warning: implicit conversion loses integer precision
+   88 |     return frame_index;
+      |            ^
+parser.c:61:5: warning: unused variable 'tmp' [-Wunused-variable]
+   61 |     void *tmp = NULL;
+      |     ^
+make: *** [Makefile:63: build/parser.o] Error 1
+make: *** [Makefile:64: build/lexer.o] Error 1
++ git log --oneline --graph -4
+* 7c1f4a2 wip: parser depth guard
+|\
+| * 3e9b8d1 add parser unit test fixture
+| * 91cc07f fix fixture trailing newline
+|/
+* a04d552 import parser skeleton

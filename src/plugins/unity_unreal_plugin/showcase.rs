@@ -5,9 +5,11 @@ mod tests {
     use crate::core::dictionary_engine::DictionaryEngine;
     use crate::core::plugin_dispatcher::Plugin;
     use crate::core::text_slicer::{Slice, SliceType};
+    use crate::plugins::test_utils::full_dict_json;
     use crate::plugins::unity_unreal_plugin::UnityUnrealPlugin;
     use std::borrow::Cow;
 
+    /// 读取 unity_unreal_plugin 样例日志文件(位于项目 samples 目录)，缺失时返回空字符串。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,7 +19,9 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &UnityUnrealPlugin, text: &str) -> String {
+    /// 测试辅助：构造 LogBlock 切片并经插件压缩，拼接返回的 Text token 为字符串。
+    /// 返回值：(压缩文本, 字典侧通道 JSON)。字典 JSON 由共享的 full_dict_json 生成，便于对接审计插件。
+    fn compress_text(plugin: &UnityUnrealPlugin, text: &str) -> (String, String) {
         let slice = Slice {
             id: 1,
             text: Cow::Borrowed(text),
@@ -32,16 +36,19 @@ mod tests {
         let mut dedup = DedupEngine::new(DedupConfig::default());
         let arena = bumpalo::Bump::new();
         let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
+        let compacted = result
             .tokens
             .iter()
             .filter_map(|t| match t {
                 Token::Text(s) => Some(s.as_ref()),
                 _ => None,
             })
-            .collect::<String>()
+            .collect::<String>();
+        let dict_json = full_dict_json(&dict, &compacted);
+        (compacted, dict_json)
     }
 
+    /// 测试：对 15 个 Unity/Unreal 样例场景逐一压缩，生成含原始/压缩行数字节与压缩率的展示报告并写入 target 目录。
     #[test]
     fn generate_unity_unreal_showcase_report() {
         let plugin = UnityUnrealPlugin::new();
@@ -83,7 +90,7 @@ mod tests {
             let case_id = file_name.trim_end_matches(".log");
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
-            let compacted = compress_text(&plugin, &raw);
+            let (compacted, dict_json) = compress_text(&plugin, &raw);
             let compact_lines = if compacted.is_empty() {
                 0
             } else {
@@ -117,6 +124,15 @@ mod tests {
             all_output.push_str("\n");
             all_output.push_str(&compacted);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 追加字典侧通道段：仅当压缩产生可逆 token 映射时才写出，便于审计脚本重建 token->原文。
+            if !dict_json.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push('\n');
+                all_output.push_str(&dict_json);
                 all_output.push('\n');
             }
         }

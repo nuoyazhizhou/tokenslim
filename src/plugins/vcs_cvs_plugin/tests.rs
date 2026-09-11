@@ -1,19 +1,17 @@
 use super::methods::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 fn sample_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("samples")
-        .join("vcs_cvs_plugin")
+    crate::plugins::test_utils::vcs_sample_dir("vcs_cvs_plugin")
 }
 fn read_case(c: &str) -> String {
-    let p = sample_dir().join(format!("{c}.log"));
-    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("读取样本失败 {}: {e}", p.display()))
+    crate::plugins::test_utils::vcs_read_case("vcs_cvs_plugin", c)
 }
 
 // ============================================================================
 // Case 101: update — 命令锚点 + Updating 废话消除 + U/A/R 映射
 // ============================================================================
+/// 测试：cvs update 样例（case 101）状态映射。
 #[test]
 fn test_update_case_101() {
     let c = compact_cvs_status_for_ai(&read_case("case_101_cvs_update"));
@@ -28,6 +26,7 @@ fn test_update_case_101() {
 // ============================================================================
 // Case 314: update -d — 多层 Updating 消除
 // ============================================================================
+/// 测试：cvs update -d 样例（case 314）状态映射。
 #[test]
 fn test_update_d_case_314() {
     let c = compact_cvs_status_for_ai(&read_case("case_314_cvs_update_d"));
@@ -41,6 +40,7 @@ fn test_update_d_case_314() {
 // ============================================================================
 // Case 315: status -v — 命令锚点 + 分隔线消除 + KV 扁平化
 // ============================================================================
+/// 测试：cvs status -v 样例（case 315）KV 扁平化。
 #[test]
 fn test_status_v_case_315() {
     let c = compact_cvs_status_for_ai(&read_case("case_315_cvs_status_v"));
@@ -51,6 +51,7 @@ fn test_status_v_case_315() {
     assert!(c.contains("WR: 1.6"), "WR 应压缩 Working revision");
 }
 
+/// 测试：cvs status 样例（case 36）ROI 门控。
 #[test]
 fn test_status_case_36_roi_guard() {
     let raw = read_case("case_36_cvs_status");
@@ -66,6 +67,7 @@ fn test_status_case_36_roi_guard() {
 // ============================================================================
 // Case 102: commit — 命令锚点 + CM: 映射
 // ============================================================================
+/// 测试：cvs commit 样例（case 102）CM: 映射。
 #[test]
 fn test_commit_case_102() {
     let c = compact_cvs_log_family_for_ai(&read_case("case_102_cvs_commit"));
@@ -84,6 +86,7 @@ fn test_commit_case_102() {
 // ============================================================================
 // Case 146: tag — 命令锚点 + T: 映射
 // ============================================================================
+/// 测试：cvs tag 样例（case 146）ST:T 映射。
 #[test]
 fn test_tag_case_146() {
     let c = compact_cvs_log_family_for_ai(&read_case("case_146_cvs_tag"));
@@ -93,6 +96,7 @@ fn test_tag_case_146() {
     assert!(c.contains("ST:T src/utils.java"), "第二个 T 应保留");
 }
 
+/// 测试：cvs history 样例（case 190）ROI 门控。
 #[test]
 fn test_history_case_190_roi_guard() {
     let raw = read_case("case_190_cvs_history");
@@ -108,12 +112,14 @@ fn test_history_case_190_roi_guard() {
 // ============================================================================
 // 短输入 + 报警
 // ============================================================================
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let c = compact_cvs_log_for_ai("cvs help");
     assert_eq!(c, "cvs help");
 }
 
+/// 测试：cvs 警报行映射。
 #[test]
 fn test_cvs_alert_mapping() {
     assert!(super::methods::map_cvs_alert("CONFLICT src/main.c").is_some());

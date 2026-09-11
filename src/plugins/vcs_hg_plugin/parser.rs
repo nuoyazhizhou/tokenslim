@@ -30,6 +30,7 @@ pub enum VcsRecord {
 }
 
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -63,10 +64,12 @@ pub struct VcsDocument {
 }
 
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 
 // --- 公共帮助函数 (独立化) ---
+/// 非空记录列表包装为 VcsDocument；空列表返回 None。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn to_doc_if_any(
     tool: VcsTool,
@@ -84,6 +87,7 @@ pub fn to_doc_if_any(
     }
 }
 
+/// 提取 hg 作者：优先尖括号邮箱 local 部分，其次直接邮箱，无邮箱原样返回。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn extract_hg_author(raw_user: &str) -> String {
     // 提取邮箱 @ 前的完整前缀，丢弃域名后缀
@@ -119,6 +123,7 @@ pub fn extract_hg_author(raw_user: &str) -> String {
     raw_user.trim().to_string()
 }
 
+/// 判断字符串是否为 VCS 路径形态。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn looks_like_vcs_path(path: &str) -> bool {
     let trimmed = path.trim_matches('"');
@@ -170,6 +175,7 @@ pub fn looks_like_vcs_path(path: &str) -> bool {
         || trimmed.starts_with('.')
 }
 
+/// 解析单字符状态码 + 路径。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     let t = line.trim();
@@ -200,6 +206,7 @@ pub fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
 
 // --- Parse & format helpers ---
 
+/// 解析 diff 的 index/---/+++/@@ 行与 +/- 补丁行，分类为 Raw/Hunk/Patch 记录。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn parse_generic_patch_or_stat_line(
     line: &str,
@@ -251,6 +258,7 @@ pub fn parse_generic_patch_or_stat_line(
     false
 }
 
+/// 压缩 hg update 汇总行：解析 "N files updated, M files merged" 为计数摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_update_summary_line(line: &str) -> Option<String> {
     let mut compact = Vec::new();
@@ -287,16 +295,19 @@ pub fn compact_hg_update_summary_line(line: &str) -> Option<String> {
     }
 }
 
+/// 剥离 hg 字段前缀并 trim 值。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn strip_hg_field_prefix<'a>(line: &'a str, prefix: &str) -> Option<&'a str> {
     line.strip_prefix(prefix).map(|value| value.trim_start())
 }
 
+/// 折叠行内连续空白为单空格。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn collapse_inline_whitespace(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 压缩 hg branch 行：(inactive) 后缀映射为 ~ 标记。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_branch_line(line: &str) -> String {
     line.strip_suffix(" (inactive)")
@@ -304,6 +315,7 @@ pub fn compact_hg_branch_line(line: &str) -> String {
         .unwrap_or_else(|| line.to_string())
 }
 
+/// 在连续空白处将行切分为左右两段。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn split_on_repeated_whitespace(line: &str) -> Option<(&str, &str)> {
     let mut run_start: Option<usize> = None;
@@ -333,6 +345,7 @@ pub fn split_on_repeated_whitespace(line: &str) -> Option<(&str, &str)> {
     None
 }
 
+/// 将英文月份缩写映射为数字。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn hg_month_number(token: &str) -> Option<u32> {
     match token {
@@ -352,16 +365,19 @@ pub fn hg_month_number(token: &str) -> Option<u32> {
     }
 }
 
+/// 判断 token 是否为英文星期缩写。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn looks_like_hg_weekday(token: &str) -> bool {
     matches!(token, "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun")
 }
 
+/// 判断 token 是否为 4 位年份。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn looks_like_hg_year(token: &str) -> bool {
     token.len() == 4 && token.chars().all(|ch| ch.is_ascii_digit())
 }
 
+/// 判断 token 是否为 HH:MM:SS 时间格式。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn looks_like_hg_time_token(token: &str) -> bool {
     let mut parts = token.split(':');
@@ -378,6 +394,7 @@ pub fn looks_like_hg_time_token(token: &str) -> bool {
         && second.chars().all(|ch| ch.is_ascii_digit())
 }
 
+/// 将 hg 日期值规范化为 YYYY-MM-DD HH:MM:SS 格式。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_date_value(value: &str) -> Option<String> {
     let parts: Vec<&str> = value.split_whitespace().collect();
@@ -403,6 +420,7 @@ pub fn compact_hg_date_value(value: &str) -> Option<String> {
     Some(format!("{}-{:02}-{:02} {}", year, month, day, time))
 }
 
+/// 确保 changeset: 标记前补换行（防止粘接到上一行）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn enforce_hg_changeset_boundaries(input: &str) -> String {
     let mut out = String::with_capacity(input.len() + 16);
@@ -436,6 +454,7 @@ pub fn enforce_hg_changeset_boundaries(input: &str) -> String {
     out
 }
 
+/// 解析 hg changeset 类记录（按命令前缀过滤）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn parse_hg_changeset_like_records(raw: &str, command_prefixes: &[&str]) -> Vec<VcsRecord> {
     // 法则 D + HG-2: 将松散的多行 changeset 拍扁为单行 IR
@@ -587,6 +606,8 @@ pub fn parse_hg_changeset_like_records(raw: &str, command_prefixes: &[&str]) -> 
 
 pub struct HgStatusParser;
 impl VcsParser for HgStatusParser {
+    /// 解析 `hg status` / `hg st` 输出：跳过命令锚点行后，按单/双字符状态码 + 路径提取文件状态，
+    /// 纯路径形态行归入 File 记录，其余保留为 Raw，最终聚合为 Status 类 VcsDocument。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -625,6 +646,8 @@ impl VcsParser for HgStatusParser {
 
 pub struct HgDiffParser;
 impl VcsParser for HgDiffParser {
+    /// 解析 `hg diff` 输出：将 `diff -r ... -r ... path` 与 `diff --git a/.. b/..` 头部归一为 `DIFF://path`，
+    /// 其余补丁/统计/hunk 行交给通用解析，路径行归入 File，输出 Diff 类 VcsDocument。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -690,16 +713,207 @@ impl VcsParser for HgDiffParser {
     }
 }
 
+/// 解析 `hg log --style compact` 的单行 oneline 格式。
+///
+/// Hg 的 compact 风格把每个 changeset 拍平成单行：
+///
+/// ```text
+/// 1234[tip] Implement dictionary manager (developer, 2026-04-14)
+/// 1233 Add parallel processing support (developer, 2026-04-14)
+/// ```
+///
+/// 所有行共享作者与日期时，将 `(author, date)` 提取为一行首部声明，其余行只保留
+/// 修订号标记 + commit message，消除逐行重复冗余（法则 C/D）；若各行作者/日期存在
+/// 差异，则逐行保留完整 oneline（不丢作者/日期语义）。
+#[tracing::instrument(level = "debug", skip_all)]
+fn parse_hg_log_compact_oneline(raw: &str) -> Vec<VcsRecord> {
+    // 第一步：解析每一行为 (rev_tag, message, author, date)
+    let mut rows: Vec<(String, String, String, String)> = Vec::new();
+    for line in raw.lines() {
+        let trimmed = line.trim_end_matches('\r');
+        if trimmed.trim().is_empty() || trimmed.starts_with("hg log") {
+            continue;
+        }
+        let body = trimmed.trim();
+        if let Some((head, author_date)) = body.rsplit_once(" (") {
+            let author_date = author_date.trim_end_matches(')');
+            let (author, date) = match author_date.split_once(", ") {
+                Some((a, d)) => (a.trim(), d.trim()),
+                None => (author_date, ""),
+            };
+            if head.is_empty() {
+                rows.push((
+                    body.to_string(),
+                    String::new(),
+                    author.to_string(),
+                    date.to_string(),
+                ));
+                continue;
+            }
+            // 折叠 [tip]/[ ] 标记到修订号末尾：仅当消息正文不含 '[' 时才折叠
+            let mut rev_tag = head.to_string();
+            if let Some(bs) = rev_tag.find('[') {
+                if let Some(re) = rev_tag[bs..].find(']') {
+                    let end = bs + re;
+                    // 只处理简单标记（修订号 + [tag] + 可选消息），避免误伤正文中的括号
+                    if rev_tag[bs..=end].matches('[').count() <= 1 {
+                        let tag = &rev_tag[bs + 1..end];
+                        let prefix = &rev_tag[..bs];
+                        let tail = rev_tag[end + 1..].trim_start();
+                        rev_tag = if tail.is_empty() {
+                            format!("{} {}", prefix, tag)
+                        } else {
+                            format!("{} {} {}", prefix, tag, tail)
+                        };
+                    }
+                }
+            }
+            let (rev_part, msg_part) = match rev_tag.find(' ') {
+                Some(idx) => (
+                    rev_tag[..idx].to_string(),
+                    rev_tag[idx..].trim_start().to_string(),
+                ),
+                None => (rev_tag.clone(), String::new()),
+            };
+            rows.push((rev_part, msg_part, author.to_string(), date.to_string()));
+        } else {
+            rows.push((
+                body.to_string(),
+                String::new(),
+                String::new(),
+                String::new(),
+            ));
+        }
+    }
+
+    // 第二步：判定作者/日期是否全局一致
+    let authors: Vec<&str> = rows
+        .iter()
+        .map(|r| r.2.as_str())
+        .filter(|a| !a.is_empty())
+        .collect();
+    let dates: Vec<&str> = rows
+        .iter()
+        .map(|r| r.3.as_str())
+        .filter(|d| !d.is_empty())
+        .collect();
+    let author_uniq: Vec<&str> = {
+        let mut v = authors.clone();
+        v.sort_unstable();
+        v.dedup();
+        v
+    };
+    let date_uniq: Vec<&str> = {
+        let mut v = dates.clone();
+        v.sort_unstable();
+        v.dedup();
+        v
+    };
+    let share_meta =
+        !authors.is_empty() && author_uniq.len() == 1 && !dates.is_empty() && date_uniq.len() == 1;
+
+    let mut records = Vec::new();
+    if share_meta {
+        // 首部一行声明共享的作者与日期，后续行去冗余
+        let meta = format!("OW:{} DT:{}", extract_hg_author(authors[0]), dates[0]);
+        records.push(VcsRecord::Raw(meta));
+        for (rev_part, msg_part, _author, _date) in rows {
+            let line = {
+                let rev = if rev_part.is_empty() {
+                    String::new()
+                } else {
+                    rev_part
+                };
+                if rev.is_empty() {
+                    msg_part.clone()
+                } else if msg_part.is_empty() {
+                    rev
+                } else {
+                    format!("{} {}", rev, msg_part)
+                }
+            };
+            records.push(VcsRecord::Raw(line));
+        }
+    } else {
+        // 作者/日期逐行不同：保留每行完整语义（作者日期 + 消息）
+        for (rev_part, msg_part, author, date) in rows {
+            let mut line = String::new();
+            if !rev_part.is_empty() {
+                line.push_str(&rev_part);
+                line.push(' ');
+            }
+            if !msg_part.is_empty() {
+                line.push_str(&msg_part);
+            }
+            if !author.is_empty() || !date.is_empty() {
+                line.push_str(" (");
+                let mut meta = Vec::new();
+                if !author.is_empty() {
+                    meta.push(author);
+                }
+                if !date.is_empty() {
+                    meta.push(date);
+                }
+                line.push_str(&meta.join(", "));
+                line.push(')');
+            }
+            records.push(VcsRecord::Raw(line));
+        }
+    }
+    records
+}
+
+/// 解析 `hg log` 输出：按内容形态分派——compact 单行格式走 oneline 压缩，否则复用
+/// 标准 changeset 提取流程，将松散多行 commit 拍扁为 CH/BR/OW/DT/CM 单行记录。
 pub struct HgLogParser;
 impl VcsParser for HgLogParser {
+    /// 解析 `hg log` 输出：识别 `--style compact` 的单行格式并压缩，普通多行 changeset
+    /// 块复用 `parse_hg_changeset_like_records` 提取流程，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
+        if is_hg_log_compact_oneline(raw) {
+            let records = parse_hg_log_compact_oneline(raw);
+            return to_doc_if_any(VcsTool::Hg, VcsDocKind::Log, records);
+        }
         let records = parse_hg_changeset_like_records(raw, &["hg log"]);
         to_doc_if_any(VcsTool::Hg, VcsDocKind::Log, records)
     }
 }
 
+/// 判定输入是否为 `hg log --style compact` 的 oneline 块：命令含 --style，且正文行
+/// 以 "rev[标记] " 或 "rev 数字" 形态开头（非 changeset: 前缀）。
+#[tracing::instrument(level = "debug", skip_all)]
+pub fn is_hg_log_compact_oneline(text: &str) -> bool {
+    let mut saw_command = false;
+    let mut saw_oneline = false;
+    for line in text.lines() {
+        let trimmed = line.trim_start();
+        if trimmed.starts_with("hg log") {
+            if trimmed.to_ascii_lowercase().contains("--style") {
+                saw_command = true;
+            }
+            continue;
+        }
+        if trimmed.is_empty() {
+            continue;
+        }
+        // oneline 形态：以数字修订号开头，且不包含 changeset:
+        if let Some(first) = trimmed.chars().next() {
+            if first.is_ascii_digit()
+                && !trimmed.starts_with("changeset:")
+                && trimmed.contains(" (")
+            {
+                saw_oneline = true;
+            } else {
+                return false;
+            }
+        }
+    }
+    saw_command && saw_oneline
+}
+
 pub struct HgHeadsParser;
 impl VcsParser for HgHeadsParser {
+    /// 解析 `hg heads` 输出：以与 log 相同的 changeset 提取流程归并头节点提交信息，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_hg_changeset_like_records(raw, &["hg heads"]);
         to_doc_if_any(VcsTool::Hg, VcsDocKind::Log, records)
@@ -708,6 +922,7 @@ impl VcsParser for HgHeadsParser {
 
 pub struct HgOutgoingParser;
 impl VcsParser for HgOutgoingParser {
+    /// 解析 `hg outgoing` 输出：复用 changeset 提取流程，呈现待推送到远端但尚未推送的提交列表（Log 类）。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_hg_changeset_like_records(raw, &["hg outgoing"]);
         to_doc_if_any(VcsTool::Hg, VcsDocKind::Log, records)
@@ -716,6 +931,7 @@ impl VcsParser for HgOutgoingParser {
 
 pub struct HgIncomingParser;
 impl VcsParser for HgIncomingParser {
+    /// 解析 `hg incoming` 输出：复用 changeset 提取流程，呈现远端有而本地缺失的待拉取提交（Log 类）。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_hg_changeset_like_records(raw, &["hg incoming"]);
         to_doc_if_any(VcsTool::Hg, VcsDocKind::Log, records)
@@ -724,6 +940,7 @@ impl VcsParser for HgIncomingParser {
 
 pub struct HgParentsParser;
 impl VcsParser for HgParentsParser {
+    /// 解析 `hg parents` 输出：复用 changeset 提取流程，归并当前工作副本的父提交信息（Log 类）。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = parse_hg_changeset_like_records(raw, &["hg parents"]);
         to_doc_if_any(VcsTool::Hg, VcsDocKind::Log, records)
@@ -732,6 +949,7 @@ impl VcsParser for HgParentsParser {
 
 pub struct HgBackoutParser;
 impl VcsParser for HgBackoutParser {
+    /// 解析 `hg backout` 输出：捕获被回滚的目标 changeset 与回滚摘要（summary），其余行保留为 Raw，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut in_changeset = false;
@@ -785,6 +1003,7 @@ impl VcsParser for HgBackoutParser {
 
 pub struct HgBookmarksParser;
 impl VcsParser for HgBookmarksParser {
+    /// 解析 `hg bookmarks` 输出：识别活动书签（`*` 前缀）与名称+版本号，空书签提示单独记录，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -819,6 +1038,7 @@ impl VcsParser for HgBookmarksParser {
 
 pub struct HgBranchesParser;
 impl VcsParser for HgBranchesParser {
+    /// 解析 `hg branches` 输出：提取分支名与版本号，`(inactive)` 后缀映射为 `~` 标记，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -849,6 +1069,7 @@ impl VcsParser for HgBranchesParser {
 
 pub struct HgCloneParser;
 impl VcsParser for HgCloneParser {
+    /// 解析 `hg clone` 输出：捕获目标目录、更新到的分支与文件变更汇总（updated/merged/removed 计数），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -903,6 +1124,7 @@ impl VcsParser for HgCloneParser {
 
 pub struct HgCommitParser;
 impl VcsParser for HgCommitParser {
+    /// 解析 `hg commit` 输出：收集提交中的文件清单（committing files 段）与最终 committed changeset 标识，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut in_committing_files = false;
@@ -956,6 +1178,7 @@ impl VcsParser for HgCommitParser {
 
 pub struct HgMergeParser;
 impl VcsParser for HgMergeParser {
+    /// 解析 `hg merge` 输出：捕获合并目标、Auto-merging 路径与文件变更汇总（updated/merged 计数），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1007,6 +1230,7 @@ impl VcsParser for HgMergeParser {
 
 pub struct HgPhaseParser;
 impl VcsParser for HgPhaseParser {
+    /// 解析 `hg phase` 输出：将每行 `revision (phase)` 拆为版本号 + 阶段（draft/public 等），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1036,6 +1260,7 @@ impl VcsParser for HgPhaseParser {
 
 pub struct HgPullParser;
 impl VcsParser for HgPullParser {
+    /// 解析 `hg pull` 输出：记录拉取源 URL、新增 changeset 数、更新到的版本；无变更时归一为 `no changes`，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut pending_no_changes = false;
@@ -1094,6 +1319,7 @@ impl VcsParser for HgPullParser {
 
 pub struct HgPushParser;
 impl VcsParser for HgPushParser {
+    /// 解析 `hg push` 输出：记录首个推送目标 URL（置于记录头部）并保留其余行，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut first_remote: Option<String> = None;
@@ -1130,6 +1356,7 @@ impl VcsParser for HgPushParser {
 
 pub struct HgRollbackParser;
 impl VcsParser for HgRollbackParser {
+    /// 解析 `hg rollback` 输出：捕获回滚目标 changeset 与完成提示，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut saw_target = false;
@@ -1165,6 +1392,7 @@ impl VcsParser for HgRollbackParser {
 
 pub struct HgShelveParser;
 impl VcsParser for HgShelveParser {
+    /// 解析 `hg shelve` 输出：捕获暂存名（`shelved as`）并将路径形态行归入 File 记录，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1199,6 +1427,7 @@ impl VcsParser for HgShelveParser {
 
 pub struct HgTagParser;
 impl VcsParser for HgTagParser {
+    /// 解析 `hg tag` 输出：提取标签名及其后缀（修订/日期等），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1232,6 +1461,7 @@ impl VcsParser for HgTagParser {
 
 pub struct HgUpdateParser;
 impl VcsParser for HgUpdateParser {
+    /// 解析 `hg update` 输出：捕获更新到的 changeset、工作目录版本与文件变更汇总（updated/merged 计数），输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1273,6 +1503,7 @@ impl VcsParser for HgUpdateParser {
 
 pub struct HgCopyParser;
 impl VcsParser for HgCopyParser {
+    /// 解析 `hg copy` 输出：将 `copying src to dst` 归一为 `copy src -> dst`，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1299,6 +1530,7 @@ impl VcsParser for HgCopyParser {
 
 pub struct HgMoveParser;
 impl VcsParser for HgMoveParser {
+    /// 解析 `hg move` 输出：将 `moving src to dst` 归一为 `move src -> dst`，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1325,6 +1557,7 @@ impl VcsParser for HgMoveParser {
 
 pub struct HgPurgeParser;
 impl VcsParser for HgPurgeParser {
+    /// 解析 `hg purge` 输出：将 `removed: path` 标记为删除状态文件（Status 类 `D`），输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1351,6 +1584,7 @@ impl VcsParser for HgPurgeParser {
 
 pub struct HgArchiveParser;
 impl VcsParser for HgArchiveParser {
+    /// 解析 `hg archive` 输出：提取归档路径（`archive created:`）、文件数与体积摘要，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1384,6 +1618,7 @@ impl VcsParser for HgArchiveParser {
 
 pub struct HgVerifyParser;
 impl VcsParser for HgVerifyParser {
+    /// 解析 `hg verify` 输出：摘取 `verified N changesets` 的数量摘要；无 verified 行则原样保留，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut verified_count: Option<String> = None;
@@ -1415,6 +1650,7 @@ impl VcsParser for HgVerifyParser {
 
 pub struct HgIdentifyParser;
 impl VcsParser for HgIdentifyParser {
+    /// 解析 `hg identify` 输出：直接透传 changeset 哈希行（不添加冗余前缀），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1431,6 +1667,7 @@ impl VcsParser for HgIdentifyParser {
 
 pub struct HgPathsParser;
 impl VcsParser for HgPathsParser {
+    /// 解析 `hg paths` 输出：将 `name = url` 归一为 `name=<url>` 形式，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1455,6 +1692,7 @@ impl VcsParser for HgPathsParser {
 
 pub struct HgConfigParser;
 impl VcsParser for HgConfigParser {
+    /// 解析 `hg config` 输出：保留 `[section]` 段头并将 `key = value` 归一为 `key=value`，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1484,6 +1722,7 @@ impl VcsParser for HgConfigParser {
 
 pub struct HgSummarizeParser;
 impl VcsParser for HgSummarizeParser {
+    /// 解析 `hg summarize` 输出：将 Branch/Parent 与通用 `key:value` 归一为特征记录（如 `BR:`/`parent:`），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -1521,6 +1760,7 @@ impl VcsParser for HgSummarizeParser {
 
 pub struct HgTransplantParser;
 impl VcsParser for HgTransplantParser {
+    /// 解析 `hg transplant` 输出：将 `transplanting rev:msg` 归一为移植版本号并保留移植数量摘要，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {

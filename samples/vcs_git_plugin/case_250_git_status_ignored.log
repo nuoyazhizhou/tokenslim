@@ -21,3 +21,9 @@ Ignored files:
 	target/
 	Cargo.lock
 	*.log
+	.vscode/
+	*.rs.bk
+	*.profraw
+	data/*.bin
+	docs/generated/
+	*.dSYM/

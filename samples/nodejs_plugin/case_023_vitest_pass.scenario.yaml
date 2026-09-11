@@ -1,0 +1,15 @@
+scenario: '在 CI 中运行 vitest run 全通过场景，输出 13 个 ✓ 通过测试行、Test Files/Tests 权威统计与 Duration。'
+target_capability: 'vitest 测试输出压缩（折叠 ✓ 通过行，保留 Test Files/Tests 统计与通过计数）'
+expected_keep: '35 passed (35)'
+expected_compress: '✓ src/hooks/useDebounce.test.ts (2 tests) 8ms'
+source: 'llm'
+generated_at: '2026-09-03T10:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '8ce89714ef0d92071261ac132b6177b8b291f05bf596b0ec0aa4cffda5709915'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:56.243856'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

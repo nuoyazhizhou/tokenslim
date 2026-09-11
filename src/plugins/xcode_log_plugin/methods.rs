@@ -7,8 +7,14 @@ use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
 use std::sync::Arc;
+use std::sync::OnceLock;
+
+/// P3-163（P3-127 家族扩展）：`normalize` 每次调用重建 DerivedData 项目哈希正则，
+/// 提升为进程级 `OnceLock` 预编译（对照 `infra_tools_common.rs` 范式）。
+static DERIVEDDATA_HASH_RE: OnceLock<Regex> = OnceLock::new();
 
 impl XcodeLogPlugin {
+    /// 创建插件实例：初始化名称(xcode_log)、优先级(195)与 Xcode 编译/Clang 正则匹配器。
     pub fn new() -> Self {
         Self {
             name: "xcode_log",
@@ -30,19 +36,23 @@ impl XcodeLogPlugin {
 }
 
 impl Default for XcodeLogPlugin {
+    /// 返回默认插件实例：委托 new() 创建（名称/优先级在 Plugin 实现中硬编码）。
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl Plugin for XcodeLogPlugin {
+    /// 返回插件名称标识 "xcode_log"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级(195)，用于压缩调度排序。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片前 20 行是否属于 Xcode 构建日志，按匹配行比例返回置信度 0.0~1.0。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lines: Vec<&str> = slice.text.lines().take(20).collect();
         if lines.is_empty() {
@@ -67,6 +77,7 @@ impl Plugin for XcodeLogPlugin {
         }
     }
 
+    /// 压缩 Xcode 构建日志：折叠 /dev/null 探针、将 CompileC/Clang/cd/response 行编码为 $XC IR 标签，并经 ROI 门控输出。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -154,6 +165,7 @@ impl Plugin for XcodeLogPlugin {
         }
     }
 
+    /// 解压 Xcode 日志：将 $XC| 系列 IR 标签还原为原始命令行文本。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         let mut out = String::new();
         for line in compressed.lines() {
@@ -202,12 +214,15 @@ impl Plugin for XcodeLogPlugin {
         out
     }
 
+    /// 声明下游插件：压缩后交由 smart_path 继续处理路径。
     fn next_plugins(&self) -> Vec<&'static str> {
         vec!["smart_path"]
     }
 
+    /// 归一化文本：将 DerivedData 项目哈希目录替换为 [PROJECT] 占位符以便去重。
     fn normalize(&self, text: &str) -> String {
-        let hash_re = Regex::new(r"/DerivedData/[^/]+-[a-z0-9]+/").unwrap();
+        let hash_re = DERIVEDDATA_HASH_RE
+            .get_or_init(|| Regex::new(r"/DerivedData/[^/]+-[a-z0-9]+/").unwrap());
         hash_re
             .replace_all(text, "/DerivedData/[PROJECT]/")
             .to_string()

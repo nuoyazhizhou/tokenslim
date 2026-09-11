@@ -1,0 +1,15 @@
+scenario: '一个 Python 项目的 pyproject.toml 配置，含 build-system / project / 可选依赖 / 工具段。'
+target_capability: 'TOML 配置结构压缩与段/键值保持'
+expected_keep: '[build-system] requires: hatchling，[project] name: tokenslim，[tool.pytest] testpaths: tests'
+expected_compress: '依赖列表长值归一化为紧凑形式、冗余空白压缩'
+source: 'manual'
+generated_at: '2026-09-04T04:08:44Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '78c50a74863d65a7bca0e0070d866bbae8b9a61bfa4ba031a94ef8129be1b5c3'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:11:13.482849'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

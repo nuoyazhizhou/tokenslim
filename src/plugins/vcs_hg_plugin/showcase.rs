@@ -3,6 +3,7 @@ mod tests {
     use crate::plugins::vcs_hg_plugin::methods::*;
     use crate::plugins::vcs_hg_plugin::parser::*;
 
+    /// 测试：遍历 hg 样例生成 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_vcs_hg_showcase_report() {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
@@ -49,7 +50,6 @@ mod tests {
             ("case_274", "hg_st", "status"),
             ("case_275", "hg_status_quiet", "status"),
             ("case_276", "hg_status_untracked", "status"),
-            ("case_277", "hg_status_path", "status"),
             // Extended log variants
             ("case_278", "hg_log_limit", "log"),
             ("case_279", "hg_log_verbose", "log"),
@@ -138,6 +138,7 @@ mod tests {
         .unwrap();
     }
 
+    /// 测试辅助：按样例路由到对应 hg 子命令压缩函数。
     fn route_hg_command(raw: &str, file_base: &str, profile: &str) -> String {
         match profile {
             "status" => {

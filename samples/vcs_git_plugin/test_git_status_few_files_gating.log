@@ -1,0 +1,5 @@
+git status
+On branch main
+Changes not staged for commit:
+        modified:   README.md
+        modified:   Cargo.toml

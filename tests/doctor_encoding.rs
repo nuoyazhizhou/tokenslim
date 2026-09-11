@@ -1,3 +1,7 @@
+// 测试 fixture 中刻意的 mojibake 字符串（UTF-8 中文被误读为 Latin-1）含软连字符 U+00AD,
+// 属不可见字符，clippy 默认 deny；此处按测试意图允许该 lint。
+#![allow(clippy::invisible_characters)]
+
 use tokenslim::core::doctor_encoding::{
     classify_risk, collect_encoding_report, CodepageSignal, EncodingDoctorReport,
     EncodingRiskLevel, OsSignal, RuntimeSignal,
@@ -7,6 +11,8 @@ use tokenslim::core::encoding_fallback::{
     decode_and_repair_for_display, evaluate_repair_confidence,
 };
 
+/// 风险分级三态验证：Windows+GBK 936 判 Fail、检出 utf-8 Python 升 Warn、
+/// Linux+全 utf-8 运行时判 Ok；并验证 collect_encoding_report 真实环境报告 OS 名非空。
 #[test]
 fn test_risk_classification_ok_warn_fail() {
     let report_fail = EncodingDoctorReport {
@@ -98,6 +104,7 @@ fn test_risk_classification_ok_warn_fail() {
     assert!(!actual_report.os.name.is_empty());
 }
 
+/// JSON 报告结构完整性：所有契约键必须存在，且 supported_decoders 含 mixed-by-lines 解码器。
 #[test]
 fn test_json_shape_contains_required_keys() {
     let json_str = run_encoding_doctor(DoctorReportFormat::Json).unwrap();
@@ -129,6 +136,8 @@ fn test_json_shape_contains_required_keys() {
     }));
 }
 
+/// 文本报告分区完整性：风险/信号/解码器支持/扩展候选/修复分层/置信度/建议
+/// 各分区标题（中英文任一）均须出现，且含 mixed-by-lines/chunks 解码器名。
 #[test]
 fn test_text_output_has_sections() {
     let text_str = run_encoding_doctor(DoctorReportFormat::Text).unwrap();
@@ -144,6 +153,8 @@ fn test_text_output_has_sections() {
     assert!(text_str.contains("[Recommendations]") || text_str.contains("[建议]"));
 }
 
+/// 混合污染样本（BOM+mojibake 片段+CRLF+正常 UTF-8）修复：应保留两段正文、
+/// 去除 BOM 与 CRLF，且修复置信度/证据均非空。
 #[test]
 fn test_mixed_polluted_sample_and_repair_confidence() {
     // UTF-8 + mojibake fragment + BOM/CRLF pollution mixed in one payload.
@@ -160,6 +171,7 @@ fn test_mixed_polluted_sample_and_repair_confidence() {
     assert!(!evidence.is_empty());
 }
 
+/// 真实环境报告一致性：解码器/修复分层/置信度/建议均非空，且 risk 与 classify_risk 自洽。
 #[test]
 fn test_collect_encoding_report_profiles_and_risk_are_consistent() {
     let report = collect_encoding_report();

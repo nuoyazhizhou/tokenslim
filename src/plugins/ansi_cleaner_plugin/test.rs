@@ -6,6 +6,7 @@ mod tests {
     use crate::core::text_slicer::SliceType;
     use crate::plugins::ansi_cleaner_plugin::types::AnsiCleanerPlugin;
     use crate::plugins::test_utils::*;
+    /// 验证含 ANSI 颜色的样本能被 `detect` 命中。
     #[test]
     fn detects_ansi_color_sample() {
         let plugin = AnsiCleanerPlugin::new();
@@ -13,6 +14,7 @@ mod tests {
         assert!(plugin.detect(&make_log_slice(&raw)).is_some());
     }
 
+    /// 验证 ANSI 颜色样本压缩后转义序列被剥离且输出不扩张。
     #[test]
     fn compresses_ansi_colors_sample_strips_escape_and_does_not_expand() {
         let plugin = AnsiCleanerPlugin::new();
@@ -27,6 +29,7 @@ mod tests {
         );
     }
 
+    /// 验证混合 ANSI 样本压缩后转义序列被完整剥离。
     #[test]
     fn compresses_ansi_mixed_sample_strips_escape() {
         let plugin = AnsiCleanerPlugin::new();

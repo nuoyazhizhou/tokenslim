@@ -1,0 +1,13 @@
+scenario: 'Hg graft 命令回显且无输出行（空输出边界），测空输出原样返回（测试专用合成样本）。'
+target_capability: 'P3-202 测试样本物理化（红线：禁手写 mock 喂压缩器）'
+expected_keep: '命令锚点与压缩语义锚点（见对应测试断言）'
+expected_compress: '冗余提示行与重复前缀'
+source: 'test_synthetic'
+generated_at: '2026-09-09T00:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+# 注：本文件为测试专用合成样本，不注册进 showcase 审计案例表。
+audit:
+  content_hash: 'n/a-test-synthetic'
+  final_status: 'valid'
+  llm_invoked: false

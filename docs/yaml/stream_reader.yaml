@@ -1,0 +1,431 @@
+module:
+  name: stream_reader
+  path: src/core/stream_reader
+  dependencies:
+    - memmap2 = "0.5"
+    - encoding_rs = "0.8"
+    - memchr = "2.5"
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{StreamReader, StreamError, FileMetadata, FileType, Bom, SliceInput, LineIterator, BlockIterator};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::path::PathBuf;
+        use std::time::SystemTime;
+        use std::fs::Permissions;
+        use std::borrow::Cow;
+
+        /// 文件元数据
+        #[derive(Debug, Clone)]
+        pub struct FileMetadata {
+            pub path: Option<PathBuf>,
+            pub size: u64,
+            pub file_type: FileType,
+            pub created: Option<SystemTime>,
+            pub modified: Option<SystemTime>,
+            pub permissions: Option<Permissions>,
+            pub owner: Option<String>,
+            pub bom: Option<Bom>,
+        }
+
+        /// 文件类型（由 StreamReader 初步判断）
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        pub enum FileType {
+            Text,
+            Binary,
+            Unknown,
+        }
+
+        /// BOM 类型
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        pub enum Bom {
+            Utf8,
+            Utf16Le,
+            Utf16Be,
+        }
+
+        /// StreamReader 错误类型
+        #[derive(Debug, thiserror::Error)]
+        pub enum StreamError {
+            #[error("I/O error: {0}")]
+            Io(#[from] std::io::Error),
+            #[error("UTF-8 error: {0}")]
+            Utf8(#[from] std::str::Utf8Error),
+            #[error("Binary file detected")]
+            BinaryDetected,
+            #[error("Invalid path")]
+            InvalidPath,
+            #[error("Unsupported encoding")]
+            UnsupportedEncoding,      // 未来可能使用
+            #[error("Line too long")]
+            TooLongLine,              // 未来可能使用
+        }
+
+        /// 输入片段，由 StreamReader 产生，供 TextSlicer 消费
+        #[derive(Debug)]
+        pub struct SliceInput<'a> {
+            pub raw: Cow<'a, str>,
+            pub offset: usize,
+            pub line_number: usize,
+            pub file_metadata: Option<&'a FileMetadata>,
+        }
+
+        /// StreamReader 主结构
+        pub struct StreamReader<'a> {
+            // 内部字段暂不公开
+            // 使用枚举区分来源：Mmap 或 Str
+            inner: Inner,
+            metadata: Option<FileMetadata>,
+        }
+
+        enum Inner<'a> {
+            Mmap(memmap2::Mmap),
+            Str(&'a str), // 注意：实际生命周期需与 StreamReader 关联
+        }
+
+        /// 逐行迭代器
+        pub struct LineIterator<'a> {
+            // 内部字段
+        }
+
+        impl<'a> Iterator for LineIterator<'a> {
+            type Item = SliceInput<'a>;
+            fn next(&mut self) -> Option<Self::Item> {
+                todo!()
+            }
+        }
+
+        /// 按块迭代器
+        pub struct BlockIterator<'a> {
+            // 内部字段
+        }
+
+        impl<'a> Iterator for BlockIterator<'a> {
+            type Item = SliceInput<'a>; // 注意：块迭代器可能只提供 raw 和 offset，line_number 可能为0
+            fn next(&mut self) -> Option<Self::Item> {
+                todo!()
+            }
+        }
+
+    - name: methods.rs
+      content: |
+        use std::path::Path;
+        use super::types::*;
+
+        impl<'a> StreamReader<'a> {
+            // ========== MVP 函数（必须实现） ==========
+            /// 从文件路径创建 Reader（使用 mmap）（附带元数据）
+            ///
+            /// # 参数
+            /// - `path`: 文件路径
+            ///
+            /// # 返回值
+            /// - `Result<Self, StreamError>`: 成功返回 StreamReader，失败返回错误
+            ///
+            /// # 实现要求
+            /// 1. 打开文件，如果不存在返回 `Io` 错误。
+            /// 2. 读取文件元数据（大小、修改时间、权限等）。
+            /// 3. 调用内部 `detect_binary` 检测是否为二进制文件，若是则返回 `BinaryDetected`。
+            /// 4. 支持大文件流式读取，不一次性加载全部内容。
+            /// 5. （未来）检测 BOM 并记录。
+            ///
+            /// # 测试要点
+            /// - 正常文本文件 → 返回 Reader，元数据正确。
+            /// - 不存在的文件 → Io 错误。
+            /// - 权限不足的文件 → Io 错误。
+            /// - 二进制文件（如 .exe）→ BinaryDetected。
+            /// - 空文件 → 返回 Reader（空内容）。
+            ///
+            /// # 依赖
+            /// 无（标准库）
+            ///
+            /// MVP 优先级
+            pub fn from_file(path: &Path) -> Result<Self, StreamError> {
+                todo!()
+            }
+
+            /// 从字符串创建 Reader
+            ///
+            /// # 参数
+            /// - `text`: 字符串切片
+            ///
+            /// # 返回值
+            /// - `Self`: StreamReader 实例
+            ///
+            /// # 实现要求
+            /// 1. 直接持有字符串引用，不复制。
+            /// 2. 元数据为 `None`。
+            /// 3. 内部状态标记为文本文件（`is_text()` 返回 true）。
+            ///
+            /// # 测试要点
+            /// - 普通字符串。
+            /// - 空字符串。
+            /// - 包含非法 UTF-8 的字符串（将在迭代时处理）。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn from_str(text: &'a str) -> Self {
+                todo!()
+            }
+
+            /// 获取文件元数据
+            ///
+            /// # 返回值
+            /// - `Option<&FileMetadata>`: 如果是从文件创建的则返回 Some，否则 None
+            ///
+            /// # 测试要点
+            /// - 从文件创建的 Reader → Some(metadata)
+            /// - 从字符串创建的 Reader → None
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn metadata(&self) -> Option<&FileMetadata> {
+                todo!()
+            }
+
+            /// 判断是否为文本文件
+            ///
+            /// # 返回值
+            /// - `bool`: true 表示文本文件，false 表示二进制
+            ///
+            /// # 实现要求
+            /// 基于二进制检测结果或创建来源（字符串总是文本）。
+            ///
+            /// # 测试要点
+            /// - 文本文件 → true
+            /// - 二进制文件 → false
+            /// - 字符串创建的 Reader → true
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn is_text(&self) -> bool {
+                todo!()
+            }
+
+            /// 返回逐行迭代器
+            ///
+            /// # 返回值
+            /// - `LineIterator`: 迭代器，每次返回 `(line: &str, offset: usize, line_number: usize)`
+            ///
+            /// # 实现要求
+            /// 1. 按 LF (`\n`) 或 CRLF (`\r\n`) 分割行，自动识别。
+            /// 2. 每行返回文本切片、字节偏移量（从文件开始）、行号（从1开始）。
+            /// 3. 如果遇到无效 UTF-8 字节，应替换为 Unicode 替换字符 `�`（U+FFFD）。
+            /// 4. 如果某行过长（超过预设阈值），未来可触发错误或分块，MVP 阶段不处理。
+            /// 5. 迭代器应实现 `Iterator` trait。
+            ///
+            /// # 测试要点
+            /// - 空文件 → 迭代器无元素。
+            /// - 混合换行符（LF 和 CRLF）→ 正确分割。
+            /// - 最后一行无换行符 → 仍作为一行返回。
+            /// - 超长行（>10KB）→ 正常返回，不截断。
+            /// - 包含非法 UTF-8 字节 → 替换为 `�`。
+            ///
+            /// # 依赖
+            /// 可选用 `memchr` 加速，但 MVP 可先用标准库手动扫描。
+            ///
+            /// MVP 优先级
+            pub fn iter_lines(&self) -> LineIterator {
+                todo!()
+            }
+
+            /// 返回按块迭代器
+            ///
+            /// # 参数
+            /// - `block_size`: 块大小（字节）
+            ///
+            /// # 返回值
+            /// - `Result<BlockIterator, StreamError>`: 成功返回迭代器，失败返回错误
+            ///
+            /// # 实现要求
+            /// 1. 按指定大小（字节）分块，每块返回文本切片和偏移量。
+            /// 2. 如果 `block_size == 0`，返回 `StreamError::InvalidArgument`（可扩展错误类型）。
+            /// 3. 如果块边界落在多字节字符中间，应确保返回的切片是合法的 UTF-8 边界（可能需要调整块大小）。
+            /// 4. 迭代器应实现 `Iterator` trait。
+            ///
+            /// # 测试要点
+            /// - 块大小小于文件长度 → 生成多个块。
+            /// - 块大小大于文件长度 → 生成一个块。
+            /// - 块大小为 0 → 返回错误。
+            /// - 空文件 → 迭代器无元素。
+            /// - 多字节字符边界 → 正确处理，不产生乱码。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn iter_blocks(&self, block_size: usize) -> Result<BlockIterator, StreamError> {
+                todo!()
+            }
+
+            // ---------- 未来函数（待实现，占位） ----------
+
+            /// 使用内存映射文件创建 Reader
+            ///
+            /// # 参数
+            /// - `path`: 文件路径
+            ///
+            /// # 返回值
+            /// - `Result<Self, StreamError>`
+            ///
+            /// # 实现要求
+            /// 1. 使用 `memmap2` crate 创建内存映射。
+            /// 2. 元数据获取同 `from_file`。
+            /// 3. 二进制检测同 `from_file`。
+            ///
+            /// # 依赖
+            /// - `memmap2`
+            ///
+            /// 未来优先级
+            pub fn from_mmap(path: &Path) -> Result<Self, StreamError> {
+                todo!()
+            }
+
+            /// 从任意 `Read` 实现创建 Reader
+            ///
+            /// # 参数
+            /// - `reader`: 实现了 `Read + Send` 的读取器
+            ///
+            /// # 返回值
+            /// - `Self`
+            ///
+            /// # 实现要求
+            /// 1. 元数据为 None。
+            /// 2. 假设输入为文本，不进行二进制检测。
+            /// 3. 适用于管道、网络流等。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// 未来优先级
+            pub fn from_reader<R: std::io::Read + Send + 'static>(reader: R) -> Self {
+                todo!()
+            }
+
+            /// 从字节切片创建 Reader
+            ///
+            /// # 参数
+            /// - `bytes`: 字节切片
+            ///
+            /// # 返回值
+            /// - `Result<Self, StreamError>`: 如果字节不是合法 UTF-8，可返回错误或替换
+            ///
+            /// # 实现要求
+            /// 1. 将字节切片视为 UTF-8，若无效则按替换策略处理。
+            /// 2. 元数据为 None。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// 未来优先级
+            pub fn from_bytes(bytes: &[u8]) -> Result<Self, StreamError> {
+                todo!()
+            }
+
+            /// 设置自定义行分隔符
+            ///
+            /// # 参数
+            /// - `delimiter`: 自定义分隔符字节（如 `b'\r'`）
+            ///
+            /// # 返回值
+            /// - `Self`: 返回自身，支持链式调用
+            ///
+            /// # 实现要求
+            /// 修改内部状态，使 `iter_lines` 使用该分隔符。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// 未来优先级
+            pub fn with_line_delimiter(self, delimiter: u8) -> Self {
+                todo!()
+            }
+
+            /// 将大文件分成多个逻辑段（用于并行处理）
+            ///
+            /// # 参数
+            /// - `segment_size`: 每段的大致大小（字节）
+            ///
+            /// # 返回值
+            /// - `Vec<Segment>`: 分段信息列表
+            ///
+            /// # 实现要求
+            /// 根据文件大小和段大小，计算出每个段的起始偏移和长度，并确保段边界在行边界处（可选）。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// 未来优先级
+            pub fn split_into_segments(&self, segment_size: usize) -> Vec<Segment> {
+                todo!()
+            }
+
+            /// 检测 BOM 并返回编码类型（内部函数）
+            ///
+            /// # 参数
+            /// - `file`: 已打开的文件
+            ///
+            /// # 返回值
+            /// - `Option<Bom>`: 如果检测到 BOM 则返回对应类型，否则 None
+            ///
+            /// # 实现要求
+            /// 读取文件开头几个字节，与常见 BOM 签名比对。
+            ///
+            /// # 依赖
+            /// - `encoding_rs`（可选）
+            ///
+            /// 未来优先级
+            fn detect_bom(file: &std::fs::File) -> Option<Bom> {
+                todo!()
+            }
+
+            /// 二进制检测（内部函数）
+            ///
+            /// # 参数
+            /// - `file`: 已打开的文件
+            ///
+            /// # 返回值
+            /// - `bool`: true 表示二进制
+            ///
+            /// # 实现要求
+            /// 读取前 4KB 数据，统计 NULL 字节（`\0`）的比例。如果比例超过阈值（例如 10%），则判定为二进制。
+            /// 阈值可配置，MVP 阶段可硬编码。
+            ///
+            /// # 测试要点
+            /// - 纯文本文件（无 NULL）→ false。
+            /// - 包含少量 NULL 的文本文件（如某些日志）→ 低于阈值，返回 false。
+            /// - 二进制文件（如 ELF、PE）→ 高于阈值，返回 true。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级（已在 from_file 中调用）
+            fn detect_binary(file: &std::fs::File) -> bool {
+                todo!()
+            }
+        }
+
+        // 辅助结构（未来使用）
+        pub struct Segment {
+            pub offset: u64,
+            pub size: usize,
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

@@ -6,6 +6,7 @@ use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
 // ============================================================================
 // 遗留 parser 集成
 // ============================================================================
+/// 用遗留 VcsParser 解析文本并渲染为紧凑文档；空记录返回原文。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {
@@ -20,10 +21,12 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
         raw.to_string()
     }
 }
+/// 判断首行 darcs 子命令是否为 status/whatsnew。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_darcs_status_block(text: &str) -> bool {
     darcs_subcommand_is(text, &["status", "whatsnew"])
 }
+/// 判断首行 darcs 子命令是否为 log/record/amend/obliterate/changes。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_darcs_log_block(text: &str) -> bool {
     darcs_subcommand_is(text, &["log", "record", "amend", "obliterate", "changes"])
@@ -32,22 +35,27 @@ pub fn is_darcs_log_block(text: &str) -> bool {
 // ============================================================================
 // 公开 API
 // ============================================================================
+/// darcs status 的 AI 压缩入口：DarcsStatusParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_darcs_status_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&DarcsStatusParser, raw))
 }
+/// darcs diff 的 AI 压缩入口：DarcsDiffParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_darcs_diff_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&DarcsDiffParser, raw))
 }
+/// darcs log 的 AI 压缩入口：dispatch 压缩 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_darcs_log_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_darcs_dispatch(raw))
 }
+/// darcs 其他输出的 AI 压缩入口：dispatch 压缩。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_darcs_other_for_ai(raw: &str) -> String {
     compact_darcs_dispatch(raw)
 }
+/// darcs log 家族压缩入口：委托 compact_darcs_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_darcs_log_family_for_ai(raw: &str) -> String {
     compact_darcs_log_for_ai(raw)
@@ -77,6 +85,7 @@ fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：按首行 darcs 子命令分派到 log/status/obliterate/amend/rebase/record 专用压缩。
 fn compact_darcs_dispatch(raw: &str) -> String {
     if raw.len() < 50 {
         return raw.to_string();
@@ -126,6 +135,7 @@ fn darcs_subcommand_is(raw: &str, expected: &[&str]) -> bool {
 // ============================================================================
 // Case 35/321: log — 保留锚点，结构化提取，CP V1 符号化
 // ============================================================================
+/// 压缩 darcs log/changes 输出：保留命令锚点，结构化提取补丁信息。
 fn compact_darcs_log_cmd(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -356,6 +366,7 @@ fn compact_darcs_log_structured(input: &str) -> Option<String> {
 // ============================================================================
 // Case 42/322: status — 保留锚点，保留文件状态码 A/M/R
 // ============================================================================
+/// 结构化解析 darcs log：提取每条 patch 的日期/作者/哈希/主题/文件，输出 CR:/OW:@/CM 行。
 fn compact_darcs_status_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -398,6 +409,7 @@ fn compact_darcs_status_cmd(raw: &str) -> String {
 // ============================================================================
 // Case 210: obliterate — 保留锚点，抹除交互对话
 // ============================================================================
+/// 压缩 darcs status/whatsnew 输出：文件状态行 M/A/R/D 映射为 "码:路径" 格式。
 fn compact_darcs_obliterate_cmd(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -433,6 +445,7 @@ fn compact_darcs_obliterate_cmd(raw: &str) -> String {
 // ============================================================================
 // Case 154: amend — 保留锚点，使用 -> 表示流向
 // ============================================================================
+/// 压缩 darcs obliterate 输出：抹除交互对话，补丁行映射为 D: 前缀。
 fn compact_darcs_amend_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut old_msg: Option<String> = None;
@@ -473,6 +486,7 @@ fn compact_darcs_amend_cmd(raw: &str) -> String {
 // ============================================================================
 // Case 282: rebase — 保留锚点，使用 -> 表示流向
 // ============================================================================
+/// 压缩 darcs amend 输出：Old/New message 提取并输出 AMEND:old->new。
 fn compact_darcs_rebase_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut from: Option<String> = None;
@@ -514,6 +528,7 @@ fn compact_darcs_rebase_cmd(raw: &str) -> String {
 // ============================================================================
 // Case 105: record — 保留锚点，抹除记录噪音
 // ============================================================================
+/// 压缩 darcs rebase 输出：Rebasing from/to 提取并输出 REBASE:from->to。
 fn compact_darcs_record_cmd(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -539,6 +554,7 @@ fn compact_darcs_record_cmd(raw: &str) -> String {
 // ============================================================================
 // 通用 fallback
 // ============================================================================
+/// 压缩 darcs record 输出：保留锚点，抹除记录噪音。
 fn compact_darcs_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -567,6 +583,7 @@ fn compact_darcs_generic(raw: &str) -> String {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤噪音，警报标记。
 fn cost_gate(raw: &str, output: String) -> String {
     if output.len() < raw.len() {
         output
@@ -574,6 +591,7 @@ fn cost_gate(raw: &str, output: String) -> String {
         raw.to_string()
     }
 }
+/// 成本门控：输出比原文短才采用，否则回退原文。
 pub(super) fn is_darcs_noise(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.contains("about to delete")
@@ -590,6 +608,7 @@ pub(super) fn is_darcs_noise(line: &str) -> bool {
         || l == "no changes!"
         || l.starts_with("deleted ")
 }
+/// 判断是否为 darcs 噪音行（about to delete/recording patch/yes-no 交互等）。
 pub(super) fn map_darcs_alert(line: &str) -> Option<String> {
     let l = line.to_ascii_lowercase();
     if ["conflict", "error:", "failed", "rejected"]

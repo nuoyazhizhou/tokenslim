@@ -1,2 +1,5 @@
-svn add newfile.txt
-A         newfile.txt
+svn add src/components
+A         src/components
+A         src/components/header.rs
+A         src/components/footer.rs
+A         src/components/sidebar.rs

@@ -14,9 +14,9 @@ use quick_xml::events::{BytesStart, Event};
 use quick_xml::Reader;
 use serde_json::Value;
 use std::borrow::Cow;
-use std::collections::BTreeMap;
 
 impl ArtifactSummaryPlugin {
+    /// 创建 ArtifactSummaryPlugin 实例（名称 artifact_summary，优先级 55）。
     #[tracing::instrument(level = "debug", skip_all)]
     pub fn new() -> Self {
         Self {
@@ -27,14 +27,17 @@ impl ArtifactSummaryPlugin {
 }
 
 impl Plugin for ArtifactSummaryPlugin {
+    /// 返回插件名称 "artifact_summary"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 55。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片内容是否为 JUnit XML 或 SARIF JSON 构件，命中返回 1.0 置信度。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.trim();
         let lower = text.to_ascii_lowercase();
@@ -44,6 +47,7 @@ impl Plugin for ArtifactSummaryPlugin {
         None
     }
 
+    /// 压缩切片：先剥离 ANSI 码，再压缩为 JUnit/SARIF 摘要，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -63,11 +67,13 @@ impl Plugin for ArtifactSummaryPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：按内容类型（JUnit/SARIF）解析并渲染摘要行，压缩无收益时回退原文。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_artifact_summary(text: &str, dict_engine: &mut DictionaryEngine) -> String {
     let lower = text.to_ascii_lowercase();
@@ -87,11 +93,13 @@ fn compact_artifact_summary(text: &str, dict_engine: &mut DictionaryEngine) -> S
     fallback_if_anchor_only(lines, text)
 }
 
+/// 判断小写文本是否形如 JUnit XML（含 testsuite(s) 与 testcase 标签）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_junit(lower: &str) -> bool {
     (lower.contains("<testsuite") || lower.contains("<testsuites")) && lower.contains("<testcase")
 }
 
+/// 判断小写文本是否形如 SARIF JSON（含 runs/tool/results 关键键）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_sarif(lower: &str) -> bool {
     lower.contains("\"runs\"")
@@ -100,6 +108,8 @@ fn looks_like_sarif(lower: &str) -> bool {
         && (lower.contains("sarif") || lower.contains("\"ruleid\""))
 }
 
+/// 用 quick_xml 流式解析 JUnit XML，汇总 suite/test/failure/error/skipped 计数，
+/// 收集失败用例详情与关键属性；解析失败或无用例时返回 None。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_junit(text: &str) -> Option<JunitSummary> {
     let mut reader = Reader::from_str(text);
@@ -220,6 +230,7 @@ fn parse_junit(text: &str) -> Option<JunitSummary> {
     (summary.tests > 0 || !summary.cases.is_empty()).then_some(summary)
 }
 
+/// 用 serde_json 解析 SARIF JSON，统计 run 数、各级别结果数并提取前 12 条 findings。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_sarif(text: &str, _dict_engine: &mut DictionaryEngine) -> Option<SarifSummary> {
     let root: Value = serde_json::from_str(text).ok()?;
@@ -237,6 +248,27 @@ fn parse_sarif(text: &str, _dict_engine: &mut DictionaryEngine) -> Option<SarifS
         {
             if !summary.tools.contains(&tool) {
                 summary.tools.push(tool);
+            }
+        }
+
+        // 解析 executions/invocations 执行状态：成功/失败/失败命令，
+        // 用于区分干净扫描、未执行扫描与执行失败但未产出结果（SAP-0058）。
+        if let Some(invocations) = run.get("invocations").and_then(Value::as_array) {
+            for invocation in invocations {
+                let ok = invocation
+                    .get("executionSuccessful")
+                    .and_then(Value::as_bool)
+                    .unwrap_or(true);
+                if ok {
+                    summary.exec_ok += 1;
+                } else {
+                    summary.exec_failed += 1;
+                    if summary.failed_cmds.len() < 3 {
+                        if let Some(cmd) = invocation.get("commandLine").and_then(Value::as_str) {
+                            summary.failed_cmds.push(cmd.to_string());
+                        }
+                    }
+                }
             }
         }
 
@@ -262,6 +294,8 @@ fn parse_sarif(text: &str, _dict_engine: &mut DictionaryEngine) -> Option<SarifS
                 .and_then(Value::as_str)
                 .unwrap_or("unknown")
                 .to_string();
+            // Q504 处置:规则计数须基于全量结果，而非 findings 前 12 条采样，否则顶部规则统计失真。
+            *summary.rule_counts.entry(rule_id.clone()).or_insert(0) += 1;
             let message = result
                 .pointer("/message/text")
                 .and_then(Value::as_str)
@@ -296,6 +330,7 @@ fn parse_sarif(text: &str, _dict_engine: &mut DictionaryEngine) -> Option<SarifS
     Some(summary)
 }
 
+/// 将 JUnit 摘要渲染为 JUNIT|SUMMARY/!JUNIT|FAIL/.../JUNIT|SKIP/JUNIT|SLOW 摘要行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_junit_summary(
     lines: &mut Vec<String>,
@@ -378,10 +413,22 @@ fn render_junit_summary(
     }
 }
 
+/// 将 SARIF 摘要渲染为 SARIF|SUMMARY/!SARIF|RESULT/SARIF|RULES 摘要行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_sarif_summary(lines: &mut Vec<String>, summary: SarifSummary) {
+    // 有 invocation 时附上执行状态，区分干净扫描（exec=ok）与执行失败（exec=fail:N，SAP-0058）。
+    let exec_suffix = {
+        let invocations = summary.exec_ok + summary.exec_failed;
+        if invocations == 0 {
+            String::new()
+        } else if summary.exec_failed == 0 {
+            format!(" inv={invocations} exec=ok")
+        } else {
+            format!(" inv={invocations} exec=fail:{}", summary.exec_failed)
+        }
+    };
     lines.push(format!(
-        "SARIF|SUMMARY|runs={} results={} error={} warning={} note={} none={} tools={}",
+        "SARIF|SUMMARY|runs={} results={} error={} warning={} note={} none={} tools={}{}",
         summary.runs,
         summary.results,
         summary.errors,
@@ -392,12 +439,16 @@ fn render_sarif_summary(lines: &mut Vec<String>, summary: SarifSummary) {
             "?".to_string()
         } else {
             summary.tools.join(",")
-        }
+        },
+        exec_suffix
     ));
 
-    let mut by_rule: BTreeMap<String, usize> = BTreeMap::new();
+    // 执行失败时保留失败 invocation 的命令行，支撑失败扫描的原因定位（SAP-0058）。
+    for cmd in &summary.failed_cmds {
+        lines.push(format!("!SARIF|EXEC|cmd={}", truncate(&one_line(cmd), 260)));
+    }
+
     for finding in &summary.findings {
-        *by_rule.entry(finding.rule_id.clone()).or_default() += 1;
         let line = finding
             .line
             .map(|line| format!(":{line}"))
@@ -412,8 +463,12 @@ fn render_sarif_summary(lines: &mut Vec<String>, summary: SarifSummary) {
         ));
     }
 
-    if !by_rule.is_empty() {
-        let top_rules = by_rule
+    if !summary.rule_counts.is_empty() {
+        // Q504 处置:按出现频次降序取 top 6（频次相同再按规则 ID 保证确定性），
+        // 不再用 BTreeMap 字典序（字母序）误当作「最常见规则」。
+        let mut sorted: Vec<(String, usize)> = summary.rule_counts.clone().into_iter().collect();
+        sorted.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
+        let top_rules = sorted
             .into_iter()
             .take(6)
             .map(|(rule, count)| format!("{rule}={count}"))
@@ -423,6 +478,7 @@ fn render_sarif_summary(lines: &mut Vec<String>, summary: SarifSummary) {
     }
 }
 
+/// 从 XML 事件中读取指定属性名对应的值（自动解码并反转义实体）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn xml_attr(reader: &Reader<&[u8]>, event: &BytesStart<'_>, key: &[u8]) -> Option<String> {
     event.attributes().flatten().find_map(|attr| {
@@ -433,6 +489,7 @@ fn xml_attr(reader: &Reader<&[u8]>, event: &BytesStart<'_>, key: &[u8]) -> Optio
     })
 }
 
+/// 捕获 JUnit property 元素中受关注的属性（commit/workflow/python/pytest/hostname），避免重复。
 #[tracing::instrument(level = "debug", skip_all)]
 fn capture_junit_property(
     reader: &Reader<&[u8]>,
@@ -457,6 +514,7 @@ fn capture_junit_property(
     }
 }
 
+/// 读取 XML 数值属性并解析为 usize，缺失或非法时回退 0。
 #[tracing::instrument(level = "debug", skip_all)]
 fn attr_usize(reader: &Reader<&[u8]>, event: &BytesStart<'_>, key: &[u8]) -> usize {
     xml_attr(reader, event, key)
@@ -464,6 +522,7 @@ fn attr_usize(reader: &Reader<&[u8]>, event: &BytesStart<'_>, key: &[u8]) -> usi
         .unwrap_or(0)
 }
 
+/// 读取 XML 数值属性并解析为 f64，缺失或非法时回退 0.0。
 #[tracing::instrument(level = "debug", skip_all)]
 fn attr_f64(reader: &Reader<&[u8]>, event: &BytesStart<'_>, key: &[u8]) -> f64 {
     xml_attr(reader, event, key)
@@ -471,6 +530,7 @@ fn attr_f64(reader: &Reader<&[u8]>, event: &BytesStart<'_>, key: &[u8]) -> f64 {
         .unwrap_or(0.0)
 }
 
+/// 紧凑化 suite 名称：空名称显示为 "?"。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_junit_name(name: &str) -> String {
     if name.is_empty() {
@@ -480,6 +540,7 @@ fn compact_junit_name(name: &str) -> String {
     }
 }
 
+/// 紧凑化测试名：有 class_name 时格式化为 class::name，否则仅返回名称。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_test_name(case: &JunitCase) -> String {
     if case.class_name.is_empty() {
@@ -489,6 +550,7 @@ fn compact_test_name(case: &JunitCase) -> String {
     }
 }
 
+/// 将文本截断至指定字节数（按 UTF-8 字符边界调整），超长时追加省略号。
 #[tracing::instrument(level = "debug", skip_all)]
 fn truncate(text: &str, max: usize) -> String {
     if text.len() <= max {
@@ -501,6 +563,7 @@ fn truncate(text: &str, max: usize) -> String {
     format!("{}...", &text[..end])
 }
 
+/// 将多行文本折叠为单行：换行符替换为空格并压缩连续空白。
 #[tracing::instrument(level = "debug", skip_all)]
 fn one_line(text: &str) -> String {
     compact_spaces(&text.replace(['\r', '\n'], " "))

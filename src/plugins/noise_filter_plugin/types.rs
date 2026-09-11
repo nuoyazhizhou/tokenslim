@@ -10,18 +10,15 @@ pub struct NoiseFilterConfig {
     pub fold_repetitive_noise: bool,
     /// 是否替换长哈希/Hex 字符串
     pub mask_long_hex: bool,
-    /// 哈希/Hex 屏蔽阈值（字符数）
-    pub hex_threshold: usize,
 }
 
 impl Default for NoiseFilterConfig {
-    /// 提供该插件类型的默认配置实现。
+    /// 构造 NoiseFilterConfig 默认配置：清理进度条、折叠重复噪点、屏蔽长哈希均开启。
     fn default() -> Self {
         NoiseFilterConfig {
             clean_progress_bars: true,
             fold_repetitive_noise: true,
             mask_long_hex: true,
-            hex_threshold: 32,
         }
     }
 }

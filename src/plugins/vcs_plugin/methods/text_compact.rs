@@ -1,3 +1,4 @@
+/// 通用 VCS 文本压缩：路径字典化 + 装饰/进度行过滤。
 fn compact_vcs_text_with_paths(
     plugin: &VcsPlugin,
     text: &str,
@@ -5,8 +6,8 @@ fn compact_vcs_text_with_paths(
     arena: &Bump,
     compact_inline_alignment: bool,
 ) -> String {
-    // 法则 C：ANSI 净化 — 剥离所有 ANSI 逃逸序列和终端颜色代码
-    let text = strip_ansi_escapes(&text);
+    // 法则 C：ANSI 净化 — 统一走 crate::core::utils::strip_ansi（P3-192 C-4 单实现）
+    let text = crate::core::utils::strip_ansi(&text);
     
     let mut out = bumpalo::collections::String::new_in(arena);
     let mut blank_count = 0usize;
@@ -105,11 +106,13 @@ fn dedup_adjacent_lines(text: &str) -> String {
 }
 
 impl VcsPlugin {
+    /// 返回工具对应的命令白名单。
     fn commands_for(&self, tool: VcsTool) -> Option<&[String]> {
         self.command_whitelists.get(&tool).map(|v| v.as_slice())
     }
 }
 
+/// 统计文本中命中白名单命令的次数。
 fn command_hits(lower_text: &str, commands: &[String]) -> usize {
     commands
         .iter()
@@ -122,6 +125,7 @@ fn command_hits(lower_text: &str, commands: &[String]) -> usize {
         .count()
 }
 
+/// 从显式命令推断 VCS 工具。
 fn infer_tool_from_explicit_command(text: &str) -> Option<VcsTool> {
     let first = text
         .lines()
@@ -136,6 +140,7 @@ fn infer_tool_from_explicit_command(text: &str) -> Option<VcsTool> {
     vcs_tool_from_keyword(&keyword)
 }
 
+/// 返回文本中第一个非空行。
 fn first_non_empty_line(text: &str) -> &str {
     text.lines()
         .find(|line| !line.trim().is_empty())
@@ -143,6 +148,7 @@ fn first_non_empty_line(text: &str) -> &str {
         .trim_start()
 }
 
+/// 返回文本中第一条显式命令行。
 fn first_explicit_command_line(text: &str) -> Option<&str> {
     let first = text
         .lines()
@@ -155,6 +161,7 @@ fn first_explicit_command_line(text: &str) -> Option<&str> {
     }
 }
 
+/// 判断两行命令是否等价（忽略选项顺序）。
 fn command_lines_equivalent(lhs: &str, rhs: &str) -> bool {
     let normalize = |s: &str| {
         s.split_whitespace()
@@ -165,6 +172,7 @@ fn command_lines_equivalent(lhs: &str, rhs: &str) -> bool {
     normalize(lhs) == normalize(rhs)
 }
 
+/// 判断两行命令是否共享同一动词。
 fn command_lines_share_verb(lhs: &str, rhs: &str) -> bool {
     let lhs_tokens: Vec<String> = lhs
         .split_whitespace()
@@ -186,6 +194,7 @@ fn command_lines_share_verb(lhs: &str, rhs: &str) -> bool {
     lhs_tokens.len() == rhs_tokens.len()
 }
 
+/// 解析 diff 的 -r 范围标记。
 fn parse_diff_r_range_marker(line: &str) -> Option<(String, String)> {
     let trimmed = line.trim();
     if !trimmed.to_ascii_lowercase().starts_with("diff ") {
@@ -231,6 +240,7 @@ fn parse_diff_r_range_marker(line: &str) -> Option<(String, String)> {
     }
 }
 
+/// 解析 p4 diff 配对标记。
 fn parse_p4_diff_pair_marker(line: &str) -> Option<(String, String)> {
     let trimmed = line.trim();
     if !trimmed.starts_with("====") {
@@ -252,6 +262,7 @@ fn parse_p4_diff_pair_marker(line: &str) -> Option<(String, String)> {
     Some((left.to_string(), right.to_string()))
 }
 
+/// 归一化 diff 范围标记。
 fn normalize_diff_scope_marker(line: &str) -> Option<String> {
     let trimmed = line.trim();
     if trimmed.is_empty() {
@@ -316,6 +327,7 @@ fn normalize_diff_scope_marker(line: &str) -> Option<String> {
     None
 }
 
+/// 保留 diff 范围元数据（在压缩结果中补回）。
 fn preserve_diff_scope_metadata(raw: &str, compacted: String) -> String {
     let mut markers: Vec<String> = Vec::new();
     let mut seen = HashSet::new();
@@ -400,6 +412,7 @@ fn preserve_diff_scope_metadata(raw: &str, compacted: String) -> String {
     out.join("\n")
 }
 
+/// 保留 p4 diff 修订范围元数据。
 fn preserve_p4_diff_revision_scope(raw: &str, compacted: String) -> String {
     if !command_is(raw, "p4", "diff2") {
         return compacted;
@@ -467,6 +480,7 @@ fn preserve_p4_diff_revision_scope(raw: &str, compacted: String) -> String {
     out.join("\n")
 }
 
+/// 确保输出包含显式命令头。
 fn ensure_explicit_command_header(raw: &str, rendered: String) -> String {
     let Some(command) = first_explicit_command_line(raw) else {
         return rendered;
@@ -494,6 +508,7 @@ fn ensure_explicit_command_header(raw: &str, rendered: String) -> String {
     out
 }
 
+/// 判断是否为 git status 块。
 fn is_git_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("on branch ")
@@ -501,6 +516,7 @@ fn is_git_status_block(text: &str) -> bool {
         || lower.contains("untracked files:")
 }
 
+/// 判断是否为 git status 片段。
 fn is_git_status_fragment(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     if lower.contains("untracked files:")
@@ -528,6 +544,7 @@ fn is_git_status_fragment(text: &str) -> bool {
     })
 }
 
+/// 判断是否为 git log 块。
 fn is_git_log_block(text: &str) -> bool {
     if text
         .lines()
@@ -556,6 +573,7 @@ fn is_git_log_block(text: &str) -> bool {
     false
 }
 
+/// 判断是否为 git diff 块。
 fn is_git_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("diff --git ")
@@ -565,6 +583,7 @@ fn is_git_diff_block(text: &str) -> bool {
         || is_git_name_only_or_status_block(text)
 }
 
+/// 判断是否为 git show 块。
 fn is_git_show_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     let has_commit = text
@@ -579,6 +598,7 @@ fn is_git_show_block(text: &str) -> bool {
             || text.lines().any(|line| looks_like_vcs_path(line.trim())))
 }
 
+/// 判断是否为 git --name-only/--name-status 块。
 fn is_git_name_only_or_status_block(text: &str) -> bool {
     let mut non_empty = 0usize;
     let mut matched = 0usize;
@@ -601,6 +621,7 @@ fn is_git_name_only_or_status_block(text: &str) -> bool {
     non_empty > 0 && non_empty == matched
 }
 
+/// 判断行是否为 git name-status 行（XY path）。
 fn looks_like_git_name_status_line(line: &str) -> bool {
     let mut parts = line.split_whitespace();
     let status = parts.next().unwrap_or_default();
@@ -618,6 +639,7 @@ fn looks_like_git_name_status_line(line: &str) -> bool {
     status_ok && looks_like_vcs_path(path)
 }
 
+/// 判断文本是否含带指定前缀的行（达到最少匹配数）。
 fn has_prefixed_lines(text: &str, prefixes: &[&str], min_matches: usize) -> bool {
     let mut matches = 0usize;
     for line in text.lines() {
@@ -633,6 +655,7 @@ fn has_prefixed_lines(text: &str, prefixes: &[&str], min_matches: usize) -> bool
     false
 }
 
+/// 判断行是否形如 svn blame 行。
 fn looks_like_svn_blame_line(line: &str) -> bool {
     let trimmed = line.trim_start();
     if trimmed.is_empty() {
@@ -649,6 +672,7 @@ fn looks_like_svn_blame_line(line: &str) -> bool {
         && (revision == "-" || revision.chars().all(|c| c.is_ascii_digit()))
 }
 
+/// 判断行是否为 svn list 条目。
 fn looks_like_svn_list_entry(line: &str) -> bool {
     let trimmed = line.trim();
     if trimmed.is_empty() {
@@ -670,6 +694,7 @@ fn looks_like_svn_list_entry(line: &str) -> bool {
         && (trimmed.ends_with('/') || looks_like_vcs_path(trimmed))
 }
 
+/// 判断 token 是否为 ISO 日期格式（用于 list 解析）。
 fn looks_like_iso_date_token_for_list(token: &str) -> bool {
     let mut parts = token.split('-');
     let y = parts.next().unwrap_or_default();
@@ -684,6 +709,7 @@ fn looks_like_iso_date_token_for_list(token: &str) -> bool {
         && d.chars().all(|c| c.is_ascii_digit())
 }
 
+/// 判断行是否为 p4 where 映射行。
 fn looks_like_p4_where_mapping_line(line: &str) -> bool {
     let trimmed = line.trim();
     if trimmed.is_empty() || !trimmed.starts_with("//") {
@@ -697,6 +723,7 @@ fn looks_like_p4_where_mapping_line(line: &str) -> bool {
     depot.starts_with("//") && client.starts_with("//") && !local.is_empty()
 }
 
+/// 判断是否为 svn status 块。
 fn is_svn_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     if lower.contains("svn status") {
@@ -715,11 +742,13 @@ fn is_svn_status_block(text: &str) -> bool {
     })
 }
 
+/// 判断是否为 svn diff 块。
 fn is_svn_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("svn diff") || lower.contains("index: ") || lower.contains("@@ -")
 }
 
+/// 判断是否为 svn log 块。
 fn is_svn_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("svn log")
@@ -728,16 +757,19 @@ fn is_svn_log_block(text: &str) -> bool {
             .any(|line| line.trim_start().starts_with('r') && line.contains('|'))
 }
 
+/// 判断是否为 svn blame 块。
 fn is_svn_blame_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("svn blame") || text.lines().any(looks_like_svn_blame_line)
 }
 
+/// 判断是否为 svn list 块。
 fn is_svn_list_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("svn list") || text.lines().any(looks_like_svn_list_entry)
 }
 
+/// 判断是否为 svn prop 块。
 fn is_svn_prop_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("svn propget")
@@ -747,6 +779,7 @@ fn is_svn_prop_block(text: &str) -> bool {
             .any(|line| line.trim_start().starts_with("Properties on "))
 }
 
+/// 判断是否为 svn info 块。
 fn is_svn_info_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("svn info")
@@ -763,6 +796,7 @@ fn is_svn_info_block(text: &str) -> bool {
         )
 }
 
+/// 判断是否为 hg status 块。
 fn is_hg_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     if lower.contains("hg status") {
@@ -775,22 +809,26 @@ fn is_hg_status_block(text: &str) -> bool {
     })
 }
 
+/// 判断是否为 hg diff 块。
 fn is_hg_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("hg diff") || lower.contains("diff -r ") || lower.contains("@@ -")
 }
 
+/// 判断是否为 hg log 块。
 fn is_hg_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("hg log") || lower.contains("changeset:") || lower.contains("summary:")
 }
 
+/// 判断是否为 hg heads 块。
 #[allow(dead_code)]
 fn is_hg_heads_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("hg heads") || (lower.contains("changeset:") && lower.contains("branch:"))
 }
 
+/// 判断是否为 hg outgoing 块。
 #[allow(dead_code)]
 fn is_hg_outgoing_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -798,6 +836,7 @@ fn is_hg_outgoing_block(text: &str) -> bool {
         || (lower.contains("comparing with") && lower.contains("searching for changes"))
 }
 
+/// 判断是否为 hg incoming 块。
 #[allow(dead_code)]
 fn is_hg_incoming_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -805,17 +844,20 @@ fn is_hg_incoming_block(text: &str) -> bool {
         || (lower.contains("comparing with") && lower.contains("searching for changes"))
 }
 
+/// 判断是否为 hg parents 块。
 #[allow(dead_code)]
 fn is_hg_parents_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("hg parents") || lower.contains("parent:")
 }
 
+/// 判断是否为 p4 opened 块。
 fn is_p4_opened_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 opened") || text.contains("... //")
 }
 
+/// 判断是否为 p4 describe 块。
 fn is_p4_describe_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 describe")
@@ -825,6 +867,7 @@ fn is_p4_describe_block(text: &str) -> bool {
             && (lower.contains("affected files") || lower.contains("differences")))
 }
 
+/// 判断是否为 p4 changes 块。
 fn is_p4_changes_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 changes")
@@ -834,6 +877,7 @@ fn is_p4_changes_block(text: &str) -> bool {
         })
 }
 
+/// 判断是否为 p4 fstat 块。
 fn is_p4_fstat_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 fstat")
@@ -845,11 +889,13 @@ fn is_p4_fstat_block(text: &str) -> bool {
         })
 }
 
+/// 判断是否为 p4 where 块。
 fn is_p4_where_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 where") || text.lines().any(looks_like_p4_where_mapping_line)
 }
 
+/// 判断是否为 p4 info 块。
 fn is_p4_info_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 info")
@@ -866,6 +912,7 @@ fn is_p4_info_block(text: &str) -> bool {
         )
 }
 
+/// 判断是否为 p4 labels 块。
 fn is_p4_labels_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("p4 labels")
@@ -874,6 +921,7 @@ fn is_p4_labels_block(text: &str) -> bool {
             .any(|line| line.trim_start().starts_with("Label "))
 }
 
+/// 判断是否为 p4 dirs 块。
 fn is_p4_dirs_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     if lower.contains("p4 dirs") {
@@ -896,6 +944,7 @@ fn is_p4_dirs_block(text: &str) -> bool {
     matched > 0
 }
 
+/// 判断是否为 cvs status 块。
 fn is_cvs_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("cvs status")
@@ -912,6 +961,7 @@ fn is_cvs_status_block(text: &str) -> bool {
         })
 }
 
+/// 判断是否为 cvs diff 块。
 fn is_cvs_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("cvs diff")
@@ -922,6 +972,7 @@ fn is_cvs_diff_block(text: &str) -> bool {
             }))
 }
 
+/// 判断是否为 cvs log 块。
 fn is_cvs_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("cvs log")
@@ -933,6 +984,7 @@ fn is_cvs_log_block(text: &str) -> bool {
                 .any(|l| l.trim_start().to_ascii_lowercase().starts_with("date:")))
 }
 
+/// 判断是否为 bzr status 块。
 fn is_bzr_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("bzr status")
@@ -940,6 +992,7 @@ fn is_bzr_status_block(text: &str) -> bool {
         || has_prefixed_lines(text, &["modified:", "added:", "removed:"], 1)
 }
 
+/// 判断是否为 bzr diff 块。
 fn is_bzr_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("bzr diff")
@@ -952,6 +1005,7 @@ fn is_bzr_diff_block(text: &str) -> bool {
             }))
 }
 
+/// 判断是否为 bzr log 块。
 fn is_bzr_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("bzr log")
@@ -965,6 +1019,7 @@ fn is_bzr_log_block(text: &str) -> bool {
             }))
 }
 
+/// 判断是否为 fossil status 块。
 fn is_fossil_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("fossil status")
@@ -972,6 +1027,7 @@ fn is_fossil_status_block(text: &str) -> bool {
         || has_prefixed_lines(text, &["ADDED", "EDITED", "DELETED", "MISSING"], 1)
 }
 
+/// 判断是否为 fossil diff 块。
 fn is_fossil_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("fossil diff")
@@ -982,6 +1038,7 @@ fn is_fossil_diff_block(text: &str) -> bool {
             }))
 }
 
+/// 判断是否为 fossil log 块。
 fn is_fossil_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("fossil timeline")
@@ -991,6 +1048,7 @@ fn is_fossil_log_block(text: &str) -> bool {
                 .any(|l| l.to_ascii_lowercase().contains("user:")))
 }
 
+/// 判断是否为 darcs status 块。
 fn is_darcs_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     if command_is(text, "darcs", "log") || command_is(text, "darcs", "changes") {
@@ -999,6 +1057,7 @@ fn is_darcs_status_block(text: &str) -> bool {
     lower.contains("darcs whatsnew") || has_prefixed_lines(text, &["A ", "M ", "R "], 1)
 }
 
+/// 判断是否为 darcs diff 块。
 fn is_darcs_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("darcs diff")
@@ -1006,6 +1065,7 @@ fn is_darcs_diff_block(text: &str) -> bool {
             && text.lines().any(|l| l.trim_start().starts_with("+++ ")))
 }
 
+/// 判断是否为 darcs log 块。
 fn is_darcs_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     lower.contains("darcs changes")
@@ -1018,18 +1078,7 @@ fn is_darcs_log_block(text: &str) -> bool {
                 .any(|l| l.trim_start().to_ascii_lowercase().starts_with("date:")))
 }
 
-/// 法则 C：剥离 ANSI 逃逸序列
-/// 移除所有 \x1b[...m 格式的终端颜色/样式代码
-static ANSI_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\x1b\[[0-9;]*m").unwrap());
-
-fn strip_ansi_escapes(text: &str) -> String {
-    ANSI_RE.replace_all(text, "").to_string()
-}
-
-/// 默认最大单文件 Diff 行数（法则 F）
-#[allow(dead_code)]
-const MAX_DIFF_LINES: usize = 100;
-
+/// 用指定 VcsParser 压缩并保持显式命令头。
 #[allow(dead_code)]
 fn compact_with_parser<P: VcsParser>(parser: P, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {

@@ -15,7 +15,6 @@
 //! - diff 行中 a/ b/ 路径前缀（压缩为 D:）
 //! - hunk 头中空格和上下文（压缩为 @@-a,b->c,d@@）
 pub mod methods;
-pub mod parser;
 #[cfg(test)]
 mod showcase;
 #[cfg(test)]

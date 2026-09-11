@@ -1,2 +1,3 @@
+$ ./filter.py run
 Short hex: 0x123456
 This should not be masked

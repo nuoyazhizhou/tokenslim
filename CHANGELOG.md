@@ -11,6 +11,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.5.1] — 2026-09-11 (Q442 字典 token 修复 · 插件解压修复 · PTY 稳定性 · 大输入折叠修复 · ls_listing 插件 · 脱敏占位符优化)
+
+### Added
+- **`ls_listing` 列式目录清单插件** — 识别 `aws s3 ls [--recursive]` 形态（行首 ISO 日期时间 + 右对齐尺寸 + 路径，≥5 行且占比 ≥50%）的列式清单，纯填充规约口径：逐行归一化 `datetime size fullpath`，日期/尺寸/路径逐条保留，实测 11578→10487B（省 9.4%），语义门禁首跑 PASS（`617e9220`）。
+- **privacy 词表豁免** — 新增 `.tokenslim-redact-allowlist`（一行一词）：词表内的词整体命中用户自定义脱敏规则时原样保留，消除「替换物比被掩码短词更贵」的膨胀；内置凭证规则永不豁免，词表文件缺失视为空词表（`97ac2490`）。
+
+### Changed
+- **privacy 脱敏占位符短化** — `[TS_*]` 长占位符（≈5~8 tok/处）统一短化为 `[UR]/[SEC]/[LLMKEY]/[AWSID]/[AWSKEY]/[GHTOK]/[BEARER]/[JWT]/[DBCRED]/[PK]`（≈2~3 tok/处），信息量仍为零、不可逆安全语义不变；占位符 ≥3 处时输出尾部追加 `[legend]` 类型图例行（不含原文）（`43c6c6b8`）。
+
+### Fixed
+- **`$PK` 包 token 无法解析（Q442，P0）** — `Dictionary::resolve_one_level` / `resolve_for_ai` 中 `$P` 路径分支先于 `$PK` 分支，导致 `$PK{n}` 永远被 `$P` 分支截获并查询 `paths` 映射 → 返回 None，包 token 在解压后残留。修复：`$PK` 分支前移（长前缀优先）+ `skeletonize_path` 入口排除 `$PK`。回归：cloud `case_050` 连续 10 次真实压缩→解压无 `$PK` 残留（`e56e71c6`）。
+- **web_log 插件局部字典泄漏（T-011）** — `decompress` 现解析并缓存 `$W|DICT_IP`/`$W|DICT_UA` 局部 token→值映射，摘要行/`$W|A`/`$W|E` 行内替换，禁止局部字典协议行泄漏到输出（`8aa803a0`）。
+- **python_traceback 行内 `$PY` 标记残留（T-008）** — `decompress` 行内 `find` 定位 + 前缀独立成行 + 行内重水合，消除链式分隔文本与 `$PY|TB/FL/EX` 同物理行导致的 `starts_with` 失效残留（`500bf1bb`）。
+- **PTY 稳定性（Q543）** — 子进程退出后排空竞态（reader 收尽+完整排空）与 `join()` 无界悬挂（drop master 后 `wait_join_bounded(100ms)` 超时 detach）两处修复；新增回归测试（`a3486938`、`e4a95c74`）。
+- **rust_go 大输入 cargo test 跨行折叠失效（P3-206①）** — `rust_go::detect` 锚点稀释 + 跨插件分数竞争（priority 升序 tie-break 让 sql 抢占），修法为 `running N tests` 锚点决定性短路（score 1.0）+ `is_cargo_test_head` 谓词收紧；2047/2048/2049B 边界回归 + 管线级路由回归 8 例（`96daabbe`）。
+- **送审预览只见头部导致 LLM 误判（case_017 假阳性）** — `audit_sample_case_quality.py` 新增 `_sample_snippet()` 头 3/4 + 尾 1/4 采样；`AUDIT.md` 修正 `--case-id` 文档漂移与 venv 解释器前置说明（`821f2b21`）。
+
+---
+
 ## [0.5.0] — 2026-06-26 (Docker 官方镜像 · JWT 鉴权 · WebSocket 双向通道 · 插件配置管理)
 
 ### Added
@@ -204,7 +223,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Concept commit: 50-line Python script that grepped `Error:` lines and reported count.
 
-[Unreleased]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.7...HEAD
+[Unreleased]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.5.1...HEAD
+[0.5.1]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.5.0...v0.5.1
 [0.3.7]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.6...v0.3.7
 [0.3.6]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.3...v0.3.6
 [0.3.3]: https://github.com/nuoyazhizhou/tokenslim/compare/v0.3.2...v0.3.3

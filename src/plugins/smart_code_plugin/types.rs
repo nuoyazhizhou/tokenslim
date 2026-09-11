@@ -1,3 +1,5 @@
+//! 智能代码插件类型定义模块：定义插件主体 `SmartCodePlugin` 等核心数据类型。
+
 /// smart code plugin 类型定义
 
 /// # 类型概述
@@ -7,35 +9,10 @@
 use regex::Regex;
 use std::sync::Arc;
 
-use serde::{Deserialize, Serialize};
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SmartCodeConfig {
-    pub fold_large_bodies: bool,
-    pub body_threshold_lines: usize,
-    pub strip_comments: bool,
-    pub compress_indentation: bool,
-    pub extract_identifiers: bool,
-}
-
-impl Default for SmartCodeConfig {
-    /// 提供该插件类型的默认配置实现。
-    fn default() -> Self {
-        SmartCodeConfig {
-            fold_large_bodies: true,
-            body_threshold_lines: 15,
-            strip_comments: true,
-            compress_indentation: true,
-            extract_identifiers: true,
-        }
-    }
-}
-
 /// 智能代码插件 (双向无损，适用于通用源码文件)
 pub struct SmartCodePlugin {
     pub(crate) name: &'static str,
     pub(crate) priority: u8,
-    pub(crate) config: SmartCodeConfig,
     pub(crate) identifier_pattern: Arc<Regex>,
     pub(crate) spaces_pattern: Arc<Regex>,
 }

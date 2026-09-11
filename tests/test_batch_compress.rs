@@ -10,6 +10,9 @@ use std::path::Path;
 use std::process::Command;
 use std::time::Instant;
 
+/// 批量压缩测试入口：遍历 tests/data/ 下所有文件，逐文件调用
+/// `cargo run --release --compress` CLI 压缩，汇总大小/Token/耗时统计
+/// 并输出控制台报告与 tests/output/test_report.txt 文件。
 fn main() {
     println!("=== TokenSlim 批量压缩测试 ===\n");
 
@@ -240,6 +243,9 @@ fn main() {
     println!("\n报告已保存到：{}", report_path.display());
 }
 
+/// 从压缩输出 JSON 中提取 metadata.original_tokens/compressed_tokens 统计。
+///
+/// JSON 解析失败或字段缺失时返回 (0, 0)（调用方按零值处理，不 panic）。
 fn parse_token_stats(json_content: &str) -> (u64, u64) {
     // 简单解析 JSON 提取 token 统计
     let mut original_tokens = 0u64;
@@ -261,6 +267,8 @@ fn parse_token_stats(json_content: &str) -> (u64, u64) {
     (original_tokens, compressed_tokens)
 }
 
+/// 汇总批量测试结果生成文本报告：文件数/成功失败数/大小统计/Token 统计/
+/// 性能统计/逐文件详细结果，返回可写盘的完整报告字符串。
 fn generate_report_text(
     results: &[TestResult],
     total_orig_size: u64,

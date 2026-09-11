@@ -1,0 +1,235 @@
+module:
+  name: dictionary_engine
+  path: src/core/dictionary_engine
+  dependencies:
+    - serde = { version = "1.0", features = ["derive"] }
+    - thiserror = "1.0"
+    - serde_json = "1.0"      # 用于序列化
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{DictionaryEngine, Dictionary, DictType, DictError};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::collections::HashMap;
+        use serde::{Serialize, Deserialize};
+
+        /// 字典项类型前缀
+        #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+        pub enum DictType {
+            Path,      // 文件/目录路径，token 前缀 $P
+            Package,   // 包名/命名空间，token 前缀 $PK
+            Macro,     // 宏定义/编译选项，token 前缀 $M
+            File,      // 文件名，token 前缀 $F
+            Custom(String), // 自定义类型，插件可注册（未来）
+        }
+
+        /// 字典引擎主结构
+        pub struct DictionaryEngine {
+            pub(crate) paths: HashMap<String, String>,      // original -> token
+            pub(crate) packages: HashMap<String, String>,
+            pub(crate) macros: HashMap<String, String>,
+            pub(crate) files: HashMap<String, String>,
+            pub(crate) custom: HashMap<String, HashMap<String, String>>, // 按自定义类型分组
+            pub(crate) next_ids: HashMap<DictType, usize>,  // 各类型下一个可用序号
+        }
+
+        /// 对外暴露的字典（不可变，用于还原）
+        #[derive(Debug, Clone, Serialize, Deserialize)]
+        pub struct Dictionary {
+            pub paths: HashMap<String, String>,    // token -> original
+            pub packages: HashMap<String, String>,
+            pub macros: HashMap<String, String>,
+            pub files: HashMap<String, String>,
+            pub custom: HashMap<String, HashMap<String, String>>,
+        }
+
+        /// 错误类型
+        #[derive(Debug, thiserror::Error)]
+        pub enum DictError {
+            #[error("Token conflict: {0}")]
+            TokenConflict(String),
+            #[error("Type not registered: {0}")]
+            TypeNotRegistered(String),
+            #[error("Serialization error: {0}")]
+            Serialization(#[from] serde_json::Error),
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use std::collections::HashMap;
+
+                impl Dictionary {
+            /// O(1) 解析 token 获取原始字符串（还原时使用）
+            pub fn resolve(&self, token: &str) -> Option<&String> {
+                todo!()
+            }
+        }
+
+        impl DictionaryEngine {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 DictionaryEngine 实例
+            ///
+            /// # 返回值
+            /// - `Self`: DictionaryEngine 实例
+            ///
+            /// # 实现要求
+            /// 初始化所有 map 为空，各类型计数器从 1 开始。
+            ///
+            /// # 测试要点
+            /// - 各 map 为空。
+            /// - 计数器初始值正确（例如 Path 的 next_id = 1）。
+            ///
+            /// MVP 优先级
+            pub fn new() -> Self {
+                todo!()
+            }
+
+            /// 添加路径字典项
+            ///
+            /// # 参数
+            /// - `original`: 原始路径字符串
+            ///
+            /// # 返回值
+            /// - `String`: 生成的 token（如 `$P1`）
+            ///
+            /// # 实现要求
+            /// 1. 如果路径已存在，直接返回已有 token。
+            /// 2. 否则生成新 token，格式为 `$P{next_id}`，next_id 递增。
+            /// 3. 存储映射 original -> token。
+            ///
+            /// # 测试要点
+            /// - 同一路径重复添加返回相同 token。
+            /// - 不同路径返回递增 token。
+            /// - 路径中的特殊字符保留。
+            ///
+            /// MVP 优先级
+            pub fn add_path(&mut self, original: &str) -> String {
+                todo!()
+            }
+
+            /// 添加包名字典项
+            ///
+            /// # 参数
+            /// - `original`: 原始包名（如 `com.example.service`）
+            ///
+            /// # 返回值
+            /// - `String`: 生成的 token（如 `$PK1`）
+            ///
+            /// # 实现要求
+            /// 与 `add_path` 类似，但使用独立的 map 和计数器，token 前缀 `$PK`。
+            ///
+            /// MVP 优先级
+            pub fn add_package(&mut self, original: &str) -> String {
+                todo!()
+            }
+
+            /// 添加宏字典项
+            ///
+            /// # 参数
+            /// - `original`: 原始宏定义（如 `-DDEBUG`）
+            ///
+            /// # 返回值
+            /// - `String`: 生成的 token（如 `$M1`）
+            ///
+            /// MVP 优先级
+            pub fn add_macro(&mut self, original: &str) -> String {
+                todo!()
+            }
+
+            /// 添加文件名字典项
+            ///
+            /// # 参数
+            /// - `original`: 原始文件名（如 `main.cpp`）
+            ///
+            /// # 返回值
+            /// - `String`: 生成的 token（如 `$F1`）
+            ///
+            /// MVP 优先级
+            pub fn add_file(&mut self, original: &str) -> String {
+                todo!()
+            }
+
+
+
+            /// 生成只读字典快照（用于序列化）
+            ///
+            /// # 返回值
+            /// - `Dictionary`: 包含所有字典项的反向映射（token -> original）
+            ///
+            /// # 实现要求
+            /// 遍历内部各 map，构建反向映射（token -> original）。
+            ///
+            /// # 测试要点
+            /// - 快照包含所有已添加的项。
+            /// - 可序列化为 JSON。
+            ///
+            /// MVP 优先级
+            pub fn snapshot(&self) -> Dictionary {
+                todo!()
+            }
+
+            /// 从快照重建引擎（用于还原）
+            ///
+            /// # 参数
+            /// - `dict`: 之前保存的字典快照
+            ///
+            /// # 返回值
+            /// - `Self`: 重建的 DictionaryEngine
+            ///
+            /// # 实现要求
+            /// 1. 将 `dict` 中的反向映射（token -> original）转为正向映射（original -> token）。
+            /// 2. 恢复计数器至各类型的最大 ID（可选，不影响还原）。
+            ///
+            /// # 测试要点
+            /// - 重建后 `resolve` 能正确返回原始字符串。
+            ///
+            /// MVP 优先级
+            pub fn from_snapshot(dict: Dictionary) -> Self {
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+
+            /// 注册自定义字典类型（未来）
+            ///
+            /// # 参数
+            /// - `type_name`: 自定义类型名称
+            /// - `prefix`: token 前缀（如 `$SQL`）
+            ///
+            /// # 返回值
+            /// - `Result<(), DictError>`: 成功或错误（如类型已存在）
+            ///
+            /// 未来优先级
+            pub fn register_type(&mut self, type_name: &str, prefix: &str) -> Result<(), DictError> {
+                todo!()
+            }
+
+            /// 添加自定义类型字典项（未来）
+            ///
+            /// # 参数
+            /// - `type_name`: 已注册的自定义类型名称
+            /// - `original`: 原始字符串
+            ///
+            /// # 返回值
+            /// - `Result<String, DictError>`: token 或错误
+            ///
+            /// 未来优先级
+            pub fn add_custom(&mut self, type_name: &str, original: &str) -> Result<String, DictError> {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

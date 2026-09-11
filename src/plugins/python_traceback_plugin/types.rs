@@ -1,4 +1,3 @@
-use crate::core::plugin_config_loader::CompiledPluginConfig;
 /// python traceback plugin 类型定义
 
 /// # 类型概述
@@ -15,6 +14,4 @@ pub struct PythonTracebackPlugin {
     pub(crate) trace_header_pattern: Arc<Regex>,
     pub(crate) file_line_pattern: Arc<Regex>,
     pub(crate) exception_pattern: Arc<Regex>,
-    /// 配置文件
-    pub config: Option<CompiledPluginConfig>,
 }

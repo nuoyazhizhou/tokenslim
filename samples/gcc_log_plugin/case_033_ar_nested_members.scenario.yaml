@@ -1,0 +1,15 @@
+scenario: '对 librender.a 运行 ar -t 查看归档成员清单，成员含嵌套目录路径（core/render/*.o、utils/math/*.o），输出为各 .o 成员路径。'
+target_capability: 'binutils ar -t 嵌套目录路径成员压缩（折叠为 $AR 计数+扩展名摘要）'
+expected_keep: 'members'
+expected_compress: 'core/render/mesh.o'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a6ef496263dd5a638cfd36be8164ebbf6e993c85027b0862e321f728f7454e11'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

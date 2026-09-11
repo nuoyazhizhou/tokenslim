@@ -53,6 +53,7 @@ pub struct LogReorderer {
 }
 
 impl LogReorderer {
+    /// 基于给定 [`ReorderConfig`] 创建日志重排序器，初始化规则表、分组缓冲与上下文状态。
     pub fn new(config: ReorderConfig) -> Self {
         // In a real implementation, we would load rules from config
         Self {
@@ -306,6 +307,7 @@ impl LogReorderer {
         let mut flushed = Vec::new();
         if self.total_lines_buffered > self.config.max_lines {
             let flush_count = (self.group_order.len() / 2).max(1);
+            let mut flushed_groups: Vec<(String, Vec<String>)> = Vec::new();
             for _ in 0..flush_count {
                 if self.group_order.is_empty() {
                     break;
@@ -317,8 +319,17 @@ impl LogReorderer {
                 }
                 if let Some(mut group) = self.groups.remove(&key) {
                     self.total_lines_buffered -= group.len();
-                    flushed.append(&mut group);
+                    flushed_groups.push((key, group));
                 }
+            }
+            // P2-55：中途冲刷与 flush 的组序策略保持一致——deterministic_sort 时对被冲刷
+            // 子集按组名字母序输出，保证确定性承诺在大日志（超 max_lines）下不退化为
+            // 「前半 FIFO + 后半 A-Z」的混合序。
+            if self.config.deterministic_sort {
+                flushed_groups.sort_by(|a, b| a.0.cmp(&b.0));
+            }
+            for (_, mut group) in flushed_groups {
+                flushed.append(&mut group);
             }
         }
 
@@ -376,6 +387,7 @@ impl LogReorderer {
 mod tests {
     use super::*;
 
+    /// 验证 `normalize_line` 能稳定处理含乱序 JSON 字段的单行：保留前缀与后缀，并规范化 JSON 键顺序。
     #[test]
     fn normalize_line_handles_noisy_json_segment() {
         let reorderer = LogReorderer::new(ReorderConfig {
@@ -389,5 +401,49 @@ mod tests {
         assert!(normalized.starts_with("INFO prefix "));
         assert!(normalized.ends_with(" tail"));
         assert!(normalized.contains("{\"a\":1,\"z\":2}"));
+    }
+
+    /// P2-55 回归：大日志触发中途冲刷（total_lines_buffered > max_lines）时，
+    /// deterministic_sort 承诺不得退化为「前半 FIFO + 后半 A-Z」混合序——被冲刷的
+    /// 组子集也必须按组名字母序输出。修复前中途冲刷直接按 group_order FIFO 顺序 append。
+    #[test]
+    fn mid_flush_respects_deterministic_sort_order() {
+        let mut reorderer = LogReorderer::new(ReorderConfig {
+            enabled: true,
+            max_lines: 6,
+            sticky_context: true,
+            deterministic_sort: true,
+        });
+
+        // 依次创建 zulu/alpha/mike/bravo 四组（FIFO 组序故意与字母序相反），
+        // 第 7 行触发中途冲刷：flush_count = 4/2 = 2，冲刷 zulu+alpha 两组。
+        let mut mid_flushed: Vec<String> = Vec::new();
+        for line in [
+            "[zulu] 1",
+            "[zulu] 2",
+            "[alpha] 1",
+            "[alpha] 2",
+            "[mike] 1",
+            "[mike] 2",
+            "[bravo] 1",
+        ] {
+            mid_flushed.extend(reorderer.process_line(line.to_string()));
+        }
+
+        assert_eq!(mid_flushed.len(), 4, "中途冲刷应产出 zulu+alpha 共 4 行");
+        assert!(
+            mid_flushed[0].starts_with("[alpha]"),
+            "中途冲刷子集须按字母序输出（alpha 先于 zulu），实际序: {mid_flushed:?}"
+        );
+        assert!(mid_flushed[1].starts_with("[alpha]"));
+        assert!(mid_flushed[2].starts_with("[zulu]"));
+        assert!(mid_flushed[3].starts_with("[zulu]"));
+
+        // 收尾 flush：剩余 mike/bravo 组同样按字母序
+        let rest = reorderer.flush();
+        assert_eq!(rest.len(), 3);
+        assert!(rest[0].starts_with("[bravo]"), "收尾 flush 序: {rest:?}");
+        assert!(rest[1].starts_with("[mike]"));
+        assert!(rest[2].starts_with("[mike]"));
     }
 }

@@ -1,0 +1,15 @@
+scenario: 'Cargo 项目单测运行：lib 单测 56 个中 55 通过、1 个失败（lexer::reports_unterminated_block_comment 断言失败，含 panic 详情与 test result: FAILED），总量约 3.5KB（>2048B 小输入整块阈值）。'
+target_capability: '大输入（≥2048B）跨行折叠：running N tests … test result: 块折叠为 [TEST] 摘要，且失败用例名与 panic 信号零丢失'
+expected_keep: 'lexer::reports_unterminated_block_comment'
+expected_compress: 'test arith::adds_two_positive_integers ... ok'
+source: 'manual'
+generated_at: '2026-09-10T23:59:19Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '10afd453fb59e151df8c4f95be6aaab1243d00ad265c80f450e7cbe19a5dab63'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:10:25.377998'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

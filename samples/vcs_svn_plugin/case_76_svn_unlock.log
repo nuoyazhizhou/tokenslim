@@ -1,2 +1,4 @@
-svn unlock src/main.rs
+svn unlock src/main.rs src/config.rs src/logger.rs
 'src/main.rs' unlocked.
+'src/config.rs' unlocked.
+'src/logger.rs' unlocked.

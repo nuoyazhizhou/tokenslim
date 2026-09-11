@@ -6,6 +6,7 @@ use tokenslim::cli::run_cli;
 use tokenslim::cli::CliError;
 use tokenslim::utils::i18n::t1;
 
+/// 程序入口：解析 `-v/--verbose` 注入 debug 日志级别，初始化 tracing 与日志，调用 CLI 入口并按错误类型以对应退出码结束进程。
 fn main() {
     // 提前拦截 -v / --verbose 参数，注入 debug 日志级别
     let args: Vec<String> = std::env::args().collect();

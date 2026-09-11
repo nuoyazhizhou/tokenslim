@@ -357,6 +357,7 @@ mod tests {
     use super::*;
     use crate::plugins::static_rule_plugin::RuleSection;
 
+    /// 测试辅助：由 RuleSection 列表构造 StaticRuleConfig（不含输出模板）。
     fn make_config(sections: Vec<RuleSection>) -> StaticRuleConfig {
         StaticRuleConfig {
             sections,
@@ -364,19 +365,20 @@ mod tests {
         }
     }
 
+    /// 测试辅助：构造仅含名称、enter、keep、drop 的 RuleSection，其余字段置空。
     fn make_section(name: &str, enter: &str, keep: Vec<&str>, drop: Vec<&str>) -> RuleSection {
         RuleSection {
             name: name.to_string(),
             enter: enter.to_string(),
             exit: None,
             match_pattern: None,
-            split_on: None,
             keep: keep.into_iter().map(String::from).collect(),
             drop: drop.into_iter().map(String::from).collect(),
             aggregates: vec![],
         }
     }
 
+    /// 测试：合法的 enter 与 keep 规则被识别为有效，命中率统计正确。
     #[test]
     fn diagnosis_detects_valid_rules() {
         let config = make_config(vec![make_section(
@@ -395,6 +397,7 @@ mod tests {
         assert_eq!(diagnosis.hit_rate.total_patterns, 2);
     }
 
+    /// 测试：无 enter 且无 keep/drop/aggregates 的空 section 被标记为空 section。
     #[test]
     fn diagnosis_detects_empty_sections() {
         let config = make_config(vec![RuleSection {
@@ -402,7 +405,6 @@ mod tests {
             enter: "".to_string(),
             exit: None,
             match_pattern: None,
-            split_on: None,
             keep: vec![],
             drop: vec![],
             aggregates: vec![],
@@ -414,6 +416,7 @@ mod tests {
         assert_eq!(diagnosis.hit_rate.sections_without_enter, 1);
     }
 
+    /// 测试：非法正则的 enter 模式被记录到 invalid_regex 列表。
     #[test]
     fn diagnosis_detects_invalid_regex() {
         let config = make_config(vec![RuleSection {
@@ -421,7 +424,6 @@ mod tests {
             enter: "[invalid".to_string(),
             exit: None,
             match_pattern: None,
-            split_on: None,
             keep: vec![],
             drop: vec![],
             aggregates: vec![],
@@ -432,6 +434,7 @@ mod tests {
         assert_eq!(diagnosis.invalid_regex[0].field, "enter");
     }
 
+    /// 测试：两个 section 的 enter 模式相同时报告 DuplicateEnter 冲突。
     #[test]
     fn diagnosis_detects_duplicate_enter() {
         let config = make_config(vec![
@@ -446,6 +449,7 @@ mod tests {
         ));
     }
 
+    /// 测试：某 section 的 keep 与另一 section 的 drop 模式相同时报告 KeepDropOverlap 冲突。
     #[test]
     fn diagnosis_detects_keep_drop_overlap() {
         let config = make_config(vec![
@@ -460,6 +464,7 @@ mod tests {
         ));
     }
 
+    /// 测试：hit_rate 正确统计总模式数、有效模式数与空模式数。
     #[test]
     fn diagnosis_hit_rate_calculation() {
         let config = make_config(vec![
@@ -475,6 +480,7 @@ mod tests {
         assert_eq!(hr.empty_patterns, 1);
     }
 
+    /// 测试：render_diagnosis_text 输出包含标题、有效数统计与无问题提示。
     #[test]
     fn diagnosis_text_rendering() {
         let config = make_config(vec![make_section("ok", "^OK", vec!["^OK"], vec![])]);

@@ -1,15 +1,13 @@
 svn diff --git
-Index: src/core/doctor_workspace/methods.rs
-==================================================================
---- a/src/core/doctor_workspace/methods.rs
-+++ b/src/core/doctor_workspace/methods.rs
-@@ -1417,6 +1417,12 @@
- pub fn analyze_project(root: &Path) -> Vec<Diagnostic> {
-     let mut diagnostics = Vec::new();
+Index: src/plugins/vcs_svn_plugin/parser.rs
+===================================================================
+--- a/src/plugins/vcs_svn_plugin/parser.rs
++++ b/src/plugins/vcs_svn_plugin/parser.rs
+@@ -52,7 +52,9 @@
+ pub fn parse_svn_log_header(line: &str) -> Option<(u64, String, String)> {
+     // svn log 修订头: r123 | author | date | lines
+     let (rev, rest) = line.split_once('|')?;
 +
-+    // VCS Plugin Config Guidance
-+    if let Some(config) = load_vcs_config(root) {
-+        diagnostics.push(config.validate());
-+    }
-+
-     for file in walk_dir(root) {
++    // 兼容多空格分隔的 author 与日期
+     let author = rest.trim().splitn(2, '|').next().unwrap_or_default();
+ }

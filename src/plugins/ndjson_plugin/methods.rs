@@ -4,24 +4,25 @@ use super::types::*;
 use crate::core::compression::Token;
 use crate::core::dedup_engine::DedupEngine;
 use crate::core::dictionary_engine::{Dictionary, DictionaryEngine};
-use crate::core::json_extractor::extract_json_object;
 use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
-use std::any::Any;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::sync::OnceLock;
+
+/// P3-127 家族：`decompress` 每次调用重建 `(\$[MP]\d+)`，提升为进程级
+/// `OnceLock` 预编译（对照 `infra_tools_common.rs` 范式）。
+static RESTORE_TOKEN_RE: OnceLock<Regex> = OnceLock::new();
 
 impl NdjsonPlugin {
+    /// 创建 NdjsonPlugin 实例（名称 ndjson，优先级 145），预编译 NDJSON 与 Go test 检测正则。
     pub fn new() -> Self {
         Self {
             name: "ndjson",
             priority: 145, // 高于 json_plugin (140)，低于 git_diff_plugin (160)
-            ndjson_detect_pattern: Arc::new(
-                Regex::new(r#"(?m)^\{"[^"]+":"#).unwrap(), // 每行都以 {"key": 开头
-            ),
             go_test_pattern: Arc::new(
                 Regex::new(r#""Action":"(run|pass|fail|skip|output)""#).unwrap(),
             ),
@@ -72,9 +73,9 @@ impl NdjsonPlugin {
                 continue;
             }
 
-            // 尝试提取 JSON 对象
-            if let Some(json_str) = extract_json_object(trimmed) {
-                if let Ok(event) = serde_json::from_str::<GoTestEvent>(&json_str) {
+            // 尝试提取 JSON 对象（统一走 utils::json 实现，返回借用切片，避免重复实现漂移）
+            if let Some(extracted) = crate::core::utils::json::extract_json_object(trimmed) {
+                if let Ok(event) = serde_json::from_str::<GoTestEvent>(extracted.raw) {
                     events.push(event);
                 }
             }
@@ -247,14 +248,17 @@ impl NdjsonPlugin {
 }
 
 impl Plugin for NdjsonPlugin {
+    /// 返回插件名称 "ndjson"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 145。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：≥2 行且 ≥80% 为 JSON 对象时判定为 NDJSON；Go test -json 输出给 0.95，通用给 0.85。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.trim();
 
@@ -272,6 +276,7 @@ impl Plugin for NdjsonPlugin {
         Some(0.85)
     }
 
+    /// 压缩切片：Go test 模式聚合事件渲染摘要，否则通用 NDJSON 截断，ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -301,10 +306,11 @@ impl Plugin for NdjsonPlugin {
         }
     }
 
+    /// 解压：NDJSON 压缩有损，仅还原路径字典 token。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         // NDJSON 压缩是有损的（聚合），无法完全还原
         // 只能还原路径字典
-        let pattern = Regex::new(r"(\$[MP]\d+)").unwrap();
+        let pattern = RESTORE_TOKEN_RE.get_or_init(|| Regex::new(r"(\$[MP]\d+)").unwrap());
         pattern
             .replace_all(compressed, |caps: &regex::Captures| {
                 let token = caps.get(1).unwrap().as_str();
@@ -316,22 +322,14 @@ impl Plugin for NdjsonPlugin {
             })
             .into_owned()
     }
-
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<NdjsonConfig>() {
-            self.config = c.clone();
-            return Ok(());
-        }
-        Err("Invalid config".to_string())
-    }
 }
 
 impl Clone for NdjsonPlugin {
+    /// 克隆插件实例：复制名称、优先级、正则与配置。
     fn clone(&self) -> Self {
         Self {
             name: self.name,
             priority: self.priority,
-            ndjson_detect_pattern: self.ndjson_detect_pattern.clone(),
             go_test_pattern: self.go_test_pattern.clone(),
             config: self.config.clone(),
         }

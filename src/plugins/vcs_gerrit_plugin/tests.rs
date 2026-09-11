@@ -1,18 +1,21 @@
 use super::methods::*;
 use std::path::{Path, PathBuf};
 
+/// 测试辅助：返回样例目录路径。
 fn sample_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples")
         .join("vcs_gerrit_plugin")
 }
 
+/// 测试辅助：读取指定 gerrit 样例文件。
 fn read_case(case_name: &str) -> String {
     let file_path = sample_dir().join(format!("{case_name}.log"));
     std::fs::read_to_string(&file_path)
         .unwrap_or_else(|err| panic!("读取样本失败 {}: {err}", file_path.display()))
 }
 
+/// 测试：gerrit query 样例（case 97）change 与 KV 萃取。
 #[test]
 fn test_query_case_97() {
     let raw = read_case("case_97_gerrit_query");
@@ -46,6 +49,7 @@ fn test_query_case_97() {
     assert!(lines[2].contains("ST:MERGED"), "第二个 status");
 }
 
+/// 测试：gerrit review 样例（case 125）标签合并至锚点。
 #[test]
 fn test_review_case_125() {
     let raw = read_case("case_125_gerrit_review");
@@ -67,6 +71,7 @@ fn test_review_case_125() {
     );
 }
 
+/// 测试：gerrit push 样例（case 126）refs 映射压缩。
 #[test]
 fn test_push_case_126() {
     let raw = read_case("case_126_gerrit_push");
@@ -83,6 +88,7 @@ fn test_push_case_126() {
     assert!(compacted.contains("Pushed 3 refs"), "应保留推送计数");
 }
 
+/// 测试：gerrit checkout 样例（case 127）分支摘要合并。
 #[test]
 fn test_checkout_case_127() {
     let raw = read_case("case_127_gerrit_checkout");
@@ -98,6 +104,7 @@ fn test_checkout_case_127() {
     assert!(compacted.contains("(up-to-date)"), "应包含 up-to-date 状态");
 }
 
+/// 测试：含 subject/topic 的 query 样例（case 217）萃取。
 #[test]
 fn test_query_case_217_subject_topic() {
     let raw = read_case("case_217_gerrit_query_subject_topic");
@@ -118,6 +125,7 @@ fn test_query_case_217_subject_topic() {
     assert!(compacted.contains("TP:auth-refactor"), "topic 应映射为 TP");
 }
 
+/// 测试：含 submit 标签的 review 样例（case 218）萃取。
 #[test]
 fn test_review_case_218_submit_label() {
     let raw = read_case("case_218_gerrit_review_submit");
@@ -136,6 +144,7 @@ fn test_review_case_218_submit_label() {
     );
 }
 
+/// 测试：含 changes refs 的 push 样例（case 219）压缩。
 #[test]
 fn test_push_case_219_changes_refs() {
     let raw = read_case("case_219_gerrit_push_changes_refs");
@@ -154,6 +163,7 @@ fn test_push_case_219_changes_refs() {
     assert!(compacted.contains("Pushed 3 refs"), "推送计数应保留");
 }
 
+/// 测试：通用错误样例（case 220）警报与 URL 缩写。
 #[test]
 fn test_generic_case_220_alert_and_url() {
     let raw = read_case("case_220_gerrit_generic_alert_url");
@@ -173,6 +183,7 @@ fn test_generic_case_220_alert_and_url() {
     );
 }
 
+/// 测试：远端错误含 ANSI 的样例（case 223）被清理。
 #[test]
 fn test_generic_case_223_remote_error_ansi() {
     let raw = read_case("case_223_gerrit_remote_error_ansi").replace("\\u001b", "\u{1b}");
@@ -189,6 +200,7 @@ fn test_generic_case_223_remote_error_ansi() {
     assert!(!compacted.contains('\u{1b}'), "输出不应包含 ANSI 转义");
 }
 
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let raw = "gerrit status";
@@ -196,6 +208,7 @@ fn test_short_input_fallback() {
     assert_eq!(compacted, raw, "过短输入应直接返回原始文本");
 }
 
+/// 测试：警报前缀映射。
 #[test]
 fn test_alert_prefix_mapping() {
     assert_eq!(
@@ -217,6 +230,7 @@ fn test_alert_prefix_mapping() {
     assert_eq!(map_alert_line("master -> master"), None);
 }
 
+/// 测试：文件状态码映射。
 #[test]
 fn test_file_status_mapping() {
     assert_eq!(map_file_status("Modified"), "M");

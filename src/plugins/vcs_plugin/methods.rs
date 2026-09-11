@@ -64,6 +64,7 @@ pub enum VcsAiProfile {
 }
 
 impl VcsAiProfile {
+    /// 将 VcsAiProfile 枚举映射为 u8（None=0/Status=1/Log=2/Diff=3/Other=4）。
     fn as_u8(self) -> u8 {
         match self {
             VcsAiProfile::None => 0,
@@ -74,6 +75,7 @@ impl VcsAiProfile {
         }
     }
 
+    /// 将 u8 映射回 VcsAiProfile 枚举。
     fn from_u8(v: u8) -> Self {
         match v {
             1 => VcsAiProfile::Status,
@@ -85,14 +87,17 @@ impl VcsAiProfile {
     }
 }
 
+/// 设置全局 VCS AI 压缩模式开关（线程局部）。
 pub fn set_vcs_ai_compact_mode(enabled: bool) {
     VCS_AI_COMPACT_MODE.with(|mode| mode.set(enabled));
 }
 
+/// 在指定压缩模式下运行闭包并恢复原状态。
 pub fn run_with_vcs_ai_compact_mode<T>(enabled: bool, f: impl FnOnce() -> T) -> T {
     run_with_vcs_ai_context(enabled, VcsAiProfile::None, f)
 }
 
+/// 在指定压缩模式与 profile 下运行闭包，用 ResetGuard 恢复原状态。
 pub fn run_with_vcs_ai_context<T>(
     enabled: bool,
     profile: VcsAiProfile,
@@ -111,6 +116,7 @@ pub fn run_with_vcs_ai_context<T>(
 
     struct ResetGuard(bool, u8);
     impl Drop for ResetGuard {
+        /// ResetGuard 析构：恢复压缩模式与 profile 到调用前状态。
         fn drop(&mut self) {
             VCS_AI_COMPACT_MODE.with(|mode| mode.set(self.0));
             VCS_AI_PROFILE.with(|state| state.set(self.1));
@@ -121,10 +127,12 @@ pub fn run_with_vcs_ai_context<T>(
     f()
 }
 
+/// 读取当前 VCS AI 压缩模式开关。
 fn vcs_ai_compact_mode() -> bool {
     VCS_AI_COMPACT_MODE.with(Cell::get)
 }
 
+/// 读取当前 VCS AI profile。
 fn vcs_ai_profile() -> VcsAiProfile {
     VcsAiProfile::from_u8(VCS_AI_PROFILE.with(Cell::get))
 }
@@ -166,6 +174,7 @@ static P4_DEPOT_PATH_RE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"//[\w./\-]+(?:\.[\w-]+)?").unwrap());
 
 impl Default for VcsPlugin {
+    /// VcsPlugin 默认实现：等价于 new()。
     fn default() -> Self {
         Self::new()
     }
@@ -197,6 +206,16 @@ use crate::plugins::vcs_fossil_plugin::parser as fossil_parser;
 use crate::plugins::vcs_darcs_plugin::methods as darcs_methods;
 use crate::plugins::vcs_darcs_plugin::parser as darcs_parser;
 
+// 云端 CLI 微插件（方案 A 恢复）：gh/glab/az/bitbucket/repo/gerrit 路由别名均指向
+// Git 家族，经 run_tool_aliases 归并为 VcsTool::Git 后，在分派函数内按显式工具
+// 关键词再次路由到各自专用压缩器。
+use crate::plugins::vcs_az_plugin::methods as az_methods;
+use crate::plugins::vcs_bitbucket_plugin::methods as bitbucket_methods;
+use crate::plugins::vcs_gerrit_plugin::methods as gerrit_methods;
+use crate::plugins::vcs_gh_plugin::methods as gh_methods;
+use crate::plugins::vcs_glab_plugin::methods as glab_methods;
+use crate::plugins::vcs_repo_plugin::methods as repo_methods;
+
 // 全部 VCS 工具现在都通过独立微插件路由
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -214,6 +233,7 @@ struct ParsedCommand {
     args_after_subcommand: Vec<String>,
 }
 
+/// 按关键词解析 VCS 工具（先查路由别名表，再查内置 from_key）。
 fn vcs_tool_from_keyword(keyword: &str) -> Option<VcsTool> {
     let normalized = keyword.to_ascii_lowercase();
     VCS_TOOL_ALIASES
@@ -222,6 +242,7 @@ fn vcs_tool_from_keyword(keyword: &str) -> Option<VcsTool> {
         .or_else(|| VcsTool::from_key(&normalized))
 }
 
+/// 归一化命令关键词：取文件名、去引号、转小写、剥离 exe 后缀。
 fn normalize_command_keyword(raw: &str) -> String {
     let file = std::path::Path::new(raw.trim_matches('"'))
         .file_name()
@@ -238,6 +259,7 @@ fn normalize_command_keyword(raw: &str) -> String {
     file
 }
 
+/// 解析命令行 token：支持单/双引号与反斜杠转义（Windows 路径保护）。
 fn parse_command_line_tokens(line: &str) -> Option<Vec<String>> {
     #[derive(Clone, Copy)]
     enum QuoteMode {
@@ -309,6 +331,7 @@ fn parse_command_line_tokens(line: &str) -> Option<Vec<String>> {
     Some(tokens)
 }
 
+/// 从原文解析 ParsedCommand（工具关键词、子命令、后续参数）。
 fn parse_command_from_raw(raw: &str) -> Option<ParsedCommand> {
     let line = first_non_empty_line(raw)
         .trim_start_matches('\u{feff}')
@@ -331,11 +354,13 @@ fn parse_command_from_raw(raw: &str) -> Option<ParsedCommand> {
     })
 }
 
+/// 判断命令是否为指定工具+子命令。
 fn command_is(raw: &str, tool_keyword: &str, subcommand: &str) -> bool {
     parse_command_from_raw(raw)
         .is_some_and(|cmd| cmd.tool_keyword == tool_keyword && cmd.subcommand == subcommand)
 }
 
+/// 判断命令是否指定工具+子命令+首个参数。
 fn command_first_arg_is(raw: &str, tool_keyword: &str, subcommand: &str, first_arg: &str) -> bool {
     parse_command_from_raw(raw).is_some_and(|cmd| {
         cmd.tool_keyword == tool_keyword
@@ -347,6 +372,13 @@ fn command_first_arg_is(raw: &str, tool_keyword: &str, subcommand: &str, first_a
     })
 }
 
+/// 判断命令首个工具关键词是否为指定值（不校验子命令）。
+/// 用于云端 CLI（gh/glab/az/bitbucket/repo/gerrit）在 Git 家族内的二次分派。
+fn command_tool_is(raw: &str, tool_keyword: &str) -> bool {
+    parse_command_from_raw(raw).is_some_and(|cmd| cmd.tool_keyword == tool_keyword)
+}
+
+/// 从命令解析显式意图（status/diff/log/other，基于路由配置 run_intents）。
 fn explicit_intent_from_command(_tool: Option<VcsTool>, raw: &str) -> Option<ExplicitIntent> {
     let Some(cmd) = parse_command_from_raw(raw) else {
         return None;
@@ -369,13 +401,25 @@ fn explicit_intent_from_command(_tool: Option<VcsTool>, raw: &str) -> Option<Exp
     }
 }
 
+/// 按工具分派 status 压缩（Git/SVN/Hg/P4/CVS/Bzr/Fossil/Darcs 各微插件）。
 fn compact_status_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     match tool {
         Some(VcsTool::Git) => {
-            if command_is(raw, "git", "checkout")
-                || command_is(raw, "repo", "checkout")
-                || command_is(raw, "gerrit", "checkout")
-            {
+            // 云端 CLI 专用压缩器（方案 A）：显式工具关键词优先于 git 家族 fallback。
+            // gerrit checkout 的 run_intent 为 status；repo status/checkout 归 repo 插件。
+            if command_tool_is(raw, "gerrit") {
+                gerrit_methods::compact_gerrit_log_for_ai(raw)
+            } else if command_tool_is(raw, "repo") {
+                repo_methods::compact_repo_status_for_ai(raw)
+            } else if command_tool_is(raw, "gh") {
+                gh_methods::compact_gh_log_for_ai(raw)
+            } else if command_tool_is(raw, "glab") {
+                glab_methods::compact_glab_log_for_ai(raw)
+            } else if command_tool_is(raw, "az") {
+                az_methods::compact_az_log_for_ai(raw)
+            } else if command_tool_is(raw, "bitbucket") {
+                bitbucket_methods::compact_bitbucket_log_for_ai(raw)
+            } else if command_is(raw, "git", "checkout") {
                 git_methods::compact_git_checkout_for_ai(raw)
             } else if command_is(raw, "git", "restore") {
                 git_methods::process_parser(&git_parser::GitRestoreParser, raw)
@@ -468,8 +512,13 @@ fn compact_status_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     }
 }
 
+/// 按工具分派 diff 压缩。
 fn compact_diff_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     match tool {
+        // repo diff 的 run_intent 为 diff：repo 插件 generic 内置 diff --git/hunk 折叠。
+        Some(VcsTool::Git) if command_tool_is(raw, "repo") => {
+            repo_methods::compact_repo_other_for_ai(raw)
+        }
         Some(VcsTool::Git) => git_methods::compact_git_diff_for_ai(raw),
         Some(VcsTool::Svn) => svn_methods::compact_svn_diff_for_ai(raw),
         Some(VcsTool::Hg) => hg_methods::compact_hg_diff_for_ai(raw),
@@ -482,10 +531,26 @@ fn compact_diff_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     }
 }
 
+/// 按工具分派 log 压缩（含各工具子命令特化）。
 fn compact_log_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     match tool {
         Some(VcsTool::Git) => {
-            if command_is(raw, "git", "revert") {
+            // 云端 CLI 专用压缩器（方案 A）：repo sync/upload、gerrit query/push 的
+            // run_intent 为 log；gh/glab/az/bitbucket 无 log 意图，兜底路由到各自
+            // log 入口（内部按子命令二次分发）。
+            if command_tool_is(raw, "gh") {
+                gh_methods::compact_gh_log_for_ai(raw)
+            } else if command_tool_is(raw, "glab") {
+                glab_methods::compact_glab_log_for_ai(raw)
+            } else if command_tool_is(raw, "az") {
+                az_methods::compact_az_log_for_ai(raw)
+            } else if command_tool_is(raw, "bitbucket") {
+                bitbucket_methods::compact_bitbucket_log_for_ai(raw)
+            } else if command_tool_is(raw, "repo") {
+                repo_methods::compact_repo_other_for_ai(raw)
+            } else if command_tool_is(raw, "gerrit") {
+                gerrit_methods::compact_gerrit_log_for_ai(raw)
+            } else if command_is(raw, "git", "revert") {
                 git_methods::process_parser(&git_parser::GitRevertParser, raw)
             } else if command_is(raw, "git", "reset") {
                 git_methods::process_parser(&git_parser::GitResetParser, raw)
@@ -509,12 +574,15 @@ fn compact_log_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
                 if command_first_arg_is(raw, "git", "rebase", "-i")
                     || command_first_arg_is(raw, "git", "rebase", "--interactive")
                 {
-                    git_methods::compact_git_log_for_ai(raw)
+                    // P2-68 接线：交互式 rebase 先折叠 help 注释生成 [REBASE] 摘要，再走基础压缩。
+                    git_methods::compact_git_rebase_enhanced(raw)
                 } else {
                     git_methods::process_parser(&git_parser::GitRebaseParser, raw)
                 }
             } else {
-                git_methods::compact_git_log_for_ai(raw)
+                // P2-68 接线：普通 git log 经 enhanced 检测 --graph/reflog 并应用对应折叠；
+                // 非 graph/reflog 时回退基础压缩，输出不变。
+                git_methods::compact_git_log_enhanced(raw)
             }
         }
         Some(VcsTool::Svn) => {
@@ -525,7 +593,8 @@ fn compact_log_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
             } else if command_is(raw, "svn", "relocate") {
                 svn_methods::process_parser(&svn_parser::SvnRelocateParser, raw)
             } else if command_is(raw, "svn", "merge") {
-                svn_methods::process_parser(&svn_parser::SvnMergeParser, raw)
+                // P2-70 接线：svn merge enhanced = merge 输出折叠 + ROI 门控。
+                svn_methods::compact_svn_merge_enhanced(raw)
             } else {
                 svn_methods::compact_svn_log_for_ai(raw)
             }
@@ -567,10 +636,14 @@ fn compact_log_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
                     raw,
                 ))
             } else if command_is(raw, "hg", "shelve") {
-                compact_size_mentions_for_text(&hg_methods::process_parser(
-                    &hg_parser::HgShelveParser,
-                    raw,
-                ))
+                // P2-70 接线：hg shelve enhanced = --list 时折叠 shelve 列表，普通 shelve 走同 parser。
+                compact_size_mentions_for_text(&hg_methods::compact_hg_shelve_enhanced(raw))
+            } else if command_is(raw, "hg", "graft") {
+                // P2-70 接线：hg graft enhanced = graft 输出折叠 + ROI 门控。
+                compact_size_mentions_for_text(&hg_methods::compact_hg_graft_enhanced(raw))
+            } else if command_is(raw, "hg", "histedit") {
+                // P2-70 接线：hg histedit enhanced = histedit 输出折叠 + ROI 门控。
+                compact_size_mentions_for_text(&hg_methods::compact_hg_histedit_enhanced(raw))
             } else if command_is(raw, "hg", "phase") {
                 compact_size_mentions_for_text(&hg_methods::process_parser(
                     &hg_parser::HgPhaseParser,
@@ -650,10 +723,26 @@ fn compact_log_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     }
 }
 
+/// 按工具分派其他命令压缩（blame/list/propget/info 等）。
 fn compact_other_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     match tool {
         Some(VcsTool::Git) => {
-            if command_is(raw, "git", "worktree") || command_is(raw, "git", "grep") {
+            // 云端 CLI 专用压缩器（方案 A）：gh/glab/az/bitbucket 全部子命令、
+            // repo start/stage/forall/list/init/branches、gerrit review/ls-projects
+            // 的 run_intent 均为 other，统一路由到各自专用压缩器。
+            if command_tool_is(raw, "gh") {
+                gh_methods::compact_gh_other_for_ai(raw)
+            } else if command_tool_is(raw, "glab") {
+                glab_methods::compact_glab_other_for_ai(raw)
+            } else if command_tool_is(raw, "az") {
+                az_methods::compact_az_other_for_ai(raw)
+            } else if command_tool_is(raw, "bitbucket") {
+                bitbucket_methods::compact_bitbucket_other_for_ai(raw)
+            } else if command_tool_is(raw, "repo") {
+                repo_methods::compact_repo_other_for_ai(raw)
+            } else if command_tool_is(raw, "gerrit") {
+                gerrit_methods::compact_gerrit_other_for_ai(raw)
+            } else if command_is(raw, "git", "worktree") || command_is(raw, "git", "grep") {
                 git_methods::compact_git_other_for_ai(raw)
             } else if command_is(raw, "git", "blame") {
                 git_methods::compact_git_blame_for_ai(raw)
@@ -708,6 +797,7 @@ fn compact_other_for_tool(tool: Option<VcsTool>, raw: &str) -> String {
     }
 }
 
+/// 压缩文本中的字节数提及（plain/KV/JSON 三种形态）。
 fn compact_size_mentions_for_text(input: &str) -> String {
     let bytes_compacted = SIZE_BYTES_PHRASE_RE
         .replace_all(input, |caps: &regex::Captures| {
@@ -732,6 +822,7 @@ fn compact_size_mentions_for_text(input: &str) -> String {
         .into_owned()
 }
 
+/// 将数字 token 压缩为人类可读大小（B/K/M/G/T）。
 fn compact_human_size_text(num_token: &str) -> Option<String> {
     let digits = num_token.replace(',', "");
     let bytes = digits.parse::<u64>().ok()?;
@@ -754,6 +845,7 @@ fn compact_human_size_text(num_token: &str) -> Option<String> {
     }
 }
 
+/// 同 compact_human_size_text，但仅在压缩结果更短时采用。
 fn compact_human_size_value(num_token: &str) -> Option<String> {
     let compact = compact_human_size_text(num_token)?;
     if compact.len() <= num_token.len() {
@@ -763,6 +855,7 @@ fn compact_human_size_value(num_token: &str) -> Option<String> {
     }
 }
 
+/// ROI 门控：压缩结果不比原文长时采用，否则回退原文。
 fn prefer_non_expanding(raw: &str, compacted: String) -> String {
     let raw_len = raw.trim_end_matches('\n').trim_end_matches('\r').len();
     let comp_len = compacted
@@ -776,6 +869,7 @@ fn prefer_non_expanding(raw: &str, compacted: String) -> String {
     }
 }
 
+/// 对齐尾部换行：与原文结尾换行一致。
 fn align_trailing_newline_with_raw(raw: &str, mut rendered: String) -> String {
     if raw.ends_with('\n') {
         if !rendered.ends_with('\n') {
@@ -793,6 +887,7 @@ fn align_trailing_newline_with_raw(raw: &str, mut rendered: String) -> String {
     rendered
 }
 
+/// 归一化 VCS 压缩约定：[paths] 前缀显式化、日期时间 token 紧凑化。
 fn normalize_compact_vcs_conventions(mut rendered: String) -> String {
     if rendered.is_empty() {
         return rendered;
@@ -817,6 +912,7 @@ fn normalize_compact_vcs_conventions(mut rendered: String) -> String {
     rendered
 }
 
+/// 追加内联路径字典：[paths] 映射表，按出现次数门控并做 ROI 比较。
 fn append_inline_path_dictionary(rendered: String, dict_engine: &DictionaryEngine) -> String {
     let options = current_path_dictionary_options();
     if !options.enabled {
@@ -934,6 +1030,7 @@ fn append_inline_path_dictionary(rendered: String, dict_engine: &DictionaryEngin
     }
 }
 
+/// 将高价值目录前缀 token 复用到更长的 depot 路径中。
 fn apply_parent_prefix_aliases(mut body: String, mappings: &[(String, String)]) -> String {
     let mut pairs: Vec<(&str, &str)> = mappings
         .iter()
@@ -966,6 +1063,7 @@ fn apply_parent_prefix_aliases(mut body: String, mappings: &[(String, String)]) 
     body
 }
 
+/// 清除死锚映射：仅单次使用的中间锚点从映射中移除。
 fn simplify_dead_anchor_mappings(mappings: &mut Vec<(String, String)>, body: &str) {
     loop {
         let mut changed = false;
@@ -1009,6 +1107,7 @@ struct WsCompactionContext {
     in_diff_block: bool,
 }
 
+/// 从行更新空白压缩上下文（diff 块/当前文件语言）。
 fn update_ws_context_from_line(line: &str, ctx: &mut WsCompactionContext) {
     let trimmed = line.trim();
 
@@ -1046,6 +1145,7 @@ fn update_ws_context_from_line(line: &str, ctx: &mut WsCompactionContext) {
     }
 }
 
+/// 从 git diff 头部解析右侧路径。
 fn parse_git_diff_header_right_path(rest: &str) -> Option<String> {
     let (_, consumed_left) = parse_git_path_token(rest)?;
     let remaining = rest.get(consumed_left..)?.trim_start();
@@ -1053,6 +1153,7 @@ fn parse_git_diff_header_right_path(rest: &str) -> Option<String> {
     Some(right)
 }
 
+/// 解析 git 路径 token（支持引号包裹与转义）。
 fn parse_git_path_token(input: &str) -> Option<(String, usize)> {
     let bytes = input.as_bytes();
     if bytes.is_empty() {
@@ -1086,6 +1187,7 @@ fn parse_git_path_token(input: &str) -> Option<(String, usize)> {
     }
 }
 
+/// 带语言守卫的缩进压缩：Python 文件与 patch 头不压缩。
 fn compact_leading_ws_with_language_guard(line: &str, ctx: &WsCompactionContext) -> String {
     if ctx.current_file_is_python {
         return line.to_string();
@@ -1141,6 +1243,7 @@ fn compact_leading_ws_with_language_guard(line: &str, ctx: &WsCompactionContext)
     line.to_string()
 }
 
+/// 压缩行内对齐空白（连续空格折叠）。
 fn compact_inline_alignment_ws(line: &str) -> String {
     if !line.contains('\t') && !line.contains("  ") {
         return line.to_string();
@@ -1181,6 +1284,7 @@ fn compact_inline_alignment_ws(line: &str) -> String {
     MULTI_HWS_RE.replace_all(&normalized_tabs, " ").to_string()
 }
 
+/// 判断行是否为补丁载荷行（上下文相关）。
 fn is_patch_payload_line(line: &str, ctx: &WsCompactionContext) -> bool {
     if !ctx.in_diff_block {
         return false;
@@ -1193,6 +1297,7 @@ fn is_patch_payload_line(line: &str, ctx: &WsCompactionContext) -> bool {
         && !line.starts_with("diff --")
 }
 
+/// 从路径解析覆盖配置。
 pub(crate) fn parse_override_from_path(
     path: &Path,
     content: &str,
@@ -1206,6 +1311,7 @@ pub(crate) fn parse_override_from_path(
     parse_override_from_str(content, &ext)
 }
 
+/// 从字符串解析覆盖配置。
 pub(crate) fn parse_override_from_str(
     content: &str,
     extension: &str,
@@ -1217,6 +1323,7 @@ pub(crate) fn parse_override_from_str(
     }
 }
 
+/// 判断字符串是否为 VCS 路径形态。
 pub(crate) fn looks_like_vcs_path(path: &str) -> bool {
     let trimmed = path.trim_matches('"');
     // Reject email addresses, URLs
@@ -1281,6 +1388,7 @@ pub(crate) fn looks_like_vcs_path(path: &str) -> bool {
 }
 
 #[tracing::instrument(level = "debug", skip_all)]
+/// 带作用域的 VCS 路径替换。
 #[allow(dead_code)]
 pub(crate) fn replace_vcs_paths_in_text_scoped<'a>(
     text: &'a str,
@@ -1338,12 +1446,20 @@ pub(crate) fn replace_vcs_paths_in_text_scoped<'a>(
 #[cfg(test)]
 mod tests {
     use super::{
-        append_inline_path_dictionary, command_first_arg_is, command_is,
+        append_inline_path_dictionary, command_first_arg_is, command_is, compact_diff_for_tool,
+        compact_log_for_tool, compact_other_for_tool, compact_status_for_tool,
         explicit_intent_from_command, simplify_dead_anchor_mappings, vcs_tool_from_keyword,
         ExplicitIntent, VcsTool,
     };
     use crate::core::dictionary_engine::DictionaryEngine;
+    use crate::plugins::vcs_az_plugin::methods as az_methods;
+    use crate::plugins::vcs_bitbucket_plugin::methods as bitbucket_methods;
+    use crate::plugins::vcs_gerrit_plugin::methods as gerrit_methods;
+    use crate::plugins::vcs_gh_plugin::methods as gh_methods;
+    use crate::plugins::vcs_glab_plugin::methods as glab_methods;
+    use crate::plugins::vcs_repo_plugin::methods as repo_methods;
 
+    /// 测试：单次使用的中间锚点被扁平化。
     #[test]
     fn simplify_dead_anchor_mappings_flattens_single_use_intermediate_anchor() {
         let body = "M $P2/issues.md\nM $P2/learnings.md\n";
@@ -1359,6 +1475,7 @@ mod tests {
         assert_eq!(mappings[0].1, ".sisyphus/notepads/REFACTORING_PLAN_V6.2");
     }
 
+    /// 测试：内联路径字典输出扁平状态 footer 映射。
     #[test]
     fn append_inline_path_dictionary_emits_flat_status_footer_mapping() {
         let mut dict = DictionaryEngine::new();
@@ -1376,6 +1493,7 @@ mod tests {
         assert!(out.contains("REFACTORING_PLAN_V6.2"));
     }
 
+    /// 测试：literal token 形段落被保留。
     #[test]
     fn simplify_dead_anchor_mappings_keeps_literal_token_like_segments() {
         let body = "M $P2/issues.md\n";
@@ -1393,6 +1511,7 @@ mod tests {
         assert_eq!(mappings[1].1, "$P1-notes/REFACTORING_PLAN.md");
     }
 
+    /// 测试：正文中 literal token 形文本被忽略。
     #[test]
     fn append_inline_path_dictionary_ignores_literal_token_like_text_in_body() {
         let mut dict = DictionaryEngine::new();
@@ -1404,6 +1523,7 @@ mod tests {
         assert_eq!(out, rendered);
     }
 
+    /// 测试：仅正文 token 无 footer 条目时回退。
     #[test]
     fn append_inline_path_dictionary_reverts_body_only_token_without_footer_entry() {
         let mut dict = DictionaryEngine::new();
@@ -1417,6 +1537,7 @@ mod tests {
         assert!(!out.contains("[paths]"));
     }
 
+    /// 测试：长 P4 路径复用父 token。
     #[test]
     fn append_inline_path_dictionary_reuses_parent_token_for_longer_p4_path() {
         let mut dict = DictionaryEngine::new();
@@ -1439,6 +1560,7 @@ mod tests {
         );
     }
 
+    /// 测试：元数据开销不划算时跳过字典。
     #[test]
     fn append_inline_path_dictionary_skips_when_metadata_overhead_not_profitable() {
         let mut dict = DictionaryEngine::new();
@@ -1464,6 +1586,7 @@ mod tests {
         );
     }
 
+    /// 测试：不替换长 token 内部的前缀。
     #[test]
     fn append_inline_path_dictionary_does_not_replace_token_prefix_inside_longer_token() {
         let mut dict = DictionaryEngine::new();
@@ -1494,16 +1617,19 @@ mod tests {
         assert!(out.contains("case_33_bzr_status.log"), "out={}", out);
     }
 
+    /// 测试：darcs log 摘要扁平化为每提交一行。
     #[test]
     fn compact_darcs_log_summary_flattens_to_one_line_per_commit() {
         // 已迁移到 vcs_darcs_plugin/tests.rs
     }
 
+    /// 测试：darcs status 剥离 ./ 前缀。
     #[test]
     fn compact_darcs_status_strips_dot_slash_prefixes() {
         // 已迁移到 vcs_darcs_plugin/tests.rs
     }
 
+    /// 测试：路由别名用于云 VCS 命令的工具解析。
     #[test]
     fn vcs_tool_from_keyword_uses_route_aliases_for_cloud_vcs_commands() {
         assert_eq!(vcs_tool_from_keyword("git"), Some(VcsTool::Git));
@@ -1516,18 +1642,21 @@ mod tests {
         assert_eq!(vcs_tool_from_keyword("svn"), Some(VcsTool::Svn));
     }
 
+    /// 测试：svn 全局选项被路由 parser 正确处理。
     #[test]
     fn command_is_uses_route_parser_for_svn_global_options() {
         let raw = "svn --config-dir C:\\cfg --username bot update\nUpdated to revision 123.\n";
         assert!(command_is(raw, "svn", "update"));
     }
 
+    /// 测试：hg 全局选项被路由 parser 正确处理。
     #[test]
     fn command_is_uses_route_parser_for_hg_global_options() {
         let raw = "hg --repository C:\\repo --config ui.username=bot pull\nsearching for changes\n";
         assert!(command_is(raw, "hg", "pull"));
     }
 
+    /// 测试：git 全局选项被路由 parser 正确处理。
     #[test]
     fn command_first_arg_is_uses_route_parser_for_git_global_options() {
         let raw = "git -C C:\\repo --git-dir=.git stash list\nstash@{0}: WIP on main\n";
@@ -1535,6 +1664,7 @@ mod tests {
         assert!(command_first_arg_is(raw, "git", "stash", "list"));
     }
 
+    /// 测试：非 git 工具使用路由配置解析显式意图。
     #[test]
     fn explicit_intent_uses_route_config_for_non_git_tools() {
         let raw = "svn --config-dir C:\\cfg log --limit 3\nr1 | alice | 2026-01-01\n";
@@ -1544,6 +1674,7 @@ mod tests {
         );
     }
 
+    /// 测试：云 VCS 工具使用路由配置解析显式意图。
     #[test]
     fn explicit_intent_uses_route_config_for_cloud_vcs_tools() {
         let raw = "gh --repo owner/repo pr list\n#12 open Fix build\n";
@@ -1551,5 +1682,126 @@ mod tests {
             explicit_intent_from_command(Some(VcsTool::Git), raw),
             Some(ExplicitIntent::Other)
         );
+    }
+
+    /// 测试辅助：读取指定插件的物理样本 case（压缩测试铁律：禁止手写 mock 字符串）。
+    fn read_vcs_sample(plugin: &str, case: &str) -> String {
+        let path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("samples")
+            .join(format!("vcs_{plugin}_plugin"))
+            .join(format!("{case}.log"));
+        std::fs::read_to_string(&path)
+            .unwrap_or_else(|e| panic!("读取样本 {} 失败: {e}", path.display()))
+    }
+
+    /// 测试：other 意图入口把 4 个云端 CLI 变体路由到各自专用压缩器（方案 A 接线）。
+    #[test]
+    fn compact_other_routes_cloud_cli_variants_to_dedicated_compressors() {
+        // gh pr list（run_intent=other）
+        let raw = read_vcs_sample("gh", "case_92_gh_pr_list");
+        let out = compact_other_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            gh_methods::compact_gh_other_for_ai(&raw),
+            "gh 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "gh pr list 未被实际压缩");
+
+        // glab mr list（run_intent=other）
+        let raw = read_vcs_sample("glab", "case_95_glab_mr_list");
+        let out = compact_other_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            glab_methods::compact_glab_other_for_ai(&raw),
+            "glab 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "glab mr list 未被实际压缩");
+
+        // az repos list（run_intent=other）
+        let raw = read_vcs_sample("az", "case_112_az_repos_list");
+        let out = compact_other_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            az_methods::compact_az_other_for_ai(&raw),
+            "az 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "az repos list 未被实际压缩");
+
+        // bitbucket pr list（run_intent=other）
+        let raw = read_vcs_sample("bitbucket", "case_113_bitbucket_pr_list");
+        let out = compact_other_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            bitbucket_methods::compact_bitbucket_other_for_ai(&raw),
+            "bitbucket 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "bitbucket pr list 未被实际压缩");
+    }
+
+    /// 测试：repo/gerrit 的 status/diff/log 意图各自路由到专用压缩器（方案 A 接线）。
+    #[test]
+    fn compact_intent_entries_route_repo_and_gerrit_to_dedicated_compressors() {
+        // repo status（run_intent=status → compact_status_for_tool）
+        let raw = read_vcs_sample("repo", "case_116_repo_status");
+        let out = compact_status_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            repo_methods::compact_repo_status_for_ai(&raw),
+            "repo status 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "repo status 未被实际压缩");
+
+        // repo diff（run_intent=diff → compact_diff_for_tool）
+        let raw = read_vcs_sample("repo", "case_118_repo_diff");
+        let out = compact_diff_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            repo_methods::compact_repo_other_for_ai(&raw),
+            "repo diff 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "repo diff 未被实际压缩");
+
+        // repo sync（run_intent=log → compact_log_for_tool）
+        let raw = read_vcs_sample("repo", "case_100_repo_sync");
+        let out = compact_log_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            repo_methods::compact_repo_other_for_ai(&raw),
+            "repo sync 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "repo sync 未被实际压缩");
+
+        // gerrit query（run_intent=log → compact_log_for_tool）
+        let raw = read_vcs_sample("gerrit", "case_97_gerrit_query");
+        let out = compact_log_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            gerrit_methods::compact_gerrit_log_for_ai(&raw),
+            "gerrit query 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "gerrit query 未被实际压缩");
+
+        // gerrit checkout（run_intent=status → compact_status_for_tool，status 分支归 gerrit log 入口）
+        let raw = read_vcs_sample("gerrit", "case_127_gerrit_checkout");
+        let out = compact_status_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            gerrit_methods::compact_gerrit_log_for_ai(&raw),
+            "gerrit checkout 未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "gerrit checkout 未被实际压缩");
+    }
+
+    /// 测试：gh 经 log 意图入口同样路由到 gh 专用压缩器（内部二次分发）。
+    #[test]
+    fn compact_log_routes_gh_to_dedicated_compressor() {
+        let raw = read_vcs_sample("gh", "case_99_gh_run_list");
+        let out = compact_log_for_tool(Some(VcsTool::Git), &raw);
+        assert_eq!(
+            out,
+            gh_methods::compact_gh_log_for_ai(&raw),
+            "gh 经 log 入口未路由到专用压缩器"
+        );
+        assert_ne!(out, raw, "gh run list 未被实际压缩");
     }
 }

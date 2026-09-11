@@ -1,0 +1,21 @@
+nm -D a.out
+
+                 U printf@GLIBC_2.2.5
+                 U malloc@@GLIBC_2.2.5
+0000000000000000 W __cxa_finalize@@GLIBC_2.2.5
+0000000000000000 W __gmon_start__
+00000000004004a9 T main
+000000000040051d T func_add
+0000000000400540 T func_mul
+0000000000601030 D global_var
+0000000000601038 d offset_table
+000000000060103c d literal_pool
+0000000000601048 b shared_buffer
+000000000060104c b temp_storage
+0000000000601050 b stack_canary
+00000000004004d0 r ro_local_shadow
+00000000004004e0 r jump_table
+0000000000000000 w weak_method_inline
+0000000000000000 w weak_helper
+0000000000000000 w weak_dispatch
+0000000000601060 B __bss_start

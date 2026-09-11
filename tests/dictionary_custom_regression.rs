@@ -1,5 +1,6 @@
 use tokenslim::core::dictionary_engine::DictionaryEngine;
 
+/// 自定义类型（宏）字典回归：add_macro 生成 $M token，快照可精确解析回原值。
 #[test]
 fn custom_type_snapshot_and_resolve() {
     let mut engine = DictionaryEngine::new();
@@ -10,6 +11,7 @@ fn custom_type_snapshot_and_resolve() {
     assert_eq!(dict.resolve(&token), Some("service payment".to_string()));
 }
 
+/// 基础类型（路径）字典回归：add_path_layered 生成 token，resolve_or_self 还原路径。
 #[test]
 fn basic_type_resolution() {
     let mut engine = DictionaryEngine::new();

@@ -10,6 +10,7 @@ use serde_json::Value;
 use std::sync::Arc;
 
 impl DbLogPlugin {
+    /// 创建 DbLogPlugin 实例（名称 db_log，优先级 165），预编译 PG/MySQL/Mongo/Redis 解析正则。
     #[tracing::instrument(level = "debug", skip_all)]
     pub fn new() -> Self {
         Self {
@@ -33,6 +34,8 @@ impl DbLogPlugin {
         }
     }
 
+    /// 按数据库类型压缩单行：优先匹配 PG duration/PG/MySQL/Mongo JSON/Mongo/Redis 模式，
+    /// 输出带前缀的紧凑行；无法识别返回 None。
     #[tracing::instrument(level = "debug", skip_all)]
     fn compact_db_line(&self, line: &str) -> Option<String> {
         if let Some(caps) = self.pg_duration_pattern.captures(line) {
@@ -121,6 +124,7 @@ impl DbLogPlugin {
     }
 }
 
+/// 用 serde_json 解析 MongoDB JSON 日志行，提取 msg/s/ctx/c/attr 字段并压缩为 MONGO| 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_mongo_json_line(line: &str) -> Option<String> {
     let json = serde_json::from_str::<Value>(line).ok()?;
@@ -164,6 +168,7 @@ fn compact_mongo_json_line(line: &str) -> Option<String> {
     Some(format!("{prefix}|{}", fields.join("|")))
 }
 
+/// 从 MongoDB command 对象中提取首个已知命令名（find/aggregate/insert 等）及其紧凑值。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_mongo_command(command: &Value) -> Option<String> {
     let object = command.as_object()?;
@@ -183,6 +188,17 @@ fn compact_mongo_command(command: &Value) -> Option<String> {
     object.keys().next().map(|key| format!("cmd={key}"))
 }
 
+/// 按字节上限截断字符串并保证落在 UTF-8 字符边界上，避免 `&s[..n]` 在居中切断多字节字符时触发 panic（Q518 处置）。
+#[tracing::instrument(level = "debug", skip_all)]
+fn truncate_utf8_safe(s: &str, max_bytes: usize) -> &str {
+    let mut end = max_bytes.min(s.len());
+    while end > 0 && !s.is_char_boundary(end) {
+        end -= 1;
+    }
+    &s[..end]
+}
+
+/// 紧凑化 JSON 值：字符串原样，其他序列化后超 80 字符截断。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_json_value(value: &Value) -> String {
     if let Some(text) = value.as_str() {
@@ -190,12 +206,13 @@ fn compact_json_value(value: &Value) -> String {
     }
     let raw = value.to_string();
     if raw.len() > 80 {
-        format!("{}...", &raw[..80])
+        format!("{}...", truncate_utf8_safe(&raw, 80))
     } else {
         raw
     }
 }
 
+/// 从 PG duration 消息中提取 SQL 标签：剥离 statement:/execute <unnamed>: 前缀后压缩。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_query_label(msg: &str) -> String {
     let msg = msg.trim();
@@ -211,21 +228,24 @@ fn compact_query_label(msg: &str) -> String {
     compact_sql_statement(msg)
 }
 
+/// 压缩 SQL 语句：折叠空白为单行，超过 120 字符截断。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_sql_statement(sql: &str) -> String {
     let one_line = sql.split_whitespace().collect::<Vec<_>>().join(" ");
     if one_line.len() > 120 {
-        format!("{}...", &one_line[..120])
+        format!("{}...", truncate_utf8_safe(&one_line, 120))
     } else {
         one_line
     }
 }
 
+/// 压缩 Redis 消息：折叠连续空白为单空格。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_redis_message(msg: &str) -> String {
     msg.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 判断日志级别是否为错误级（ERROR/ERR/FATAL/PANIC/SEVERE/E/W/WARNING）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_db_error_level(level: &str) -> bool {
     matches!(
@@ -235,19 +255,23 @@ fn is_db_error_level(level: &str) -> bool {
 }
 
 impl Default for DbLogPlugin {
+    /// Default 实现：等价于 new()。
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl Plugin for DbLogPlugin {
+    /// 返回插件名称 "db_log"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 165。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：前 10 行中可压缩行占比 ≥30% 时命中，返回匹配比例。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lines: Vec<&str> = slice.text.lines().take(10).collect();
         if lines.is_empty() {
@@ -267,6 +291,7 @@ impl Plugin for DbLogPlugin {
         }
     }
 
+    /// 压缩切片：逐行压缩为紧凑行，整体做 ROI 门控，无收益时回退原文。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -304,34 +329,40 @@ impl Plugin for DbLogPlugin {
         }
     }
 
+    /// 解压：将紧凑 DB 行（`PG|`/`!PG|`/`MY|`/`!MY|` 前缀）还原为可读近似文本，其余行原样输出。
+    ///
+    /// 协议以 `compact_db_line` 实际产出的格式为准（如 `PG|pid=123|ERR|msg`、`MY|tid=7|DBG|msg`），
+    /// 而不是旧实现臆测的 `$DB|PG|…` 前缀 —— 后者 strip 永命中、解压恒空操作（Q517 处置）。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         let mut out = String::new();
         for line in compressed.lines() {
-            if line.starts_with("$DB|PG|") {
-                let parts: Vec<&str> = line.splitn(6, '|').collect();
-                if parts.len() == 6 {
-                    out.push_str(&format!(
-                        "{} [{}] {}:  {}\n",
-                        parts[2], parts[3], parts[4], parts[5]
-                    ));
+            let mut parts: [&str; 3] = ["", "", ""];
+            let mut marker: &str = "";
+            for m in ["!PG", "PG", "!MY", "MY"] {
+                let Some(rest) = line.strip_prefix(&format!("{m}|")) else {
                     continue;
-                }
-            } else if line.starts_with("$DB|MY|") {
-                let parts: Vec<&str> = line.splitn(6, '|').collect();
-                if parts.len() == 6 {
-                    out.push_str(&format!(
-                        "{} {} [{}] {}\n",
-                        parts[2], parts[3], parts[4], parts[5]
-                    ));
-                    continue;
-                }
+                };
+                marker = m;
+                let mut it = rest.splitn(3, '|');
+                parts[0] = it.next().unwrap_or(""); // pid=/tid= 元数据
+                parts[1] = it.next().unwrap_or(""); // level / DUR / SLOW
+                parts[2] = it.next().unwrap_or(""); // msg / query
+                break;
             }
-            out.push_str(line);
-            out.push('\n');
+            if marker.is_empty() {
+                out.push_str(line);
+                out.push('\n');
+                continue;
+            }
+            out.push_str(&format!(
+                "[{}] {} {}: {}\n",
+                marker, parts[0], parts[1], parts[2]
+            ));
         }
         out
     }
 
+    /// 返回后续插件列表（smart_path）。
     fn next_plugins(&self) -> Vec<&'static str> {
         vec!["smart_path"]
     }

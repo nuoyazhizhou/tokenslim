@@ -1,19 +1,17 @@
 use super::methods::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 fn sample_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("samples")
-        .join("vcs_bzr_plugin")
+    crate::plugins::test_utils::vcs_sample_dir("vcs_bzr_plugin")
 }
 fn read_case(c: &str) -> String {
-    let p = sample_dir().join(format!("{c}.log"));
-    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("读取样本失败 {}: {e}", p.display()))
+    crate::plugins::test_utils::vcs_read_case("vcs_bzr_plugin", c)
 }
 
 // ============================================================================
 // Case 38: status — 命令锚点 + M:/A:/D:/?: 映射
 // ============================================================================
+/// 测试：bzr status 样例（case 38）状态映射为 ST: 行。
 #[test]
 fn test_status_case_38() {
     let c = compact_bzr_status_for_ai(&read_case("case_38_bzr_status"));
@@ -36,6 +34,7 @@ fn test_status_case_38() {
 // ============================================================================
 // Case 39: log — 命令锚点 + CM: 提交信息不可丢弃
 // ============================================================================
+/// 测试：bzr log 样例（case 39）结构化压缩。
 #[test]
 fn test_log_case_39() {
     let c = compact_bzr_log_for_ai(&read_case("case_39_bzr_log"));
@@ -57,6 +56,7 @@ fn test_log_case_39() {
 // ============================================================================
 // Case 148: push — 命令锚点 + 帮助废话消除
 // ============================================================================
+/// 测试：bzr push 样例（case 148）保留锚点抹除噪音。
 #[test]
 fn test_push_case_148() {
     let c = compact_bzr_log_family_for_ai(&read_case("case_148_bzr_push"));
@@ -68,6 +68,7 @@ fn test_push_case_148() {
 // ============================================================================
 // Case 149: merge — 命令锚点 + 成功提示消除
 // ============================================================================
+/// 测试：bzr merge 样例（case 149）抹除 "All changes applied"。
 #[test]
 fn test_merge_case_149() {
     let c = compact_bzr_log_family_for_ai(&read_case("case_149_bzr_merge"));
@@ -79,6 +80,7 @@ fn test_merge_case_149() {
 // ============================================================================
 // Case 192: revert — 命令锚点 + REVERT: 映射
 // ============================================================================
+/// 测试：bzr revert 样例（case 192）映射 ST:R。
 #[test]
 fn test_revert_case_192() {
     let c = compact_bzr_status_for_ai(&read_case("case_192_bzr_revert"));
@@ -89,6 +91,7 @@ fn test_revert_case_192() {
 // ============================================================================
 // Case 319: status short — 短格式 M:/A: 映射
 // ============================================================================
+/// 测试：bzr status 短格式样例（case 319）映射。
 #[test]
 fn test_status_short_case_319() {
     let c = compact_bzr_status_for_ai(&read_case("case_319_bzr_status_short"));
@@ -101,12 +104,14 @@ fn test_status_short_case_319() {
 // ============================================================================
 // 短输入回退 + 报警检测
 // ============================================================================
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let c = compact_bzr_log_for_ai("bzr help");
     assert_eq!(c, "bzr help");
 }
 
+/// 测试：bzr 警报行映射。
 #[test]
 fn test_bzr_alert_mapping() {
     assert!(super::methods::map_bzr_alert("CONFLICT: merge conflict").is_some());

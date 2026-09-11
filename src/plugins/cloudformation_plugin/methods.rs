@@ -17,6 +17,7 @@ use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
 impl CloudFormationPlugin {
+    /// 创建 CloudFormationPlugin 实例（名称 cloudformation，优先级 93）。
     pub fn new() -> Self {
         Self {
             name: "cloudformation",
@@ -26,14 +27,17 @@ impl CloudFormationPlugin {
 }
 
 impl Plugin for CloudFormationPlugin {
+    /// 返回插件名称 "cloudformation"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 93。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片是否含 cloudformation 事件特征（create_in_progress/update_rollback 等），命中返回 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(
@@ -48,6 +52,7 @@ impl Plugin for CloudFormationPlugin {
         .then_some(0.9)
     }
 
+    /// 压缩切片：剥离 ANSI 码，聚合事件状态计数与失败行，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -66,11 +71,14 @@ impl Plugin for CloudFormationPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：统计事件状态计数（EVENTS 汇总）、保留前 80 条事件行与 8 条失败行，
+/// 无压缩收益时回退原文。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_cloudformation(text: &str) -> String {
     static EVENT_RE: OnceLock<Regex> = OnceLock::new();

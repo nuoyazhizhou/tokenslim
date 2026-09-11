@@ -18,6 +18,11 @@ pub enum HookShell {
 }
 
 impl HookShell {
+    /// 将命令行传入的 shell 名称解析为 `HookShell` 枚举。
+    ///
+    /// 输入先转小写后匹配：`bash`→Bash、`zsh`→Zsh、`fish`→Fish、
+    /// `powershell`/`pwsh`/`ps`→PowerShell；无法识别时返回 `None`。
+    /// 主要用于 `--hook-shell` 参数以及 hooks 安装/卸载时的 shell 类型判定。
     pub fn parse(s: &str) -> Option<Self> {
         match s.to_ascii_lowercase().as_str() {
             "bash" => Some(Self::Bash),
@@ -28,6 +33,10 @@ impl HookShell {
         }
     }
 
+    /// 将 `HookShell` 枚举值反向映射为其标准命令行名称字符串。
+    ///
+    /// 返回 `'static` 生命周期的字符串常量：Bash→`"bash"`、Zsh→`"zsh"`、
+    /// Fish→`"fish"`、PowerShell→`"powershell"`，用于拼接 hook 脚本内容。
     pub fn as_str(self) -> &'static str {
         match self {
             Self::Bash => "bash",
@@ -94,6 +103,15 @@ pub struct CliRawArgs {
     #[clap(long)]
     pub ai_signal: bool,
 
+    /// 严格解压模式：遇到无法还原的压缩 token 时报错退出，而非静默保留（仅解压，P2-65）
+    #[clap(long)]
+    pub strict_rehydrate: bool,
+
+    /// 源编码回写：解压时按产物 metadata 记录的源编码回写原始字节，而非输出 UTF-8 文本
+    /// （仅解压，P1-08；源编码不可逆时显式报错，绝不静默产出假可逆结果）
+    #[clap(long)]
+    pub source_encoding_write: bool,
+
     /// 是否开启流式管道模式
     #[clap(long)]
     pub stream: bool,
@@ -117,6 +135,18 @@ pub struct CliRawArgs {
     /// 验证期望输出（expected）路径
     #[clap(long)]
     pub verify_expected: Option<PathBuf>,
+
+    /// feature 子命令：按正确类别回填误路由样本（分类器增量学习）
+    #[clap(long, alias = "learn")]
+    pub feature_learn: Option<String>,
+
+    /// feature 子命令：待回填样本文本文件路径
+    #[clap(long, alias = "sample")]
+    pub feature_sample: Option<PathBuf>,
+
+    /// feature 子命令：指定特征库文件路径（默认 config/classifier_features.json 或 TS_CC_FEATURE_LIB）
+    #[clap(long, alias = "lib")]
+    pub feature_lib: Option<PathBuf>,
 
     /// 安装 shell hook（零侵入集成）
     #[clap(long)]
@@ -210,11 +240,11 @@ pub struct CliRawArgs {
     #[clap(long)]
     pub preset: Option<String>,
 
-    /// repair-file: 原地覆盖输入文件
+    /// repair-file: 原地覆盖输入文件（P2-83：覆盖前会自动生成 .bak 备份）
     #[clap(long)]
     pub inplace: bool,
 
-    /// repair-file: 原地覆盖前生成 .bak 备份
+    /// repair-file: 原地覆盖前生成 .bak 备份（--inplace 下已默认启用，显式传参仅为兼容）
     #[clap(long)]
     pub backup: bool,
 
@@ -257,6 +287,9 @@ pub struct CliRawArgs {
     /// 包装执行：将子进程的原始未经压缩的输出保存到指定文件
     #[clap(long)]
     pub tee: Option<PathBuf>,
+    /// 调试审计 JSONL 输出路径；显式提供时记录已脱敏的压缩前后快照。
+    #[clap(long)]
+    pub audit_jsonl: Option<PathBuf>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -270,6 +303,10 @@ pub enum DoctorKind {
 impl std::str::FromStr for DoctorKind {
     type Err = String;
 
+    /// 实现 `FromStr`：将 doctor 子命令的 kind 参数解析为 `DoctorKind` 枚举。
+    ///
+    /// 输入转小写后匹配：`encoding`/`workspace`/`rule`/`env`；
+    /// 不支持的取值返回 `Err(String)`。供 `app.rs` 解析 `--doctor <kind>` 使用。
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_ascii_lowercase().as_str() {
             "encoding" => Ok(Self::Encoding),
@@ -292,6 +329,10 @@ pub enum DoctorOutputFormat {
 impl std::str::FromStr for DoctorOutputFormat {
     type Err = String;
 
+    /// 实现 `FromStr`：将 doctor 输出格式参数解析为 `DoctorOutputFormat` 枚举。
+    ///
+    /// 输入转小写后匹配：`text`/`txt`→Text、`json`→Json、`llm`→Llm、
+    /// `json-min`/`jsonmin`→JsonMin；不支持的取值返回 `Err(String)`。
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_ascii_lowercase().as_str() {
             "text" | "txt" => Ok(Self::Text),
@@ -313,6 +354,10 @@ pub enum OutputFormat {
 
 impl std::str::FromStr for OutputFormat {
     type Err = String;
+    /// 实现 `FromStr`：将全局 `--format` 输出格式参数解析为 `OutputFormat` 枚举。
+    ///
+    /// 输入转小写后匹配：`json`→Json、`md`/`markdown`→Markdown、
+    /// `text`/`txt`→Text；不支持的取值返回 `Err(String)`。
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_lowercase().as_str() {
             "json" => Ok(OutputFormat::Json),
@@ -336,11 +381,16 @@ pub struct CliArgs {
     pub normalize: bool,
     pub ai_export: bool,
     pub ai_signal: bool,
+    pub strict_rehydrate: bool,
+    pub source_encoding_write: bool,
     pub output_format: OutputFormat,
     pub json: bool,
     pub verify_rule: Option<PathBuf>,
     pub verify_fixture: Option<PathBuf>,
     pub verify_expected: Option<PathBuf>,
+    pub feature_learn: Option<String>,
+    pub feature_sample: Option<PathBuf>,
+    pub feature_lib: Option<PathBuf>,
     pub init_hooks: bool,
     pub uninstall_hooks: bool,
     pub hook_shell: Option<HookShell>,
@@ -383,6 +433,7 @@ pub struct CliArgs {
     pub run_plugin: Option<String>,
     pub passthrough: bool,
     pub tee: Option<PathBuf>,
+    pub audit_jsonl: Option<PathBuf>,
 }
 
 /// 预设配置
@@ -395,6 +446,10 @@ pub enum Preset {
 
 impl std::str::FromStr for Preset {
     type Err = String;
+    /// 实现 `FromStr`：将 `--preset` 预设配置名解析为 `Preset` 枚举。
+    ///
+    /// 输入转小写后匹配：`fast`→Fast（速度优先）、`balanced`→Balanced（均衡）、
+    /// `ai`→Ai（AI 信号优先）；不支持的取值返回带提示的 `Err(String)`。
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.to_lowercase().as_str() {
             "fast" => Ok(Self::Fast),
@@ -420,6 +475,7 @@ pub enum CliMode {
     RepairFile,
     Config,
     ServeStatic,
+    Feature,
 }
 
 /// 输入源

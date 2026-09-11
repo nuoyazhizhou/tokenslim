@@ -4,12 +4,13 @@ expected_keep: "terraform plan, + resource \"aws_instance\" \"web\", Plan: 1 to 
 expected_compress: 'user@linux:~$, Terraform used the selected providers to generate the following execution plan.'
 source: 'llm'
 generated_at: '2026-06-08T15:40:55Z'
+expected_dispatch_chain: ['shell_session_plugin', 'terraform_plugin']
 
 # === audit 字段（自动维护，请勿手填内容字段）===
 audit:
   content_hash: 'aae061e85c01ce73e679d27f2cbdaff333f55ff892fc7a2b1f637c402b26ff73'
-  final_status: 'routing_boundary_unclear'
-  llm_invoked: true
-  llm_verified_at: '2026-06-10T05:56:39.118977'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:10:38.302583'
   last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

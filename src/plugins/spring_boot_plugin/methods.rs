@@ -14,7 +14,12 @@ use std::borrow::Cow;
 static MAVEN_DOWNLOAD_RE: Lazy<Regex> = Lazy::new(|| {
     // `compress` 里按行调用，`detect` 里对整段文本调用。使用 `(?m)` 统一语义：
     // 多行 Maven 下载日志的任何一行都能被 detect 识别。
-    Regex::new(r"(?m)^(Download(?:ing|ed)\s+from\s+[\w\-]+:\s+)(?P<url>https?://.*)$").unwrap()
+    // 捕获 `verb`（Downloading/Downloaded）、`repo`（central 等仓库名）、`url` 与可选
+    // 转移元数据 `meta`（如 `(1.2 MB at 3.4 MB/s)`）：
+    // 前缀完整保留，避免硬编码截断（修复 case_014 的 Downloading -> Downloadin 压损）；
+    // url 用 `\S+` 截到空白前，`meta` 单独捕获并原样追加，防止路径折叠吞掉大小/速度信息
+    // （修复 LLM 语义门禁 G5 的下载元数据丢失告警）。
+    Regex::new(r"(?m)^(?P<verb>Download(?:ing|ed))\s+from\s+(?P<repo>[\w\-]+):\s+(?P<url>https?://\S+)(?:\s*\((?P<meta>[^()]*)\))?$").unwrap()
 });
 static SPRING_LIFECYCLE_RE: Lazy<Regex> = Lazy::new(|| {
     // 修复：detect 对多行 text 调用 is_match，但原正则 `^...$` 在默认非 multi-line 模式下
@@ -55,7 +60,13 @@ impl Plugin for SpringBootPlugin {
         if text.contains("Downloaded from") || text.contains("Downloading from") {
             score += 0.6;
         }
-        if text.contains("Spring Boot") || text.contains("Starting application") {
+        // Q67 处置：裸词 "Spring Boot"/"Starting application" 单独出现即 0.5>0.3 触发，
+        // 会把只「提及」该框架的普通文本误路由。改为必须同时命中生命周期或 Maven 下载信号才加分。
+        if (text.contains("Spring Boot") || text.contains("Starting application"))
+            && (text.contains("Downloaded from")
+                || text.contains("Downloading from")
+                || SPRING_LIFECYCLE_RE.is_match(text))
+        {
             score += 0.5;
         }
         if SPRING_LIFECYCLE_RE.is_match(text) {
@@ -84,9 +95,18 @@ impl Plugin for SpringBootPlugin {
             // 1. 处理 Maven 下载
             if self.config.fold_maven_downloads && MAVEN_DOWNLOAD_RE.is_match(line) {
                 if let Some(caps) = MAVEN_DOWNLOAD_RE.captures(line) {
+                    let verb = &caps["verb"];
+                    let repo = &caps["repo"];
                     let url = &caps["url"];
                     let token = dict_engine.add_path_layered(url);
-                    result_text.push_str(&format!("{} {}\n", &line[..10], token));
+                    // 追加转移元数据（如 `(1.2 MB at 3.4 MB/s)`），避免下载完成行的大小/速度
+                    // 信息被路径折叠吞掉（修复 LLM 语义门禁 G5 的下载元数据丢失告警）。
+                    let meta = caps
+                        .name("meta")
+                        .map(|m| format!(" ({})", m.as_str()))
+                        .unwrap_or_default();
+                    // 前缀保留完整动词与仓库名，URL 折叠为路径 token；不截断以防语义丢失。
+                    result_text.push_str(&format!("{} from {} {}{}\n", verb, repo, token, meta));
                     continue;
                 }
             }
@@ -143,14 +163,5 @@ impl Plugin for SpringBootPlugin {
     /// 执行反向的还原逻辑。利用字典引擎中存储的上下文，将压缩后的 Token 流重新展开为完整、人类可读的原始文本。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
-    }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<SpringBootConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
     }
 }

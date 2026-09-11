@@ -1,64 +1,29 @@
 #![allow(dead_code)]
 //! Repo 压缩方法 — Compression Protocol V1
-use super::parser::*;
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
-
-// ============================================================================
-// 遗留 parser 集成（保留兼容性）
-// ============================================================================
-#[tracing::instrument(level = "debug", skip_all)]
-pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
-    match parser.parse(raw) {
-        Some(doc) => render_repo_doc(&doc),
-        None => raw.to_string(),
-    }
-}
-
-fn render_repo_doc(doc: &VcsDocument) -> String {
-    let mut lines = Vec::new();
-    for rec in &doc.records {
-        lines.push(render_repo_record(rec));
-    }
-    lines.join("\n")
-}
-
-fn render_repo_record(rec: &VcsRecord) -> String {
-    match rec {
-        VcsRecord::Section(s) => format!("[{}]", s),
-        VcsRecord::Commit(c) => format!("@{}", c),
-        VcsRecord::Subject(s) => s.clone(),
-        VcsRecord::Author(a) => format!("@{}", a),
-        VcsRecord::Date(d) => d.clone(),
-        VcsRecord::Stat(s) => s.clone(),
-        VcsRecord::Raw(r) => r.clone(),
-        VcsRecord::File { status, path } => {
-            if let Some(st) = status {
-                format!("{} {}", st, path)
-            } else {
-                path.clone()
-            }
-        }
-        VcsRecord::LabeledFile { label, path } => format!("[{}] {}", label, path),
-        _ => rec.to_string(),
-    }
-}
 
 // ============================================================================
 // 公开 API
 // ============================================================================
+/// repo status 的 AI 压缩入口：委托 compact_repo_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_repo_status_for_ai(raw: &str) -> String {
     compact_repo_log_for_ai(raw)
 }
 
+/// repo 其他输出的 AI 压缩入口：委托 compact_repo_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_repo_other_for_ai(raw: &str) -> String {
     compact_repo_log_for_ai(raw)
 }
 
+/// 判断是否为 repo 命令块：首个非空行以 repo 命令头开头。
 #[tracing::instrument(level = "debug", skip_all)]
-pub fn is_repo_log_block(_: &str) -> bool {
-    true
+pub fn is_repo_log_block(text: &str) -> bool {
+    text.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim_start().starts_with("repo "))
+        .unwrap_or(false)
 }
 
 // ============================================================================
@@ -95,6 +60,7 @@ fn compact_repo_log_for_ai(raw: &str) -> String {
 // ============================================================================
 // Case 100: sync — 保留锚点，消除进度噪音，映射项目与哈希
 // ============================================================================
+/// 压缩 repo sync 输出：保留锚点，消除进度噪音，项目映射为 PRJ:@hash。
 fn compact_repo_sync(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -144,6 +110,7 @@ fn compact_repo_sync(raw: &str) -> String {
 // ============================================================================
 // Case 116: status — 保留锚点，扁平化项目状态与文件修改
 // ============================================================================
+/// 压缩 repo status 输出：项目行映射为 PRJ:BR:，文件修改映射为 M/A/D:。
 fn compact_repo_status_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -186,7 +153,9 @@ fn compact_repo_status_cmd(raw: &str) -> String {
 
         // 文件修改行: " - Modified: src/SettingsActivity.java"
         // 压缩协议 V1 状态码映射: Modified→M, Added→A, Deleted→D
-        if trimmed.starts_with(" - ") || trimmed.starts_with("- ") {
+        // P3-194：旧实现 `trimmed.starts_with(" - ")` 在 `trim()` 后恒假（前导空白已去除），
+        // 属死条件——`- Modified` 经 trim 变为 `- Modified`，由下方 `"- "` 分支覆盖，故删除冗余判断。
+        if trimmed.starts_with("- ") {
             let clean = trimmed.trim_start_matches(|c: char| c == '-' || c.is_ascii_whitespace());
             if let Some(file) = clean.strip_prefix("Modified:") {
                 out.push(format!("M:{}", file.trim()));
@@ -207,6 +176,7 @@ fn compact_repo_status_cmd(raw: &str) -> String {
 // ============================================================================
 // Case 124: upload — 保留锚点，抹除 SSH URL，保留分支推送映射
 // ============================================================================
+/// 压缩 repo upload 输出：抹除 SSH URL，保留 HEAD -> refs 推送映射。
 fn compact_repo_upload(raw: &str) -> String {
     let mut out = Vec::new();
     let mut current_project: Option<String> = None;
@@ -237,10 +207,17 @@ fn compact_repo_upload(raw: &str) -> String {
 
         // 推送映射行: " * [new branch] HEAD -> refs/changes/123/456/1"
         if trimmed.contains("HEAD -> refs/") {
+            // P3-194：旧实现 `if let Some(proj) = &current_project` 在尚未跟踪到
+            // 项目名时直接丢弃该行（无 else）。现无项目上下文的推送映射仍原样保留，
+            // 仅在能关联到项目时加 PRJ 前缀。
             if let Some(proj) = &current_project {
                 if let Some(ref_part) = trimmed.split("HEAD ->").nth(1) {
                     out.push(format!("PRJ:{}: HEAD ->{}", proj, ref_part.trim_end()));
+                } else {
+                    out.push(trimmed.to_string());
                 }
+            } else {
+                out.push(trimmed.to_string());
             }
             continue;
         }
@@ -249,6 +226,10 @@ fn compact_repo_upload(raw: &str) -> String {
         if trimmed.ends_with("projects uploaded.") || trimmed.ends_with("project uploaded.") {
             continue;
         }
+
+        // P3-194：未命中任何已知分支的行原样保留（旧实现无 else 直接静默丢弃，
+        // 错误信息/意外输出/上传失败提示等会丢失，用户无从排查）。
+        out.push(trimmed.to_string());
     }
 
     out.join("\n")
@@ -257,6 +238,7 @@ fn compact_repo_upload(raw: &str) -> String {
 // ============================================================================
 // 通用噪音过滤与 fallback（list / branches / diff / start / checkout / forall / stage / init）
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤噪音/URL，diff/hunk 压缩与警报映射。
 fn compact_repo_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -379,6 +361,7 @@ pub(super) fn map_repo_alert(line: &str) -> Option<String> {
 // ============================================================================
 // diff / hunk 格式压缩（保留复用）
 // ============================================================================
+/// 压缩 diff --git 行为 D:file。
 fn compact_diff_line(line: &str) -> Option<String> {
     if let Some(a_pos) = line.find(" a/") {
         let rest = &line[a_pos + 3..];
@@ -390,6 +373,7 @@ fn compact_diff_line(line: &str) -> Option<String> {
     None
 }
 
+/// 压缩 hunk 头行 @@ ... @@ 为 @@a->b@@。
 fn compact_hunk_header(line: &str) -> Option<String> {
     if let Some(start) = line.find("@@ ") {
         let end = line.rfind(" @@").unwrap_or(line.len());

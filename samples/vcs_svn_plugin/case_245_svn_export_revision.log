@@ -1,3 +1,5 @@
 svn export -r 12340 https://svn.example.com/repo/trunk /tmp/exported-project
-Export complete.
+A    /tmp/exported-project/README.md
+A    /tmp/exported-project/src/main.rs
+A    /tmp/exported-project/src/config.rs
 Exported revision 12340.

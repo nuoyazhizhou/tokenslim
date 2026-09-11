@@ -7,6 +7,7 @@ use crate::core::utils::roi::prefer_non_expanding;
 // ============================================================================
 // 遗留 parser 集成
 // ============================================================================
+/// 用遗留 VcsParser 解析文本并渲染为紧凑文档；空状态输出锚点+ST:[CLEAN]。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {
@@ -27,10 +28,12 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
         raw.to_string()
     }
 }
+/// 判断首行 bzr 子命令是否为 status/st/resolve。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_bzr_status_block(text: &str) -> bool {
     bzr_subcommand_is(text, &["status", "st", "resolve"])
 }
+/// 判断首行 bzr 子命令是否为 log/pull/push/merge/branch/commit。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_bzr_log_block(text: &str) -> bool {
     bzr_subcommand_is(text, &["log", "pull", "push", "merge", "branch", "commit"])
@@ -39,10 +42,12 @@ pub fn is_bzr_log_block(text: &str) -> bool {
 // ============================================================================
 // 公开 API — 全部 anchor_guard 包裹
 // ============================================================================
+/// bzr status 的 AI 压缩入口：dispatch 压缩 + 锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bzr_status_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, anchor_guard(raw, || compact_bzr_dispatch(raw)))
 }
+/// bzr diff 的 AI 压缩入口：用 BzrDiffParser 解析 + 锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bzr_diff_for_ai(raw: &str) -> String {
     prefer_non_expanding(
@@ -50,19 +55,23 @@ pub fn compact_bzr_diff_for_ai(raw: &str) -> String {
         anchor_guard(raw, || process_parser(&BzrDiffParser, raw)),
     )
 }
+/// bzr log 的 AI 压缩入口：dispatch 压缩 + 锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bzr_log_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, anchor_guard(raw, || compact_bzr_dispatch(raw)))
 }
+/// bzr 其他输出的 AI 压缩入口：dispatch 压缩 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bzr_other_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, compact_bzr_dispatch(raw))
 }
+/// bzr log 家族压缩入口：委托 compact_bzr_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bzr_log_family_for_ai(raw: &str) -> String {
     compact_bzr_log_for_ai(raw)
 }
 
+/// 锚点守卫：确保压缩结果保留首行命令锚点；压缩后仅剩锚点时按需追加 ST:[CLEAN]。
 fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
     let anchor = raw
         .lines()
@@ -106,6 +115,7 @@ fn should_append_bzr_clean_marker(raw: &str) -> bool {
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：按首行 bzr 子命令分派到 status/log/push/merge/revert/commit/pull 专用压缩。
 fn compact_bzr_dispatch(raw: &str) -> String {
     if raw.len() < 30 {
         return raw.to_string();
@@ -156,6 +166,7 @@ fn bzr_subcommand_is(raw: &str, expected: &[&str]) -> bool {
 // ============================================================================
 // Case 38/319: status — 保留锚点，状态码映射 M:/A:/D:/?:
 // ============================================================================
+/// 压缩 bzr status 输出：保留锚点，长词状态映射为 ST:M/A/D/? 格式。
 fn compact_bzr_status_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -197,6 +208,7 @@ fn compact_bzr_status_cmd(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将长词状态行（modified:/added:/removed: 等）映射为 ST: 代码 + 路径。
 fn map_bzr_long_status(line: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
     // 带冒号的长词状态: "modified: src/file.rs" → "M:src/file.rs"
@@ -233,6 +245,7 @@ fn map_bzr_long_status(line: &str) -> Option<String> {
     Some(format!("ST:{} {}", code, rest.trim()))
 }
 
+/// 将短格式状态行（M/A/D/R/?/+) 映射为 ST: 代码 + 路径（避免 Resolved 误匹配）。
 fn map_bzr_short_status(line: &str) -> Option<String> {
     let t = line.trim();
     if t.len() < 3 {
@@ -266,6 +279,7 @@ fn map_bzr_short_status(line: &str) -> Option<String> {
 // ============================================================================
 // Case 39/318: log — 保留锚点，CM: 保留，CP V1 符号化
 // ============================================================================
+/// 压缩 bzr log 输出：优先结构化解析 revno/committer/timestamp/message。
 fn compact_bzr_log_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -306,6 +320,7 @@ fn compact_bzr_log_cmd(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 结构化解析 bzr log：提取每条提交的版本号、作者、时间戳与消息，输出 rN/OW:@/CM 行。
 fn compact_bzr_log_structured(input: &str) -> Option<String> {
     #[derive(Default)]
     struct Commit {
@@ -421,6 +436,7 @@ fn compact_bzr_log_structured(input: &str) -> Option<String> {
 // ============================================================================
 // Case 148: push — 保留锚点，抹除帮助废话
 // ============================================================================
+/// 压缩 bzr push 输出：保留锚点，抹除帮助废话。
 fn compact_bzr_push(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -445,6 +461,7 @@ fn compact_bzr_push(raw: &str) -> String {
 // ============================================================================
 // Case 149: merge — 保留锚点，抹除 "All changes applied"
 // ============================================================================
+/// 压缩 bzr merge 输出：保留锚点，抹除 "All changes applied"。
 fn compact_bzr_merge(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -467,6 +484,7 @@ fn compact_bzr_merge(raw: &str) -> String {
 // ============================================================================
 // Case 192: revert — 保留锚点，REVERT: 映射
 // ============================================================================
+/// 压缩 bzr revert 输出：reverted 行映射为 ST:R。
 fn compact_bzr_revert(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -499,6 +517,7 @@ fn compact_bzr_revert(raw: &str) -> String {
 // ============================================================================
 // Case 193: commit — 保留锚点，抹除 "Committing to" / "Committed revision"
 // ============================================================================
+/// 压缩 bzr commit 输出：保留锚点，抹除提交废话，状态行映射。
 fn compact_bzr_commit(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -525,6 +544,7 @@ fn compact_bzr_commit(raw: &str) -> String {
 // ============================================================================
 // Case 103: pull — 保留锚点
 // ============================================================================
+/// 压缩 bzr pull 输出：保留锚点，抹除噪音。
 fn compact_bzr_pull(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -547,6 +567,7 @@ fn compact_bzr_pull(raw: &str) -> String {
 // ============================================================================
 // 通用 fallback
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤噪音，状态映射与警报标记。
 fn compact_bzr_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -579,6 +600,7 @@ fn compact_bzr_generic(raw: &str) -> String {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 判断是否为 bzr 噪音行（Committing to/Committed revision/All changes applied 等）。
 fn is_bzr_noise(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.contains("committing to:")
@@ -594,6 +616,7 @@ fn is_bzr_noise(line: &str) -> bool {
         || l.starts_with("you are missing")
 }
 
+/// 将含 conflict/error/failed/rejected 的行标记为警报（前缀 !）。
 pub(super) fn map_bzr_alert(line: &str) -> Option<String> {
     let l = line.to_ascii_lowercase();
     if ["conflict", "error:", "failed", "rejected"]

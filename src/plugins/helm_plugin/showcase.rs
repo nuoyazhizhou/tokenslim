@@ -3,6 +3,7 @@
 use crate::plugins::helm_plugin::HelmPlugin;
 use crate::plugins::infra_tools_common::{write_showcase_report, ShowcaseCase};
 
+/// 测试：生成 helm 插件的 showcase 对比报告并写入 target 目录。
 #[test]
 fn generate_helm_showcase_report() {
     let plugin = HelmPlugin::new();

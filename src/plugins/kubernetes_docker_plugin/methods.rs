@@ -18,9 +18,13 @@ static K8S_POD_RE: Lazy<Regex> = Lazy::new(|| {
 });
 // Docker 容器 ID：64位或12位十六进制
 static DOCKER_ID_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\b[0-9a-f]{12,64}\b").unwrap());
-// 常见的 Kubernetes 日志前缀格式：[pod-name] [container-id]
-#[allow(dead_code)]
-static K8S_PREFIX_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\[(?P<meta>.*?)\]\s+").unwrap());
+// 经典 docker build 输出中的 Dockerfile 步骤行：`Step 1/5 : FROM node:18`
+static DOCKER_STEP_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Step \d+/\d+ : ").unwrap());
+// P3-152（P3-127 家族扩展）：`normalize` 每次调用重建容器 ID / IP 抹除正则，
+// 提升为进程级预编译（对照本文件既有 Lazy 范式）。
+static ID_NORM_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\b[a-f0-9]{12,64}\b").unwrap());
+static IP_NORM_RE: Lazy<Regex> =
+    Lazy::new(|| Regex::new(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b").unwrap());
 
 impl KubernetesDockerPlugin {
     /// 实例化并返回该插件的默认配置对象。
@@ -32,26 +36,88 @@ impl KubernetesDockerPlugin {
         }
     }
 
+    /// 从一段 JSON 文本提取常见云平台日志的 message 字段（Q525 处置：空串候选跳过，
+    /// 继续尝试下一字段，避免误丢弃更完整的正文）。
+    fn message_field_of_json(raw: &str) -> Option<String> {
+        let json = serde_json::from_str::<serde_json::Value>(raw).ok()?;
+        for field in &["message", "log", "content", "msg"] {
+            if let Some(msg) = json.get(*field).and_then(|v| v.as_str()) {
+                if !msg.is_empty() {
+                    return Some(msg.to_string());
+                }
+            }
+        }
+        None
+    }
+
     /// 内部辅助函数：执行与 unwrap json if possible 相关的具体逻辑。
+    ///
+    /// P2-76 修复：此前对任意文本取「首个平衡 JSON 对象」的 message 整片替换——
+    /// docker json-file 驱动 / 云日志逐行 JSON 流（每行一个对象）的第 2..N 行被静默丢弃。
+    /// 现在分三条路径：
+    /// - 单行文本 → 保持原语义（允许噪声前缀，extract 后整行替换，Q462 处置）；
+    /// - 多行但整片恰为单个（pretty-print）JSON 对象 → 整片解包；
+    /// - 多行 JSON 流 → 逐行解包，JSON 行替换为其 message，非 JSON 行原样保留。
     fn unwrap_json_if_possible<'a>(&self, text: &'a str) -> Cow<'a, str> {
         if !self.config.unwrap_cloud_json {
             return Cow::Borrowed(text);
         }
 
-        let Some(extracted) = extract_json_object(text) else {
+        // 路径一：单行文本——保持原整片替换语义（含噪声前缀形态）。
+        if !text.trim_end_matches(['\r', '\n']).contains('\n') {
+            let Some(extracted) = extract_json_object(text) else {
+                return Cow::Borrowed(text);
+            };
+            if let Some(msg) = Self::message_field_of_json(extracted.raw) {
+                return Cow::Owned(msg);
+            }
             return Cow::Borrowed(text);
-        };
+        }
 
-        // 尝试解析常见的云平台日志格式
-        if let Ok(json) = serde_json::from_str::<serde_json::Value>(extracted.raw) {
-            // 检查 AWS CloudWatch / GCP / Aliyun SLS 常见的 message 字段
-            for field in &["message", "log", "content", "msg"] {
-                if let Some(msg) = json.get(*field).and_then(|v| v.as_str()) {
-                    return Cow::Owned(msg.to_string());
+        // 路径二：多行但整片是一个 pretty-print JSON 对象——整片解包。
+        let trimmed = text.trim();
+        if trimmed.starts_with('{') {
+            if let Some(extracted) = extract_json_object(text) {
+                if extracted.raw.trim() == trimmed {
+                    if let Some(msg) = Self::message_field_of_json(extracted.raw) {
+                        return Cow::Owned(msg);
+                    }
                 }
             }
         }
-        Cow::Borrowed(text)
+
+        // 路径三：多行 JSON 流——逐行解包，行终止符（\n / \r\n）原样保留。
+        let mut out = String::with_capacity(text.len());
+        let mut changed = false;
+        for seg in text.split_inclusive('\n') {
+            let (line, term) = match seg.strip_suffix('\n') {
+                Some(l) => (l, "\n"),
+                None => (seg, ""),
+            };
+            let (line, term) = match line.strip_suffix('\r') {
+                Some(l) => (l, "\r\n"),
+                None => (line, term),
+            };
+            let mut unwrapped = false;
+            if line.trim_start().starts_with('{') {
+                if let Some(extracted) = extract_json_object(line) {
+                    if let Some(msg) = Self::message_field_of_json(extracted.raw) {
+                        out.push_str(&msg);
+                        out.push_str(term);
+                        changed = true;
+                        unwrapped = true;
+                    }
+                }
+            }
+            if !unwrapped {
+                out.push_str(seg);
+            }
+        }
+        if changed {
+            Cow::Owned(out)
+        } else {
+            Cow::Borrowed(text)
+        }
     }
 }
 
@@ -77,6 +143,25 @@ impl Plugin for KubernetesDockerPlugin {
         }
         if DOCKER_ID_RE.is_match(text) {
             score += 0.3;
+        }
+        // docker ps 表格头：`CONTAINER ID   IMAGE   ...   NAMES`。容器短 ID（默认 6 位 hex）
+        // 不满足 DOCKER_ID_RE（要求 12-64 位），故以表头为强锚点单独加分，
+        // 否则 docker ps 输出 detect 得 0 分落到 smart_path 兜底。
+        if lower.contains("container id")
+            && lower.contains("image")
+            && (lower.contains("names") || lower.contains("command"))
+        {
+            score += 0.5;
+        }
+        // 经典 docker build 输出（`Step 1/5 : FROM node:18`、`Sending build context to Docker daemon`、
+        // `Successfully built`）：步骤行里的短 hex（`---> abc123`）为 6 位，不满足 DOCKER_ID_RE；
+        // 且无 buildkit 的 `#N [internal]` 前缀，故须以 Step 行/构建摘要为锚点单独加分，
+        // 否则 detect 得 0 分被 nodejs（`npm install` 等宽泛锚点）/smart_path 抢占。
+        if DOCKER_STEP_RE.is_match(text)
+            || lower.contains("sending build context to docker daemon")
+            || lower.contains("successfully built")
+        {
+            score += 0.5;
         }
         if is_docker_ci_output(&lower) {
             score += 0.5;
@@ -146,11 +231,11 @@ impl Plugin for KubernetesDockerPlugin {
     fn normalize(&self, text: &str) -> String {
         let mut result = text.to_string();
         // 抹除 Docker 容器 ID
-        let id_re = regex::Regex::new(r"\b[a-f0-9]{12,64}\b").unwrap();
+        let id_re = &*ID_NORM_RE;
         result = id_re.replace_all(&result, "[ID]").to_string();
 
         // 抹除 IP 地址
-        let ip_re = regex::Regex::new(r"\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b").unwrap();
+        let ip_re = &*IP_NORM_RE;
         result = ip_re.replace_all(&result, "[IP]").to_string();
 
         result
@@ -161,17 +246,9 @@ impl Plugin for KubernetesDockerPlugin {
         // 由核心引擎统一还原 $D/$P/$PK
         compressed.to_string()
     }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<KubernetesDockerConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
-    }
 }
 
+/// 判断小写文本是否含 Docker CI 输出特征（docker build/buildx/compose 等）。
 fn is_docker_ci_output(lower: &str) -> bool {
     [
         "docker build",
@@ -188,6 +265,7 @@ fn is_docker_ci_output(lower: &str) -> bool {
     .any(|needle| lower.contains(needle))
 }
 
+/// 判断小写文本是否含 Kubernetes CI 输出特征（kubectl rollout/apply、deployment 等）。
 fn is_kubernetes_ci_output(lower: &str) -> bool {
     [
         "kubectl rollout",

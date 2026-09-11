@@ -12,6 +12,7 @@ use std::net::TcpListener;
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
+/// 通过绑定 127.0.0.1:0 获取系统分配的空闲端口（bind 后立即释放）。
 fn free_port() -> u16 {
     let l = TcpListener::bind("127.0.0.1:0").expect("bind");
     let p = l.local_addr().unwrap().port();
@@ -19,6 +20,7 @@ fn free_port() -> u16 {
     p
 }
 
+/// 轮询等待目标端口可连接，超时返回 false（每 100ms 探测一次）。
 fn wait_for_server(port: u16, timeout: Duration) -> bool {
     let start = Instant::now();
     while start.elapsed() < timeout {
@@ -30,6 +32,7 @@ fn wait_for_server(port: u16, timeout: Duration) -> bool {
     false
 }
 
+/// Web UI 端到端联通：启动 server 后验证 index/CSS/JS/plugins 列表/compress 接口全链路。
 #[test]
 fn webui_index_loads() {
     let port = free_port();
@@ -63,22 +66,30 @@ fn webui_index_loads() {
     // 2) GET /assets/style.css 应该 200
     let resp = reqwest::blocking::get(format!("http://127.0.0.1:{}/assets/style.css", port))
         .expect("GET /assets/style.css");
-    assert!(resp.status().is_success(), "style.css status: {}", resp.status());
+    assert!(
+        resp.status().is_success(),
+        "style.css status: {}",
+        resp.status()
+    );
     let css = resp.text().expect("css body");
     assert!(css.contains("--bg"), "style.css missing CSS vars");
 
     // 3) GET /assets/app.js 应该 200
     let resp = reqwest::blocking::get(format!("http://127.0.0.1:{}/assets/app.js", port))
         .expect("GET /assets/app.js");
-    assert!(resp.status().is_success(), "app.js status: {}", resp.status());
+    assert!(
+        resp.status().is_success(),
+        "app.js status: {}",
+        resp.status()
+    );
     let js = resp.text().expect("js body");
     assert!(js.contains("TokenSlim Web UI") || !js.contains("compress_str"));
     // 至少包含关键函数名
     assert!(js.contains("fetch") || js.contains("FormData"));
 
     // 4) GET /plugins 应该返回 JSON
-    let resp = reqwest::blocking::get(format!("http://127.0.0.1:{}/plugins", port))
-        .expect("GET /plugins");
+    let resp =
+        reqwest::blocking::get(format!("http://127.0.0.1:{}/plugins", port)).expect("GET /plugins");
     assert!(resp.status().is_success());
     let json: serde_json::Value = resp.json().expect("parse json");
     assert!(json["plugins"].is_array());
@@ -95,19 +106,27 @@ fn webui_index_loads() {
         }))
         .send()
         .expect("POST /compress");
-    assert!(resp.status().is_success(), "compress status: {}", resp.status());
+    assert!(
+        resp.status().is_success(),
+        "compress status: {}",
+        resp.status()
+    );
 
     let _ = child.kill();
     let _ = child.wait();
 }
 
+/// Web UI 目录缺失时降级：GET / 回 404，但 /health 仍 200（服务本身存活）。
 #[test]
 fn webui_disabled_when_dir_missing() {
     let port = free_port();
     let mut child = Command::new(env!("CARGO_BIN_EXE_tokenslim-server"))
         .env("TOKENSLIM_HOST", "127.0.0.1")
         .env("TOKENSLIM_PORT", port.to_string())
-        .env("TOKENSLIM_WEBUI_DIR", "this_dir_definitely_does_not_exist_12345")
+        .env(
+            "TOKENSLIM_WEBUI_DIR",
+            "this_dir_definitely_does_not_exist_12345",
+        )
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn()
@@ -121,10 +140,15 @@ fn webui_disabled_when_dir_missing() {
 
     // GET / 应该回 404（fallback service 没启用）
     let resp = reqwest::blocking::get(format!("http://127.0.0.1:{}/", port)).expect("GET /");
-    assert_eq!(resp.status().as_u16(), 404, "expected 404 when webui dir missing");
+    assert_eq!(
+        resp.status().as_u16(),
+        404,
+        "expected 404 when webui dir missing"
+    );
 
     // 但 /health 仍然 200
-    let resp = reqwest::blocking::get(format!("http://127.0.0.1:{}/health", port)).expect("GET /health");
+    let resp =
+        reqwest::blocking::get(format!("http://127.0.0.1:{}/health", port)).expect("GET /health");
     assert!(resp.status().is_success());
 
     let _ = child.kill();

@@ -1,0 +1,8 @@
+Compiling tokenslim v0.4.0 (/c/git_work/TokenSlim)
+   Compiling libc v0.2.150
+   error[E0308]: mismatched types
+     --> src/core/compression.rs:42:13
+            |
+    42 |     let x: u32 = "str";
+     |                 ^^^ expected `u32`, found `&str`
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.42s

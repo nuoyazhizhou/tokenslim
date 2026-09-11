@@ -1,9 +1,7 @@
-PS C:\Users\user> Get-Process -Name "nonexistent"
-Get-Process : Cannot find a process with the name "nonexistent". Verify the process name and call the cmdlet again.
-At line:1 char:1
-+ Get-Process -Name "nonexistent"
-+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : ObjectNotFound: (nonexistent:String) [Get-Process], ProcessCommandException
-    + FullyQualifiedErrorId : NoProcessFoundForGivenName,Microsoft.PowerShell.Commands.GetProcessCommand
-
-PS C:\Users\user> 
+PS C:\Users\user> Get-Process -Id "abc"
+Get-Process : Cannot process argument transformation on parameter 'Id'. Cannot convert value "abc" to type "System.Int32". Error: "Input string was not in a correct format."
+At line:1 char:19
++ Get-Process -Id "abc"
++                   ~~~~~
+    + CategoryInfo          : InvalidArgument: (System.String) [Get-Process], ParameterBindingException
+    + FullyQualifiedErrorId : NotASystemInt32,Microsoft.PowerShell.Commands.GetProcessCommand

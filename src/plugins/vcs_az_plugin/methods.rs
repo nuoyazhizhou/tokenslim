@@ -1,69 +1,35 @@
 #![allow(dead_code)]
 //! Azure DevOps (az) 压缩方法 — Compression Protocol V1
-use super::parser::*;
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
-
-// ============================================================================
-// 遗留 parser 集成（保留兼容性）
-// ============================================================================
-#[tracing::instrument(level = "debug", skip_all)]
-pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
-    match parser.parse(raw) {
-        Some(doc) => render_az_doc(&doc),
-        None => raw.to_string(),
-    }
-}
-
-fn render_az_doc(doc: &VcsDocument) -> String {
-    let mut lines = Vec::new();
-    for rec in &doc.records {
-        lines.push(render_az_record(rec));
-    }
-    lines.join("\n")
-}
-
-fn render_az_record(rec: &VcsRecord) -> String {
-    match rec {
-        VcsRecord::Section(s) => format!("[{}]", s),
-        VcsRecord::Commit(c) => format!("id:{}", c),
-        VcsRecord::Subject(s) => s.clone(),
-        VcsRecord::Author(a) => format!("@{}", a),
-        VcsRecord::Date(d) => d.clone(),
-        VcsRecord::Stat(s) => s.clone(),
-        VcsRecord::Raw(r) => r.clone(),
-        VcsRecord::File { status, path } => {
-            if let Some(st) = status {
-                format!("{} {}", st, path)
-            } else {
-                path.clone()
-            }
-        }
-        VcsRecord::LabeledFile { label, path } => format!("[{}] {}", label, path),
-        _ => rec.to_string(),
-    }
-}
 
 // ============================================================================
 // 公开 API
 // ============================================================================
+/// az 日志的 AI 压缩入口：委托 compact_az_dispatch 处理。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_az_log_for_ai(raw: &str) -> String {
     compact_az_dispatch(raw)
 }
 
+/// az 其他输出的 AI 压缩入口：委托 compact_az_dispatch 处理。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_az_other_for_ai(raw: &str) -> String {
     compact_az_dispatch(raw)
 }
 
+/// 判断是否为 az 命令块：首个非空行以 az 命令头开头。
 #[tracing::instrument(level = "debug", skip_all)]
-pub fn is_az_log_block(_: &str) -> bool {
-    true
+pub fn is_az_log_block(text: &str) -> bool {
+    text.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim_start().starts_with("az "))
+        .unwrap_or(false)
 }
 
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：剥离 ANSI，按首行 az 命令分派到 show/list/create/delete 专用压缩，否则走通用。
 fn compact_az_dispatch(raw: &str) -> String {
     let cleaned = crate::core::utils::strip_ansi(raw);
     if cleaned.len() < 50 {
@@ -94,6 +60,7 @@ fn compact_az_dispatch(raw: &str) -> String {
 // ============================================================================
 // Case 96: show — 保留锚点，K-V 扁平化
 // ============================================================================
+/// 压缩 az repos show 输出：保留锚点行，K-V 扁平化为 BR/URL/SS 标记。
 fn compact_az_show(raw: &str) -> String {
     let mut out = Vec::new();
     let mut parts: Vec<String> = Vec::new();
@@ -148,6 +115,7 @@ fn compact_az_show(raw: &str) -> String {
 // ============================================================================
 // Case 112: list — 保留锚点，JSON 整块解析，嵌套字段提取
 // ============================================================================
+/// 压缩 az repos list 输出：解析 JSON 体并提取 name/id/defaultBranch/project 字段。
 fn compact_az_list(raw: &str) -> String {
     let mut lines_iter = raw.lines();
     let anchor = lines_iter.next().unwrap_or("").trim().to_string();
@@ -237,6 +205,7 @@ fn extract_nested_json_field(json: &str, outer_key: &str) -> Option<String> {
 // ============================================================================
 // Case 160: create — 保留锚点，去除 ✓，A: 映射，URL 缩写
 // ============================================================================
+/// 压缩 az repos create 输出：去除 ✓，Repository created 行映射为 A: + URL 缩写。
 fn compact_az_create(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -284,6 +253,7 @@ fn extract_az_url(text: &str) -> Option<&str> {
 // ============================================================================
 // Case 161: delete — 保留锚点，去除 ✓，D: 映射
 // ============================================================================
+/// 压缩 az repos delete 输出：去除 ✓，Repository deleted 行映射为 D:。
 fn compact_az_delete(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -314,6 +284,7 @@ fn compact_az_delete(raw: &str) -> String {
 // ============================================================================
 // 通用噪音过滤与 fallback
 // ============================================================================
+/// 通用压缩：保留命令锚点行，过滤噪音/JSON 花括号，K-V 扁平化与警报标记。
 fn compact_az_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -356,6 +327,7 @@ fn compact_az_generic(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将单行 K-V 映射为符号标记（BR/URL/SS/REPO/PRJ/ID）。
 fn compact_az_kv(line: &str) -> Option<String> {
     let colon_idx = line.find(':')?;
     let key = line[..colon_idx].trim().to_ascii_lowercase();
@@ -379,6 +351,7 @@ fn compact_az_kv(line: &str) -> Option<String> {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 缩写 URL 主机名：dev.azure.com→az:、github.com→gh: 等。
 fn abbreviate_az_url(url: &str) -> String {
     url.replace("https://dev.azure.com/", "az:")
         .replace("https://github.com/", "gh:")
@@ -386,11 +359,13 @@ fn abbreviate_az_url(url: &str) -> String {
         .replace("https://bitbucket.org/", "bb:")
 }
 
+/// 判断是否为 az 噪音行（repository created/deleted 描述）。
 pub(super) fn is_az_noise(line: &str) -> bool {
     let lower = line.to_ascii_lowercase();
     lower.starts_with("repository created") || lower.starts_with("repository deleted")
 }
 
+/// 将含 conflict/error/failed/rejected 的行标记为警报（前缀 !）。
 pub(super) fn map_az_alert(line: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
     let triggers = ["conflict", "error:", "failed", "rejected"];

@@ -8,7 +8,7 @@
     {
       "type": "any",
       "patterns": [
-        {"pattern_type": "contains", "pattern": "using "},
+        {"pattern_type": "starts_with", "pattern": "using "},
         {"pattern_type": "contains", "pattern": "namespace "},
         {"pattern_type": "contains", "pattern": "class "},
         {"pattern_type": "contains", "pattern": "static void Main"},

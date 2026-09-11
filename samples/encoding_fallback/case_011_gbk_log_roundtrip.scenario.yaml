@@ -1,0 +1,15 @@
+scenario: 'GBK 编码的三行中文应用日志（数据库连接池/缓存命中率/服务重启），用于 P1-08 压缩→解压字节级 round-trip 回写验收：原始 GBK 字节经 decode_with_fallback 解码、压缩、再水合、按源编码回写后必须逐字节还原。'
+target_capability: '编码可逆压缩（源编码回写）'
+expected_keep: '数据库连接池耗尽'
+expected_compress: 'GBK 字节级还原'
+source: 'test_synthetic'
+generated_at: '2026-09-10T07:45:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '99c06bd4eca90fcba20c66e24a75ddfb6917d3e02ddfb6fffcf3b3f86f460434'
+  final_status: 'not_registered'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:03.731289'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

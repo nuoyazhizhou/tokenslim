@@ -1,0 +1,15 @@
+scenario: '对 a.out 运行 objdump -h 查看各节布局，输出含节索引、名称、Size、VMA/LMA、文件偏移与对齐。'
+target_capability: 'binutils objdump/readelf 节表压缩（保留节名与 Size，折叠冗余地址列）'
+expected_keep: '.text'
+expected_compress: 'Sections:'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f69c2f8ac35128be51f2138c61a76eee86dcc2120bffbc79a7c8b9c22eb7701a'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -14,6 +14,7 @@ pub struct InitOptions {
 }
 
 impl Default for InitOptions {
+    /// 为 `InitOptions` 提供默认值：默认安装 shell hooks、自动探测 shell、非 dry-run、非强制覆盖。
     fn default() -> Self {
         Self {
             install_hooks: true,

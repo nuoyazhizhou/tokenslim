@@ -5,6 +5,7 @@ use crate::core::text_slicer::SliceType;
 use crate::plugins::pytest_plugin::PytestPlugin;
 use crate::plugins::test_utils::{compress_to_string, make_log_slice, read_sample_file};
 
+/// 测试：pytest 会话输出被插件识别。
 #[test]
 fn detects_pytest_session() {
     let plugin = PytestPlugin::new();
@@ -12,6 +13,7 @@ fn detects_pytest_session() {
     assert!(plugin.detect(&make_log_slice(&raw)).is_some());
 }
 
+/// 测试：失败摘要被压缩为含计数的 PYTEST 行。
 #[test]
 fn compresses_failed_summary() {
     let plugin = PytestPlugin::new();
@@ -23,6 +25,7 @@ fn compresses_failed_summary() {
     assert!(out.len() <= raw.len());
 }
 
+/// 测试：collection 错误被压缩且保留错误详情。
 #[test]
 fn compresses_collection_error() {
     let plugin = PytestPlugin::new();
@@ -33,6 +36,7 @@ fn compresses_collection_error() {
     assert!(out.len() <= raw.len());
 }
 
+/// 测试：xdist 与 rerun CI 信号在压缩后被保留。
 #[test]
 fn compresses_xdist_and_rerun_ci_signals() {
     let plugin = PytestPlugin::new();
@@ -50,6 +54,7 @@ fn compresses_xdist_and_rerun_ci_signals() {
     assert!(rerun_out.len() <= rerun.len());
 }
 
+/// 测试：coverage 与 junitxml CI 信号在压缩后被保留。
 #[test]
 fn preserves_coverage_and_junitxml_ci_signals() {
     let plugin = PytestPlugin::new();

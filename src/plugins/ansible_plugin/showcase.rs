@@ -4,6 +4,7 @@ use crate::plugins::ansible_plugin::AnsiblePlugin;
 use crate::plugins::infra_tools_common::{write_showcase_report, ShowcaseCase};
 
 #[test]
+/// 构建并写入 Ansible 插件的 showcase 报告，覆盖 play 聚合、失败/跳过/不可达、无变更、冗长 JSON、循环、handler、语法错误、vault 错误、check mode 与不压缩等样例场景。
 fn generate_ansible_showcase_report() {
     let plugin = AnsiblePlugin::new();
     let cases = [

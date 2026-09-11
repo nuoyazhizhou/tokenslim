@@ -1,3 +1,4 @@
 svn status src/core/
-M       src/core/text_slicer/methods.rs
-A       src/core/dictionary_manager/mod.rs
+M       src/core/config.rs
+A       src/core/plugins/loader.rs
+D       src/core/plugins/legacy.rs

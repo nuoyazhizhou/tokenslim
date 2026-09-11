@@ -8,14 +8,11 @@
     {
       "type": "any",
       "patterns": [
-        {"pattern_type": "contains", "pattern": "["},
-        {"pattern_type": "contains", "pattern": "]"},
+        {"pattern_type": "starts_with", "pattern": "["},
         {"pattern_type": "contains", "pattern": "="},
-        {"pattern_type": "contains", "pattern": ";"},
-        {"pattern_type": "contains", "pattern": "#"},
-        {"pattern_type": "paired_delimiters", "pattern": "${", "end_delimiter": "}"},
-        {"pattern_type": "contains", "pattern": "%("},
-        {"pattern_type": "contains", "pattern": ")s"}
+        {"pattern_type": "starts_with", "pattern": ";"},
+        {"pattern_type": "starts_with", "pattern": "#"},
+        {"pattern_type": "paired_delimiters", "pattern": "${", "end_delimiter": "}"}
       ]
     }
   ]

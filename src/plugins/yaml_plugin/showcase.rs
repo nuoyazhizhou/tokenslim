@@ -1,13 +1,10 @@
 #[cfg(test)]
 mod tests {
-    use crate::core::compression::Token;
-    use crate::core::dedup_engine::{DedupConfig, DedupEngine};
-    use crate::core::dictionary_engine::DictionaryEngine;
-    use crate::core::plugin_dispatcher::Plugin;
-    use crate::core::text_slicer::{Slice, SliceType};
+    use crate::core::text_slicer::SliceType;
+    use crate::plugins::test_utils::{compress_with_dict, full_dict_json};
     use crate::plugins::yaml_plugin::YamlPlugin;
-    use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/yaml_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,31 +14,17 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &YamlPlugin, text: &str) -> String {
-        let slice = Slice {
-            id: 1,
-            text: Cow::Borrowed(text),
-            slice_type: SliceType::LogBlock,
-            offset: 0,
-            line_start: 1,
-            line_end: text.lines().count().max(1),
-            file_metadata: None,
-            flags: Default::default(),
-        };
-        let mut dict = DictionaryEngine::new();
-        let mut dedup = DedupEngine::new(DedupConfig::default());
-        let arena = bumpalo::Bump::new();
-        let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
-            .tokens
-            .iter()
-            .filter_map(|t| match t {
-                Token::Text(s) => Some(s.as_ref()),
-                _ => None,
-            })
-            .collect::<String>()
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本；
+    /// 同时返回压缩过程中产生的可逆 token->原文 字典 JSON（`$PK` 包 / `$P` 路径 / `$D` 目录 等映射），
+    /// 供审计 sidecar 侧通道携带。复用 test_utils：compress_with_dict 返回 (compact, DictionaryEngine)，
+    /// full_dict_json 生成紧凑的 token->原文 映射；保证 compact 与词典一一对应、不改变 compact 内容。
+    fn compress_text(plugin: &YamlPlugin, text: &str) -> (String, String) {
+        let (compacted, engine) = compress_with_dict(plugin, text, SliceType::LogBlock);
+        let dict_json = full_dict_json(&engine, &compacted);
+        (compacted, dict_json)
     }
 
+    /// 测试：遍历样例生成 yaml 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_yaml_showcase_report() {
         let plugin = YamlPlugin::new();
@@ -86,12 +69,12 @@ mod tests {
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
             let compacted = compress_text(&plugin, &raw);
-            let compact_lines = if compacted.is_empty() {
+            let compact_lines = if compacted.0.is_empty() {
                 0
             } else {
-                compacted.lines().count()
+                compacted.0.lines().count()
             };
-            let compact_bytes = compacted.len();
+            let compact_bytes = compacted.0.len();
             let compression_ratio = if original_bytes > 0 {
                 (1.0 - compact_bytes as f64 / original_bytes as f64) * 100.0
             } else {
@@ -117,8 +100,18 @@ mod tests {
             all_output.push_str("-- Compact Output (full) --\n");
             all_output.push_str(&"-".repeat(80));
             all_output.push_str("\n");
-            all_output.push_str(&compacted);
+            all_output.push_str(&compacted.0);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 字典侧通道：仅在压缩产生 `$PK`/`$P`/`$D` 等 token 时携带 token->原文 映射，
+            // 供审计产物隔离到 compact.txt 后仍可逆解析，不改变上方 compact 段内容（哈希不变）。
+            if !compacted.1.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push('\n');
+                all_output.push_str(&compacted.1);
                 all_output.push('\n');
             }
         }

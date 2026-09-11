@@ -1,9 +1,9 @@
 //! ansi cleaner plugin 方法实现
 
-/// # 方法概述
-
-/// 本模块实现了 ansi cleaner plugin 模块的主要业务逻辑。
-/// 包含所有公共 API 的实现，以及内部辅助函数。
+//! # 方法概述
+//!
+//! 本模块实现了 ansi cleaner plugin 模块的主要业务逻辑。
+//! 包含所有公共 API 的实现，以及内部辅助函数。
 use super::types::*;
 use crate::core::compression::Token;
 use crate::core::dedup_engine::DedupEngine;
@@ -12,11 +12,10 @@ use crate::core::plugin_config_loader::CompiledPluginConfig;
 use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::Slice;
 use regex::Regex;
-use std::any::Any;
 use std::sync::Arc;
 
 impl Default for AnsiCleanerPlugin {
-    /// 提供该插件类型的默认配置实现。
+    /// 实现 `Default` trait：直接委托 `new()` 构造默认插件实例（最高优先级 255 + 默认 ANSI 正则）。
     fn default() -> Self {
         Self::new()
     }
@@ -127,27 +126,12 @@ impl Plugin for AnsiCleanerPlugin {
         compressed.to_string()
     }
 
-    /// 从外部的配置文件或数据源加载并覆盖当前插件的配置项。
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(compiled_config) = config.downcast_ref::<CompiledPluginConfig>() {
-            let new_plugin = AnsiCleanerPlugin::with_config(compiled_config.clone());
-            self.name = new_plugin.name;
-            self.priority = new_plugin.priority;
-            self.ansi_pattern = new_plugin.ansi_pattern;
-            self.config = new_plugin.config;
-            return Ok(());
-        }
-        Err("Failed".to_string())
-    }
-
-    /// 获取当前插件的内部配置项引用，可用于动态调整插件行为。
-
     /// 返回当前插件执行完毕后，推荐调度器优先尝试执行的后续插件列表（构建处理管道）。
     fn next_plugins(&self) -> Vec<&'static str> {
         vec!["smart_path"]
     }
 
-    /// 对文本进行归一化处理（用于日志比对）。消除时间戳、随机 Hash、乱序参数等 Diff 噪音。
+    /// 对文本做归一化（用于日志 Diff 对齐）：仅剥离 ANSI 控制码（与 `compress` 共用同一 `ansi_pattern`），不处理时间戳/Hash/乱序参数。
     fn normalize(&self, text: &str) -> String {
         self.ansi_pattern.replace_all(text, "").into_owned()
     }

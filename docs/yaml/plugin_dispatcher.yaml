@@ -1,0 +1,303 @@
+module:
+  name: plugin_dispatcher
+  path: src/core/plugin_dispatcher
+  dependencies:
+    - thiserror = "1.0"          # 用于错误枚举
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{PluginDispatcher, DispatcherConfig, Plugin, PluginExecutionError, CompressResult};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::collections::HashMap;
+        use crate::core::text_slicer::Slice;
+        use crate::core::content_analyzer::AnalysisResult;
+        use crate::core::dictionary_engine::{Dictionary, DictionaryEngine};
+        use crate::core::dedup_engine::DedupEngine;
+        use crate::core::compression::Token;
+        use crate::core::error_isolation::{SafeExecutor, SafeExecutorConfig, ExecutionError};
+        use std::time::Duration;
+
+        /// 插件返回的元数据（未来扩展）
+        pub struct Metadata;
+
+        /// 插件 trait，所有具体插件必须实现
+        pub trait Plugin: Send + Sync {
+            fn name(&self) -> &'static str;
+            fn priority(&self) -> u8;
+            /// detect 方法添加生命周期参数
+            fn detect<'a>(&self, _slice: &Slice<'a>) -> Option<f32> { None }
+            /// compress 方法添加生命周期参数
+            fn compress<'a>(
+                &self,
+                slice: &Slice<'a>,
+                dict_engine: &mut DictionaryEngine,   // 改为 DictionaryEngine，可添加项
+                dedup_engine: &mut DedupEngine,       // 用于去重
+            ) -> CompressResult;
+            fn decompress(&self, compressed: &str, dict: &Dictionary) -> String;
+            fn next_plugins(&self) -> Vec<&'static str> { Vec::new() }
+        }
+
+        /// 插件执行结果
+        pub struct CompressResult {
+            pub tokens: Vec<Token>,
+            pub metadata: Option<Metadata>,
+        }
+
+        /// 插件执行错误（用于内部错误隔离）
+        #[derive(Debug, thiserror::Error)]
+        pub enum PluginExecutionError {
+            #[error("Plugin panicked")]
+            Panic,
+            #[error("Plugin execution timed out")]
+            Timeout,
+            #[error("Plugin returned invalid result")]
+            InvalidResult,
+        }
+
+        /// 调度器配置
+        pub struct DispatcherConfig {
+            pub fallback_plugin: String,
+            pub plugin_timeout_ms: u64,
+        }
+
+        /// 插件调度器主结构
+        pub struct PluginDispatcher {
+            plugins: Vec<Box<dyn Plugin>>,
+            plugin_map: HashMap<String, usize>,
+            config: DispatcherConfig,
+            executor: SafeExecutor,  // 新增错误隔离执行器
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use std::panic;
+        use std::time::Duration;
+        use crate::core::error_isolation::{SafeExecutor, SafeExecutorConfig, ExecutionError};
+
+        impl PluginDispatcher {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 PluginDispatcher 实例
+            ///
+            /// # 参数
+            /// - `plugins`: 插件实例列表
+            /// - `config`: 调度器配置
+            ///
+            /// # 返回值
+            /// - `Self`: PluginDispatcher 实例
+            ///
+            /// # 实现要求
+            /// 1. 建立名称到索引的映射，检查插件名称唯一性，若有重复应 panic。
+            /// 2. 存储插件列表和配置。
+            ///
+            /// # 测试要点
+            /// - 插件列表正确注册，可通过名称查询。
+            /// - 重复名称应 panic。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn new(plugins: Vec<Box<dyn Plugin>>, config: DispatcherConfig) -> Self {
+                let executor_config = SafeExecutorConfig {
+                    default_timeout: Duration::from_millis(config.plugin_timeout_ms),
+                    catch_panic: true,
+                };
+                Self {
+                    plugins,
+                    plugin_map: todo!(), // 需要建立名称到索引的映射
+                    config,
+                    executor: SafeExecutor::new(executor_config),
+                }
+            }
+
+            /// 根据分析结果选择插件
+            ///
+            /// # 参数
+            /// - `result`: 内容分析结果
+            /// - `slice`: 原始切片
+            ///
+            /// # 返回值
+            /// - `Option<&dyn Plugin>`: 选中的插件，若无匹配则返回 None
+            ///
+            /// # 实现要求
+            /// 1. 遍历所有插件，调用其 `detect` 方法（如果实现）获取置信度。
+            /// 2. 若无插件返回置信度，则根据 `result.slice_type` 进行类型匹配（需要插件声明支持的类型，MVP 可简化）。
+            /// 3. 若有多个候选，按优先级排序，选最高优先级的。
+            /// 4. 若无任何插件匹配，返回 None（后续使用 fallback 插件）。
+            ///
+            /// # 测试要点
+            /// - 类型匹配正确。
+            /// - 优先级生效。
+            /// - 无匹配时返回 None。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            fn select_plugin<'a>(&self,result: &AnalysisResult,slice: &Slice<'a>) -> Option<&dyn Plugin> {
+                todo!()
+            }
+
+            /// 安全执行单个插件压缩
+            ///
+            /// # 参数
+            /// - `plugin`: 要执行的插件
+            /// - `slice`: 切片
+            /// - `dict`: 字典（可变引用）
+            ///
+            /// # 返回值
+            /// - `Option<CompressResult>`: 成功返回结果，失败返回 None
+            ///
+            /// # 实现要求
+            /// 1. 使用 `std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| ...))` 捕获插件 panic。
+            /// 2. 实现超时控制（ MVP 建议先做 panic 隔离；若需 Timeout，必须用作用域线程如 `std::thread::scope` 处理非 static 借用）。
+            /// 3. 若 panic 或超时，记录错误并返回 None。
+            /// 4. 若返回无效结果（如空 tokens），返回 None。
+            ///
+            /// # 测试要点
+            /// - 正常插件返回正确结果。
+            /// - 插件 panic 被捕获，返回 None。
+            /// - 插件超时被中止，返回 None。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            fn execute_plugin<'a>(
+                &self,
+                plugin: &dyn Plugin,
+                slice: &Slice<'a>,
+                dict_engine: &mut DictionaryEngine,
+                dedup_engine: &mut DedupEngine,
+            ) -> Option<CompressResult> {
+                // 使用 SafeExecutor 执行压缩闭包
+                let timeout = Duration::from_millis(self.config.plugin_timeout_ms);
+                // 注意：闭包需要捕获参数，这里使用 move 闭包并传递 slice 的引用，但 slice 的生命周期 'a 必须比闭包长
+                // 实际实现时可能需要更复杂处理，此处为占位
+                let result = self.executor.execute(
+                    || {
+                        // 注意：闭包需要捕获变量，但这里无法直接捕获 plugin、slice 等
+                        // 实际实现时可能需要将参数 move 进去，或者使用 Arc 等
+                        // 此处为示意，完整实现需调整
+                        plugin.compress(slice, dict_engine, dedup_engine)
+                    },
+                    Some(timeout),
+                );
+
+                match result {
+                    Ok(res) => Some(res),
+                    Err(ExecutionError::Panic) => {
+                        // 记录日志
+                        None
+                    }
+                    Err(ExecutionError::Timeout(_)) => {
+                        // 记录日志
+                        None
+                    }
+                    Err(ExecutionError::InvalidResult) => {
+                        // 记录日志
+                        None
+                    }
+                    Err(ExecutionError::Other(_)) => None,
+                }
+            }
+
+            /// 完整调度一个切片
+            ///
+            /// # 参数
+            /// - `slice`: 切片
+            /// - `result`: 分析结果
+            /// - `dict`: 字典（可变引用）
+            ///
+            /// # 返回值
+            /// - `CompressResult`: 压缩结果（若所有尝试失败，可能返回空的默认结果）
+            ///
+            /// # 实现要求
+            /// 1. 调用 `select_plugin` 获取初始插件。
+            /// 2. 若有插件，调用 `execute_plugin` 执行压缩。
+            /// 3. 若执行失败，则使用配置的 fallback 插件重试一次。
+            /// 4. 若插件声明了 `next_plugins`，依次执行后续插件（MVP 可简化，先不支持链）。
+            /// 5. 返回最终的 `CompressResult`。
+            ///
+            /// # 测试要点
+            /// - 正常情况返回插件压缩结果。
+            /// - 插件失败后 fallback 生效。
+            /// - 多个切片独立调度。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn dispatch_slice<'a>(
+                &self,
+                slice: &Slice<'a>,
+                result: &AnalysisResult,
+                dict_engine: &mut DictionaryEngine,
+                dedup_engine: &mut DedupEngine,
+            ) -> CompressResult {
+                // 1. 选择插件
+                if let Some(plugin) = self.select_plugin(result, slice) {
+                    // 2. 执行插件
+                    if let Some(res) = self.execute_plugin(plugin, slice, dict_engine, dedup_engine) {
+                        return res;
+                    }
+                }
+                // 3. fallback 到默认插件
+                // 查找 fallback_plugin 并执行
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+
+            /// 获取所有已注册插件的名称和优先级
+            ///
+            /// # 返回值
+            /// - `Vec<(&str, u8)>`: 插件名称和优先级列表
+            ///
+            /// # 实现要求
+            /// 遍历 `plugins`，收集名称和优先级。
+            ///
+            /// # 测试要点
+            /// - 返回的列表与注册一致。
+            ///
+            /// 未来优先级
+            pub fn list_plugins(&self) -> Vec<(&str, u8)> {
+                todo!()
+            }
+
+            /// 动态添加插件
+            ///
+            /// # 参数
+            /// - `plugin`: 要添加的插件
+            ///
+            /// # 返回值
+            /// - `Result<(), String>`: 成功或错误（如名称重复）
+            ///
+            /// # 实现要求
+            /// 1. 检查插件名称是否已存在。
+            /// 2. 插入到 `plugins` 和 `plugin_map` 中。
+            ///
+            /// # 测试要点
+            /// - 添加后可用。
+            /// - 重复名称返回错误。
+            ///
+            /// 未来优先级
+            pub fn add_plugin(&mut self, plugin: Box<dyn Plugin>) -> Result<(), String> {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

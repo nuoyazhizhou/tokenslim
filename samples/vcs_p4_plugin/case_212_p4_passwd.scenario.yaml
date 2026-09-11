@@ -1,4 +1,4 @@
-scenario: '用户执行 p4 passwd alice 命令，成功修改密码后输出 ''Password updated.''。'
+scenario: '用户执行 p4 passwd alice 命令修改用户 alice 的密码，输入新密码并确认后成功完成，输出 ''Password updated.''。'
 target_capability: '命令结果保留'
 expected_keep: 'Password updated.'
 expected_compress: 'p4 passwd alice'
@@ -7,9 +7,9 @@ generated_at: '2026-06-09T08:05:14Z'
 
 # === audit 字段（自动维护，请勿手填内容字段）===
 audit:
-  content_hash: 'e16b3d3b337b59d1a00b452bacd17a6362b8e69b369edb5e2a72e312bc5fa9b2'
+  content_hash: 'a70bd1666eff0913a5378f6f5adf1392659351d2fcd27c618f437725e8739f3b'
   final_status: 'valid'
-  llm_invoked: true
-  llm_verified_at: '2026-06-10T07:31:01.560316'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:12:21.023842'
   last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

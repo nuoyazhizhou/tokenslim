@@ -111,12 +111,14 @@ fn parse_tag(content: &str) -> Result<TemplateToken, String> {
 mod tests {
     use super::*;
 
+    /// 测试：纯文本模板解析为单个 Text token。
     #[test]
     fn test_parse_simple_text() {
         let tokens = parse_template("Hello World").unwrap();
         assert_eq!(tokens, vec![TemplateToken::Text("Hello World".to_string())]);
     }
 
+    /// 测试：包含变量的模板解析为 Text/Variable/Text token 序列。
     #[test]
     fn test_parse_simple_variable() {
         let tokens = parse_template("Hello {{name}}!").unwrap();
@@ -130,6 +132,7 @@ mod tests {
         );
     }
 
+    /// 测试：多个变量被解析为多个 Variable token。
     #[test]
     fn test_parse_multiple_variables() {
         let tokens = parse_template("{{a}} and {{b}}").unwrap();
@@ -143,6 +146,7 @@ mod tests {
         );
     }
 
+    /// 测试：{{errors.count}} 解析为 SectionCount token。
     #[test]
     fn test_parse_section_count() {
         let tokens = parse_template("Count: {{errors.count}}").unwrap();
@@ -155,6 +159,7 @@ mod tests {
         );
     }
 
+    /// 测试：{{files.items}} 解析为 SectionItems token。
     #[test]
     fn test_parse_section_items() {
         let tokens = parse_template("Items: {{files.items}}").unwrap();
@@ -167,6 +172,7 @@ mod tests {
         );
     }
 
+    /// 测试：{{#if show}}...{{/if}} 解析为 IfStart/IfEnd 块。
     #[test]
     fn test_parse_if_block() {
         let tokens = parse_template("{{#if show}}Visible{{/if}}").unwrap();
@@ -180,6 +186,7 @@ mod tests {
         );
     }
 
+    /// 测试：{{#unless hide}}...{{/unless}} 解析为 UnlessStart/UnlessEnd 块。
     #[test]
     fn test_parse_unless_block() {
         let tokens = parse_template("{{#unless hide}}Visible{{/unless}}").unwrap();
@@ -193,6 +200,7 @@ mod tests {
         );
     }
 
+    /// 测试：未闭合的标签返回 E_TEMPLATE_TAG_UNCLOSED 错误。
     #[test]
     fn test_parse_unclosed_tag() {
         let result = parse_template("{{unclosed");
@@ -200,6 +208,7 @@ mod tests {
         assert!(result.unwrap_err().contains(E_TEMPLATE_TAG_UNCLOSED));
     }
 
+    /// 测试：未知的 section 属性返回 E_TEMPLATE_SECTION_PROPERTY_UNKNOWN 错误。
     #[test]
     fn test_parse_unknown_section_property() {
         let result = parse_template("{{section.unknown}}");
@@ -209,6 +218,7 @@ mod tests {
             .contains(E_TEMPLATE_SECTION_PROPERTY_UNKNOWN));
     }
 
+    /// 测试：嵌套的 if 块被解析为嵌套的 token 序列。
     #[test]
     fn test_parse_nested_conditions() {
         let tokens = parse_template("{{#if a}}{{#if b}}nested{{/if}}{{/if}}").unwrap();

@@ -1,0 +1,15 @@
+scenario: '装饰分隔线与百分比进度指示的日志外壳：默认配置（drop_noise_lines=False）下这些噪声行应保留。'
+target_capability: '噪声行裁剪开关（drop_noise_lines，默认关/保守）'
+expected_keep: 'done 与 Downloading 进度行（默认不裁剪）'
+expected_compress: '（默认配置下不压缩；开启 drop_noise_lines 时裁剪装饰/百分比行）'
+source: 'manual'
+generated_at: '2026-09-04T07:35:32Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '7f88841cfdd6410b6508ba40af548fef02c10659e4bfe17822f90dfd1ae84967'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:14.186822'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

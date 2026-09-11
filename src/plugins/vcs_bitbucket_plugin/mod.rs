@@ -16,7 +16,6 @@
 //! - URL行（URL:或http开头）
 //! - 冗余标题行（如'Pull request #...'）
 pub mod methods;
-pub mod parser;
 #[cfg(test)]
 mod showcase;
 #[cfg(test)]

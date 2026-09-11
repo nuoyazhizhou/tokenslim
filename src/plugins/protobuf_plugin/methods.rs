@@ -16,6 +16,7 @@ use std::borrow::Cow;
 use std::sync::OnceLock;
 
 impl ProtobufPlugin {
+    /// 创建 ProtobufPlugin 实例（名称 protobuf，优先级 96）。
     pub fn new() -> Self {
         Self {
             name: "protobuf",
@@ -25,19 +26,23 @@ impl ProtobufPlugin {
 }
 
 impl Plugin for ProtobufPlugin {
+    /// 返回插件名称 "protobuf"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 96。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：含 protoc/.proto:/warning: field/type " 等特征得 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(&lower, &["protoc", ".proto:", "warning: field", "type \""]).then_some(0.9)
     }
 
+    /// 压缩切片：剥离 ANSI，压缩 protoc 诊断为摘要，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -56,11 +61,14 @@ impl Plugin for ProtobufPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：解析 .proto 诊断行（error/warning），统计计数并保留诊断详情，
+/// 无压缩收益时回退原文；针对生成/描述符/版本场景输出单行摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_protobuf(text: &str, dict_engine: &mut DictionaryEngine) -> String {
     static DIAG_RE: OnceLock<Regex> = OnceLock::new();

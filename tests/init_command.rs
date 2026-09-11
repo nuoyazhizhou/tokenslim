@@ -11,6 +11,10 @@ mod tests {
 
     static ISOLATION_LOCK: OnceLock<Mutex<()>> = OnceLock::new();
 
+    /// 在系统临时目录下创建带唯一后缀（纳秒时间戳）的隔离测试目录。
+    ///
+    /// 命名格式为 `tokenslim-{name}-{unix_nanos}`，避免并发测试间目录冲突，
+    /// 目录创建失败时直接 panic（测试前置条件不允许失败）。
     fn temp_dir(name: &str) -> PathBuf {
         let unique = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -21,6 +25,10 @@ mod tests {
         dir
     }
 
+    /// 在隔离环境下执行闭包：临时切换 cwd 与 HOME/USERPROFILE，执行后恢复。
+    ///
+    /// 通过全局互斥锁串行化所有用例，避免并行测试互相污染进程级环境变量；
+    /// home 为 None 时移除 HOME/USERPROFILE（模拟无家目录环境）。
     fn with_isolation<T>(cwd: &Path, home: Option<&Path>, f: impl FnOnce() -> T) -> T {
         let _guard = ISOLATION_LOCK
             .get_or_init(|| Mutex::new(()))
@@ -57,6 +65,10 @@ mod tests {
         result
     }
 
+    /// 返回指定 shell 在 home 目录下的配置文件路径。
+    ///
+    /// 支持 bash/zsh/fish/powershell 四种 shell；未知 shell 回退到 .bashrc，
+    /// 保证 hook 注入测试对任意 shell 值都能定位落点文件。
     fn shell_config_path(home: &Path, shell: &str) -> PathBuf {
         match shell {
             "bash" => home.join(".bashrc"),
@@ -67,6 +79,7 @@ mod tests {
         }
     }
 
+    /// 验证 InitOptions 默认值稳定：默认安装 hooks、无 shell、非 dry-run、非 force。
     #[test]
     fn init_options_defaults_are_stable() {
         let opts = InitOptions::default();
@@ -77,6 +90,7 @@ mod tests {
         assert!(!opts.force);
     }
 
+    /// 验证 InitResult 各字段可正常访问且值正确（纯结构体读取，不触发 IO）。
     #[test]
     fn init_result_fields_are_accessible() {
         let result = InitResult {
@@ -98,6 +112,8 @@ mod tests {
         assert!(result.message.contains("initialized"));
     }
 
+    /// 端到端验证 dry-run 下项目类型检测：rust/node/python 三类工程
+    /// 分别识别出对应 project_type 与框架/包管理器（node 检出 nextjs+pnpm）。
     #[test]
     fn detect_project_type_identifies_rust_node_and_python() {
         let rust_dir = temp_dir("rust");
@@ -154,6 +170,7 @@ mod tests {
         assert_eq!(python_result.package_manager, None);
     }
 
+    /// 验证 dry-run 模式不落盘：不创建 .tokenslim.toml，且消息含 "dry-run" 字样。
     #[test]
     fn dry_run_leaves_config_unwritten() {
         let project_dir = temp_dir("dry-run");
@@ -178,6 +195,8 @@ mod tests {
         assert!(!project_dir.join(".tokenslim.toml").exists());
     }
 
+    /// 验证 run_init 真实写盘：生成可被 toml 解析的 .tokenslim.toml，
+    /// 且 general 段写入 node/yarn 等检测结果（package.json + yarn.lock）。
     #[test]
     fn run_init_writes_valid_toml_config() {
         let project_dir = temp_dir("config");
@@ -207,6 +226,9 @@ mod tests {
         assert_eq!(value["general"]["package_manager"].as_str(), Some("yarn"));
     }
 
+    /// 验证四种 shell（bash/zsh/fish/powershell）的 hook 注入：
+    /// 在隔离 home 下运行 init 后，各 shell 配置文件应包含预期的
+    /// ts/ts-run/ts-compress/ts-doctor 别名及 go/kubectl/terraform/pytest 包装函数。
     #[test]
     fn run_init_generates_shell_hook_aliases() {
         let shells = [

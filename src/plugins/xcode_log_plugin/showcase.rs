@@ -5,9 +5,11 @@ mod tests {
     use crate::core::dictionary_engine::DictionaryEngine;
     use crate::core::plugin_dispatcher::Plugin;
     use crate::core::text_slicer::{Slice, SliceType};
+    use crate::plugins::test_utils::full_dict_json;
     use crate::plugins::xcode_log_plugin::XcodeLogPlugin;
     use std::borrow::Cow;
 
+    /// 从 `samples/xcode_log_plugin` 目录读取示例日志文本，文件缺失时返回空串。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,7 +19,9 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &XcodeLogPlugin, text: &str) -> String {
+    /// 用插件对文本切片做压缩，拼接所有 `Text` token 组成紧凑字符串返回。
+    /// 返回值：(压缩文本, 字典侧通道 JSON)。字典 JSON 由共享的 full_dict_json 生成，便于对接审计插件。
+    fn compress_text(plugin: &XcodeLogPlugin, text: &str) -> (String, String) {
         let slice = Slice {
             id: 1,
             text: Cow::Borrowed(text),
@@ -32,16 +36,19 @@ mod tests {
         let mut dedup = DedupEngine::new(DedupConfig::default());
         let arena = bumpalo::Bump::new();
         let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
+        let compacted = result
             .tokens
             .iter()
             .filter_map(|t| match t {
                 Token::Text(s) => Some(s.as_ref()),
                 _ => None,
             })
-            .collect::<String>()
+            .collect::<String>();
+        let dict_json = full_dict_json(&dict, &compacted);
+        (compacted, dict_json)
     }
 
+    /// 生成 Xcode 日志压缩全景 showcase 报告：遍历多组样例，输出原文/压缩行数字节与压缩率到文件。
     #[test]
     fn generate_xcode_log_showcase_report() {
         let plugin = XcodeLogPlugin::new();
@@ -53,7 +60,6 @@ mod tests {
             ("case_005_response_file", "Response File"),
             ("case_006_noise", "噪音夹杂"),
             ("case_007_long_line", "超长行"),
-            ("case_008_single_line", "单行输入"),
             ("case_009_empty", "空输入"),
             ("case_010_special_chars", "特殊字符"),
             ("case_011_mixed", "混合场景"),
@@ -72,7 +78,7 @@ mod tests {
 
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
-            let compacted = compress_text(&plugin, &raw);
+            let (compacted, dict_json) = compress_text(&plugin, &raw);
             let compact_lines = if compacted.is_empty() {
                 0
             } else {
@@ -106,6 +112,15 @@ mod tests {
             all_output.push_str("\n");
             all_output.push_str(&compacted);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 追加字典侧通道段：仅当压缩产生可逆 token 映射时才写出，便于审计脚本重建 token->原文。
+            if !dict_json.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push('\n');
+                all_output.push_str(&dict_json);
                 all_output.push('\n');
             }
         }

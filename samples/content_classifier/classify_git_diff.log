@@ -1,0 +1,8 @@
+diff --git a/src/core/mod.rs b/src/core/mod.rs
+index 9a1b2c3..d4e5f6a 100644
+--- a/src/core/mod.rs
++++ b/src/core/mod.rs
+@@ -1,4 +1,5 @@
+ pub mod compression;
++pub mod content_classifier;
+ pub mod config_manager;

@@ -6,6 +6,7 @@ use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
 // ============================================================================
 // 遗留 parser 集成
 // ============================================================================
+/// 用遗留 VcsParser 解析文本并渲染为紧凑文档；空记录返回原文。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {
@@ -20,10 +21,12 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
         raw.to_string()
     }
 }
+/// 判断首行 fossil 子命令是否为 status/changes。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_fossil_status_block(text: &str) -> bool {
     fossil_subcommand_is(text, &["status", "changes"])
 }
+/// 判断首行 fossil 子命令是否为 log/timeline/undo/stash/merge/sync。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_fossil_log_block(text: &str) -> bool {
     fossil_subcommand_is(text, &["log", "timeline", "undo", "stash", "merge", "sync"])
@@ -32,10 +35,12 @@ pub fn is_fossil_log_block(text: &str) -> bool {
 // ============================================================================
 // 公开 API — 全部包裹 anchor_guard
 // ============================================================================
+/// fossil status 的 AI 压缩入口：dispatch 压缩 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_fossil_status_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_fossil_dispatch(raw))
 }
+/// fossil diff 的 AI 压缩入口：brief 格式走 status 映射，否则用 FossilDiffParser + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_fossil_diff_for_ai(raw: &str) -> String {
     // diff --brief 输出与 changes 格式相同（ADDED/MODIFIED/DELETED），走 status 映射
@@ -48,14 +53,17 @@ pub fn compact_fossil_diff_for_ai(raw: &str) -> String {
     }
     anchor_guard(raw, || process_parser(&FossilDiffParser, raw))
 }
+/// fossil log 的 AI 压缩入口：dispatch 压缩 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_fossil_log_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_fossil_dispatch(raw))
 }
+/// fossil 其他输出的 AI 压缩入口：dispatch 压缩。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_fossil_other_for_ai(raw: &str) -> String {
     compact_fossil_dispatch(raw)
 }
+/// fossil log 家族压缩入口：委托 compact_fossil_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_fossil_log_family_for_ai(raw: &str) -> String {
     compact_fossil_log_for_ai(raw)
@@ -81,6 +89,7 @@ fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：按首行 fossil 子命令分派到 status/timeline/undo/stash/merge/sync 专用压缩。
 fn compact_fossil_dispatch(raw: &str) -> String {
     if raw.len() < 50 {
         return raw.to_string();
@@ -130,6 +139,7 @@ fn fossil_subcommand_is(raw: &str, expected: &[&str]) -> bool {
 // ============================================================================
 // Case 29/152: status/changes — 保留锚点，状态码映射 M:/A:/D:
 // ============================================================================
+/// 压缩 fossil status/changes 输出：保留锚点，EDITED/ADDED 等映射为 ST: 行。
 fn compact_fossil_status_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -174,6 +184,7 @@ fn compact_fossil_status_cmd(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 判断是否为 fossil 仓库元数据噪音行（repository/local-root/checkout/tags/comment）。
 fn is_fossil_meta_noise(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.starts_with("repository:")
@@ -183,6 +194,7 @@ fn is_fossil_meta_noise(line: &str) -> bool {
         || l.starts_with("comment:")
 }
 
+/// 将长词状态行（EDITED/MODIFIED/ADDED/DELETED/RENAMED/CONFLICT）映射为 ST: 代码。
 fn map_fossil_status(line: &str) -> Option<String> {
     let (code, rest) = if let Some(r) = line.strip_prefix("EDITED ") {
         ('M', r)
@@ -205,6 +217,7 @@ fn map_fossil_status(line: &str) -> Option<String> {
 // ============================================================================
 // Case 41/104: timeline/log — 保留锚点，哈希/作者符号化
 // ============================================================================
+/// 压缩 fossil timeline/log 输出：[hash] 行符号化为 @hash date OW: 格式。
 fn compact_fossil_timeline(raw: &str) -> String {
     let mut out = Vec::new();
     let mut got_anchor = false;
@@ -248,6 +261,7 @@ fn compact_fossil_timeline(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 格式化括号式提交行 [hash] date [author] subject 为符号化格式。
 fn format_fossil_commit(line: &str) -> Option<String> {
     let rest = line.strip_prefix('[')?;
     let hash_end = rest.find(']')?;
@@ -268,9 +282,15 @@ fn format_fossil_commit(line: &str) -> Option<String> {
         if let Some(bracket_end) = after[bracket_start..].find(']') {
             let abs_end = bracket_start + bracket_end;
             author = after[bracket_start + 1..abs_end].to_string();
-            let subj_start = abs_end + 2; // 跳过 "] "
-            if subj_start < after.len() {
-                subject = after[subj_start..].trim().to_string();
+            // 用 get + strip_prefix 安全定位 subject，避免 abs_end+2 硬切越过 `]` 后紧邻多字节字符的
+            // UTF-8 字符边界而 panic（Q532 处置）。
+            if let Some(subj) = after
+                .get(abs_end + 1..)
+                .and_then(|rest| rest.strip_prefix(']'))
+                .and_then(|rest| rest.strip_prefix(' '))
+                .map(|rest| rest.trim().to_string())
+            {
+                subject = subj;
             }
         }
     }
@@ -285,6 +305,7 @@ fn format_fossil_commit(line: &str) -> Option<String> {
     Some(result)
 }
 
+/// 格式化纯日期式提交行 "date author hash subject" 为符号化格式。
 fn format_fossil_simple_commit(line: &str) -> Option<String> {
     // "2026-04-08 alice 1abc123 Add new feature"
     let parts: Vec<&str> = line.split_whitespace().collect();
@@ -306,6 +327,7 @@ fn format_fossil_simple_commit(line: &str) -> Option<String> {
 // ============================================================================
 // Case 153: undo — 保留锚点，极简 REVERT:
 // ============================================================================
+/// 压缩 fossil undo 输出：版本行映射为 REVERT:@version。
 fn compact_fossil_undo(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -333,6 +355,7 @@ fn compact_fossil_undo(raw: &str) -> String {
 // ============================================================================
 // Case 194: stash — 保留锚点，抹除头部废话
 // ============================================================================
+/// 压缩 fossil stash 输出：抹除头部废话。
 fn compact_fossil_stash(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -355,6 +378,7 @@ fn compact_fossil_stash(raw: &str) -> String {
 // ============================================================================
 // Case 195: merge — 保留锚点，抹除网络废话
 // ============================================================================
+/// 压缩 fossil merge 输出：保留锚点，抹除叙述噪音。
 fn compact_fossil_merge(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -377,6 +401,7 @@ fn compact_fossil_merge(raw: &str) -> String {
 // ============================================================================
 // Case 196: sync — 保留锚点，极简 Pull/Push
 // ============================================================================
+/// 压缩 fossil sync 输出：仅保留 Pull:/Push: 行。
 fn compact_fossil_sync(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -402,6 +427,7 @@ fn compact_fossil_sync(raw: &str) -> String {
 // ============================================================================
 // 通用 fallback
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤叙述/元数据噪音，警报与状态映射。
 fn compact_fossil_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -434,6 +460,7 @@ fn compact_fossil_generic(raw: &str) -> String {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 判断是否为 fossil 叙述噪音行（undo successful/done./sync with 等）。
 fn is_fossil_narrative(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.starts_with("undo successful")
@@ -443,6 +470,7 @@ fn is_fossil_narrative(line: &str) -> bool {
         || l.starts_with("stash changes:")
 }
 
+/// 将含 conflict/error/failed/rejected 的行标记为警报（前缀 !）。
 pub(super) fn map_fossil_alert(line: &str) -> Option<String> {
     let l = line.to_ascii_lowercase();
     if ["conflict", "error:", "failed", "rejected"]

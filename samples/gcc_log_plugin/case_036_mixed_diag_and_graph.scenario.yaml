@@ -1,0 +1,15 @@
+scenario: 'make 构建因 gcc 诊断错误失败后，脚本尾部的 git log --graph 摘要输出以竖线开头的拓扑行——诊断上下文行应折叠，图形摘要素行的竖线行不得被形状匹配误伤。'
+target_capability: '诊断上下文折叠边界（带状态，不误伤非诊断竖线行）'
+expected_keep: 'error: use of undeclared identifier ''parse_depth'', Error 1, git log --oneline --graph -4'
+expected_compress: 'gcc -DHAVE_CONFIG_H -I. -Iinclude -c parser.c -o build/parser.o, 诊断上下文行（47 | / | ^）折叠为 omitted 摘要'
+source: 'manual'
+generated_at: '2026-09-09T05:15:48Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5e578a36c4ddf4fa0a0ca9a4a342b74cefe6fd76e8587054a54caede1f4ce3fe'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

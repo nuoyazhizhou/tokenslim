@@ -83,6 +83,7 @@ import tempfile
 import difflib
 import random
 from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple  # noqa: F401 - 注解求值需要（PEP 649 前版本急切求值）
 
 # audit_llm_common：LLM 调用 + 提示词加载 + 漂移检测 公共模块
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -1196,8 +1197,27 @@ def check_signal_anchors(text, lint_config=None):
     return hits
 
 
+# 重复检测的性能护栏常量（2026-09-10 修复）：
+# - DUP_MAX_CMP_CHARS：单对比较的字符总量上限，超过则两侧各取前半（降采样）
+# - 说明见 detect_duplicates 文档字符串
+DUP_MAX_CMP_CHARS = 400_000
+
+
 def detect_duplicates(samples_dict):
-    """基于文本相似度找出近似重复 case。"""
+    """基于文本相似度找出近似重复 case。
+
+    性能护栏（2026-09-10）：原实现直接对全文本两两调用
+    ``SequenceMatcher.ratio()``——时间/空间复杂度极高（MB 级样本单对即需数分钟），
+    遇到 `cloud_log_plugin/case_046`（1.49MB）× 52 case 时单插件可挂起数小时，
+    导致四段流水线步骤 1 全量循环无法完成。现两级收敛：
+
+    1. **上界预筛**：``real_quick_ratio()``（O(1)）与 ``quick_ratio()``（O(N)）
+       是 ``ratio()`` 的数学上界，低于阈值即跳过昂贵的全量比对——
+       判定结果与全量比对**完全一致**，不改变任何既有结论；
+    2. **超大对降采样**：两侧文本合计超过 ``DUP_MAX_CMP_CHARS`` 时只比对前
+       ``DUP_MAX_CMP_CHARS // 2`` 个字符，并置位 ``truncated`` 标志由调用方
+       显式写入报告，不静默改变判定口径。
+    """
     items = []
     for fname, path in sorted(samples_dict.items()):
         try:
@@ -1213,6 +1233,7 @@ def detect_duplicates(samples_dict):
 
     groups = []
     used = set()
+    truncated = False
     for i, a in enumerate(items):
         if a["case_id"] in used:
             continue
@@ -1222,7 +1243,18 @@ def detect_duplicates(samples_dict):
             b = items[j]
             if b["case_id"] in used:
                 continue
-            ratio = difflib.SequenceMatcher(None, a["content"], b["content"]).ratio()
+            m = difflib.SequenceMatcher(None, a["content"], b["content"])
+            # 上界预筛：real_quick_ratio/quick_ratio 均为 ratio 的数学上界，
+            # 上界都够不着阈值时无需昂贵的全量比对（判定结果不变）。
+            if m.real_quick_ratio() < 0.85 or m.quick_ratio() < 0.85:
+                continue
+            a_cmp, b_cmp = a["content"], b["content"]
+            if len(a_cmp) + len(b_cmp) > DUP_MAX_CMP_CHARS:
+                half = DUP_MAX_CMP_CHARS // 2
+                a_cmp, b_cmp = a_cmp[:half], b_cmp[:half]
+                truncated = True
+                m = difflib.SequenceMatcher(None, a_cmp, b_cmp)
+            ratio = m.ratio()
             if ratio >= 0.85:
                 group.append(b["case_id"])
                 used.add(b["case_id"])
@@ -1232,6 +1264,7 @@ def detect_duplicates(samples_dict):
                 "primary": group[0],
                 "duplicates": group[1:],
             })
+    detect_duplicates.last_truncated = truncated
     return groups
 
 
@@ -1276,11 +1309,54 @@ def _sidecar_path_for_case(plugin: str, case_filename: str):
     return None
 
 
+def _yaml_unquote(val: str) -> str:
+    """去除 YAML 标量外层引号并还原其转义（_parse_yaml_minimal 专用）。
+
+    这是 P2-93 的根因修复点。原实现只做 ``val[1:-1]``（剥外层引号），
+    **不还原 YAML 双引号标量的反斜杠转义**。于是对于
+
+        expected_keep: "echo \\"Hello World\\", Hello World"
+
+    解析得到的字面值是 ``echo \\"Hello World\\"``（含反斜杠），而回写时
+    ``_dump_yaml_with_audit`` 又对 ``\\`` 和 ``"`` 各转义一次 —— 每跑一次
+    多叠一层反斜杠，形成失控爆炸（实测到 20+ 层）。修复：
+      - 双引号标量：按 YAML 规范还原 \\" \\\\ \\n \\t \\r 等转义；
+      - 单引号标量：只还原 '' -> '（YAML 单引号唯一支持的转义）。
+    """
+    if len(val) >= 2 and val.startswith('"') and val.endswith('"'):
+        inner = val[1:-1]
+        # 逆序还原，避免 \\\\" 这类组合被错误拆解
+        out_chars = []
+        k = 0
+        _MAP = {"n": "\n", "t": "\t", "r": "\r", '"': '"', "\\": "\\",
+                "0": "\0", "/": "/", "b": "\b", "f": "\f"}
+        while k < len(inner):
+            ch = inner[k]
+            if ch == "\\" and k + 1 < len(inner):
+                nx = inner[k + 1]
+                if nx in _MAP:
+                    out_chars.append(_MAP[nx])
+                    k += 2
+                    continue
+                out_chars.append(nx)
+                k += 2
+                continue
+            out_chars.append(ch)
+            k += 1
+        return "".join(out_chars)
+    if len(val) >= 2 and val.startswith("'") and val.endswith("'"):
+        return val[1:-1].replace("''", "'")
+    return val
+
+
 def _parse_yaml_minimal(text: str):
     """极简 yaml 解析（fallback）。只支持 flat 键值 + 一层嵌套 mapping。
 
     当 PyYAML 不可用或 sidecar 内容异常时使用，目的是"不破坏人类字段"
     把 audit 块写回去。复杂 sidecar 应该由人类用真 yaml 编辑。
+
+    注意：标量解析必须走 `_yaml_unquote`（还原转义），否则会引入
+    「解析不还原 / 回写再转义」的双重转义，逐次累积腐蚀（P2-93）。
     """
     out: Dict[str, Any] = {}
     lines = text.splitlines()
@@ -1313,12 +1389,8 @@ def _parse_yaml_minimal(text: str):
                     if sv.lower() in ("true", "false"):
                         sub[sk.strip()] = (sv.lower() == "true")
                     else:
-                        # 去引号
-                        if (sv.startswith('"') and sv.endswith('"')) or (
-                            sv.startswith("'") and sv.endswith("'")
-                        ):
-                            sv = sv[1:-1]
-                        sub[sk.strip()] = sv
+                        # 去引号 + 还原转义（P2-93）
+                        sub[sk.strip()] = _yaml_unquote(sv)
                     j += 1
                 out[key.strip()] = sub
                 i = j
@@ -1327,11 +1399,8 @@ def _parse_yaml_minimal(text: str):
             if val.lower() in ("true", "false"):
                 out[key.strip()] = (val.lower() == "true")
             else:
-                if (val.startswith('"') and val.endswith('"')) or (
-                    val.startswith("'") and val.endswith("'")
-                ):
-                    val = val[1:-1]
-                out[key.strip()] = val
+                # 去引号 + 还原转义（P2-93）
+                out[key.strip()] = _yaml_unquote(val)
         i += 1
     return out
 
@@ -1584,12 +1653,29 @@ def check_sidecar_field_consistency(
     return result
 
 
+# audit 块上方的分隔注释；回写时统一重建，避免重复追加
+_AUDIT_BLOCK_COMMENT = "# === audit 字段（自动维护，请勿手填内容字段）==="
+
+
 def write_sidecar_audit_block(sc_path: str, audit_fields: Dict[str, Any]) -> bool:
     """把 audit 字段合并写回 sidecar。
 
     保留原 scenario/target_capability/expected_keep/expected_compress/
     source/generated_at 等人类字段不动；只覆盖 audit 块。
     返回 True 表示写成功，False 表示失败。
+
+    **只做行编辑，绝不重新序列化人类字段（P2-92）**：
+    早期实现是把整个文件 parse 成 dict 再 dump 回去。当 PyYAML 不可用时
+    （本项目即如此）会回退到 `_parse_yaml_minimal`，后者**不做单引号解转义**；
+    而写出时 `_dump_yaml_with_audit` 又对每个 `'` 做一次 `''` 转义 —— 于是
+    每次回写都把 `''` 变成 `''''`，逐次累积腐蚀源数据
+    （samples/**/*.scenario.yaml，全量重跑一次即污染 403 个文件）。典型受害字段：
+      - `scenario`: `'... '':app:xxx'' ...'` → `'... '''':app:xxx'''' ...'`
+      - `expected_dispatch_chain`: `['a', 'b']`（YAML 流序列）
+        → 退化成加引号的字符串 `'[''a'', ''b'']'`
+    修复：audit 块之前的原始文本行**原样保留**，只重建 audit 块。audit 的 6 个
+    键均为不含单引号的简单标量（hash / 状态 / 时间戳 / 工具名 / bool），
+    重新序列化它们是安全的。
     """
     try:
         with open(sc_path, "r", encoding="utf-8") as f:
@@ -1597,32 +1683,39 @@ def write_sidecar_audit_block(sc_path: str, audit_fields: Dict[str, Any]) -> boo
     except (OSError, UnicodeDecodeError):
         return False
 
-    # 解析原字段
-    parsed: Dict[str, Any] = {}
-    try:
-        import yaml  # type: ignore
-        parsed = yaml.safe_load(text) or {}
-    except ImportError:
-        parsed = _parse_yaml_minimal(text)
-    except Exception:
-        parsed = _parse_yaml_minimal(text)
-    if not isinstance(parsed, dict):
-        parsed = {}
+    lines = text.splitlines()
+    audit_idx = None
+    for i, line in enumerate(lines):
+        if line.rstrip() == "audit:":
+            audit_idx = i
+            break
+    head = list(lines[:audit_idx]) if audit_idx is not None else list(lines)
+    # 去掉 audit 块之前的连续空行与既有 audit 注释行，避免多次回写后不断累积
+    while head and (not head[-1].strip() or head[-1].strip() == _AUDIT_BLOCK_COMMENT):
+        head.pop()
 
-    # 取出 scenario 字段（6 个 + expected_dispatch_chain）
-    scenario_fields = {
-        k: parsed.get(k, "")
-        for k in ("scenario", "target_capability", "expected_keep",
-                  "expected_compress", "source", "generated_at")
-    }
-    # 保留 expected_dispatch_chain（如果有的话）
-    dispatch_chain = parsed.get("expected_dispatch_chain")
-    if dispatch_chain:
-        scenario_fields["expected_dispatch_chain"] = dispatch_chain
-    # 写回
-    new_text = _dump_yaml_with_audit(scenario_fields, audit_fields)
+    out = list(head)
+    out.append("")
+    out.append(_AUDIT_BLOCK_COMMENT)
+    out.append("audit:")
+    for k in ("content_hash", "final_status", "llm_invoked",
+              "llm_verified_at", "last_audit_tool", "skip"):
+        v = audit_fields.get(k, "")
+        if k == "skip" or k == "llm_invoked":
+            out.append(f"  {k}: {'true' if v else 'false'}")
+        else:
+            sv = str(v or "")
+            if '"' in sv or "\\" in sv:
+                sv_safe = sv.replace("\\", "\\\\").replace('"', '\\"')
+                out.append(f'  {k}: "{sv_safe}"')
+            elif "'" in sv:
+                out.append(f"  {k}: '{sv.replace(chr(39), chr(39) * 2)}'")
+            else:
+                out.append(f"  {k}: '{sv}'")
+
+    new_text = "\n".join(out) + "\n"
     try:
-        with open(sc_path, "w", encoding="utf-8") as f:
+        with open(sc_path, "w", encoding="utf-8", newline="\n") as f:
             f.write(new_text)
     except OSError:
         return False
@@ -1658,8 +1751,23 @@ def _reconstruct_cached_record(audit: Dict[str, Any],
                                case_filename: str,
                                source: str = "sidecar",
                                plugin: str = "",
+                               prev_record: Optional[Dict[str, Any]] = None,
                                ) -> Dict[str, Any]:
-    """从 L1 sidecar audit 块重建一个 case_record（用于跳过 lint/LLM 复用结论）。"""
+    """从 L1 sidecar audit 块重建一个 case_record（用于跳过 lint/LLM 复用结论）。
+
+    腐蚀防护（P2-90）：sidecar 的 audit 块只持久化 6 个键（content_hash /
+    final_status / llm_invoked / llm_verified_at / last_audit_tool / skip），
+    **不含** command_tokens / command_families / deterministic / title_consistent
+    等派生字段。早先这里对它们硬编码空值/True，而重建出的 record 会被
+    export_case_quality 写回 quality.json；由于 content_hash 未变、final_status
+    仍为 valid，下一次运行依旧命中缓存 —— 结果是「命中一次即永久清零、不可自愈」的
+    数据腐蚀。现按两种手段修复：
+      1. command_tokens / command_families 是 content 的纯函数，命中时直接重算，
+         与全量（--no-cache）路径逐字一致；
+      2. title_consistent / deterministic / registered_title / routing_boundary_tool
+         无法从 content 重算，改从 prev_record（latest.json 中的完整 record）继承，
+         缺失时才回退骨架默认值。
+    """
     case_id = pathlib.Path(case_filename).stem
     # 如果 sidecar 有 expected_dispatch_chain，也带进 record
     dispatch_chain = None
@@ -1674,14 +1782,24 @@ def _reconstruct_cached_record(audit: Dict[str, Any],
     }
     if dispatch_chain:
         llm_judgment["dispatch_chain_confirmed"] = dispatch_chain
-    return {
+
+    # 1) content 的纯函数派生量：缓存命中也必须重算（fix #12：非 shell 类型不解析）
+    plugin_type, lint_config = get_lint_config(plugin)
+    if lint_config.get("routing_boundary_applicable", False):
+        tokens = extract_command_tokens(content)
+        full_lines = extract_command_lines(content)
+        families, _aliases = map_tokens_to_families(tokens, full_lines)
+    else:
+        tokens, families = [], set()
+
+    record = {
         "case_id": case_id,
         "filename": case_filename,
         "final_status": audit.get("final_status", "valid"),
         "registered": True,  # L1 命中意味着上次 audit 通过；registered 默认 True
         "title_consistent": True,
-        "command_tokens": [],
-        "command_families": [],
+        "command_tokens": tokens,
+        "command_families": sorted(families),
         "routing_boundary_tool": "",
         "deterministic": {
             "ok_length": True, "anchor_ok": True, "mojibake_clean": True,
@@ -1695,6 +1813,14 @@ def _reconstruct_cached_record(audit: Dict[str, Any],
         "cache_source": source,
         "content": content,
     }
+
+    # 2) 不可从 content 重算的字段：从 prev_record（latest.json 完整 record）继承
+    if prev_record:
+        for key in ("title_consistent", "deterministic", "registered_title",
+                    "routing_boundary_tool"):
+            if key in prev_record:
+                record[key] = prev_record[key]
+    return record
 
 
 # ============================================================================
@@ -1746,8 +1872,29 @@ def call_llm(env, prompt, system_prompt=None):
     return _alc.call_llm_chat(cfg, prompt, system_prompt)
 
 
+# LLM 送审样本预览的字符预算。
+SAMPLE_SNIPPET_BUDGET = 4000
+
+
+def _sample_snippet(content: str, budget: int = SAMPLE_SNIPPET_BUDGET) -> str:
+    """构造送审样本片段：短样本全量；超长样本取「前 3/4 + 尾 1/4」。
+
+    只取头部会让审查者看不到样本**尾部**的失败段与统计段——libtest 的
+    `failures:` / `test result:`、构建日志的 error 汇总、CI 的最终统计都在尾部。
+    曾因此把合规样本误判为 `fabricated`：`rust_go_plugin/case_017`（5390B）的 3 个
+    `FAILED` 与 panic 详情全在尾部，而预览只有头部，LLM 遂判「sidecar 声称有失败
+    但可见内容全部为 ok」。改为头+尾后可与 sidecar 声明对齐。
+    """
+    if len(content) <= budget:
+        return content
+    head = budget * 3 // 4
+    tail = budget - head
+    omitted = len(content) - budget
+    return f"{content[:head]}\n... ({omitted} chars omitted) ...\n{content[-tail:]}"
+
+
 def build_llm_user_prompt(plugin, case_id, content, deterministic_findings, plugin_type="shell"):
-    snippet = content if len(content) <= 4000 else content[:4000] + "\n... (truncated)"
+    snippet = _sample_snippet(content)
     return f"""Task: judge the quality of one TokenSlim sample case.
 
 Plugin: {plugin} (type: {plugin_type})
@@ -2007,12 +2154,14 @@ def export_case_quality(case_record, base_dir):
         "content_hash": case_record["content_hash"],
         "final_status": case_record["final_status"],
     }
-    with open(os.path.join(case_dir, "quality.json"), "w", encoding="utf-8") as f:
-        json.dump(payload, f, indent=4, ensure_ascii=False)
-        f.write("\n")
-    # 同步写 original.txt 以便人读
-    with open(os.path.join(case_dir, "original.txt"), "w", encoding="utf-8") as f:
-        f.write(case_record.get("content", ""))
+    # newline 必须显式钉为 "\n"：Windows 下默认文本模式会把 "\n" 转成 CRLF，
+    # 导致每次重跑都产出上千个纯行尾变化的文件；original.txt 更受 .gitattributes
+    # 的 `-text` 保护（冻结证据要求字节保真），CRLF 污染会直接触发 git diff --check
+    # 失败并破坏冻结哈希。
+    atomic_write_json(os.path.join(case_dir, "quality.json"), payload)
+    # 同步写 original.txt 以便人读；二进制写以保证字节保真（不做任何换行转换）
+    with open(os.path.join(case_dir, "original.txt"), "wb") as f:
+        f.write(case_record.get("content", "").encode("utf-8"))
 
 
 # ============================================================================
@@ -2683,7 +2832,12 @@ def main():
             sidecar_audit = read_sidecar_audit_block(plugin, fname)
             curr_llm_invoked = bool(args.llm_audit or args.require_llm_audit)
             if _sidecar_cache_hit(sidecar_audit, content_hash, curr_llm_invoked):
-                rec = _reconstruct_cached_record(sidecar_audit, content, fname, source="sidecar", plugin=plugin)
+                rec = _reconstruct_cached_record(
+                    sidecar_audit, content, fname, source="sidecar", plugin=plugin,
+                    # 传入 latest.json 中的完整 record，用于继承无法从 content
+                    # 重算的字段（P2-90 腐蚀防护）
+                    prev_record=cache_index.get(content_hash),
+                )
                 case_records.append(rec)
                 cache_hits += 1
                 l1_hits += 1
@@ -3088,6 +3242,9 @@ def main():
         "case_count": len(case_records),
         "registered_count": sum(1 for r in case_records if r["registered"]),
         "duplicate_groups": duplicates,
+        # 仅在超大样本触发降采样比对时写入（默认不出现，保持既有报告结构不变）
+        **({"duplicate_detection_truncated": True}
+           if getattr(detect_duplicates, "last_truncated", False) else {}),
         "command_family_coverage": {
             "target_count": coverage["target_count"],
             "covered_count": coverage["covered_count"],
@@ -3143,7 +3300,7 @@ def main():
     md = render_markdown_report(
         plugin, version, out_dir, case_records, coverage, duplicates, recommendations
     )
-    with open(md_path, "w", encoding="utf-8") as f:
+    with open(md_path, "w", encoding="utf-8", newline="\n") as f:
         f.write(md)
 
     # 6) 总结打印

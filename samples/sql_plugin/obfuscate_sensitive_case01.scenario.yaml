@@ -1,0 +1,12 @@
+scenario: 'SQL 日志含 password 赋值、postgres 连接串与 Bearer JWT——P2-79 脱敏契约测试专用合成样本。'
+target_capability: 'P2-79 真实脱敏契约测试（obfuscate_sensitive=true 路径）'
+expected_keep: 'SQL 结构与日志骨架（时间戳/级别/SELECT 语句结构）'
+expected_compress: 'password/连接串凭证/Bearer JWT 值替换为 [TS_*] 占位符（开启脱敏时）；默认配置下产物与原文一致（门控回归）'
+source: 'test_synthetic'
+generated_at: '2026-09-10T00:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+# 注：本文件为 P2-79 脱敏契约测试专用合成样本，不注册进 showcase 审计案例表。
+audit:
+  content_hash: 'n/a-test-synthetic'
+  final_status: 'valid'

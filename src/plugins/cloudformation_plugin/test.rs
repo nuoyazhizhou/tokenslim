@@ -5,6 +5,7 @@ use crate::core::text_slicer::SliceType;
 use crate::plugins::cloudformation_plugin::CloudFormationPlugin;
 use crate::plugins::test_utils::{compress_to_string, make_log_slice, read_sample_file};
 
+/// 测试：CloudFormation 事件日志被插件识别。
 #[test]
 fn detects_cloudformation_events() {
     let plugin = CloudFormationPlugin::new();
@@ -12,6 +13,7 @@ fn detects_cloudformation_events() {
     assert!(plugin.detect(&make_log_slice(&raw)).is_some());
 }
 
+/// 测试：CloudFormation 事件日志被压缩为含状态计数与失败行的摘要且不膨胀。
 #[test]
 fn compresses_cloudformation_failures() {
     let plugin = CloudFormationPlugin::new();

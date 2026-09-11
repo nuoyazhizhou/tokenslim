@@ -37,12 +37,14 @@ pub fn prefer_non_expanding(raw: &str, compacted: String) -> String {
 mod tests {
     use super::prefer_non_expanding;
 
+    /// 测试：压缩结果等长或更短时保留压缩结果。
     #[test]
     fn keeps_compacted_when_equal_or_shorter() {
         assert_eq!(prefer_non_expanding("abc", "ab".to_string()), "ab");
         assert_eq!(prefer_non_expanding("abc", "abc".to_string()), "abc");
     }
 
+    /// 测试：压缩结果变长时回退原文。
     #[test]
     fn falls_back_to_raw_when_compacted_expands() {
         let raw = "hi";
@@ -50,6 +52,7 @@ mod tests {
         assert_eq!(prefer_non_expanding(raw, compact), "hi");
     }
 
+    /// 测试：trimmed 等长但完整字节数因尾部换行增多时，按完整字节比较回退原文。
     #[test]
     fn falls_back_when_trailing_newline_grows_full_bytes() {
         // trimmed 相等但 compacted 完整字节多 1，应回退 raw。
@@ -59,6 +62,7 @@ mod tests {
         assert_eq!(prefer_non_expanding(raw, compact), "abc");
     }
 
+    /// 测试：两端均带尾部换行且完整字节数相等时保留压缩结果。
     #[test]
     fn keeps_compacted_when_full_bytes_equal() {
         // 两端都带尾换行且完整字节相等，保留 compacted。
@@ -67,6 +71,7 @@ mod tests {
         assert_eq!(prefer_non_expanding(raw, compact), "abc\n");
     }
 
+    /// 测试：CRLF 与 LF 尾部按对称裁剪后比较，更短的压缩结果被保留。
     #[test]
     fn trims_crlf_symmetrically() {
         // Windows 尾换行 `\r\n`（2 bytes）vs Unix `\n`（1 byte）：

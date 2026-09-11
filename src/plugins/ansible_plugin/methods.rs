@@ -17,6 +17,7 @@ use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
 impl AnsiblePlugin {
+    /// 创建插件实例：初始化名称(ansible)与优先级(91)。
     pub fn new() -> Self {
         Self {
             name: "ansible",
@@ -26,14 +27,17 @@ impl AnsiblePlugin {
 }
 
 impl Plugin for AnsiblePlugin {
+    /// 返回插件名称标识 "ansible"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级(91)，用于压缩调度排序。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片文本是否属于 Ansible playbook 输出（play [/task [/play recap/ansible-playbook），命中返回置信度 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(
@@ -43,6 +47,7 @@ impl Plugin for AnsiblePlugin {
         .then_some(0.9)
     }
 
+    /// 压缩 Ansible 日志：剥离 ANSI、调用 compact_ansible 聚合输出，并经 ROI 门控确保不扩张。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -61,11 +66,13 @@ impl Plugin for AnsiblePlugin {
         }
     }
 
+    /// 解压 Ansible 日志：借助字典还原压缩时替换的变量/主机名等宏。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 压缩 Ansible playbook 输出：锚定原文、聚合 TASK/HANDLER 的主机状态、折叠 PLAY RECAP，并保留错误信号行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_ansible(text: &str) -> String {
     static TASK_RE: OnceLock<Regex> = OnceLock::new();
@@ -183,6 +190,7 @@ fn compact_ansible(text: &str) -> String {
     fallback_if_anchor_only(lines, text)
 }
 
+/// 从任务详情中提取 loop item 名称（(item=XXX)），返回去空格后的 item 标识，否则返回 None。
 #[tracing::instrument(level = "trace", skip_all)]
 fn compact_ansible_loop_item(detail: &str) -> Option<String> {
     static ITEM_RE: OnceLock<Regex> = OnceLock::new();
@@ -192,6 +200,7 @@ fn compact_ansible_loop_item(detail: &str) -> Option<String> {
         .map(|caps| compact_spaces(&caps[1]))
 }
 
+/// 压缩主机列表：将 host[item,...] 形式按 host 分组聚合为 host[a,b,c]，零散主机直接保留，最后逗号拼接。
 #[tracing::instrument(level = "trace", skip_all)]
 fn compact_ansible_hosts(hosts: &[String]) -> String {
     static ITEM_HOST_RE: OnceLock<Regex> = OnceLock::new();
@@ -215,6 +224,7 @@ fn compact_ansible_hosts(hosts: &[String]) -> String {
     compacted.join(",")
 }
 
+/// 压缩单条任务详情：提取 msg 字段，或对 failed/unreachable/error 类状态保留压缩后的原始详情，否则返回 None。
 #[tracing::instrument(level = "trace", skip_all)]
 fn compact_ansible_detail(status: &str, detail: &str) -> Option<String> {
     static MSG_RE: OnceLock<Regex> = OnceLock::new();
@@ -235,6 +245,7 @@ fn compact_ansible_detail(status: &str, detail: &str) -> Option<String> {
     None
 }
 
+/// 检测并压缩 Ansible YAML 语法错误块：提取 ERROR! 消息与位置(文件:行:列)，返回单行错误摘要，否则返回 None。
 #[tracing::instrument(level = "trace", skip_all)]
 fn compact_ansible_syntax_error(text: &str) -> Option<Vec<String>> {
     static LOC_RE: OnceLock<Regex> = OnceLock::new();

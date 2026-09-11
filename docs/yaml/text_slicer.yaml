@@ -1,0 +1,276 @@
+module:
+  name: text_slicer
+  path: src/core/text_slicer
+  dependencies:
+    - regex = "1.10"      # 用于未来正则切片
+    - memchr = "2.5"      # 可选，用于加速扫描
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{TextSlicer, SlicerConfig, Slice, SliceType, SliceId};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::borrow::Cow;
+        use crate::core::stream_reader::FileMetadata;
+
+        /// 切片唯一标识，全局递增
+        pub type SliceId = u64;
+
+        /// 切片初步类型（由切片器推断，并非最终识别结果）
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        pub enum SliceType {
+            Line,
+            Paragraph,
+            CodeBlock,
+            HtmlBlock,
+            JsonBlock,
+            StackTrace,
+            LogBlock,
+            Binary,
+            Unknown,
+        }
+
+        /// 切片输出结构，text 使用 Cow 以支持借用或拥有数据
+        #[derive(Debug)]
+        pub struct Slice<'a> {
+            pub id: SliceId,
+            pub text: Cow<'a, str>,
+            pub slice_type: SliceType,
+            pub offset: usize,
+            pub line_start: usize,
+            pub line_end: usize,
+            pub file_metadata: Option<&'a FileMetadata>,
+        }
+
+        /// 切片器配置
+        #[derive(Clone)]
+        pub struct SlicerConfig {
+            pub enable_line: bool,
+            pub enable_paragraph: bool,
+            pub enable_indent: bool,
+            pub enable_tags: bool,
+            pub enable_regex: bool,
+            pub enable_hybrid: bool,
+        }
+
+        /// 切片器本身（可持有状态）
+        pub struct TextSlicer {
+            config: SlicerConfig,
+            next_id: SliceId,
+            paragraph_buffer: Vec<String>,
+            // 其他策略的内部状态...
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use crate::core::stream_reader::SliceInput;
+
+        impl TextSlicer {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 TextSlicer 实例
+            ///
+            /// # 参数
+            /// - `config`: 切片器配置
+            ///
+            /// # 返回值
+            /// - `Self`: TextSlicer 实例
+            ///
+            /// # 实现要求
+            /// 1. 初始化内部状态，包括 ID 计数器。
+            /// 2. 根据配置启用相应策略。
+            ///
+            /// # 测试要点
+            /// - 配置正确应用。
+            /// - ID 计数器从 0 或 1 开始。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn new(config: SlicerConfig) -> Self {
+                todo!()
+            }
+
+            /// 按行切片
+            ///
+            /// # 参数
+            /// - `input`: 从 StreamReader 获得的输入片段
+            ///
+            /// # 返回值
+            /// - `Slice`: 生成的切片
+            ///
+            /// # 实现要求
+            /// 1. 直接借用输入文本，`text` 为 `Cow::Borrowed(input.raw)`。
+            /// 2. 使用输入的行号和偏移量填充切片字段。
+            /// 3. `slice_type` 设置为 `SliceType::Line`。
+            /// 4. `line_start` 和 `line_end` 均为输入的行号。
+            /// 5. `id` 递增。
+            ///
+            /// # 测试要点
+            /// - 单行输入 → 输出 Slice，内容、行号、偏移正确。
+            /// - 空行 → 输出 Slice，text 为空字符串。
+            /// - 连续调用返回递增的 ID。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn slice_line<'a>(&mut self, input: &SliceInput<'a>) -> Slice<'a> {
+                todo!()
+            }
+
+            /// 按空行切片
+            ///
+            /// # 参数
+            /// - `input`: 输入片段
+            ///
+            /// # 返回值
+            /// - `Option<Slice>`: 当段落完成时返回 Some(Slice)，否则返回 None
+            ///
+            /// # 实现要求
+            /// 1. 如果当前行非空，将其追加到内部缓冲区。
+            /// 2. 如果当前行为空行，且缓冲区非空，则拼接缓冲区所有行（用 `\n` 连接）生成一个新 String，
+            ///    输出 `Slice`，`text` 为 `Cow::Owned`，类型为 `SliceType::Paragraph`。
+            /// 3. 清空缓冲区。
+            /// 4. 如果遇到空行但缓冲区为空，则直接输出一个空行切片（类型 `Line`）。
+            /// 5. 行号范围取第一行和最后一行的行号。
+            ///
+            /// # 测试要点
+            /// - 连续非空行 → 累积，遇到空行时输出段落。
+            /// - 最后无空行 → 需要 `flush` 输出。
+            /// - 空行单独处理。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn slice_paragraph<'a>(&mut self, input: &SliceInput<'a>) -> Option<Slice<'a>> {
+                todo!()
+            }
+
+            /// 刷新缓冲区，输出所有剩余切片
+            ///
+            /// # 返回值
+            /// - `Vec<Slice>`: 所有尚未输出的切片
+            ///
+            /// # 实现要求
+            /// 1. 如果有未完成的段落，将其输出。
+            /// 2. 清空所有内部缓冲区。
+            /// 3. 返回生成的切片列表。
+            ///
+            /// # 测试要点
+            /// - 确保所有累积数据被输出。
+            /// - 多次调用 flush，第二次应返回空。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// MVP 优先级
+            pub fn flush(&mut self) -> Vec<Slice> {
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+
+            /// 按缩进切片
+            ///
+            /// # 参数
+            /// - `input`: 输入片段
+            ///
+            /// # 返回值
+            /// - `Option<Slice>`: 当代码块完成时返回 Some，否则 None
+            ///
+            /// # 实现要求
+            /// 1. 计算当前行缩进（行首空格数）。
+            /// 2. 维护缩进栈，当缩进变化时输出前一个块。
+            /// 3. 文本拼接时保留换行。
+            /// 4. 类型为 `SliceType::CodeBlock`。
+            ///
+            /// # 依赖
+            /// 无
+            ///
+            /// 未来优先级
+            pub fn slice_by_indent<'a>(&mut self, input: &SliceInput<'a>) -> Option<Slice<'a>> {
+                todo!()
+            }
+
+            /// 按标签切片
+            ///
+            /// # 参数
+            /// - `input`: 输入片段
+            ///
+            /// # 返回值
+            /// - `Option<Slice>`: 当标签块完成时返回 Some，否则 None
+            ///
+            /// # 实现要求
+            /// 1. 使用轻量 HTML 解析器识别标签。
+            /// 2. 维护标签栈，遇到开始标签压栈，结束标签出栈。
+            /// 3. 当栈为空时，当前标签块结束，输出 Slice。
+            /// 4. 文本为完整标签内容，类型 `HtmlBlock`。
+            ///
+            /// # 依赖
+            /// - 可能引入 `html5gum` 或类似 crate。
+            ///
+            /// 未来优先级
+            pub fn slice_by_tags<'a>(&mut self, input: &SliceInput<'a>) -> Option<Slice<'a>> {
+                todo!()
+            }
+
+            /// 按正则切片
+            ///
+            /// # 参数
+            /// - `input`: 输入片段
+            /// - `patterns`: 正则表达式列表（按优先级排序）
+            ///
+            /// # 返回值
+            /// - `Option<Slice>`: 当匹配到完整块时返回 Some，否则 None
+            ///
+            /// # 实现要求
+            /// 1. 对当前行，依次用每个正则尝试匹配。
+            /// 2. 如果匹配到某个正则，则开始累积连续匹配相同正则的行。
+            /// 3. 当行不再匹配时，输出累积的块。
+            /// 4. 类型由规则决定（如 `StackTrace`）。
+            ///
+            /// # 依赖
+            /// - `regex` crate
+            ///
+            /// 未来优先级
+            pub fn slice_by_regex<'a>(&mut self, input: &SliceInput<'a>, patterns: &[regex::Regex]) -> Option<Slice<'a>> {
+                todo!()
+            }
+
+            /// 混合切片
+            ///
+            /// # 参数
+            /// - `input`: 输入片段
+            ///
+            /// # 返回值
+            /// - `Option<Slice>`: 按优先级依次尝试各策略
+            ///
+            /// # 实现要求
+            /// 1. 按配置的优先级顺序调用各策略的切片方法。
+            /// 2. 第一个返回 Some 的策略作为结果。
+            /// 3. 如果所有策略均返回 None，则 fallback 到按行切片。
+            ///
+            /// # 依赖
+            /// 所有已启用的策略
+            ///
+            /// 未来优先级
+            pub fn slice_hybrid<'a>(&mut self, input: &SliceInput<'a>) -> Option<Slice<'a>> {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

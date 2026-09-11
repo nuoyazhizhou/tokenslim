@@ -8,6 +8,7 @@ mod tests {
     use crate::plugins::android_gradle_plugin::AndroidGradlePlugin;
     use std::borrow::Cow;
 
+    /// 从 `samples/android_gradle_plugin` 目录读取示例日志文本，文件缺失时返回空串。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,6 +18,7 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
+    /// 用插件对文本切片做压缩，拼接所有 `Text` token 组成紧凑字符串返回。
     fn compress_text(plugin: &AndroidGradlePlugin, text: &str) -> String {
         let slice = Slice {
             id: 1,
@@ -42,6 +44,7 @@ mod tests {
             .collect::<String>()
     }
 
+    /// 生成 Android/Gradle 压缩全景 showcase 报告：遍历多组样例，输出原文/压缩行数字节与压缩率到文件。
     #[test]
     fn generate_android_gradle_showcase_report() {
         let plugin = AndroidGradlePlugin::new();
@@ -148,5 +151,38 @@ mod tests {
             &all_output,
         )
         .unwrap();
+    }
+
+    /// 冻结契约回归（独立复审裁决 2026-08-19，路径 2）：
+    /// case_009 的 compact 展示文本必须精确为 138B / SHA-256 b4772f75…。
+    /// 该测试即受控生成器门禁：直接读取权威样本、调用插件 compress、
+    /// 断言冻结基线；不读取 target/ 报告。生成命令：
+    /// `cargo test --release case_009_gradle_d8_compact_frozen_baseline`
+    #[test]
+    fn case_009_gradle_d8_compact_frozen_baseline() {
+        use sha2::{Digest, Sha256};
+
+        let raw = read_sample("case_009_gradle_d8.log");
+        assert_eq!(raw.len(), 427, "权威输入应为 427B，实际 {}", raw.len());
+        assert!(!raw.contains('\r'), "权威输入应为 LF-only");
+        let compacted = compress_text(&AndroidGradlePlugin::new(), &raw);
+        let mut h = Sha256::new();
+        h.update(compacted.as_bytes());
+        let digest = h
+            .finalize()
+            .iter()
+            .map(|b| format!("{:02x}", b))
+            .collect::<String>();
+        assert_eq!(
+            compacted.len(),
+            221,
+            "冻结契约：压缩产物应精确 221B，实际 {}",
+            compacted.len()
+        );
+        assert_eq!(
+            digest,
+            "1cb17227843c9c9a52ba468e8ce5b603e9b39825e4154ba74141aa82c3b7c665",
+            "冻结契约：压缩产物 SHA-256 应等于冻结哈希 1cb17227…（SAP-0001 修复后重置，保留 D8 诊断行）"
+        );
     }
 }

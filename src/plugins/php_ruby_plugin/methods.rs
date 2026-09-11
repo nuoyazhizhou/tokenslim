@@ -9,6 +9,7 @@ use regex::Regex;
 use std::borrow::Cow;
 
 impl PhpRubyPlugin {
+    /// 创建 PhpRubyPlugin 实例（名称 php_ruby，优先级 85，默认配置）。
     pub fn new() -> Self {
         Self {
             name: "php_ruby",
@@ -25,13 +26,16 @@ impl PhpRubyPlugin {
 }
 
 impl Plugin for PhpRubyPlugin {
+    /// 返回插件名称 "php_ruby"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 85。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：PHP 致命错误/堆栈特征得 0.9，Ruby/Rails 特征得 0.9，Whoops 错误页得 0.95。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
 
@@ -62,6 +66,7 @@ impl Plugin for PhpRubyPlugin {
         None
     }
 
+    /// 压缩切片：按配置剥离 HTML 包装标签，提取纯文本日志。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -83,10 +88,12 @@ impl Plugin for PhpRubyPlugin {
         }
     }
 
+    /// 解压：原文透传。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
     }
 
+    /// 归一化：剥离 HTML 并抹除 32 位 hex ID（用于 diff 比对）。
     fn normalize(&self, text: &str) -> String {
         let cleaned = if self.config.strip_html_wrappers {
             self.strip_html(text)
@@ -97,18 +104,10 @@ impl Plugin for PhpRubyPlugin {
         let re = Regex::new(r"\b[0-9a-f]{32}\b").unwrap();
         re.replace_all(&cleaned, "[ID]").to_string()
     }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<PhpRubyConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
-    }
 }
 
 impl Clone for PhpRubyPlugin {
+    /// 克隆插件实例：复制名称、优先级与配置。
     fn clone(&self) -> Self {
         Self {
             name: self.name,

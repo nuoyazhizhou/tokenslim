@@ -5,6 +5,8 @@ use std::fs;
 use std::time::Instant;
 use tokenslim::core::content_analyzer::drain::{DrainConfig, DrainManager};
 
+/// 入口：加载 `benchmarks/input_128kb.txt`（缺失则报错退出），
+/// 依次用 3 组（相似度阈值, 深度）参数组合调用 `run_test` 观察模板生成效果。
 fn main() {
     let test_file = "benchmarks/input_128kb.txt"; // 或者使用更大的日志文件
     if !std::path::Path::new(test_file).exists() {
@@ -29,6 +31,8 @@ fn main() {
     }
 }
 
+/// 用指定（相似度阈值, 深度）构造 DrainConfig 运行一次聚类：
+/// 逐行喂入 `DrainManager`，输出耗时、模板总数、Top5 覆盖率与最大模板示例。
 fn run_test(lines: &[&str], threshold: f32, depth: usize) {
     let config = DrainConfig {
         sim_threshold: threshold,

@@ -5,6 +5,7 @@ use crate::core::text_slicer::SliceType;
 use crate::plugins::helm_plugin::HelmPlugin;
 use crate::plugins::test_utils::{compress_to_string, make_log_slice, read_sample_file};
 
+/// 测试：helm install 输出被插件识别。
 #[test]
 fn detects_helm_output() {
     let plugin = HelmPlugin::new();
@@ -12,6 +13,7 @@ fn detects_helm_output() {
     assert!(plugin.detect(&make_log_slice(&raw)).is_some());
 }
 
+/// 测试：helm 输出被压缩为含状态与资源列表的摘要且不膨胀。
 #[test]
 fn compresses_helm_resources() {
     let plugin = HelmPlugin::new();

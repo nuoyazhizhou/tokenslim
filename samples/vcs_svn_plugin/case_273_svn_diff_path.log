@@ -1,18 +1,12 @@
 svn diff src/core/text_slicer/methods.rs
-diff --git a/src/core/text_slicer/methods.rs b/src/core/text_slicer/methods.rs
-index 1234567..7890123 100644
---- a/src/core/text_slicer/methods.rs
-+++ b/src/core/text_slicer/methods.rs
-@@ -1,5 +1,10 @@
- use std::sync::Arc;
-+use std::thread;
-+use std::sync::Mutex;
-
- pub fn slice_by_lines(content: &str, max_lines: usize) -> Vec<String> {
-     content.lines().collect()
+Index: src/core/text_slicer/methods.rs
+===================================================================
+--- src/core/text_slicer/methods.rs	(revision 200)
++++ src/core/text_slicer/methods.rs	(working copy)
+@@ -45,7 +45,9 @@
+ pub fn split_token(input: &str) -> Vec<String> {
+     input.split_whitespace().map(String::from).collect()
  }
 +
-+pub fn process_parallel(content: &str) -> Vec<String> {
-+    // Parallel processing implementation
-+    Vec::new()
-+}
++// 新增：按分隔符拆分的并行入口
++pub fn split_split_parallel(input: &str) -> Vec<String> {

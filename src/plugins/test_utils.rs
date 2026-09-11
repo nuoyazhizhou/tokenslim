@@ -96,6 +96,8 @@ pub fn compress_to_string<P: Plugin>(plugin: &P, text: &str, slice_type: SliceTy
 /// 对给定插件和文本执行压缩，返回 `(compact_string, dict_engine)`。
 ///
 /// 适用于需要做 decompress 往返验证的测试（如 json / yaml 插件）。
+/// 返回的字符串仅拼接 Token::Text；非文本令牌不会被串行化到该字符串中。
+/// 需要语义完整的往返断言时，调用方必须结合返回的 DictionaryEngine 进行解压。
 pub fn compress_with_dict<P: Plugin>(
     plugin: &P,
     text: &str,
@@ -124,6 +126,75 @@ pub fn vcs_sample_dir(plugin_dir: &str) -> PathBuf {
     PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("samples")
         .join(plugin_dir)
+}
+
+/// 将字典引擎快照扁平化为 `token -> 原文` 的 JSON 字符串，供审计 dictside 侧通道携带。
+///
+/// 覆盖全部可逆 token 前缀（`$PK/$P/$D/$M/$C/$FL`）对应的 packages/paths/directories/
+/// macros/flags/files 映射；**仅保留 `compact` 中实际引用的 token**（用 `$<前缀><数字>` 匹配），
+/// 避免把压缩器内部生成但未落入 compact 的中间 token（如 web_log 的 $M UA 宏）泄漏成噪声字典。
+/// 用 `BTreeMap` 保证序列化顺序稳定、审计报告可复现；无引用 token 时返回空串。
+pub fn full_dict_json(engine: &DictionaryEngine, compact: &str) -> String {
+    use std::collections::{BTreeMap, HashMap};
+
+    let snap = engine.snapshot();
+    let mut merged: HashMap<String, String> = HashMap::new();
+    merged.extend(snap.paths.iter().map(|(k, v)| (k.clone(), v.clone())));
+    merged.extend(snap.directories.iter().map(|(k, v)| (k.clone(), v.clone())));
+    merged.extend(snap.packages.iter().map(|(k, v)| (k.clone(), v.clone())));
+    merged.extend(snap.macros.iter().map(|(k, v)| (k.clone(), v.clone())));
+    merged.extend(snap.flags.iter().map(|(k, v)| (k.clone(), v.clone())));
+    merged.extend(snap.files.iter().map(|(k, v)| (k.clone(), v.clone())));
+    if merged.is_empty() {
+        return String::new();
+    }
+    // 从 compact 中提取所有 `$<前缀><数字>` token，只保留被引用的字典项。
+    let referenced = collect_tokens(compact);
+    if referenced.is_empty() {
+        return String::new();
+    }
+    let mut kept = BTreeMap::new();
+    for tok in referenced {
+        if let Some(v) = merged.get(&tok) {
+            kept.insert(tok, v.clone());
+        }
+    }
+    if kept.is_empty() {
+        return String::new();
+    }
+    serde_json::to_string(&kept).unwrap_or_default()
+}
+
+/// 扫描文本中的 `$PKn/$Pn/$Dn/$Mn/$Cn/$FLn` 可逆 token（长前缀 `$PK` 优先判），返回去重的 token 集合。
+fn collect_tokens(text: &str) -> std::collections::BTreeSet<String> {
+    let mut out = std::collections::BTreeSet::new();
+    let bytes: Vec<char> = text.chars().collect();
+    let mut i = 0;
+    while i < bytes.len() {
+        if bytes[i] != '$' {
+            i += 1;
+            continue;
+        }
+        let rest: String = bytes[i + 1..].iter().collect();
+        // 长前缀优先（$PK 必须比 $P 先判）。匹配后直接推进，避免 `$X5` 之类误匹配。
+        for p in ["PK", "P", "D", "M", "C", "FL"] {
+            if rest.starts_with(p) {
+                let mut j = p.len();
+                let mut digit_ok = false;
+                while j < rest.len() && rest.as_bytes()[j].is_ascii_digit() {
+                    j += 1;
+                    digit_ok = true;
+                }
+                if digit_ok {
+                    out.insert(format!("${}{}", p, &rest[p.len()..j]));
+                    i += 1 + p.len() + (j - p.len());
+                    break;
+                }
+            }
+        }
+        i += 1;
+    }
+    out
 }
 
 /// VCS 插件专用：从 `samples/<plugin_dir>/<stem>.log` 读取测试用例。

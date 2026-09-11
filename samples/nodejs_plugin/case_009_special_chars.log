@@ -1,2 +1,3 @@
+$ node parser.js
 Error: Invalid character '�' at position 42
     at parse (/app/parser.js:23:15)

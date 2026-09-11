@@ -10,7 +10,7 @@ pub struct DotNetConfig {
 }
 
 impl Default for DotNetConfig {
-    /// 提供该插件类型的默认配置实现。
+    /// 构造 DotNetConfig 默认配置：折叠堆栈跟踪、清理 MSBuild 输出、提取命名空间均开启。
     fn default() -> Self {
         DotNetConfig {
             fold_stack_traces: true,

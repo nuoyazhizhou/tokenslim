@@ -1,0 +1,14 @@
+# 冻结基线字节精确性治理：审计用例原始输入必须逐字节保真，
+# 禁止 git 在提交时将 CRLF 归一化为 LF（否则会破坏 2B CRLF 等边界用例的冻结哈希）。
+# -text：不做任何行尾转换，进出仓库均保持原始字节。
+# -whitespace：完全关闭空白检查（含 trailing whitespace 与 cr-at-eol）。
+#   该文件是外部日志样本的逐字节镜像，样本本身就含有 shell 提示符后的尾随空格
+#   （如 `user@ubuntu:~$ `）以及 CRLF 行终止符，均属真实数据而非编辑污染；
+#   若只豁免 cr-at-eol，git diff --check 仍会对这些合法字节报 trailing whitespace。
+# 仅作用于 docs/audit 下的用例 original.txt；其他文件不受影响。
+docs/audit/**/cases/**/original.txt -text -whitespace
+
+# 硬编码门禁基线：由 scripts/audit_hardcoded_i18n.py --update-baseline 生成，
+# 内容为 UTF-8 JSON。固定为 LF 行尾以保证跨平台生成的基线字节一致
+# （避免 Windows CRLF / Unix LF 差异造成无意义的全文件 diff）。
+scripts/hardcoded_i18n_baseline.json text eol=lf

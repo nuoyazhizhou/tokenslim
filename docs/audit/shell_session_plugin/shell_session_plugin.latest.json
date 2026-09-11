@@ -1,7 +1,7 @@
 {
     "track": "shell_session_plugin",
-    "version": "all_20260624-175500",
-    "generated_at": "2026-06-24T17:55:06.096463",
+    "version": "v20260911_r2",
+    "generated_at": "2026-09-11T14:34:38.575068",
     "report_path": "target\\shell_session_plugin_compact_showcase_report.txt",
     "case_count": 80,
     "cases": [
@@ -37,10 +37,10 @@
         },
         {
             "case_id": "case_004_bash_set_x_fail",
-            "original_lines": 8,
-            "original_bytes": 186,
-            "compact_lines": 8,
-            "compact_bytes": 186,
+            "original_lines": 9,
+            "original_bytes": 208,
+            "compact_lines": 9,
+            "compact_bytes": 208,
             "compression_pct": 0.0,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
@@ -56,7 +56,7 @@
             "semantic_gate_failures": ""
         },
         {
-            "case_id": "case_006_fish_syntax",
+            "case_id": "case_006_fish_unexpected_end",
             "original_lines": 3,
             "original_bytes": 90,
             "compact_lines": 3,
@@ -87,10 +87,10 @@
         },
         {
             "case_id": "case_009_powershell_parameter_binding_exception",
-            "original_lines": 9,
-            "original_bytes": 482,
-            "compact_lines": 9,
-            "compact_bytes": 482,
+            "original_lines": 7,
+            "original_bytes": 479,
+            "compact_lines": 7,
+            "compact_bytes": 479,
             "compression_pct": 0.0,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
@@ -217,10 +217,10 @@
         },
         {
             "case_id": "case_022_ci_set_x_trace",
-            "original_lines": 43,
-            "original_bytes": 1758,
-            "compact_lines": 43,
-            "compact_bytes": 1715,
+            "original_lines": 44,
+            "original_bytes": 1780,
+            "compact_lines": 44,
+            "compact_bytes": 1737,
             "compression_pct": 2.4,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
@@ -349,9 +349,9 @@
             "case_id": "case_035_bash_tar",
             "original_lines": 6,
             "original_bytes": 168,
-            "compact_lines": 3,
-            "compact_bytes": 99,
-            "compression_pct": 41.1,
+            "compact_lines": 6,
+            "compact_bytes": 164,
+            "compression_pct": 2.4,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -699,9 +699,9 @@
             "case_id": "case_070_bash_zip",
             "original_lines": 9,
             "original_bytes": 348,
-            "compact_lines": 5,
-            "compact_bytes": 169,
-            "compression_pct": 51.4,
+            "compact_lines": 9,
+            "compact_bytes": 348,
+            "compression_pct": 0.0,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },
@@ -709,9 +709,9 @@
             "case_id": "case_071_bash_unzip",
             "original_lines": 13,
             "original_bytes": 361,
-            "compact_lines": 9,
-            "compact_bytes": 179,
-            "compression_pct": 50.4,
+            "compact_lines": 13,
+            "compact_bytes": 361,
+            "compression_pct": 0.0,
             "semantic_gate_pass": true,
             "semantic_gate_failures": ""
         },

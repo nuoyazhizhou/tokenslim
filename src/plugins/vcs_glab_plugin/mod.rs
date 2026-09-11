@@ -15,7 +15,6 @@
 //! - 噪声行（如 is_glab_noise, is_glab_view_noise）
 //! - 创建过程中的提示行（如 Creating merge request）
 pub mod methods;
-pub mod parser;
 #[cfg(test)]
 mod showcase;
 #[cfg(test)]

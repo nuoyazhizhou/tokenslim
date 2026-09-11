@@ -1,0 +1,15 @@
+scenario: '运行 ar rcs -v 创建 librender.a 归档，输出创建提示 ar: creating 与逐成员添加记录 a - <path>，成员含嵌套目录路径，区别于 ar -t 只读清单。'
+target_capability: 'binutils ar rcs 创建归档 verbose 压缩（保留 $AR_CREATE 添加成员目录与归档名，折叠创建命令行）'
+expected_keep: 'core/render/shader.o'
+expected_compress: 'ar rcs -v librender.a'
+source: 'llm'
+generated_at: '2026-09-03T08:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'db9de0fc7893e86fd8ec10c490647d52f54af9792d61211aed91a0d995cd608d'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

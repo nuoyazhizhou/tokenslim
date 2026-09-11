@@ -38,13 +38,12 @@ const DEFAULT_COMPRESS_WHITELIST: &[&str] = &[
     // === VCS (11) ===
     "git", "svn", "hg", "fossil", "p4", "bzr", "cvs", "darcs", "git-lfs", "glab", "gh",
     // === Build/Test (12) ===
-    "make", "cmake", "ninja", "meson", "gradle", "mvn", "ant", "sbt", "msbuild",
-    "dotnet", "cargo", "rustc",
-    // === Package Manager (7) ===
+    "make", "cmake", "ninja", "meson", "gradle", "mvn", "ant", "sbt", "msbuild", "dotnet", "cargo",
+    "rustc", // === Package Manager (7) ===
     "npm", "yarn", "pnpm", "npx", "pip", "go", "javac",
     // === 简单输出工具 (15) ===
-    "ls", "dir", "cat", "type", "head", "tail", "wc", "grep", "find",
-    "where", "which", "tree", "du", "df", "sort",
+    "ls", "dir", "cat", "type", "head", "tail", "wc", "grep", "find", "where", "which", "tree",
+    "du", "df", "sort",
 ];
 
 /// L1 默认: 已知交互式命令 (tty_support_list) —— 走 ConPTY 转发
@@ -54,19 +53,69 @@ const DEFAULT_COMPRESS_WHITELIST: &[&str] = &[
 /// 调用 `python script.py`, 走 ConPTY 转发是安全的 (子进程仍能拿到 tty).
 const DEFAULT_TTY_SUPPORT_LIST: &[&str] = &[
     // === 编辑器 (12) ===
-    "vim", "vi", "nvim", "emacs", "nano", "pico", "code", "subl", "micro",
-    "helix", "hx", "kak", "kakoune", "neovide",
+    "vim",
+    "vi",
+    "nvim",
+    "emacs",
+    "nano",
+    "pico",
+    "code",
+    "subl",
+    "micro",
+    "helix",
+    "hx",
+    "kak",
+    "kakoune",
+    "neovide",
     // === REPL / 脚本语言 (20) ===
-    "python", "python3", "ipython", "node", "deno", "bun", "irb", "ruby",
-    "pry", "scala", "ghci", "ghcup", "julia", "R", "Rscript", "lua", "perl",
-    "php", "sqlite3", "mysql", "psql", "mongosh", "redis-cli",
+    "python",
+    "python3",
+    "ipython",
+    "node",
+    "deno",
+    "bun",
+    "irb",
+    "ruby",
+    "pry",
+    "scala",
+    "ghci",
+    "ghcup",
+    "julia",
+    "R",
+    "Rscript",
+    "lua",
+    "perl",
+    "php",
+    "sqlite3",
+    "mysql",
+    "psql",
+    "mongosh",
+    "redis-cli",
     // === 远程 (7) ===
-    "ssh", "telnet", "ftp", "sftp", "scp", "rsync", "mosh",
+    "ssh",
+    "telnet",
+    "ftp",
+    "sftp",
+    "scp",
+    "rsync",
+    "mosh",
     // === 分页器 (3) ===
-    "less", "more", "most",
+    "less",
+    "more",
+    "most",
     // === Subshell (12) ===
-    "bash", "zsh", "fish", "sh", "dash", "ksh", "csh", "tcsh",
-    "powershell", "pwsh", "cmd", "wsl",
+    "bash",
+    "zsh",
+    "fish",
+    "sh",
+    "dash",
+    "ksh",
+    "csh",
+    "tcsh",
+    "powershell",
+    "pwsh",
+    "cmd",
+    "wsl",
 ];
 
 /// Whitelist 4 段配置 (L2/L3 共享结构)
@@ -80,24 +129,32 @@ pub struct WhitelistConfig {
     pub tty: TtySection,
 }
 
+/// 压缩白名单配置段（L2/L3 共享）：在 L1 默认基础上追加 / 移除命令
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct CompressSection {
+    /// 追加到 L1 默认 compress_whitelist 的命令
     #[serde(default)]
     pub extra: CommandList,
+    /// 从合并结果中移除的命令（覆盖 L1 默认与 extra）
     #[serde(default)]
     pub remove: CommandList,
 }
 
+/// tty 支持白名单配置段（L2/L3 共享）：在 L1 默认基础上追加 / 移除命令
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct TtySection {
+    /// 追加到 L1 默认 tty_support_list 的命令
     #[serde(default)]
     pub extra: CommandList,
+    /// 从合并结果中移除的命令（覆盖 L1 默认与 extra）
     #[serde(default)]
     pub remove: CommandList,
 }
 
+/// 一段命令列表（extra / remove 都复用此结构）
 #[derive(Debug, Clone, Default, Deserialize)]
 pub struct CommandList {
+    /// 命令字符串集合（加载时统一转小写，匹配阶段再做归一化）
     #[serde(default)]
     pub commands: Vec<String>,
 }
@@ -105,7 +162,9 @@ pub struct CommandList {
 /// 合并后的最终双清单 (供 3 路分发使用)
 #[derive(Debug, Clone, Default)]
 pub struct Whitelist {
+    /// 可压缩命令集合（compress_whitelist 合并结果），命令以"基名小写"存储
     compress: HashSet<String>,
+    /// 交互式 / tty 支持命令集合（tty_support_list 合并结果），命令以"基名小写"存储
     tty: HashSet<String>,
 }
 
@@ -189,10 +248,7 @@ impl Whitelist {
 /// - `GIT.EXE` → `git`
 pub(crate) fn normalize_prog(prog: &str) -> String {
     let path = PathBuf::from(prog);
-    let stem = path
-        .file_stem()
-        .and_then(|s| s.to_str())
-        .unwrap_or(prog);
+    let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or(prog);
     stem.to_lowercase()
 }
 
@@ -233,6 +289,7 @@ fn read_user_config(path: &PathBuf) -> WhitelistConfig {
 
 // === 全局缓存 (单实例进程内只 load 一次) ===
 
+/// 全局 Whitelist 单例缓存：进程内只 [`Whitelist::load`] 一次，之后 [`global_whitelist`] 复用
 static WHITELIST_CACHE: OnceLock<Whitelist> = OnceLock::new();
 
 /// 全局 Whitelist 单例; 首次访问时调用 [`Whitelist::load`], 之后返回缓存。
@@ -244,6 +301,7 @@ pub fn global_whitelist() -> &'static Whitelist {
 mod tests {
     use super::*;
 
+    /// 校验默认清单包含规范化的 VCS/构建/TTY 核心命令(大小写与路径鲁棒)。
     #[test]
     fn defaults_contain_canonical_commands() {
         let list = Whitelist::from_defaults();
@@ -260,6 +318,7 @@ mod tests {
         assert!(list.tty_matches("cmd"));
     }
 
+    /// 校验默认清单排除未知与空命令(两个匹配函数均返回 false)。
     #[test]
     fn defaults_exclude_unknown_commands() {
         let list = Whitelist::from_defaults();
@@ -268,25 +327,34 @@ mod tests {
         assert!(!list.tty_matches("my-tui"));
     }
 
+    /// 校验 normalize_prog 对大小写、路径、扩展名、目录前缀的归一化行为。
     #[test]
     fn normalize_prog_handles_paths_and_extensions() {
         assert_eq!(normalize_prog("git"), "git");
         assert_eq!(normalize_prog("GIT.EXE"), "git");
-        assert_eq!(normalize_prog("C:\\Program Files\\Git\\bin\\git.exe"), "git");
+        assert_eq!(
+            normalize_prog("C:\\Program Files\\Git\\bin\\git.exe"),
+            "git"
+        );
         assert_eq!(normalize_prog("/usr/local/bin/python3"), "python3");
         assert_eq!(normalize_prog("./venv/bin/python"), "python");
     }
 
+    /// 校验 merge_layer 的 extra 段能向 compress/tty 清单追加新命令。
     #[test]
     fn merge_layer_extra_adds() {
         let mut list = Whitelist::empty();
         list.merge_layer(&WhitelistConfig {
             compress: CompressSection {
-                extra: CommandList { commands: vec!["foo".into(), "BAR".into()] },
+                extra: CommandList {
+                    commands: vec!["foo".into(), "BAR".into()],
+                },
                 remove: CommandList::default(),
             },
             tty: TtySection {
-                extra: CommandList { commands: vec!["baz".into()] },
+                extra: CommandList {
+                    commands: vec!["baz".into()],
+                },
                 remove: CommandList::default(),
             },
         });
@@ -295,13 +363,16 @@ mod tests {
         assert!(list.tty_matches("baz"));
     }
 
+    /// 校验 merge_layer 的 remove 段能从结果中扣减命令, 且不影响未列出的命令。
     #[test]
     fn merge_layer_remove_subtracts() {
         let mut list = Whitelist::from_defaults();
         list.merge_layer(&WhitelistConfig {
             compress: CompressSection {
                 extra: CommandList::default(),
-                remove: CommandList { commands: vec!["git".into(), "cargo".into()] },
+                remove: CommandList {
+                    commands: vec!["git".into(), "cargo".into()],
+                },
             },
             tty: TtySection::default(),
         });
@@ -311,17 +382,26 @@ mod tests {
         assert!(list.compress_matches("npm"));
     }
 
+    /// 校验 merge_layer 对 extra/remove 双向合并的完整往返(新增与扣减同时生效)。
     #[test]
     fn merge_layer_full_round_trip() {
         let mut list = Whitelist::from_defaults();
         list.merge_layer(&WhitelistConfig {
             compress: CompressSection {
-                extra: CommandList { commands: vec!["my-repl".into()] },
-                remove: CommandList { commands: vec!["ls".into()] },
+                extra: CommandList {
+                    commands: vec!["my-repl".into()],
+                },
+                remove: CommandList {
+                    commands: vec!["ls".into()],
+                },
             },
             tty: TtySection {
-                extra: CommandList { commands: vec!["k9s".into()] },
-                remove: CommandList { commands: vec!["man".into()] },
+                extra: CommandList {
+                    commands: vec!["k9s".into()],
+                },
+                remove: CommandList {
+                    commands: vec!["man".into()],
+                },
             },
         });
         assert!(list.compress_matches("my-repl"));
@@ -331,6 +411,7 @@ mod tests {
         assert!(!list.tty_matches("man"));
     }
 
+    /// 校验嵌入的项目级配置能被解析且含必需的 4 段结构。
     #[test]
     fn embedded_project_config_parses() {
         // 真实文件应能被解析; 解析失败会返回 default
@@ -342,6 +423,7 @@ mod tests {
         let _ = &cfg.tty.remove;
     }
 
+    /// 校验 global_whitelist() 多次调用返回同一进程内单例实例(指针相等)。
     #[test]
     fn global_whitelist_returns_consistent_instance() {
         let a = global_whitelist();
@@ -400,12 +482,7 @@ commands = ["man"]
     #[test]
     fn unknown_command_bypasses_both_lists() {
         let list = Whitelist::from_defaults();
-        for prog in [
-            "my-random-tool",
-            "unknown-cli-xyz",
-            "foobarbaz",
-            "",
-        ] {
+        for prog in ["my-random-tool", "unknown-cli-xyz", "foobarbaz", ""] {
             assert!(
                 !list.compress_matches(prog),
                 "{prog:?} 不应命中 compress_whitelist"

@@ -54,8 +54,11 @@ impl PathCompressor {
             .filter(|(_, count)| *count >= self.min_occurrences)
             .collect();
 
-        // 优先处理长前缀，以获得更好的压缩效果
-        selected_prefixes.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+        // 优先处理长前缀，以获得更好的压缩效果；等长平局按字典序破平——
+        // 否则 HashMap 迭代序（每进程随机）会让等长前缀的 $Pn 分配随进程翻转，
+        // 冻结基线随机漂移（case_76_svn_unlock 的 /config.rs 与 /logger.rs 等长
+        // 即为实例：修复前同一二进制多次生成可在两种合法排布间随机跳动）。
+        selected_prefixes.sort_by(|a, b| b.0.len().cmp(&a.0.len()).then_with(|| a.0.cmp(&b.0)));
 
         let mut used_paths = std::collections::HashSet::new();
 
@@ -87,9 +90,9 @@ impl PathCompressor {
     pub fn compress_path(&self, path: &str) -> String {
         let mut result = path.to_string();
 
-        // 按长度降序检查，确保匹配最长的前缀条目
+        // 按长度降序检查，确保匹配最长的前缀条目；等长平局按字典序破平（确定性，见 extract_common_prefixes 注）
         let mut prefixes: Vec<_> = self.common_prefixes.iter().collect();
-        prefixes.sort_by(|a, b| b.1.len().cmp(&a.1.len()));
+        prefixes.sort_by(|a, b| b.1.len().cmp(&a.1.len()).then_with(|| a.1.cmp(&b.1)));
 
         for (token, prefix) in prefixes {
             if result.starts_with(prefix) {
@@ -139,7 +142,7 @@ impl PathCompressor {
 }
 
 impl Default for PathCompressor {
-    /// Creates a new PathCompressor with default settings
+    /// 使用默认设置构造一个新的路径压缩器（委托 `new`）。
     fn default() -> Self {
         Self::new()
     }

@@ -21,6 +21,7 @@ mod tests {
         assert!(!out.contains("+++ $P"), "+++ 头的路径不得被字典替换: {out}");
     }
 
+    /// 验证多 hunk 样本压缩后不得显著扩张（允许 +16 字节内）。
     #[test]
     fn compresses_multiple_hunks_sample_without_expansion() {
         let plugin = GitDiffPlugin::new();

@@ -2,6 +2,7 @@ use tokenslim::core::doctor_workspace::{
     collect_workspace_report, generate_context_file, run_workspace_doctor, WorkspaceReportFormat,
 };
 
+/// 工作区报告核心字段非空：OS/shell/项目主语言/构建/测试命令均须检出。
 #[test]
 fn test_workspace_report_has_core_fields() {
     let report = collect_workspace_report();
@@ -12,6 +13,7 @@ fn test_workspace_report_has_core_fields() {
     assert!(!report.project.test.is_empty());
 }
 
+/// LLM 紧凑格式 JSON 结构契约：r/enc_risk/enc_mixed/os/proj/act/ide/repo(v,b) 键齐全。
 #[test]
 fn test_workspace_llm_format_is_compact_json() {
     let llm = run_workspace_doctor(WorkspaceReportFormat::Llm, false).unwrap();
@@ -30,6 +32,7 @@ fn test_workspace_llm_format_is_compact_json() {
     assert!(v.get("repo").and_then(|r| r.get("b")).is_some());
 }
 
+/// 生成的上下文文件须含 VCS 插件配置引导（vcs_plugin.json/生成脚本路径）。
 #[test]
 fn test_generated_context_contains_vcs_guidance() {
     let content = generate_context_file().unwrap();
@@ -38,6 +41,7 @@ fn test_generated_context_contains_vcs_guidance() {
     assert!(content.contains("scripts/generate_vcs_config.py"));
 }
 
+/// 上下文文件须将检测到的构建/测试命令包装为 tokenslim run 形式供 AI 工具使用。
 #[test]
 fn test_generated_context_wraps_detected_commands_for_ai_tools() {
     let content = generate_context_file().unwrap();

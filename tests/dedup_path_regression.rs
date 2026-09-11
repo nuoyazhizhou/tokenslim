@@ -1,10 +1,11 @@
 use tokenslim::core::dictionary_engine::DictionaryEngine;
 
+/// 高频路径去重回归：同一路径两次 add_path_layered 应返回相同 $P token，
+/// 且字典快照可逆解析回原路径。
 #[test]
 fn dedup_path_replaces_frequent_paths() {
     let mut engine = DictionaryEngine::new();
-    let path =
-        "/jenkins/workspace/build_root/project_sdk/acme_corp/99/include";
+    let path = "/jenkins/workspace/build_root/project_sdk/acme_corp/99/include";
 
     let token1 = engine.add_path_layered(path);
     let token2 = engine.add_path_layered(path);
@@ -16,6 +17,8 @@ fn dedup_path_replaces_frequent_paths() {
     assert_eq!(dict.resolve_or_self(&token1), path);
 }
 
+/// 短路径去重回归：过短路径按当前标准 API 流可能仍入库为 $P token
+/// 或原样返回，断言允许两种结果（防过度收紧导致回归误报）。
 #[test]
 fn dedup_path_skips_when_not_beneficial() {
     let mut engine = DictionaryEngine::new();

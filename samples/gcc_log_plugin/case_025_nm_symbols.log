@@ -1,0 +1,16 @@
+0000000000400492 T _start
+00000000004004a9 T main
+000000000040051d T func_add
+0000000000400540 T func_mul
+0000000000601030 D global_var
+000000000060102c B static_buf
+0000000000601028 R rodata_table
+0000000000400460 t local_helper
+00000000004004f0 t static_impl
+0000000000400700 t local_internal
+00000000004004d0 t cleanup_fn
+0000000000601034 b small_buffer
+0000000000601038 d cached_value
+000000000060103c b scratch_area
+                 U printf
+                 U __libc_start_main@@GLIBC_2.2.5

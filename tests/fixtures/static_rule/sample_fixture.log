@@ -1,0 +1,6 @@
+noise
+FAILED tests begin
+FAILED test_a
+ERROR test_b
+====
+trailing

@@ -5,6 +5,7 @@ use std::process::Command;
 
 const E_DOCTOR_ENCODING_SERIALIZE: &str = "E_DOCTOR_ENCODING_SERIALIZE";
 
+/// 解析地域（locale）信号：依次回退取 LC_ALL → LANG → 传入的默认 locale，过滤空值，返回首个非空地域串，全空则返回 None。
 fn detect_locale_signal(default_locale: &str) -> Option<String> {
     std::env::var("LC_ALL")
         .ok()
@@ -19,6 +20,7 @@ fn detect_locale_signal(default_locale: &str) -> Option<String> {
         })
 }
 
+/// 探测 PowerShell 运行时：优先 `pwsh --version`，失败则回退 `powershell -Command` 读取版本，返回 RuntimeSignal。
 fn detect_powershell_runtime() -> RuntimeSignal {
     let powershell = detect_runtime("pwsh", &["--version"]);
     if powershell.detected {
@@ -31,6 +33,7 @@ fn detect_powershell_runtime() -> RuntimeSignal {
     }
 }
 
+/// 编码诊断入口：采集环境编码报告后，按请求格式（Json/Text）序列化为可读诊断输出。
 pub fn run_encoding_doctor(format: DoctorReportFormat) -> Result<String, String> {
     let report = collect_encoding_report();
     match format {
@@ -40,6 +43,7 @@ pub fn run_encoding_doctor(format: DoctorReportFormat) -> Result<String, String>
     }
 }
 
+/// 采集完整编码诊断报告：汇总 OS、shell、代码页、PowerShell/Python/Node/JDK 运行时信号，并分类风险等级、生成修复建议。
 pub fn collect_encoding_report() -> EncodingDoctorReport {
     let env_info = get_environment_info();
     let locale = detect_locale_signal(&env_info.locale);
@@ -78,6 +82,7 @@ pub fn collect_encoding_report() -> EncodingDoctorReport {
     report
 }
 
+/// 返回本工具支持的字符解码器清单（utf-8 / utf-16 / gbk / big5 / shift_jis / chardetng 等），用于诊断报告展示。
 fn supported_decoders() -> Vec<String> {
     vec![
         "utf-8".to_string(),
@@ -96,6 +101,7 @@ fn supported_decoders() -> Vec<String> {
     ]
 }
 
+/// 返回计划后续增强的解码能力清单（如 cp949 消歧、legacy DOS/Mac 代码页、按配置覆盖的领域解码器提示）。
 fn recommended_expansions() -> Vec<String> {
     vec![
         "cp949(uhc) disambiguation improvements for korean windows corpora".to_string(),
@@ -105,6 +111,7 @@ fn recommended_expansions() -> Vec<String> {
     ]
 }
 
+/// 返回修复置信度分级说明（high/medium/low），描述各级别对应的乱码修复把握。
 fn repair_confidence_profile() -> Vec<String> {
     vec![
         "high: mojibake/replacement markers significantly reduced with explicit repair steps"
@@ -115,6 +122,7 @@ fn repair_confidence_profile() -> Vec<String> {
     ]
 }
 
+/// 返回修复策略分级说明（cleanup_only / reencode_recover / manual_review），描述各类策略适用场景。
 fn repair_strategy_profile() -> Vec<String> {
     vec![
         "cleanup_only: strip BOM / normalize newline / remove control chars when no risky re-decode is needed"
@@ -139,11 +147,13 @@ struct ShellEnvSignals {
     conemu_pid: Option<String>,
 }
 
+/// 取 shell 路径的 basename 并小写：将反斜杠规范为正斜杠后取末段、转 ASCII 小写，用于跨平台 shell 名归一化。
 fn shell_basename(v: &str) -> String {
     let p = v.replace('\\', "/");
     p.rsplit('/').next().unwrap_or("").to_ascii_lowercase()
 }
 
+/// 由 shell 可执行路径推断 shell 名：匹配 cmd/bash/zsh/fish/csh/ksh/ash/powershell 等常见名（含 .exe），未知返回 None。
 fn shell_from_path(path: &str) -> Option<String> {
     match shell_basename(path).as_str() {
         "cmd.exe" | "cmd" => Some("cmd".to_string()),
@@ -158,6 +168,7 @@ fn shell_from_path(path: &str) -> Option<String> {
     }
 }
 
+/// 从环境信号识别宿主终端：若设置了 Cmder/ConEmu 相关变量，判定为 cmder，否则返回 None。
 fn detect_shell_host(signals: &ShellEnvSignals) -> Option<String> {
     if signals.cmder_root.is_some() || signals.conemu_pid.is_some() {
         return Some("cmder".to_string());
@@ -165,6 +176,7 @@ fn detect_shell_host(signals: &ShellEnvSignals) -> Option<String> {
     None
 }
 
+/// 收集 shell 相关环境变量信号（SHELL/ComSpec/CMDCMDLINE/PROMPT/PowerShell 系列/Cmder/ConEmu），并过滤空值。
 fn load_shell_env_signals() -> ShellEnvSignals {
     ShellEnvSignals {
         shell: std::env::var("SHELL").ok().filter(|v| !v.is_empty()),
@@ -183,6 +195,7 @@ fn load_shell_env_signals() -> ShellEnvSignals {
     }
 }
 
+/// 按优先级由环境信号推断 shell：PowerShell 痕迹（分发渠道/执行策略/模块路径）→ CMD（ComSpec+CMDCMDLINE/PROMPT）→ SHELL 变量 → ComSpec 兜底；无法判定返回 None。
 fn detect_shell_from_signals(signals: &ShellEnvSignals) -> Option<ShellSignal> {
     let host = detect_shell_host(signals);
 
@@ -248,11 +261,13 @@ fn detect_shell_from_signals(signals: &ShellEnvSignals) -> Option<ShellSignal> {
     None
 }
 
+/// 采集环境信号后调用 detect_shell_from_signals 得到当前 shell 信号，是对外便捷的封装。
 fn detect_shell() -> Option<ShellSignal> {
     let signals = load_shell_env_signals();
     detect_shell_from_signals(&signals)
 }
 
+/// 探测当前系统活动代码页及是否 UTF-8：Windows 经 chcp 读取，非 Windows 由 LANG/LC_ALL 推断 locale 是否 UTF-8。
 #[cfg(target_os = "windows")]
 fn detect_codepage() -> Option<CodepageSignal> {
     // Try to get codepage via chcp
@@ -273,6 +288,7 @@ fn detect_codepage() -> Option<CodepageSignal> {
     None
 }
 
+/// 探测当前系统活动代码页及是否 UTF-8：Windows 经 chcp 读取，非 Windows 由 LANG/LC_ALL 推断 locale 是否 UTF-8。
 #[cfg(not(target_os = "windows"))]
 fn detect_codepage() -> Option<CodepageSignal> {
     // Codepage is mostly a Windows concept, on Unix we rely on locale
@@ -289,6 +305,7 @@ fn detect_codepage() -> Option<CodepageSignal> {
     })
 }
 
+/// 通用运行时探测：执行指定程序与参数，合并 stdout/stderr 首行作为版本信号；执行失败则标记未检测到。
 fn detect_runtime(program: &str, args: &[&str]) -> RuntimeSignal {
     match Command::new(program).args(args).output() {
         Ok(output) => {
@@ -317,6 +334,7 @@ fn detect_runtime(program: &str, args: &[&str]) -> RuntimeSignal {
     }
 }
 
+/// 探测 Python 运行时：依次尝试 `python`/`python3`，并以脚本同时输出版本与 stdout 编码。
 fn detect_python_runtime() -> RuntimeSignal {
     let py_cmd = [
         "-c",
@@ -331,6 +349,7 @@ fn detect_python_runtime() -> RuntimeSignal {
     detect_runtime("python3", &py_cmd)
 }
 
+/// 探测 JDK 运行时：执行 `java -version`，并通过 `-XshowSettings:properties` 解析 `file.encoding` 作为备注。
 fn detect_jdk_runtime() -> RuntimeSignal {
     let mut signal = detect_runtime("java", &["-version"]);
     if !signal.detected {
@@ -362,6 +381,7 @@ fn detect_jdk_runtime() -> RuntimeSignal {
     signal
 }
 
+/// 判断运行时信号中是否提及 UTF-8（版本或备注包含 "utf-8"/"utf8"，不区分大小写）。
 fn runtime_mentions_utf8(signal: &RuntimeSignal) -> bool {
     signal
         .version
@@ -379,6 +399,7 @@ fn runtime_mentions_utf8(signal: &RuntimeSignal) -> bool {
             .unwrap_or(false)
 }
 
+/// 依据 OS、代码页、locale 与运行时信号分类编码风险等级（Ok/Warn/Fail）：Windows 非 UTF-8 代码页且运行时不明为 Fail，其它非 UTF-8 信号为 Warn。
 pub fn classify_risk(report: &EncodingDoctorReport) -> EncodingRiskLevel {
     // Rule 1: Windows with non-UTF8 codepage is a FAIL if combined with unclear runtimes, WARN otherwise
     let is_windows = report.os.name.to_lowercase().contains("windows");
@@ -410,6 +431,7 @@ pub fn classify_risk(report: &EncodingDoctorReport) -> EncodingRiskLevel {
     EncodingRiskLevel::Ok
 }
 
+/// 基于报告生成修复建议清单：针对非 UTF-8 代码页、PowerShell、Python/JDK 非 UTF-8 等逐项给出本地化提示。
 fn build_recommendations(report: &EncodingDoctorReport) -> Vec<String> {
     let mut recs = Vec::new();
 
@@ -449,6 +471,7 @@ fn build_recommendations(report: &EncodingDoctorReport) -> Vec<String> {
     recs
 }
 
+/// 将运行时信号格式化为展示串：已检测显示版本（或本地化"已检测"），未检测显示本地化"未找到"。
 fn runtime_display(signal: &RuntimeSignal) -> String {
     if signal.detected {
         signal
@@ -461,6 +484,7 @@ fn runtime_display(signal: &RuntimeSignal) -> String {
     }
 }
 
+/// 将数字代码页（936/950/932/949/1252/65001）映射为带可读名称的字符串（如 "936 GBK"），未知则原样返回。
 fn format_codepage_name(cp: &str) -> String {
     match cp {
         "936" => format!("{} GBK", cp),
@@ -473,6 +497,7 @@ fn format_codepage_name(cp: &str) -> String {
     }
 }
 
+/// 渲染文本版诊断报告：汇总风险等级、各信号与运行时、修复建议，输出本地化可读文本。
 fn render_text_report(report: &EncodingDoctorReport) -> String {
     let mut out = String::new();
     out.push_str(t("doctor_encoding_report_title"));
@@ -577,6 +602,34 @@ fn render_text_report(report: &EncodingDoctorReport) -> String {
     out.push('\n');
 
     out.push('\n');
+    out.push_str(t("doctor_encoding_section_decoder_support"));
+    out.push('\n');
+    for decoder in &report.supported_decoders {
+        out.push_str(&format!("- {decoder}\n"));
+    }
+
+    out.push('\n');
+    out.push_str(t("doctor_encoding_section_expansion_candidates"));
+    out.push('\n');
+    for expansion in &report.recommended_expansions {
+        out.push_str(&format!("- {expansion}\n"));
+    }
+
+    out.push('\n');
+    out.push_str(t("doctor_encoding_section_repair_strategy"));
+    out.push('\n');
+    for strategy in &report.repair_strategy_profile {
+        out.push_str(&format!("- {strategy}\n"));
+    }
+
+    out.push('\n');
+    out.push_str(t("doctor_encoding_section_repair_confidence"));
+    out.push('\n');
+    for conf in &report.repair_confidence_profile {
+        out.push_str(&format!("- {conf}\n"));
+    }
+
+    out.push('\n');
     out.push_str(t("doctor_encoding_section_recommendations"));
     out.push('\n');
     for (i, rec) in report.recommendations.iter().enumerate() {
@@ -664,6 +717,7 @@ pub fn generate_fix_commands() -> Result<String, String> {
 mod tests {
     use super::*;
 
+    /// 单测：当存在 PowerShell 分发渠道信号时，即使同时有 ComSpec/CMD 信号也优先判定为 powershell。
     #[test]
     fn detect_shell_from_signals_prefers_powershell_hints() {
         let signals = ShellEnvSignals {
@@ -676,6 +730,7 @@ mod tests {
         assert_eq!(shell.name, "powershell");
     }
 
+    /// 单测：ComSpec=cmd.exe 且 CMDCMDLINE/PROMPT 存在时，正确判定为 cmd。
     #[test]
     fn detect_shell_from_signals_detects_cmd() {
         let signals = ShellEnvSignals {
@@ -688,6 +743,7 @@ mod tests {
         assert_eq!(shell.name, "cmd");
     }
 
+    /// 单测：SHELL 变量（/bin/zsh）优先于 PSModulePath 中的 powershell 路径，判定为 zsh。
     #[test]
     fn detect_shell_from_signals_prefers_shell_env_over_psmodulepath() {
         let signals = ShellEnvSignals {
@@ -702,6 +758,7 @@ mod tests {
         assert_eq!(shell.raw, "/bin/zsh");
     }
 
+    /// 单测：仅提供 ComSpec=cmd.exe 时回退判定为 cmd，且 raw 含 ComSpec=。
     #[test]
     fn detect_shell_from_signals_falls_back_to_comspec() {
         let signals = ShellEnvSignals {
@@ -713,6 +770,7 @@ mod tests {
         assert!(shell.raw.contains("ComSpec="));
     }
 
+    /// 单测：信号全空时 detect_shell_from_signals 返回 None。
     #[test]
     fn detect_shell_from_signals_returns_none_when_empty() {
         let signals = ShellEnvSignals::default();

@@ -15,6 +15,7 @@ use std::borrow::Cow;
 use std::collections::BTreeSet;
 
 impl HelmPlugin {
+    /// 创建 HelmPlugin 实例（名称 helm，优先级 94）。
     pub fn new() -> Self {
         Self {
             name: "helm",
@@ -24,14 +25,17 @@ impl HelmPlugin {
 }
 
 impl Plugin for HelmPlugin {
+    /// 返回插件名称 "helm"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 94。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片是否含 helm install/upgrade/last deployed 等特征，命中返回 0.9 置信度。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(
@@ -46,6 +50,7 @@ impl Plugin for HelmPlugin {
         .then_some(0.9)
     }
 
+    /// 压缩切片：剥离 ANSI 码，压缩 helm 输出为摘要，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -64,11 +69,14 @@ impl Plugin for HelmPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：提取状态字段（NAME/STATUS 等）与资源列表（deployment/service 等），
+/// 无压缩收益时回退原文；针对 rollback/repo 更新/依赖下载/卸载场景输出单行摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_helm(text: &str) -> String {
     let mut lines = Vec::new();

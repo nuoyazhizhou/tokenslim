@@ -4,12 +4,13 @@ expected_keep: 'helm ls, my-release, default, deployed, nginx-1.0.0'
 expected_compress: "PS C:\\>, PS C:\\> "
 source: 'llm'
 generated_at: '2026-06-08T15:40:55Z'
+expected_dispatch_chain: ['shell_session_plugin', 'helm_plugin']
 
 # === audit 字段（自动维护，请勿手填内容字段）===
 audit:
   content_hash: 'ee0168aaaaac7b2d76fcaefe7ec1bfb7e684dd07deb599520bad933027f118fb'
   final_status: 'valid'
   llm_invoked: false
-  llm_verified_at: '2026-06-09T13:54:44.661452'
+  llm_verified_at: '2026-09-11T14:10:38.302583'
   last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

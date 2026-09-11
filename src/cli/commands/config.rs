@@ -5,6 +5,7 @@ use crate::cli::types::*;
 use crate::core::compression::{CompressionMetadata, CompressionOutput, Token};
 use crate::core::compression_context::CompressionContext;
 use crate::core::compression_pipeline::{CompressionPipeline, PipelineConfig};
+use crate::core::config_manager::{ConfigManager, ConfigScope};
 use crate::core::dedup_engine::{DedupConfig, DedupEngine};
 use crate::core::dictionary_engine::DictionaryEngine;
 use crate::core::metrics::{MetricsCollector, MetricsConfig};
@@ -21,16 +22,16 @@ use crate::utils::i18n::{render_user_facing_terminal_message, t, t1, t2, UserFac
 use bumpalo::Bump;
 use serde::Serialize;
 use std::borrow::Cow;
-use std::io::{self, IsTerminal, Read};
-use crate::core::config_manager::{ConfigManager, ConfigScope, global_config_path, local_config_path};
 use std::collections::HashMap;
-use std::path::{Path, PathBuf};
+use std::io::{self, IsTerminal, Read};
 
 pub(crate) const HOOK_BEGIN: &str = "# >>> tokenslim hook >>>";
 pub(crate) const HOOK_END: &str = "# <<< tokenslim hook <<<";
 
-
-pub(crate) fn parse_optional_hook_shell(shell: Option<&str>) -> Result<Option<HookShell>, CliError> {
+/// 解析可选的 --hook-shell 参数：为 None 时返回 None；否则按 bash|zsh|fish 解析，不支持的值报 InvalidArgs。
+pub(crate) fn parse_optional_hook_shell(
+    shell: Option<&str>,
+) -> Result<Option<HookShell>, CliError> {
     if let Some(shell) = shell {
         return HookShell::parse(shell)
             .ok_or_else(|| {
@@ -43,7 +44,7 @@ pub(crate) fn parse_optional_hook_shell(shell: Option<&str>) -> Result<Option<Ho
     Ok(None)
 }
 
-
+/// 探测当前 shell：按 $SHELL(zsh/fish/bash) 判定，否则依据 PSModulePath 或 Windows 判定 PowerShell，兜底返回 Bash。
 pub(crate) fn detect_shell() -> HookShell {
     let shell_env = std::env::var("SHELL")
         .unwrap_or_default()
@@ -63,7 +64,7 @@ pub(crate) fn detect_shell() -> HookShell {
     HookShell::Bash
 }
 
-
+/// 解析用户主目录：优先取 $HOME，回退到 $USERPROFILE；两者皆缺失则报错 Config。
 pub(crate) fn resolve_home_dir() -> Result<std::path::PathBuf, CliError> {
     std::env::var("HOME")
         .or_else(|_| std::env::var("USERPROFILE"))
@@ -71,7 +72,8 @@ pub(crate) fn resolve_home_dir() -> Result<std::path::PathBuf, CliError> {
         .map_err(|_| CliError::Config("unable to resolve HOME/USERPROFILE".to_string()))
 }
 
-
+/// 返回指定 shell 的 rc 配置文件路径列表：PowerShell 探测并包含 $PROFILE；
+/// 类 Unix 返回对应点文件(.bashrc/.zshrc/.config/fish/config.fish)。
 pub(crate) fn shell_rc_paths(shell: HookShell) -> Result<Vec<std::path::PathBuf>, CliError> {
     if shell == HookShell::PowerShell {
         let mut paths = Vec::new();
@@ -119,13 +121,14 @@ pub(crate) fn shell_rc_paths(shell: HookShell) -> Result<Vec<std::path::PathBuf>
     Ok(vec![home.join(file)])
 }
 
-
+/// 生成 hook 代码块：以 HOOK_BEGIN/HOOK_END 标记包裹 generate_hook_content 生成的 shell 钩子内容。
 pub(crate) fn hook_block(shell: HookShell) -> String {
     let content = crate::core::init_command::generate_hook_content(shell.as_str());
     format!("{HOOK_BEGIN}\n{content}\n{HOOK_END}\n")
 }
 
-
+/// 从 rc 内容中移除 TokenSlim hook 块：定位 HOOK_BEGIN..HOOK_END 区间并删除(含标记行)，
+/// 未找到标记则返回原内容不变。
 pub(crate) fn remove_hook_block(content: &str) -> String {
     if let (Some(start), Some(end)) = (content.find(HOOK_BEGIN), content.find(HOOK_END)) {
         let end_with_marker = end + HOOK_END.len();
@@ -137,7 +140,8 @@ pub(crate) fn remove_hook_block(content: &str) -> String {
     content.to_string()
 }
 
-
+/// 安装 hook 到各 rc 文件：dry-run 仅打印计划；否则先清除旧 hook 块，
+/// 拼接新块写回文件，最后提示相应的重新加载命令。
 pub(crate) fn install_hooks(shell: HookShell, dry_run: bool) -> Result<(), CliError> {
     let rc_paths = shell_rc_paths(shell)?;
     let block = hook_block(shell);
@@ -189,7 +193,8 @@ pub(crate) fn install_hooks(shell: HookShell, dry_run: bool) -> Result<(), CliEr
     Ok(())
 }
 
-
+/// 检查 hook 安装状态：遍历指定 shell 的各 rc 文件，判断是否存在 HOOK_BEGIN 标记，
+/// 逐文件报告 installed 并汇总该 shell 是否整体已安装。
 pub(crate) fn check_hooks_status(shell: HookShell) -> Result<(), CliError> {
     let rc_paths = shell_rc_paths(shell)?;
     let mut installed_anywhere = false;
@@ -238,7 +243,8 @@ pub(crate) fn check_hooks_status(shell: HookShell) -> Result<(), CliError> {
     Ok(())
 }
 
-
+/// 卸载 hook：dry-run 仅打印计划；否则从各 rc 文件移除 TokenSlim hook 块，
+/// 写回变更并提示重启终端使生效。
 pub(crate) fn uninstall_hooks(shell: HookShell, dry_run: bool) -> Result<(), CliError> {
     let rc_paths = shell_rc_paths(shell)?;
 
@@ -286,7 +292,8 @@ pub(crate) fn uninstall_hooks(shell: HookShell, dry_run: bool) -> Result<(), Cli
     Ok(())
 }
 
-
+/// 处理 --inject 动作：若与 encoding/rule/env 诊断同时指定则报 InvalidArgs；
+/// 否则调用 inject_context_file 注入工作区上下文文件并打印结果。
 pub(crate) fn handle_inject_action(args: &CliArgs) -> Result<bool, CliError> {
     match args.doctor {
         Some(crate::cli::types::DoctorKind::Encoding)
@@ -309,7 +316,8 @@ pub(crate) fn handle_inject_action(args: &CliArgs) -> Result<bool, CliError> {
     Ok(true)
 }
 
-
+/// 处理 gain(压缩收益统计)动作：按 --gain-json / --gain-daily / --gain-by-filter 组合，
+/// 渲染汇总/按日/按过滤器的压缩收益报告(纯文本或 JSON)并打印。
 pub(crate) fn handle_gain_action(args: &CliArgs) -> Result<bool, CliError> {
     if args.gain_json {
         let result = if args.gain_daily {
@@ -336,7 +344,6 @@ pub(crate) fn handle_gain_action(args: &CliArgs) -> Result<bool, CliError> {
     Ok(true)
 }
 
-
 /// 处理 `tokenslim config` 子命令分发
 pub(crate) fn handle_config_command(args: &CliArgs) -> Result<(), CliError> {
     use crate::cli::app::render_config_usage;
@@ -352,25 +359,33 @@ pub(crate) fn handle_config_command(args: &CliArgs) -> Result<(), CliError> {
         "set" => {
             if sub_args.len() < 3 {
                 return Err(CliError::InvalidArgs(
-                    "set 命令需要指定键和值。例如: tokenslim config set general.preset fast".to_string()
+                    "set 命令需要指定键和值。例如: tokenslim config set general.preset fast"
+                        .to_string(),
                 ));
             }
             let key = sub_args[1].as_str();
             let value = sub_args[2].as_str();
-            let global = sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
-            let scope = if global { ConfigScope::Global } else { ConfigScope::Local };
+            let global =
+                sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
+            let scope = if global {
+                ConfigScope::Global
+            } else {
+                ConfigScope::Local
+            };
 
             ConfigManager::set_value(scope, key, value)
                 .map_err(|e| CliError::Config(format!("设置配置失败: {}", e)))?;
             println!(
                 "✅ 成功将配置项 '{}' 设置为 '{}' ({})",
-                key, value, if global { "全局" } else { "项目本地" }
+                key,
+                value,
+                if global { "全局" } else { "项目本地" }
             );
         }
         "get" => {
             if sub_args.len() < 2 {
                 return Err(CliError::InvalidArgs(
-                    "get 命令需要指定键。例如: tokenslim config get general.preset".to_string()
+                    "get 命令需要指定键。例如: tokenslim config get general.preset".to_string(),
                 ));
             }
             let key = sub_args[1].as_str();
@@ -393,12 +408,17 @@ pub(crate) fn handle_config_command(args: &CliArgs) -> Result<(), CliError> {
         "unset" => {
             if sub_args.len() < 2 {
                 return Err(CliError::InvalidArgs(
-                    "unset 命令需要指定键。例如: tokenslim config unset general.preset".to_string()
+                    "unset 命令需要指定键。例如: tokenslim config unset general.preset".to_string(),
                 ));
             }
             let key = sub_args[1].as_str();
-            let global = sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
-            let scope = if global { ConfigScope::Global } else { ConfigScope::Local };
+            let global =
+                sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
+            let scope = if global {
+                ConfigScope::Global
+            } else {
+                ConfigScope::Local
+            };
 
             match ConfigManager::unset_value(scope, key) {
                 Ok(true) => println!(
@@ -415,8 +435,13 @@ pub(crate) fn handle_config_command(args: &CliArgs) -> Result<(), CliError> {
             }
         }
         "reset" => {
-            let global = sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
-            let scope = if global { ConfigScope::Global } else { ConfigScope::Local };
+            let global =
+                sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
+            let scope = if global {
+                ConfigScope::Global
+            } else {
+                ConfigScope::Local
+            };
 
             ConfigManager::reset(scope)
                 .map_err(|e| CliError::Config(format!("重置配置失败: {}", e)))?;
@@ -426,14 +451,24 @@ pub(crate) fn handle_config_command(args: &CliArgs) -> Result<(), CliError> {
             );
         }
         "wizard" => {
-            let global = sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
-            let scope = if global { ConfigScope::Global } else { ConfigScope::Local };
+            let global =
+                sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
+            let scope = if global {
+                ConfigScope::Global
+            } else {
+                ConfigScope::Local
+            };
 
             run_config_wizard(scope)?;
         }
         "plugin" => {
-            let global = sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
-            let scope = if global { ConfigScope::Global } else { ConfigScope::Local };
+            let global =
+                sub_args.contains(&"--global".to_string()) || sub_args.contains(&"-g".to_string());
+            let scope = if global {
+                ConfigScope::Global
+            } else {
+                ConfigScope::Local
+            };
             // 提取 plugin 子命令的参数（去掉 "plugin" 本身和 --global/-g flag）
             let plugin_args: Vec<&str> = sub_args[1..]
                 .iter()
@@ -455,14 +490,18 @@ pub(crate) fn handle_config_command(args: &CliArgs) -> Result<(), CliError> {
 
 /// 运行交互式配置向导
 fn run_config_wizard(scope: ConfigScope) -> Result<(), CliError> {
-    use std::io::{Write, stdin, stdout};
+    use std::io::{stdin, stdout, Write};
 
     println!("\x1b[1;36m====================================================\x1b[0m");
     println!("\x1b[1;36m    🚀 TokenSlim 交互式配置向导 (Wizard) 🚀\x1b[0m");
     println!("\x1b[1;36m====================================================\x1b[0m");
     println!(
         "\x1b[90m正在为 {} 配置进行设置...\x1b[0m\n",
-        if scope == ConfigScope::Global { "全局" } else { "当前项目" }
+        if scope == ConfigScope::Global {
+            "全局"
+        } else {
+            "当前项目"
+        }
     );
 
     let mut answers = HashMap::new();
@@ -470,12 +509,18 @@ fn run_config_wizard(scope: ConfigScope) -> Result<(), CliError> {
     // 1. general.preset
     println!("\x1b[1m1. 选择压缩预设配置 (general.preset)\x1b[0m");
     println!("   压缩预设控制了 TokenSlim 的降噪策略，影响压缩速度与语义完整性。");
-    println!("   [\x1b[32m1\x1b[0m] balanced : \x1b[32m均衡模式\x1b[0m (默认，平衡压缩率与解析速度)");
+    println!(
+        "   [\x1b[32m1\x1b[0m] balanced : \x1b[32m均衡模式\x1b[0m (默认，平衡压缩率与解析速度)"
+    );
     println!("   [\x1b[32m2\x1b[0m] fast     : \x1b[33m速度优先\x1b[0m (关闭重排，追求极速)");
     println!("   [\x1b[32m3\x1b[0m] ai       : \x1b[36mAI 信号优先\x1b[0m (全力保留故障现场与最大上下文)");
 
-    let default_preset = ConfigManager::get_value("general.preset").unwrap_or_else(|| "balanced".to_string());
-    print!("👉 请选择 (1-3) [\x1b[90m默认: {}\x1b[0m]: ", default_preset);
+    let default_preset =
+        ConfigManager::get_value("general.preset").unwrap_or_else(|| "balanced".to_string());
+    print!(
+        "👉 请选择 (1-3) [\x1b[90m默认: {}\x1b[0m]: ",
+        default_preset
+    );
     stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -499,8 +544,12 @@ fn run_config_wizard(scope: ConfigScope) -> Result<(), CliError> {
     println!("   在并发构建时（如 make -jN 或 parallel build），多线程交织会导致输出日志乱序。");
     println!("   启用重排可智能重组依赖关系日志以消除并发交织干扰。");
 
-    let default_reorder = ConfigManager::get_value("compression.reorder").unwrap_or_else(|| "true".to_string());
-    print!("👉 是否启用 (true/false) [\x1b[90m默认: {}\x1b[0m]: ", default_reorder);
+    let default_reorder =
+        ConfigManager::get_value("compression.reorder").unwrap_or_else(|| "true".to_string());
+    print!(
+        "👉 是否启用 (true/false) [\x1b[90m默认: {}\x1b[0m]: ",
+        default_reorder
+    );
     stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -518,10 +567,16 @@ fn run_config_wizard(scope: ConfigScope) -> Result<(), CliError> {
 
     // 3. encoding.force_utf8
     println!("\x1b[1m3. 是否强制 UTF-8 编码输出? (encoding.force_utf8)\x1b[0m");
-    println!("   在 Windows CMD/PowerShell 环境中，日志可能使用 GBK。强制转为 UTF-8 能防止下游乱码。");
+    println!(
+        "   在 Windows CMD/PowerShell 环境中，日志可能使用 GBK。强制转为 UTF-8 能防止下游乱码。"
+    );
 
-    let default_utf8 = ConfigManager::get_value("encoding.force_utf8").unwrap_or_else(|| "true".to_string());
-    print!("👉 是否强制 (true/false) [\x1b[90m默认: {}\x1b[0m]: ", default_utf8);
+    let default_utf8 =
+        ConfigManager::get_value("encoding.force_utf8").unwrap_or_else(|| "true".to_string());
+    print!(
+        "👉 是否强制 (true/false) [\x1b[90m默认: {}\x1b[0m]: ",
+        default_utf8
+    );
     stdout().flush().unwrap();
 
     let mut input = String::new();
@@ -565,7 +620,8 @@ fn handle_plugin_command(args: &[&str], scope: ConfigScope) -> Result<(), CliErr
         "enable" => {
             if args.len() < 2 {
                 return Err(CliError::InvalidArgs(
-                    "enable 命令需要指定插件名。例如: tokenslim config plugin enable gcc_log_plugin".to_string()
+                    "enable 命令需要指定插件名。例如: tokenslim config plugin enable gcc_log"
+                        .to_string(),
                 ));
             }
             plugin_enable(args[1], scope)?;
@@ -573,7 +629,8 @@ fn handle_plugin_command(args: &[&str], scope: ConfigScope) -> Result<(), CliErr
         "disable" => {
             if args.len() < 2 {
                 return Err(CliError::InvalidArgs(
-                    "disable 命令需要指定插件名。例如: tokenslim config plugin disable gcc_log_plugin".to_string()
+                    "disable 命令需要指定插件名。例如: tokenslim config plugin disable gcc_log"
+                        .to_string(),
                 ));
             }
             plugin_disable(args[1], scope)?;
@@ -585,33 +642,9 @@ fn handle_plugin_command(args: &[&str], scope: ConfigScope) -> Result<(), CliErr
         "reset" => {
             plugin_reset(scope)?;
         }
-        "get" => {
-            if args.len() < 3 {
-                return Err(CliError::InvalidArgs(
-                    "get 命令需要指定插件名和参数名。例如: tokenslim config plugin get gcc_log_plugin convert_timestamps".to_string()
-                ));
-            }
-            plugin_get_param(args[1], args[2], scope)?;
-        }
-        "set" => {
-            if args.len() < 4 {
-                return Err(CliError::InvalidArgs(
-                    "set 命令需要指定插件名、参数名和值。例如: tokenslim config plugin set gcc_log_plugin convert_timestamps false".to_string()
-                ));
-            }
-            plugin_set_param(args[1], args[2], args[3], scope)?;
-        }
-        "list-params" | "list_params" => {
-            if args.len() < 2 {
-                return Err(CliError::InvalidArgs(
-                    "list-params 命令需要指定插件名。例如: tokenslim config plugin list-params gcc_log_plugin".to_string()
-                ));
-            }
-            plugin_list_params(args[1])?;
-        }
         other => {
             return Err(CliError::InvalidArgs(format!(
-                "未知的 plugin 子命令: '{}'。请使用 enable, disable, status, reset, get, set, list-params 之一。",
+                "未知的 plugin 子命令: '{}'。请使用 enable, disable, status, reset 之一。",
                 other
             )));
         }
@@ -622,9 +655,10 @@ fn handle_plugin_command(args: &[&str], scope: ConfigScope) -> Result<(), CliErr
 
 /// 打印 plugin 子命令用法
 fn print_plugin_usage() {
-    println!("tokenslim config plugin
+    println!(
+        "tokenslim config plugin
 
-管理压缩插件的启用/禁用和参数配置
+管理压缩插件的启用/禁用
 
 用法:
   tokenslim config plugin <subcommand> [args...] [--global|-g]
@@ -634,379 +668,122 @@ fn print_plugin_usage() {
   disable <plugin-name>                禁用指定插件
   status [<plugin-name>]               查看插件启用状态（不指定则列出全部）
   reset                                重置所有插件为默认启用状态
-  get <plugin-name> <param>            获取插件参数值
-  set <plugin-name> <param> <value>    设置插件参数值
-  list-params <plugin-name>            列出插件所有可配置参数
 
 示例:
   tokenslim config plugin status
-  tokenslim config plugin disable gcc_log_plugin
-  tokenslim config plugin set gcc_log_plugin convert_timestamps false
-  tokenslim config plugin list-params gcc_log_plugin");
+  tokenslim config plugin disable gcc_log
+  tokenslim config plugin enable gcc_log"
+    );
 }
 
-/// 获取仓库内置的 plugins.toml 路径
-fn find_repo_plugins_toml() -> Option<PathBuf> {
-    // 直接检查常见路径（开发目录、exe 目录）
-    let candidates = [
-        PathBuf::from("config/plugins.toml"),
-        PathBuf::from("./config/plugins.toml"),
-    ];
-    for c in &candidates {
-        if c.exists() {
-            return Some(c.clone());
-        }
-    }
-    // 尝试从 exe 目录推导
-    if let Ok(exe) = std::env::current_exe() {
-        if let Some(parent) = exe.parent().and_then(|p| p.parent()) {
-            let candidate = parent.join("config/plugins.toml");
-            if candidate.exists() {
-                return Some(candidate);
-            }
-        }
-    }
-    None
+/// 返回所有插件配置清单（含禁用），按名称排序。
+/// P3-179：统一以 plugin_config_loader 的 JSON 配置为权威源，
+/// 取代自建 plugins.toml 解析；`enabled` 字段已叠加用户覆盖键 `plugins.{name}.enabled`。
+fn load_all_plugin_configs() -> Vec<crate::core::plugin_config_loader::PluginConfigFile> {
+    let loader = plugin_config_loader::PluginConfigLoader::new();
+    let mut configs = loader.load_all_raw_configs();
+    configs.sort_by(|a, b| a.name.cmp(&b.name));
+    configs
 }
 
-/// 从 plugins.toml 读取默认启用的插件名列表
-fn read_default_enabled_list() -> Vec<String> {
-    let Some(path) = find_repo_plugins_toml() else { return Vec::new(); };
-    let Ok(content) = std::fs::read_to_string(&path) else { return Vec::new(); };
-    let Ok(doc) = content.parse::<toml_edit::DocumentMut>() else { return Vec::new(); };
-
-    doc.get("plugins")
-        .and_then(|p| p.get("enabled"))
-        .and_then(|v| v.as_array())
-        .map(|arr| {
-            arr.iter()
-                .filter_map(|v| v.as_str().map(|s| s.to_string()))
-                .collect()
-        })
-        .unwrap_or_default()
-}
-
-/// 从用户配置文件读取被禁用的插件名列表
-fn read_user_disabled_list(scope: ConfigScope) -> Vec<String> {
-    let path = match scope {
-        ConfigScope::Global => global_config_path(),
-        ConfigScope::Local => local_config_path(),
-    };
-    let Some(path) = path else { return Vec::new(); };
-    let Ok(content) = std::fs::read_to_string(&path) else { return Vec::new(); };
-    let Ok(doc) = content.parse::<toml_edit::DocumentMut>() else { return Vec::new(); };
-
-    doc.get("plugins")
-        .and_then(|p| p.get("disabled"))
-        .and_then(|v| v.as_array())
-        .map(|arr| {
-            arr.iter()
-                .filter_map(|v| v.as_str().map(|s| s.to_string()))
-                .collect()
-        })
-        .unwrap_or_default()
-}
-
-/// 获取用户配置文件路径，不存在则创建
-fn ensure_user_config_path(scope: ConfigScope) -> Result<PathBuf, CliError> {
-    let path = match scope {
-        ConfigScope::Global => global_config_path()
-            .ok_or_else(|| CliError::Config("无法获取全局配置路径".to_string()))?,
-        ConfigScope::Local => local_config_path()
-            .ok_or_else(|| CliError::Config("无法获取本地配置路径".to_string()))?,
-    };
-    if let Some(parent) = path.parent() {
-        std::fs::create_dir_all(parent)
-            .map_err(|e| CliError::Config(format!("创建配置目录失败: {}", e)))?;
-    }
-    Ok(path)
-}
-
-/// 启用插件：将其从用户 disabled 列表中移除
+/// 启用插件：写入 `plugins.{name}.enabled = true`（运行时 load_config 消费的覆盖键）。
 fn plugin_enable(plugin_name: &str, scope: ConfigScope) -> Result<(), CliError> {
-    let defaults = read_default_enabled_list();
-    if !defaults.iter().any(|p| p == plugin_name) {
-        return Err(CliError::Config(format!("未知插件: '{}'。使用 `tokenslim config plugin status` 查看可用插件列表。", plugin_name)));
+    let configs = load_all_plugin_configs();
+    if !configs.iter().any(|c| c.name == plugin_name) {
+        return Err(CliError::Config(format!(
+            "未知插件: '{}'。使用 `tokenslim config plugin status` 查看可用插件列表。",
+            plugin_name
+        )));
     }
 
-    let path = ensure_user_config_path(scope)?;
-    let mut doc = if path.exists() {
-        let content = std::fs::read_to_string(&path)
-            .map_err(|e| CliError::Config(format!("读取配置失败: {}", e)))?;
-        content.parse::<toml_edit::DocumentMut>()
-            .map_err(|e| CliError::Config(format!("解析配置失败: {}", e)))?
-    } else {
-        toml_edit::DocumentMut::new()
-    };
-
-    // 从 disabled 数组中移除该插件
-    let removed = if let Some(disabled) = doc.get_mut("plugins")
-        .and_then(|p| p.get_mut("disabled"))
-        .and_then(|v| v.as_array_mut())
-    {
-        let before = disabled.len();
-        *disabled = disabled.iter()
-            .filter(|v| v.as_str().map(|s| s != plugin_name).unwrap_or(true))
-            .cloned()
-            .collect::<toml_edit::Array>();
-        before != disabled.len()
-    } else {
-        false
-    };
-
-    if removed {
-        std::fs::write(&path, doc.to_string())
-            .map_err(|e| CliError::Config(format!("写入配置失败: {}", e)))?;
-        println!("✅ 已启用插件 '{}'", plugin_name);
-    } else {
-        println!("ℹ️ 插件 '{}' 已经是启用状态，无需操作", plugin_name);
-    }
-
+    ConfigManager::set_value(scope, &format!("plugins.{}.enabled", plugin_name), "true")
+        .map_err(|e| CliError::Config(format!("设置配置失败: {}", e)))?;
+    println!("✅ 已启用插件 '{}'", plugin_name);
     Ok(())
 }
 
-/// 禁用插件：将其加入用户 disabled 列表
+/// 禁用插件：写入 `plugins.{name}.enabled = false`（运行时 load_config 消费的覆盖键）。
 fn plugin_disable(plugin_name: &str, scope: ConfigScope) -> Result<(), CliError> {
-    let defaults = read_default_enabled_list();
-    if !defaults.iter().any(|p| p == plugin_name) {
-        return Err(CliError::Config(format!("未知插件: '{}'。使用 `tokenslim config plugin status` 查看可用插件列表。", plugin_name)));
+    let configs = load_all_plugin_configs();
+    if !configs.iter().any(|c| c.name == plugin_name) {
+        return Err(CliError::Config(format!(
+            "未知插件: '{}'。使用 `tokenslim config plugin status` 查看可用插件列表。",
+            plugin_name
+        )));
     }
 
-    let path = ensure_user_config_path(scope)?;
-    let mut doc = if path.exists() {
-        let content = std::fs::read_to_string(&path)
-            .map_err(|e| CliError::Config(format!("读取配置失败: {}", e)))?;
-        content.parse::<toml_edit::DocumentMut>()
-            .map_err(|e| CliError::Config(format!("解析配置失败: {}", e)))?
-    } else {
-        toml_edit::DocumentMut::new()
-    };
-
-    // 确保 [plugins] 表存在
-    if doc.get("plugins").is_none() {
-        doc["plugins"] = toml_edit::Item::Table(toml_edit::Table::new());
-    }
-
-    // 检查是否已在 disabled 数组中
-    let already_disabled = doc.get("plugins")
-        .and_then(|p| p.get("disabled"))
-        .and_then(|v| v.as_array())
-        .map(|arr| arr.iter().any(|v| v.as_str() == Some(plugin_name)))
-        .unwrap_or(false);
-
-    if already_disabled {
-        println!("ℹ️ 插件 '{}' 已经是禁用状态，无需操作", plugin_name);
-        return Ok(());
-    }
-
-    // 追加到 disabled 数组
-    if let Some(plugins_table) = doc["plugins"].as_table_mut() {
-        let disabled_arr = if let Some(existing) = plugins_table.get_mut("disabled") {
-            existing
-        } else {
-            plugins_table.insert("disabled", toml_edit::Item::Value(toml_edit::Value::Array(toml_edit::Array::new())));
-            plugins_table.get_mut("disabled").unwrap()
-        };
-        if let Some(arr) = disabled_arr.as_array_mut() {
-            arr.push(plugin_name);
-        }
-    }
-
-    std::fs::write(&path, doc.to_string())
-        .map_err(|e| CliError::Config(format!("写入配置失败: {}", e)))?;
+    ConfigManager::set_value(scope, &format!("plugins.{}.enabled", plugin_name), "false")
+        .map_err(|e| CliError::Config(format!("设置配置失败: {}", e)))?;
     println!("✅ 已禁用插件 '{}'", plugin_name);
-
     Ok(())
 }
 
 /// 显示插件状态
-fn plugin_status(plugin_name: Option<&str>, scope: ConfigScope) -> Result<(), CliError> {
-    let defaults = read_default_enabled_list();
-    let disabled = read_user_disabled_list(scope);
+/// P3-179：以 plugin_config_loader 的 JSON 配置为权威源，`enabled` 已叠加
+/// 用户覆盖键 `plugins.{name}.enabled`（load_config 内合并），无需再读 TOML。
+fn plugin_status(plugin_name: Option<&str>, _scope: ConfigScope) -> Result<(), CliError> {
+    let configs = load_all_plugin_configs();
 
-    if defaults.is_empty() {
-        return Err(CliError::Config("无法读取内置插件列表（config/plugins.toml 不存在或解析失败）".to_string()));
+    if configs.is_empty() {
+        return Err(CliError::Config(
+            "无法读取插件配置（config/plugins 目录不存在或所有配置文件解析失败）".to_string(),
+        ));
     }
 
     if let Some(name) = plugin_name {
         // 显示单个插件状态
-        if !defaults.iter().any(|p| p == name) {
-            return Err(CliError::Config(format!("未知插件: '{}'", name)));
-        }
-        let is_enabled = !disabled.contains(&name.to_string());
-        let status_icon = if is_enabled { "✅" } else { "🚫" };
-        let status_text = if is_enabled { "已启用" } else { "已禁用" };
+        let Some(config) = configs.iter().find(|c| c.name == name) else {
+            return Err(CliError::Config(format!(
+                "未知插件: '{}'。使用 `tokenslim config plugin status` 查看可用插件列表。",
+                name
+            )));
+        };
+        let status_icon = if config.enabled { "✅" } else { "🚫" };
+        let status_text = if config.enabled {
+            "已启用"
+        } else {
+            "已禁用"
+        };
         println!("{} {} — {}", status_icon, name, status_text);
     } else {
         // 显示全部插件状态
-        let enabled_count = defaults.iter().filter(|p| !disabled.contains(p)).count();
-        let disabled_count = disabled.len();
-        println!("=== 插件状态列表 ({} 已启用, {} 已禁用) ===\n", enabled_count, disabled_count);
-        for plugin in &defaults {
-            let is_enabled = !disabled.contains(plugin);
-            let status_icon = if is_enabled { "✅" } else { "🚫" };
-            println!("  {} {}", status_icon, plugin);
+        let enabled_count = configs.iter().filter(|c| c.enabled).count();
+        let disabled_count = configs.len() - enabled_count;
+        println!(
+            "=== 插件状态列表 ({} 已启用, {} 已禁用) ===\n",
+            enabled_count, disabled_count
+        );
+        for config in &configs {
+            let status_icon = if config.enabled { "✅" } else { "🚫" };
+            println!("  {} {}", status_icon, config.name);
         }
     }
 
     Ok(())
 }
 
-/// 重置插件配置：移除用户的所有插件覆盖
+/// 重置插件配置：移除用户对全部插件的启用/禁用覆盖键
+/// `plugins.{name}.enabled`，恢复各插件 JSON 配置中的默认 enabled 状态。
+/// P3-179：不再整表删除 `[plugins]`（避免误伤合法的 `plugins.{name}.enabled` 覆盖键），
+/// 仅逐个 unset 覆盖键。
 fn plugin_reset(scope: ConfigScope) -> Result<(), CliError> {
-    let path = ensure_user_config_path(scope)?;
+    let configs = load_all_plugin_configs();
 
-    if !path.exists() {
-        println!("ℹ️ 没有用户插件配置需要重置");
-        return Ok(());
-    }
-
-    let content = std::fs::read_to_string(&path)
-        .map_err(|e| CliError::Config(format!("读取配置失败: {}", e)))?;
-    let mut doc = content.parse::<toml_edit::DocumentMut>()
-        .map_err(|e| CliError::Config(format!("解析配置失败: {}", e)))?;
-
-    // 移除 [plugins] 表（包含 disabled 数组和插件参数覆盖）
-    let had_plugins = doc.remove("plugins").is_some();
-
-    if had_plugins {
-        std::fs::write(&path, doc.to_string())
-            .map_err(|e| CliError::Config(format!("写入配置失败: {}", e)))?;
-        println!("✅ 已重置所有插件配置为默认状态");
-    } else {
-        println!("ℹ️ 没有用户插件配置需要重置");
-    }
-
-    Ok(())
-}
-
-/// 获取插件参数值
-fn plugin_get_param(plugin_name: &str, param_name: &str, scope: ConfigScope) -> Result<(), CliError> {
-    // 合并配置：默认值 → 用户覆盖
-    let defaults = read_plugin_params_from_toml(plugin_name, find_repo_plugins_toml().as_deref());
-    let user_params = read_plugin_params_from_scope(plugin_name, scope);
-
-    if defaults.is_empty() && user_params.is_empty() {
-        return Err(CliError::Config(format!("插件 '{}' 不存在或无可配置参数", plugin_name)));
-    }
-
-    // 用户覆盖优先
-    if let Some(val) = user_params.get(param_name) {
-        println!("{} = {} (用户覆盖)", param_name, val);
-    } else if let Some(val) = defaults.get(param_name) {
-        println!("{} = {} (默认值)", param_name, val);
-    } else {
-        println!("(参数 '{}' 未设置)", param_name);
-    }
-
-    Ok(())
-}
-
-/// 设置插件参数值
-fn plugin_set_param(plugin_name: &str, param_name: &str, value: &str, scope: ConfigScope) -> Result<(), CliError> {
-    // 验证插件存在
-    let defaults = read_default_enabled_list();
-    if !defaults.iter().any(|p| p == plugin_name) {
-        return Err(CliError::Config(format!("未知插件: '{}'", plugin_name)));
-    }
-
-    let path = ensure_user_config_path(scope)?;
-    let mut doc = if path.exists() {
-        let content = std::fs::read_to_string(&path)
-            .map_err(|e| CliError::Config(format!("读取配置失败: {}", e)))?;
-        content.parse::<toml_edit::DocumentMut>()
-            .map_err(|e| CliError::Config(format!("解析配置失败: {}", e)))?
-    } else {
-        toml_edit::DocumentMut::new()
-    };
-
-    // 确保 [plugins.<plugin_name>] 表存在
-    if doc.get("plugins").is_none() {
-        doc["plugins"] = toml_edit::Item::Table(toml_edit::Table::new());
-    }
-
-    let plugins_table = doc["plugins"].as_table_mut().unwrap();
-    if plugins_table.get(plugin_name).is_none() {
-        plugins_table.insert(plugin_name, toml_edit::Item::Table(toml_edit::Table::new()));
-    }
-
-    // 根据值类型设置（布尔或字符串）
-    if let Some(plugin_table) = plugins_table.get_mut(plugin_name).and_then(|t| t.as_table_mut()) {
-        let value_item = if value == "true" || value == "false" {
-            toml_edit::Item::Value(toml_edit::Value::Boolean(toml_edit::Formatted::new(value == "true")))
-        } else if let Ok(n) = value.parse::<i64>() {
-            toml_edit::Item::Value(toml_edit::Value::Integer(toml_edit::Formatted::new(n)))
-        } else {
-            toml_edit::Item::Value(toml_edit::Value::String(toml_edit::Formatted::new(value.to_string())))
-        };
-        plugin_table.insert(param_name, value_item);
-    }
-
-    std::fs::write(&path, doc.to_string())
-        .map_err(|e| CliError::Config(format!("写入配置失败: {}", e)))?;
-    println!("✅ 已设置 {}.{} = {}", plugin_name, param_name, value);
-
-    Ok(())
-}
-
-/// 列出插件所有可配置参数（默认值 + 用户覆盖）
-fn plugin_list_params(plugin_name: &str) -> Result<(), CliError> {
-    let repo_path = find_repo_plugins_toml();
-    let defaults = read_plugin_params_from_toml(plugin_name, repo_path.as_deref());
-
-    if defaults.is_empty() {
-        // 检查插件是否存在
-        let all_plugins = read_default_enabled_list();
-        if !all_plugins.iter().any(|p| p == plugin_name) {
-            return Err(CliError::Config(format!("未知插件: '{}'", plugin_name)));
-        }
-        println!("插件 '{}' 没有可配置参数（使用默认值）", plugin_name);
-        return Ok(());
-    }
-
-    println!("=== {} 可配置参数 ===\n", plugin_name);
-    for (key, val) in &defaults {
-        println!("  {} = {}", key, val);
-    }
-
-    Ok(())
-}
-
-/// 从指定 plugins.toml 文件中读取某插件的参数
-fn read_plugin_params_from_toml(plugin_name: &str, path: Option<&Path>) -> HashMap<String, String> {
-    let mut result = HashMap::new();
-    let Some(path) = path else { return result; };
-    let Ok(content) = std::fs::read_to_string(path) else { return result; };
-    let Ok(doc) = content.parse::<toml_edit::DocumentMut>() else { return result; };
-
-    if let Some(plugin_section) = doc.get("plugins").and_then(|p| p.get(plugin_name)) {
-        if let Some(table) = plugin_section.as_table() {
-            for (k, v) in table.iter() {
-                let str_val = if let Some(b) = v.as_bool() {
-                    b.to_string()
-                } else if let Some(i) = v.as_integer() {
-                    i.to_string()
-                } else if let Some(f) = v.as_float() {
-                    f.to_string()
-                } else if let Some(s) = v.as_str() {
-                    s.to_string()
-                } else {
-                    continue;
-                };
-                result.insert(k.to_string(), str_val);
-            }
+    let mut removed = 0usize;
+    for config in &configs {
+        let key = format!("plugins.{}.enabled", config.name);
+        if ConfigManager::unset_value(scope, &key)
+            .map_err(|e| CliError::Config(format!("重置配置失败: {}", e)))?
+        {
+            removed += 1;
         }
     }
-    result
-}
 
-/// 从用户配置作用域读取插件参数覆盖
-fn read_plugin_params_from_scope(plugin_name: &str, scope: ConfigScope) -> HashMap<String, String> {
-    let path = match scope {
-        ConfigScope::Global => global_config_path(),
-        ConfigScope::Local => local_config_path(),
-    };
-    let Some(path) = path else { return HashMap::new(); };
-    read_plugin_params_from_toml(plugin_name, Some(&path))
-}
+    if removed > 0 {
+        println!("✅ 已重置 {} 个插件的启用状态为默认", removed);
+    } else {
+        println!("ℹ️ 没有用户插件覆盖需要重置");
+    }
 
+    Ok(())
+}

@@ -29,6 +29,7 @@ pub enum VcsRecord {
     Raw(String),
 }
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串（含各变体的显示格式）。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -59,6 +60,7 @@ pub struct VcsDocument {
     pub records: Vec<VcsRecord>,
 }
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 pub struct BzrStatusParser;
@@ -71,6 +73,7 @@ pub struct BzrResolveParser;
 pub struct BzrBranchParser;
 
 // --- inlined helpers ---
+/// 非空记录列表包装为 VcsDocument；空列表返回 None。
 #[tracing::instrument(level = "debug", skip_all)]
 fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Option<VcsDocument> {
     if records.is_empty() {
@@ -83,6 +86,7 @@ fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Op
         })
     }
 }
+/// 解析单字符状态码 + 路径（支持两字符组合状态，R/C 后随数字）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     let token_end = line.find(char::is_whitespace).unwrap_or(line.len());
@@ -123,6 +127,7 @@ fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     };
     Some((status, rest.to_string()))
 }
+/// 判断字符串是否为 VCS 路径形态（过滤邮箱/URL/代码调用/方法名）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_vcs_path(path: &str) -> bool {
     let trimmed = path.trim_matches('"');
@@ -173,10 +178,12 @@ fn looks_like_vcs_path(path: &str) -> bool {
             && trimmed.chars().any(|c| c.is_ascii_alphabetic()))
         || trimmed.starts_with('.')
 }
+/// 折叠行内连续空白为单空格。
 #[tracing::instrument(level = "debug", skip_all)]
 fn collapse_inline_whitespace(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
+/// 按长词状态前缀（modified:/added: 等）解析状态码与路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     let lower = line.to_ascii_lowercase();
@@ -203,6 +210,7 @@ fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     }
     None
 }
+/// 解析 diff 的 index/---/+++/@@ 行与 +/- 补丁行，分类为 Raw/Hunk/Patch 记录。
 fn parse_generic_patch_or_stat_line(
     line: &str,
     trimmed: &str,
@@ -225,15 +233,18 @@ fn parse_generic_patch_or_stat_line(
     }
     false
 }
+/// 判断是否为 diff stat 行（含 " | " 分隔）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_diff_stat_line(line: &str) -> bool {
     line.contains(" | ")
 }
+/// 紧凑化 diff stat 行：折叠连续空白。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_diff_stat_line(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 通用 status 解析：按命令前缀过滤，解析状态行与路径为 File 记录。
 fn parse_generic_status_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -277,6 +288,7 @@ fn parse_generic_status_for_tool(
     }
     to_doc_if_any(tool, VcsDocKind::Status, records)
 }
+/// 通用 log 解析：按命令前缀过滤，解析 revno/author/date/缩进消息为记录。
 fn parse_generic_log_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -333,6 +345,7 @@ fn parse_generic_log_for_tool(
     }
     to_doc_if_any(tool, VcsDocKind::Log, records)
 }
+/// 通用 diff 解析：降维 bzr diff 头，解析补丁/路径为记录。
 fn parse_generic_diff_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -379,12 +392,14 @@ fn parse_generic_diff_for_tool(
     to_doc_if_any(tool, VcsDocKind::Diff, records)
 }
 
+/// 从行中解析修订计数（形如 "revno: N" 前缀）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_bzr_revision_count_line(line: &str, prefix: &str) -> Option<usize> {
     let rest = line.strip_prefix(prefix)?.trim();
     let count = rest.split_whitespace().next()?.parse::<usize>().ok()?;
     Some(count)
 }
+/// 从行中解析总修订数（形如 "Total N" 前缀）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_bzr_total_revisions_line(line: &str) -> Option<usize> {
     let rest = line.strip_prefix("Total ")?.trim();
@@ -394,22 +409,26 @@ fn parse_bzr_total_revisions_line(line: &str) -> Option<usize> {
 
 // --- Parsers ---
 impl VcsParser for BzrStatusParser {
+    /// 解析 `bzr status` 输出：委托通用状态解析器，将文件状态行归并为 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_status_for_tool(raw, VcsTool::Bzr, &["bzr status", "bzr st"])
     }
 }
 impl VcsParser for BzrDiffParser {
+    /// 解析 `bzr diff` 输出：委托通用差异解析器，将变更片段归并为 Diff 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_diff_for_tool(raw, VcsTool::Bzr, &["bzr diff"])
     }
 }
 impl VcsParser for BzrLogParser {
+    /// 解析 `bzr log` 输出：委托通用日志解析器，将版本历史归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Bzr, &["bzr log"])
     }
 }
 
 impl VcsParser for BzrPullParser {
+    /// 解析 `bzr pull` 输出：提取 `Pulled N` 与 `Total revisions` 计数摘要并保留其余行，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut pulled = None;
@@ -445,6 +464,7 @@ impl VcsParser for BzrPullParser {
 }
 
 impl VcsParser for BzrPushParser {
+    /// 解析 `bzr push` 输出：识别「无远端分支」情形与 `bzr push <target>` 建议目标，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut saw_no_remote = false;
@@ -483,6 +503,7 @@ impl VcsParser for BzrPushParser {
 }
 
 impl VcsParser for BzrMergeParser {
+    /// 解析 `bzr merge` 输出：将 `Merging from` 来源与变更路径分别归为记录，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -514,6 +535,7 @@ impl VcsParser for BzrMergeParser {
 }
 
 impl VcsParser for BzrResolveParser {
+    /// 解析 `bzr resolve` 输出：将 `Resolved conflicts in` 块内路径归为 resolved 标签文件，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut in_resolved_block = false;
@@ -541,6 +563,7 @@ impl VcsParser for BzrResolveParser {
 }
 
 impl VcsParser for BzrBranchParser {
+    /// 解析 `bzr branch` 输出：提取分支目标与 `Branched N revs` 修订数摘要，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut target: Option<String> = None;

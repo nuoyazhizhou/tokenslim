@@ -10,3 +10,4 @@
 - `case_008_binary_like.hex`: binary-like payload used to validate binary guard.
 - `case_009_big5_zh_tw.hex`: Big5 bytes for `繁體中文測試`.
 - `case_010_cp949_ko.hex`: CP949(EUC-KR path) bytes for `한국어테스트데이터`.
+- `case_011_gbk_log_roundtrip.hex`: GBK-encoded 3-line Chinese app log used by the P1-08 byte-level round-trip regression (decode → compress → rehydrate → encode-back must be byte-identical).

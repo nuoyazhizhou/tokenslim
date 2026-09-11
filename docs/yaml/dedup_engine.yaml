@@ -1,0 +1,152 @@
+module:
+  name: dedup_engine
+  path: src/core/dedup_engine
+  dependencies:
+    - regex = "1.10"      # 用于模式去重（未来）
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{DedupEngine, DedupConfig, DedupResult, DedupType};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        /// 去重结果
+        #[derive(Debug, Clone)]
+        pub struct DedupResult {
+            pub compressed: String,
+            pub count: usize,
+        }
+
+        /// 去重类型（用于区分不同的去重策略）
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        pub enum DedupType {
+            Line,
+            StackFrame,
+            Path,
+            Pattern,
+            Slice,
+        }
+
+        /// 去重引擎配置
+        #[derive(Clone)]
+        pub struct DedupConfig {
+            pub line_threshold: usize,
+            pub stack_frame_threshold: usize,
+            pub path_threshold: usize,
+            pub pattern_threshold: usize,
+        }
+
+        /// 去重引擎主结构
+        pub struct DedupEngine {
+            config: DedupConfig,
+            // 可选的缓存，MVP 阶段保持无状态，所以可以不包含字段
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+
+        impl DedupEngine {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 DedupEngine 实例
+            ///
+            /// # 参数
+            /// - `config`: 去重引擎配置
+            ///
+            /// # 返回值
+            /// - `Self`: DedupEngine 实例
+            ///
+            /// MVP 优先级
+            pub fn new(config: DedupConfig) -> Self {
+                todo!()
+            }
+
+            /// 行级去重
+            ///
+            /// # 参数
+            /// - `text`: 输入文本（可能包含多行）
+            ///
+            /// # 返回值
+            /// - `Option<DedupResult>`: 如果存在重复行，返回折叠后的结果
+            ///
+            /// # 实现要求
+            /// 1. 按行分割文本，统计连续相同行的数量。
+            /// 2. 如果连续相同行数 >= config.line_threshold，则折叠为一行并添加 `(xN)` 后缀。
+            /// 3. 返回折叠后的文本和重复次数；否则返回 None。
+            ///
+            /// # 测试要点
+            /// - 连续重复行超过阈值 → 返回 Some。
+            /// - 无重复行 → 返回 None。
+            /// - 重复行数低于阈值 → 返回 None。
+            ///
+            /// MVP 优先级
+            pub fn dedup_line(&self, text: &str) -> Option<DedupResult> {
+                todo!()
+            }
+
+            /// 堆栈帧去重
+            ///
+            /// # 参数
+            /// - `text`: 堆栈文本（多行）
+            ///
+            /// # 返回值
+            /// - `Option<DedupResult>`: 如果存在连续重复的堆栈帧，返回折叠后的结果
+            ///
+            /// # 实现要求
+            /// 1. 将文本按行分割，每行视为一个堆栈帧（可先去除行号差异，或比较类名和方法名）。
+            /// 2. 检测连续相同的帧，合并。
+            ///
+            /// MVP 优先级（可先简化，调用 dedup_line，或单独实现）
+            pub fn dedup_stack_frame(&self, text: &str) -> Option<DedupResult> {
+                todo!()
+            }
+
+            /// 路径去重（未来）
+            ///
+            /// # 参数
+            /// - `text`: 文本
+            ///
+            /// # 返回值
+            /// - `Option<DedupResult>`
+            ///
+            /// 未来优先级
+            pub fn dedup_path(&self, text: &str) -> Option<DedupResult> {
+                todo!()
+            }
+
+            /// 模式去重（未来）
+            ///
+            /// # 参数
+            /// - `text`: 文本
+            /// - `pattern`: 正则表达式
+            ///
+            /// # 返回值
+            /// - `Option<DedupResult>`
+            ///
+            /// 未来优先级
+            pub fn dedup_pattern(&self, text: &str, pattern: &regex::Regex) -> Option<DedupResult> {
+                todo!()
+            }
+
+            /// 重置内部状态（如果引擎有缓存）
+            ///
+            /// # 实现要求
+            /// 清空所有缓存。
+            ///
+            /// MVP 优先级（如果引擎无状态，可不实现或空实现）
+            pub fn reset(&mut self) {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

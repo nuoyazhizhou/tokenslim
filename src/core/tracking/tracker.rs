@@ -17,6 +17,7 @@ const E_TRACKING_DB_PATH: &str = "E_TRACKING_DB_PATH";
 const E_TRACKING_CREATE_DIR: &str = "E_TRACKING_CREATE_DIR";
 const E_TRACKING_OPEN_DB: &str = "E_TRACKING_OPEN_DB";
 const E_TRACKING_SET_WAL: &str = "E_TRACKING_SET_WAL";
+const E_TRACKING_SET_BUSY_TIMEOUT: &str = "E_TRACKING_SET_BUSY_TIMEOUT";
 #[cfg(test)]
 const E_TRACKING_OPEN_MEMORY_DB: &str = "E_TRACKING_OPEN_MEMORY_DB";
 const E_TRACKING_LOCK: &str = "E_TRACKING_LOCK";
@@ -31,10 +32,15 @@ const E_TRACKING_FILTER_PREPARE: &str = "E_TRACKING_FILTER_PREPARE";
 const E_TRACKING_FILTER_QUERY: &str = "E_TRACKING_FILTER_QUERY";
 const E_TRACKING_FILTER_COLLECT: &str = "E_TRACKING_FILTER_COLLECT";
 const E_TRACKING_CLEANUP_OLD: &str = "E_TRACKING_CLEANUP_OLD";
+const E_TRACKING_CLEANUP_THROTTLE: &str = "E_TRACKING_CLEANUP_THROTTLE";
+const E_TRACKING_CLEANUP_THROTTLE_MARK: &str = "E_TRACKING_CLEANUP_THROTTLE_MARK";
 const E_TRACKING_LEGACY_STATS_READ: &str = "E_TRACKING_LEGACY_STATS_READ";
 const E_TRACKING_LEGACY_STATS_PARSE: &str = "E_TRACKING_LEGACY_STATS_PARSE";
 const E_TRACKING_LEGACY_MIGRATE: &str = "E_TRACKING_LEGACY_MIGRATE";
 const LEGACY_MIGRATION_KEY: &str = "legacy_stats_migrated_v1";
+// P3-54②：记录今日是否已执行过自动清理（按 UTC 日期）。用于对每次 run 都触发一次的
+// auto_cleanup 做按日节流，避免高频 run 场景下对 commands 全表重复 DELETE 扫描。
+const AUTO_CLEANUP_DATE_KEY: &str = "auto_cleanup_last_date";
 
 #[derive(Debug, Default, Deserialize)]
 struct LegacyStats {
@@ -106,6 +112,12 @@ impl Tracker {
         conn.execute_batch("PRAGMA journal_mode=WAL;")
             .map_err(|e| format!("{E_TRACKING_SET_WAL}:{e}"))?;
 
+        // P3-54①：设置忙等待超时。两个并发 `tokenslim run` 同时写库时，SQLite 默认
+        // 立即返回 SQLITE_BUSY，导致该次记录仅 warn 后静默丢失。busy_timeout 让写操作
+        // 在 2s 内等待锁释放而非立刻失败，大幅降低并发丢记录概率。
+        conn.execute_batch("PRAGMA busy_timeout=2000;")
+            .map_err(|e| format!("{E_TRACKING_SET_BUSY_TIMEOUT}:{e}"))?;
+
         let tracker = Self {
             conn: Mutex::new(conn),
         };
@@ -169,6 +181,7 @@ impl Tracker {
         Ok(())
     }
 
+    /// 返回旧版 stats.json 的路径（~/.tokenslim/stats.json）。
     fn legacy_stats_path() -> Option<PathBuf> {
         let home = std::env::var("HOME")
             .or_else(|_| std::env::var("USERPROFILE"))
@@ -176,6 +189,7 @@ impl Tracker {
         Some(PathBuf::from(home).join(".tokenslim").join("stats.json"))
     }
 
+    /// 读取并解析旧版 stats.json 为 LegacyStats；读失败或解析失败均返回错误。
     fn load_legacy_stats(path: &Path) -> Result<LegacyStats, String> {
         let content = std::fs::read_to_string(path)
             .map_err(|e| format!("{E_TRACKING_LEGACY_STATS_READ}:{path:?}:{e}"))?;
@@ -183,6 +197,8 @@ impl Tracker {
             .map_err(|e| format!("{E_TRACKING_LEGACY_STATS_PARSE}:{path:?}:{e}"))
     }
 
+    /// 若 meta 表中无迁移标记，则将旧版 stats.json 的累计数据导入 legacy_totals 表，
+    /// 并写入迁移状态标记；已迁移或无需迁移时返回 false。
     pub fn migrate_legacy_stats_if_needed(&self) -> Result<bool, String> {
         let legacy_path = Self::legacy_stats_path();
         let legacy_stats = legacy_path
@@ -500,8 +516,43 @@ impl Tracker {
     }
 
     /// 自动清理（默认 90 天）
+    ///
+    /// P3-54②：旧实现每次 run 都全表跑一遍 DELETE 扫描（`record_command` 每次调用
+    /// `auto_cleanup`），高频场景无谓重复清理。现借助现成的 meta 表做按日节流——
+    /// 仅在"今日尚未清理"时执行清理，且用 `date('now')`（UTC）做同一声明内的原子判定，
+    /// 同一天后续调用直接返回 0（不扫描）。
     pub fn auto_cleanup(&self) -> Result<usize, String> {
-        self.cleanup_older_than(DEFAULT_RETENTION_DAYS)
+        let conn = self
+            .conn
+            .lock()
+            .map_err(|e| format!("{E_TRACKING_LOCK}:{e}"))?;
+
+        // 今日已在 meta 标记过清理 → 跳过，避免重复全表扫描
+        let today_cleaned = conn
+            .query_row(
+                "SELECT COUNT(*) FROM meta WHERE key = ?1 AND value = date('now')",
+                params![AUTO_CLEANUP_DATE_KEY],
+                |r| r.get::<_, i64>(0),
+            )
+            .map_err(|e| format!("{E_TRACKING_CLEANUP_THROTTLE}:{e}"))?;
+        if today_cleaned > 0 {
+            return Ok(0);
+        }
+
+        // 幂等标记今日已清理
+        conn.execute(
+            "INSERT OR IGNORE INTO meta(key, value) VALUES(?1, date('now'))",
+            params![AUTO_CLEANUP_DATE_KEY],
+        )
+        .map_err(|e| format!("{E_TRACKING_CLEANUP_THROTTLE_MARK}:{e}"))?;
+
+        let deleted = conn
+            .execute(
+                "DELETE FROM commands WHERE timestamp < datetime('now', ?1)",
+                params![format!("-{DEFAULT_RETENTION_DAYS} days")],
+            )
+            .map_err(|e| format!("{E_TRACKING_CLEANUP_OLD}:{e}"))?;
+        Ok(deleted)
     }
 }
 
@@ -528,10 +579,12 @@ pub fn record_command(
 mod tests {
     use super::*;
 
+    /// 测试辅助：创建内存数据库 Tracker。
     fn new_tracker() -> Tracker {
         Tracker::open_in_memory().expect("无法创建测试用内存数据库")
     }
 
+    /// 测试辅助：构造 TrackingEvent 并写入 Tracker（token 按 bytes/4 估算）。
     fn record_test_event(
         tracker: &Tracker,
         command: &str,
@@ -553,6 +606,7 @@ mod tests {
         tracker.record(&event).expect("记录失败");
     }
 
+    /// 测试：内存数据库初始总命令数为 0。
     #[test]
     fn test_open_in_memory() {
         let tracker = new_tracker();
@@ -560,6 +614,7 @@ mod tests {
         assert_eq!(summary.total_commands, 0);
     }
 
+    /// 测试：记录两条事件后 summary 聚合命令数与 token 数正确。
     #[test]
     fn test_record_and_summary() {
         let tracker = new_tracker();
@@ -573,6 +628,7 @@ mod tests {
         assert_eq!(summary.tokens_saved, 1088); // 1280 - 192
     }
 
+    /// 测试：按过滤器聚合，命令数多的过滤器排前，无过滤器的归为 passthrough。
     #[test]
     fn test_get_by_filter() {
         let tracker = new_tracker();
@@ -588,6 +644,7 @@ mod tests {
         assert_eq!(filters[0].commands, 2);
     }
 
+    /// 测试：按日聚合返回今天的记录。
     #[test]
     fn test_get_daily() {
         let tracker = new_tracker();
@@ -601,6 +658,7 @@ mod tests {
         assert_eq!(today.commands, 2);
     }
 
+    /// 测试：清理 0 天前的数据不删除今天的记录。
     #[test]
     fn test_cleanup() {
         let tracker = new_tracker();
@@ -614,6 +672,7 @@ mod tests {
         assert_eq!(summary.total_commands, 1);
     }
 
+    /// 测试：空库 summary 各项统计均为 0。
     #[test]
     fn test_empty_summary() {
         let tracker = new_tracker();
@@ -624,6 +683,7 @@ mod tests {
         assert!((summary.avg_filter_time_ms - 0.0).abs() < 0.01);
     }
 
+    /// 测试：TrackingEvent::new 构造事件（验证签名与字段）。
     #[test]
     fn test_record_command_quick() {
         // 测试后台记录函数（在内存数据库中无法直接测试，仅验证不 panic）
@@ -633,6 +693,7 @@ mod tests {
         assert_eq!(event.command, "test_cmd");
     }
 
+    /// 测试：多次记录后 summary 命令数与节省 token 数正确累计。
     #[test]
     fn test_multiple_records_tokens_saved() {
         let tracker = new_tracker();

@@ -1,0 +1,6 @@
+gcc -Wall -Werror -o app main.o utils.o
+main.c: In function 'main':
+main.c:10:5: warning: implicit declaration of function 'foo'
+/usr/bin/ld: main.o: undefined reference to symbol 'bar'
+collect2: error: ld returned 1 exit status
+make: *** [Makefile:5: app] Error 1

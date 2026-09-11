@@ -51,16 +51,24 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
 pub fn compact_git_status_for_ai(raw: &str) -> String {
     let compacted = process_parser(&GitStatusParser, raw);
 
-    // 应用树结构重组（使用默认配置）
-    let config = TreeConfig::default();
+    // P2-61：status 行渲染为 "M path"，默认 path_pattern 不要求分隔符会把
+    // 首捕获吃成状态字母 → 同状态 N 行坍缩为 1 叶子、文件列表全灭。
+    // 与 diff 分支同理，显式要求 ≥1 路径分隔符并感知扩展名。
+    let config = TreeConfig {
+        path_pattern: r"([a-zA-Z0-9_./\\-]+[/\\][a-zA-Z0-9_./\\-]+(?:\.[a-zA-Z0-9]+)?)"
+            .to_string(),
+        ..TreeConfig::default()
+    };
     restructure_as_tree(&compacted, &config)
 }
 
+/// 压缩 git checkout 输出：用 GitCheckoutParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_checkout_for_ai(raw: &str) -> String {
     process_parser(&GitCheckoutParser, raw)
 }
 
+/// 压缩 git log 输出：GitLogParser 解析后经 rebase todo 与冗余 tag 命令清理。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_log_for_ai(raw: &str) -> String {
     let out = process_parser(&GitLogParser, raw);
@@ -103,118 +111,182 @@ pub fn compact_git_diff_for_ai(raw: &str) -> String {
 
     // 仅对 name-only/name-status 模式应用树结构重组
     if is_name_mode {
-        let config = TreeConfig::default();
+        // 使用文件路径专用正则：要求至少一个路径分隔符或文件扩展名，避免锚点行
+        // 上的 `git`/`diff`/`--name-only` 等单词被误解析为伪路径条目。
+        let config = TreeConfig {
+            path_pattern: r"([a-zA-Z0-9_./\\-]+[/\\][a-zA-Z0-9_./\\-]+(?:\.[a-zA-Z0-9]+)?)"
+                .to_string(),
+            ..TreeConfig::default()
+        };
         restructure_as_tree(&compacted, &config)
     } else {
         compacted
     }
 }
 
+/// 压缩 git add 输出：用 GitAddParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_add_for_ai(raw: &str) -> String {
     process_parser(&GitAddParser, raw)
 }
 
+/// 压缩 git stash 输出：用 GitStashParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_stash_for_ai(raw: &str) -> String {
+    // stash list 是独立命令形态，行序即 stash 索引，样板可单独折叠
+    if is_git_stash_list(raw) {
+        return compact_git_stash_list_for_ai(raw);
+    }
     process_parser(&GitStashParser, raw)
 }
 
+/// 判定输入是否为 `git stash list` 命令（含其锚点行）。
+#[tracing::instrument(level = "debug", skip_all)]
+fn is_git_stash_list(raw: &str) -> bool {
+    raw.lines()
+        .any(|l| l.trim().eq_ignore_ascii_case("git stash list"))
+}
+
+/// 压缩 `git stash list` 输出：条目的 `stash@{N}: ` 连续索引序列中，
+/// N 与行序一一对应，故折叠该样板前缀、靠行序隐含索引，完整保留每条 stash 内容。
+#[tracing::instrument(level = "debug", skip_all)]
+pub fn compact_git_stash_list_for_ai(raw: &str) -> String {
+    let mut out = String::from("git stash list\n");
+    for line in raw.lines() {
+        let t = line.trim();
+        if t.is_empty() || t.eq_ignore_ascii_case("git stash list") {
+            continue;
+        }
+        // 剥离 `stash@{N}: ` 前缀，仅保留索引后的正文（WIP on <branch>: <hash> <msg> 等）
+        let body = t
+            .strip_prefix("stash@{")
+            .and_then(|r| r.split_once('}'))
+            .map(|(_, after)| after.trim_start_matches(':').trim_start().to_string())
+            .unwrap_or_else(|| t.to_string());
+        if body.is_empty() {
+            continue;
+        }
+        out.push_str(&body);
+        out.push('\n');
+    }
+    out.trim_end_matches('\n').to_string()
+}
+
+/// 压缩 git reset 输出：用 GitResetParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_reset_for_ai(raw: &str) -> String {
     process_parser(&GitResetParser, raw)
 }
 
+/// 压缩 git switch 输出：用 GitSwitchParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_switch_for_ai(raw: &str) -> String {
     process_parser(&GitSwitchParser, raw)
 }
 
+/// 压缩 git merge 输出：用 GitMergeParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_merge_for_ai(raw: &str) -> String {
     process_parser(&GitMergeParser, raw)
 }
 
+/// 压缩 git restore 输出：用 GitRestoreParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_restore_for_ai(raw: &str) -> String {
     process_parser(&GitRestoreParser, raw)
 }
 
+/// 压缩 git clean 输出：用 GitCleanParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_clean_for_ai(raw: &str) -> String {
     process_parser(&GitCleanParser, raw)
 }
 
+/// 压缩 git show 输出：用 GitShowParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_show_for_ai(raw: &str) -> String {
     process_parser(&GitShowParser, raw)
 }
 
+/// 压缩 git blame 输出：用 GitBlameParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_blame_for_ai(raw: &str) -> String {
     process_parser(&GitBlameParser, raw)
 }
 
+/// 压缩 git revert 输出：用 GitRevertParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_revert_for_ai(raw: &str) -> String {
     process_parser(&GitRevertParser, raw)
 }
 
+/// 压缩 git cherry-pick 输出：用 GitCherryPickParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_cherry_pick_for_ai(raw: &str) -> String {
     process_parser(&GitCherryPickParser, raw)
 }
 
+/// 压缩 git branch 输出：用 GitBranchParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_branch_for_ai(raw: &str) -> String {
     process_parser(&GitBranchParser, raw)
 }
 
+/// 压缩 git remote 输出：用 GitRemoteParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_remote_for_ai(raw: &str) -> String {
     process_parser(&GitRemoteParser, raw)
 }
 
+/// 压缩 git tag 输出：用 GitTagParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_tag_for_ai(raw: &str) -> String {
     process_parser(&GitTagParser, raw)
 }
 
+/// 压缩 git rm 输出：用 GitRmParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_rm_for_ai(raw: &str) -> String {
     process_parser(&GitRmParser, raw)
 }
 
+/// 压缩 git fetch 输出：用 GitFetchParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_fetch_for_ai(raw: &str) -> String {
     process_parser(&GitFetchParser, raw)
 }
 
+/// 压缩 git push 输出：用 GitPushParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_push_for_ai(raw: &str) -> String {
     process_parser(&GitPushParser, raw)
 }
 
+/// 压缩 git pull 输出：用 GitPullParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_pull_for_ai(raw: &str) -> String {
     process_parser(&GitPullParser, raw)
 }
 
+/// 压缩 git bisect 输出：用 GitBisectParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_bisect_for_ai(raw: &str) -> String {
     process_parser(&GitBisectParser, raw)
 }
 
+/// 压缩 git submodule 输出：用 GitSubmoduleParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_submodule_for_ai(raw: &str) -> String {
     process_parser(&GitSubmoduleParser, raw)
 }
 
+/// 压缩 git rebase 输出：用 GitRebaseParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_rebase_for_ai(raw: &str) -> String {
     process_parser(&GitRebaseParser, raw)
 }
 
+/// git 其他输出入口：按首行子命令分派到 blame/revert/branch/stash/remote 等专用压缩。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_other_for_ai(raw: &str) -> String {
     let first = first_non_empty_line(raw).trim();
@@ -255,12 +327,19 @@ pub fn compact_git_other_for_ai(raw: &str) -> String {
     raw.to_string()
 }
 
+/// 压缩 git help 输出：
+/// - 将 `usage:` 主行与其 `[`/`<` 续行合并为单行（flag 列表语义保留）
+/// - 命令列表行折叠对齐空格为单空格
+/// - 折叠连续空行为单空行
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_help_for_ai(raw: &str) -> String {
     let mut out = String::with_capacity(raw.len());
     let mut prev_blank = false;
+    let lines: Vec<&str> = raw.lines().collect();
+    let mut i = 0usize;
 
-    for line in raw.lines() {
+    while i < lines.len() {
+        let line = lines[i];
         let trimmed_end = line.trim_end();
 
         if trimmed_end.trim().is_empty() {
@@ -268,49 +347,46 @@ pub fn compact_git_help_for_ai(raw: &str) -> String {
                 out.push('\n');
                 prev_blank = true;
             }
+            i += 1;
             continue;
         }
         prev_blank = false;
 
-        // 仅压缩“命令列表行”的对齐空格，避免破坏 usage 多行排版
-        let normalized = if trimmed_end.starts_with("   ") && !trimmed_end.starts_with("      [") {
-            compact_command_list_alignment(trimmed_end)
+        // usage 块合并：`usage:` 主行与后续以 `[`/`<` 开头的续行合并为单行
+        if trimmed_end.trim_start().starts_with("usage:") {
+            let mut usage = trimmed_end.trim().to_string();
+            let mut j = i + 1;
+            while j < lines.len() {
+                let tj = lines[j].trim();
+                if tj.is_empty() || (!tj.starts_with('[') && !tj.starts_with('<')) {
+                    break;
+                }
+                usage.push(' ');
+                usage.push_str(tj);
+                j += 1;
+            }
+            out.push_str(&usage);
+            out.push('\n');
+            i = j;
+            continue;
+        }
+
+        // 命令列表行：去掉行首对齐缩进，连续空格折叠为单空格
+        let normalized = if trimmed_end.starts_with(' ') {
+            trimmed_end.split_whitespace().collect::<Vec<_>>().join(" ")
         } else {
             trimmed_end.to_string()
         };
 
         out.push_str(&normalized);
         out.push('\n');
+        i += 1;
     }
 
     out.trim_end_matches('\n').to_string()
 }
 
-fn compact_command_list_alignment(line: &str) -> String {
-    let mut result = String::with_capacity(line.len());
-    let mut i = 0usize;
-    let bytes = line.as_bytes();
-    while i < bytes.len() {
-        let b = bytes[i];
-        if b == b' ' {
-            let start = i;
-            while i < bytes.len() && bytes[i] == b' ' {
-                i += 1;
-            }
-            let count = i - start;
-            if count >= 2 {
-                result.push_str("  ");
-            } else {
-                result.push(' ');
-            }
-            continue;
-        }
-        result.push(b as char);
-        i += 1;
-    }
-    result
-}
-
+/// 压缩 rebase todo 输出：删除 # 注释行，仅保留命令。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_rebase_todo_for_ai(input: &str) -> String {
     // Rebase TODO logic implementation
@@ -329,6 +405,7 @@ pub fn compact_git_rebase_todo_for_ai(input: &str) -> String {
     }
 }
 
+/// 压缩冗余的 git tag 命令行（单独一行的 "git tag" 被删除）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_redundant_git_tag_commands_for_ai(input: &str) -> String {
     let mut out = String::new();
@@ -346,19 +423,115 @@ pub fn compact_redundant_git_tag_commands_for_ai(input: &str) -> String {
     }
 }
 
+/// 压缩 git worktree 输出：保留 "git worktree list" 锚点并去重。
+///
+/// 多条 worktree 常共享同一仓库根前缀（如 `C:/git_work/TokenSlim` 及其
+/// `-feature-auth` / `-bugfix-123` 变体）。提取共享前缀生成 `[paths]` 字典，
+/// 将绝对路径冗余符号化为 `$P0` token，降低逐行重复。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_worktree_for_ai(raw: &str) -> String {
-    let mut out = String::from("git worktree list\n");
+    // 第一遍：剥离锚点与空行，分离每行「路径 + 尾部附加信息（branch 列等）」
+    let mut rows: Vec<(String, String)> = Vec::new();
     for line in raw.lines() {
-        if line.trim().is_empty() || line.trim().eq_ignore_ascii_case("git worktree list") {
+        let t = line.trim();
+        if t.is_empty() || t.eq_ignore_ascii_case("git worktree list") {
             continue;
         }
-        out.push_str(line);
-        out.push('\n');
+        let mut it = t.split_whitespace();
+        let path = it.next().unwrap_or("").to_string();
+        if path.is_empty() {
+            continue;
+        }
+        let tail = it.collect::<Vec<_>>().join(" ");
+        rows.push((path, tail));
     }
-    out.trim_end_matches('\n').to_string()
+    if rows.is_empty() {
+        return raw.trim().to_string();
+    }
+
+    // 提取最长公共前缀（最长公共字符前缀）
+    let common = longest_common_prefix(rows.iter().map(|(p, _)| p.as_str()).collect());
+    // 边界门控：公共前缀后一位必须是分隔符类或行尾，否则前缀会切断单词，字典无意义
+    let safe_prefix = if worktree_prefix_boundary_safe(&rows, &common) {
+        common
+    } else {
+        String::new()
+    };
+    // 前缀足够长才有字典收益（否则 [paths] 元数据净膨胀）
+    let dict_version = if safe_prefix.len() >= 8 {
+        let dict_line = format!("[paths] $P0={}", safe_prefix);
+        let mut out = String::from("git worktree list\n");
+        out.push_str(&dict_line);
+        out.push('\n');
+        for (path, tail) in &rows {
+            let rest = &path[safe_prefix.len()..];
+            out.push_str("$P0");
+            out.push_str(rest);
+            if !tail.is_empty() {
+                out.push(' ');
+                out.push_str(tail);
+            }
+            out.push('\n');
+        }
+        out.trim_end_matches('\n').to_string()
+    } else {
+        // 前缀太短：退化为仅去重锚点的基础压缩
+        let mut out = String::from("git worktree list\n");
+        for (path, tail) in &rows {
+            out.push_str(path);
+            if !tail.is_empty() {
+                out.push(' ');
+                out.push_str(tail);
+            }
+            out.push('\n');
+        }
+        out.trim_end_matches('\n').to_string()
+    };
+
+    // ROI 门控：压缩结果不得扩张，否则回退原文
+    crate::core::utils::roi::prefer_non_expanding(raw, dict_version)
 }
 
+/// 计算一组字符串的最长公共前缀；输入为空时返回空串。
+fn longest_common_prefix<'a>(mut texts: Vec<&'a str>) -> String {
+    let first = match texts.pop() {
+        Some(t) => t,
+        None => return String::new(),
+    };
+    let mut prefix_len = first.len();
+    for t in &texts {
+        let mut n = 0;
+        for (a, b) in first.bytes().zip(t.bytes()) {
+            if a != b {
+                break;
+            }
+            n += 1;
+        }
+        prefix_len = prefix_len.min(n);
+    }
+    first[..prefix_len].to_string()
+}
+
+/// worktree 公共前缀边界安全检查：对每个路径，公共前缀之后必须是分隔符类
+/// （`/` `\` `-` `_`）或行尾（路径恰为前缀），确保 `$P0` token 不会切断单词。
+fn worktree_prefix_boundary_safe(rows: &[(String, String)], prefix: &str) -> bool {
+    if prefix.is_empty() {
+        return false;
+    }
+    rows.iter().all(|(path, _)| {
+        if let Some(rest) = path.strip_prefix(prefix) {
+            rest.is_empty()
+                || rest
+                    .chars()
+                    .next()
+                    .is_some_and(|c| matches!(c, '/' | '\\' | '-' | '_'))
+        } else {
+            false
+        }
+    })
+}
+
+/// 压缩 git grep 输出：保留命令锚点，去除重复锚点行与空行。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_git_grep_for_ai(raw: &str) -> String {
     let anchor = first_non_empty_line(raw).trim();
@@ -387,6 +560,7 @@ pub fn compact_git_grep_for_ai(raw: &str) -> String {
     }
 }
 
+/// 返回文本中第一个非空行。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn first_non_empty_line(raw: &str) -> &str {
     raw.lines().find(|l| !l.trim().is_empty()).unwrap_or("")

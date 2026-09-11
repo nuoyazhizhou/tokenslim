@@ -1,4 +1,4 @@
-//! cli benchmark 子命令
+//! cli verify 子命令（静态规则夹具校验）
 
 use crate::cli::common::*;
 use crate::cli::types::*;
@@ -24,7 +24,10 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::io::{self, IsTerminal, Read};
 
-
+/// 判断给定路径是否为「验证夹具（fixture）」文件。
+///
+/// 依据扩展名判定：仅当扩展名为 `log`、`fixture` 或 `input`（大小写不敏感）时视为夹具。
+/// 目录模式扫描时靠它从一堆文件中筛出需要参与 `verify` 的输入样本。
 pub(crate) fn is_verify_fixture_file(path: &std::path::Path) -> bool {
     matches!(
         path.extension()
@@ -35,7 +38,10 @@ pub(crate) fn is_verify_fixture_file(path: &std::path::Path) -> bool {
     )
 }
 
-
+/// 根据夹具文件推导其对应的「期望输出」文件路径。
+///
+/// 推导规则：若文件名以 `_fixture` 结尾，则对应 `<前缀>_expected.txt`；否则对应 `<文件名>.expected`。
+/// 先在 `expected_dir` 中查找上述主路径，若不存在再退回到同名文件；均不存在则返回 `None`。
 pub(crate) fn expected_file_for_fixture(
     expected_dir: &std::path::Path,
     fixture_file: &std::path::Path,
@@ -60,7 +66,10 @@ pub(crate) fn expected_file_for_fixture(
     }
 }
 
-
+/// 收集目录下的所有验证夹具文件（按文件名排序返回）。
+///
+/// 遍历 `fixture_dir`，过滤出普通文件且经 [`is_verify_fixture_file`] 判定为夹具的项，
+/// 排序后返回，供目录模式逐个比对。
 pub(crate) fn collect_verify_fixture_files(
     fixture_dir: &std::path::Path,
 ) -> Result<Vec<std::path::PathBuf>, CliError> {
@@ -73,7 +82,11 @@ pub(crate) fn collect_verify_fixture_files(
     Ok(entries)
 }
 
-
+/// 用指定插件对单条夹具文本执行压缩，并与期望文本比对（`verify` 的核心单元）。
+///
+/// 流程：将夹具包装为 `Slice` → 经 `plugin.compress` 压缩并 `flatten_tokens` 得到实际输出；
+/// 若开启 `safety`，再对原始夹具与实际输出跑全套安全校验，命中即返回风险错误；
+/// 最后通过 `verify_text_pair` 将实际输出与 `expected_text` 逐行/逐段比对。
 pub(crate) fn verify_single_fixture_with_plugin(
     plugin: &crate::plugins::static_rule_plugin::SimpleRulePlugin,
     fixture_text: String,
@@ -116,7 +129,10 @@ pub(crate) fn verify_single_fixture_with_plugin(
     verify_text_pair(&actual, &expected_text).map_err(CliError::InvalidArgs)
 }
 
-
+/// 从 TOML 规则文件加载 `SimpleRulePlugin`，可选开启配置安全校验。
+///
+/// 读取 `rule_path` 文本；若 `safety` 为真，先跑配置级安全校验，命中风险直接报错；
+/// 校验通过后用 `SimpleRulePlugin::from_toml` 反序列化插件配置。
 pub(crate) fn load_verify_plugin(
     rule_path: &std::path::Path,
     safety: bool,
@@ -142,7 +158,10 @@ pub(crate) fn load_verify_plugin(
     SimpleRulePlugin::from_toml(&toml_text).map_err(CliError::Config)
 }
 
-
+/// 文件模式：对「单个夹具 + 单个期望文件」执行一次 verify。
+///
+/// 读取夹具与期望文本后委托 [`verify_single_fixture_with_plugin`] 比对；通过则打印
+/// `verify_pass_rule` 提示，否则向上传播错误。
 pub(crate) fn run_static_rule_verify_file_mode(
     plugin: &crate::plugins::static_rule_plugin::SimpleRulePlugin,
     rule_path: &std::path::Path,
@@ -166,7 +185,12 @@ pub(crate) fn run_static_rule_verify_file_mode(
     Ok(())
 }
 
-
+/// 目录模式：扫描夹具目录，逐个夹具与对应期望文件比对并汇总结果。
+///
+/// 先经 [`collect_verify_fixture_files`] 收集夹具；对每个夹具用
+/// [`expected_file_for_fixture`] 寻找期望文件（缺失则记录失败原因后跳过）；
+/// 调用 [`verify_single_fixture_with_plugin`] 比对，累计通过数与失败消息；
+/// 全部通过打印汇总，否则聚合失败信息返回错误。
 pub(crate) fn run_static_rule_verify_directory_mode(
     plugin: &crate::plugins::static_rule_plugin::SimpleRulePlugin,
     fixture_path: &std::path::Path,
@@ -222,7 +246,12 @@ pub(crate) fn run_static_rule_verify_directory_mode(
     )))
 }
 
-
+/// `verify` 子命令的编排入口：加载规则插件并按路径类型分派到文件或目录模式。
+///
+/// 先经 [`load_verify_plugin`] 构造插件；随后：
+/// - 夹具与期望均为文件 → [`run_static_rule_verify_file_mode`]；
+/// - 夹具与期望均为目录 → [`run_static_rule_verify_directory_mode`]；
+/// - 否则返回「路径类型不匹配」错误。
 pub(crate) fn run_static_rule_verify(
     rule_path: &std::path::Path,
     fixture_path: &std::path::Path,
@@ -252,6 +281,9 @@ pub(crate) fn run_static_rule_verify(
 
 #[cfg(test)]
 mod tests {
+    // 测试 fixture 中刻意的 mojibake 字符串（UTF-8 中文被误读为 Latin-1）含软连字符 U+00AD,
+    // 属不可见字符，clippy 默认 deny；此处按测试意图允许该 lint。
+    #![allow(clippy::invisible_characters)]
     use super::*;
     use crate::cli::app::*;
     use crate::cli::commands::{
@@ -259,6 +291,7 @@ mod tests {
     };
     use std::time::{SystemTime, UNIX_EPOCH};
 
+    /// 构造指定模式的基础 [`CliArgs`]，为测试用例提供统一默认参数。
     fn base_cli_args(mode: CliMode) -> CliArgs {
         CliArgs {
             mode,
@@ -271,10 +304,15 @@ mod tests {
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -306,13 +344,23 @@ mod tests {
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         }
     }
 
+    /// 创建带前缀与进程 ID/时间戳随机后缀的临时测试目录并返回路径。
     fn make_temp_test_dir(prefix: &str) -> std::path::PathBuf {
         let nonce = SystemTime::now()
             .duration_since(UNIX_EPOCH)
@@ -328,6 +376,7 @@ mod tests {
         dir
     }
 
+    /// 验证全局 usage 文案包含程序名与 `run <command>` 提示。
     #[test]
     fn renders_quick_usage_with_program_name() {
         let usage = render_global_usage("tokenslim.exe");
@@ -336,12 +385,14 @@ mod tests {
         assert!(usage.contains("tokenslim.exe run <command>"));
     }
 
+    /// 验证 `--help` 触发快捷 usage 展示。
     #[test]
     fn should_show_quick_usage_for_help_flag() {
         let argv = vec!["tokenslim.exe".to_string(), "--help".to_string()];
         assert!(should_show_quick_usage(&argv, true));
     }
 
+    /// 验证 `-v`/`--verbose` 单独使用且无位置参数时不阻塞 stdin、直接输出 usage。
     #[test]
     fn should_show_quick_usage_for_verbose_flag_alone() {
         // `-v` / `--verbose` 单独使用且无 position args 时，
@@ -366,6 +417,7 @@ mod tests {
         ));
     }
 
+    /// 验证 `-V` 大写版本旗标产生版本输出且含程序名与包版本。
     #[test]
     fn intercept_version_request_handles_dash_capital_v() {
         let argv = vec!["tokenslim.exe".to_string(), "-V".to_string()];
@@ -376,6 +428,7 @@ mod tests {
         assert!(text.contains(env!("CARGO_PKG_VERSION")), "got: {text}");
     }
 
+    /// 验证 `--version` 长旗标产生版本输出。
     #[test]
     fn intercept_version_request_handles_long_version_flag() {
         let argv = vec!["tokenslim.exe".to_string(), "--version".to_string()];
@@ -383,6 +436,7 @@ mod tests {
         assert!(out.is_some(), "--version should produce version output");
     }
 
+    /// 验证位置子命令 `version` 同样产生版本输出。
     #[test]
     fn intercept_version_request_handles_position_version_subcommand() {
         let argv = vec!["tokenslim.exe".to_string(), "version".to_string()];
@@ -390,12 +444,18 @@ mod tests {
         assert!(out.is_some(), "`version` should produce version output");
     }
 
+    /// 验证非版本相关输入（如 `git status`）不触发版本拦截。
     #[test]
     fn intercept_version_request_ignores_non_version_input() {
-        let argv = vec!["tokenslim.exe".to_string(), "git".to_string(), "status".to_string()];
+        let argv = vec![
+            "tokenslim.exe".to_string(),
+            "git".to_string(),
+            "status".to_string(),
+        ];
         assert!(intercept_version_request(&argv).is_none());
     }
 
+    /// 验证全局旗标 `-v` 不影响 `version` 子命令的版本拦截。
     #[test]
     fn intercept_version_request_skips_global_flags() {
         // `tokenslim -v version` 等价于 `tokenslim version`
@@ -407,6 +467,7 @@ mod tests {
         assert!(intercept_version_request(&argv).is_some());
     }
 
+    /// 验证空参数且允许交互时展示快捷 usage，非交互模式不展示。
     #[test]
     fn should_show_quick_usage_for_empty_interactive() {
         let argv = vec!["tokenslim.exe".to_string()];
@@ -414,6 +475,7 @@ mod tests {
         assert!(!should_show_quick_usage(&argv, false));
     }
 
+    /// 验证 verify fixture 文件扩展名过滤：仅接受 .log/.fixture/.input。
     #[test]
     fn verify_fixture_file_extension_filter_works() {
         assert!(is_verify_fixture_file(std::path::Path::new("a.log")));
@@ -422,6 +484,7 @@ mod tests {
         assert!(!is_verify_fixture_file(std::path::Path::new("a.txt")));
     }
 
+    /// 验证 fixture 对应期望文件优先取映射名、缺省时回退同名 fixture 文件。
     #[test]
     fn expected_file_for_fixture_prefers_mapped_then_fallback() {
         let fixture_dir = make_temp_test_dir("fixture_map");
@@ -444,6 +507,7 @@ mod tests {
         std::fs::remove_dir_all(&expected_dir).ok();
     }
 
+    /// 验证 fixture 文件收集按扩展名过滤并按名称排序。
     #[test]
     fn collect_verify_fixture_files_filters_and_sorts() {
         let fixture_dir = make_temp_test_dir("fixture_collect");
@@ -467,6 +531,7 @@ mod tests {
         std::fs::remove_dir_all(&fixture_dir).ok();
     }
 
+    /// 验证单文件 verify 模式：规则匹配时校验通过。
     #[test]
     fn run_static_rule_verify_file_mode_passes_with_simple_rule() {
         let temp_dir = make_temp_test_dir("verify_single_mode");
@@ -492,6 +557,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证目录 verify 模式：期望文件缺失时报 `missing expected file for` 错误。
     #[test]
     fn run_static_rule_verify_directory_mode_reports_missing_expected() {
         let temp_dir = make_temp_test_dir("verify_dir_missing_expected");
@@ -523,6 +589,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 repair 请求校验：`--backup` 必须搭配 `--inplace`。
     #[test]
     fn validate_repair_file_request_rejects_backup_without_inplace() {
         let temp_dir = make_temp_test_dir("repair_validate_backup");
@@ -541,6 +608,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 repair 请求校验：目录模式必须搭配 `--inplace`。
     #[test]
     fn validate_repair_file_request_rejects_directory_without_inplace() {
         let temp_dir = make_temp_test_dir("repair_validate_dir");
@@ -556,6 +624,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 repair 请求校验：目录模式不支持 `--output file`。
     #[test]
     fn validate_repair_file_request_rejects_directory_output_file_mode() {
         let temp_dir = make_temp_test_dir("repair_validate_dir_output");
@@ -572,6 +641,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证单 repair 目标解析遵循 `--inplace`（回输入）与 `--output`（回输出）优先级。
     #[test]
     fn resolve_single_repair_target_follows_inplace_and_output() {
         let temp_dir = make_temp_test_dir("repair_target");
@@ -598,6 +668,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证单 repair 跳过判定遵循 include/exclude 过滤规则。
     #[test]
     fn should_skip_single_repair_by_filters_respects_include_exclude() {
         let temp_dir = make_temp_test_dir("repair_single_filters");
@@ -617,6 +688,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证单模式 JSON 报告统计 skipped/changed 计数正确。
     #[test]
     fn build_single_mode_json_report_counts_skipped_and_changed() {
         let temp_dir = make_temp_test_dir("repair_single_report");
@@ -650,6 +722,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 compress 快捷 usage 仅在 stdin 为空且无参数时展示。
     #[test]
     fn should_show_compress_quick_usage_only_for_empty_stdin_without_args() {
         assert!(should_show_compress_quick_usage(true, true, " \n\t "));
@@ -658,18 +731,120 @@ keep = ["^ERR:"]
         assert!(!should_show_compress_quick_usage(true, true, "git status"));
     }
 
+    /// 验证 compress 输入读取：文件源返回内容且标记非 stdin。
     #[test]
     fn read_compress_input_reads_file_and_marks_non_stdin() {
         let temp_dir = make_temp_test_dir("compress_input_file");
         let input_path = temp_dir.join("input.log");
         std::fs::write(&input_path, "hello\nworld").expect("write input file");
-        let (text, is_stdin) =
+        // P2-08：验证返回真 lossy 降级标志（纯 UTF-8 输入应为 false）。
+        let (text, is_stdin, lossy, _enc) =
             read_compress_input(&InputSource::File(input_path)).expect("read compress input");
         assert_eq!(text, "hello\nworld");
         assert!(!is_stdin);
+        assert!(!lossy, "纯 UTF-8 输入不应标记 lossy 降级");
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// P2-08：含无解码候选的非法 UTF-8 字节输入应被标记为真 lossy 降级，
+    /// 而不是静默产出 U+FFFD（assert lossy 标志为 true）。
+    #[test]
+    fn read_compress_input_marks_lossy_on_undecodable_bytes() {
+        let temp_dir = make_temp_test_dir("compress_input_lossy");
+        let input_path = temp_dir.join("undecodable.bin");
+        // 0xFF 为非法 UTF-8 且无任何编码候选、非二进制（无 NUL），命中 utf-8-lossy 回退。
+        std::fs::write(&input_path, [0xFF, 0xFE, b'a']).expect("write undecodable input");
+        let (_text, _is_stdin, lossy, _enc) =
+            read_compress_input(&InputSource::File(input_path)).expect("read compress input");
+        assert!(lossy, "无可用解码候选的非法字节应标记为真 lossy 降级");
+        std::fs::remove_dir_all(&temp_dir).ok();
+    }
+
+    /// P1-08：GBK 编码样本 压缩→产物JSON反序列化→再水合→按源编码回写，必须与原始字节逐字节一致
+    /// （问题清单 P1-08 原验收条：round-trip 无 mojibake）。
+    /// 样本物理化于 `samples/encoding_fallback/case_011_gbk_log_roundtrip.hex`（P3-202 红线，
+    /// scenario `skip: true` 不注册 showcase，冻结基线零影响）。
+    #[test]
+    fn p1_08_gbk_roundtrip_bytes_identical() {
+        // 1. 读物理化样本（.hex 文本 → 原始 GBK 字节）
+        let hex_text = std::fs::read_to_string(
+            "samples/encoding_fallback/case_011_gbk_log_roundtrip.hex",
+        )
+        .expect("GBK round-trip 样本应存在");
+        let gbk_bytes: Vec<u8> = hex_text
+            .split_whitespace()
+            .map(|h| u8::from_str_radix(h, 16).expect("hex token 解析失败"))
+            .collect();
+        assert_eq!(gbk_bytes.len(), 174, "样本字节数应与生成基线一致");
+
+        // 2. 压缩入口：GBK 字节 → UTF-8 文本 + 源编码名
+        let temp_dir = make_temp_test_dir("p1_08_gbk_roundtrip");
+        let input_path = temp_dir.join("input_gbk.log");
+        std::fs::write(&input_path, &gbk_bytes).expect("write gbk input");
+        let (text, _is_stdin, lossy, enc) =
+            read_compress_input(&InputSource::File(input_path)).expect("read compress input");
+        assert!(!lossy, "GBK 样本应命中真实解码而非 lossy 降级");
+        assert!(enc.starts_with("GB"), "GBK 样本应识别为 GB 系编码，实际 {enc}");
+
+        // 3. 压缩并注入源编码（与 CLI 主路径同口径：非 UTF-8 才写入）
+        let mut pipeline = CompressionPipeline::new(
+            PipelineConfig::default(),
+            crate::cli::get_plugins(),
+            MetricsCollector::new(MetricsConfig::default()),
+        );
+        let mut output = pipeline.compress_str(&text).expect("compress");
+        output.metadata.source_encoding = Some(enc.to_string());
+
+        // 4. 产物 JSON 序列化→反序列化（decompress 命令的真实输入形态）
+        let json = serde_json::to_string(&output).expect("serialize output");
+        let parsed: CompressionOutput = serde_json::from_str(&json).expect("parse output");
+        assert_eq!(
+            parsed.metadata.source_encoding.as_deref(),
+            Some(enc),
+            "源编码应经 JSON round-trip 保留"
+        );
+
+        // 5. 再水合（decompress 主路径同配置：宽松降级）
+        let mut rehydrator = crate::core::rehydration_pipeline::RehydrationPipeline::new(
+            parsed.dictionary.clone(),
+            crate::cli::get_plugins(),
+            crate::core::rehydration_pipeline::RehydrationConfig {
+                fallback_on_error: true,
+            },
+        );
+        let restored_text = rehydrator.rehydrate(&parsed).expect("rehydrate");
+
+        // 6. 按源编码回写 → 与原始 GBK 字节逐字节一致
+        let restored_bytes = crate::core::encoding_fallback::encode_to_source_encoding(
+            &restored_text,
+            &enc,
+        )
+        .unwrap_or_else(|| panic!("GBK 回写应成功"));
+        assert_eq!(
+            restored_bytes, gbk_bytes,
+            "回写字节应与原始 GBK 字节逐字节一致"
+        );
+        std::fs::remove_dir_all(&temp_dir).ok();
+    }
+
+    /// P1-08：UTF-8 输入的产物 JSON 不应含 `source_encoding` 字段（`skip_serializing_if`），
+    /// 锁定「UTF-8 输入产物字节零变化」的冻结基线零漂移承诺。
+    #[test]
+    fn p1_08_utf8_output_json_has_no_source_encoding_field() {
+        let mut pipeline = CompressionPipeline::new(
+            PipelineConfig::default(),
+            crate::cli::get_plugins(),
+            MetricsCollector::new(MetricsConfig::default()),
+        );
+        let output = pipeline.compress_str("plain utf-8 log line\n").expect("compress");
+        let json = serde_json::to_string(&output).expect("serialize output");
+        assert!(
+            !json.contains("source_encoding"),
+            "UTF-8 输入产物不应序列化 source_encoding 字段（冻结基线零漂移）"
+        );
+    }
+
+    /// 验证预流水线动作选择：inject 优先于 doctor。
     #[test]
     fn select_pre_pipeline_action_prioritizes_inject() {
         let mut args = base_cli_args(CliMode::Compress);
@@ -678,6 +853,7 @@ keep = ["^ERR:"]
         assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Inject);
     }
 
+    /// 验证预流水线动作选择：verify_rule/fixture/expected 齐全时进入 VerifyRule。
     #[test]
     fn select_pre_pipeline_action_detects_verify_rule() {
         let mut args = base_cli_args(CliMode::Compress);
@@ -690,6 +866,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证预流水线动作选择：RepairFile 模式进入 RepairFile 动作。
     #[test]
     fn select_pre_pipeline_action_detects_repair_file_mode() {
         let args = base_cli_args(CliMode::RepairFile);
@@ -699,6 +876,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证预流水线动作选择：普通流水线模式返回 Continue。
     #[test]
     fn select_pre_pipeline_action_continue_for_pipeline_modes() {
         let args = base_cli_args(CliMode::Compress);
@@ -708,6 +886,120 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证预流水线动作选择：doctor 四种诊断各自路由到对应动作。
+    /// doctor 分支按 Encoding/Workspace/Rule/Env 顺序判断，四者互斥、各返回专属动作。
+    #[test]
+    fn select_pre_pipeline_action_routes_all_doctor_kinds() {
+        for (kind, expected) in [
+            (DoctorKind::Encoding, PrePipelineAction::DoctorEncoding),
+            (DoctorKind::Workspace, PrePipelineAction::DoctorWorkspace),
+            (DoctorKind::Rule, PrePipelineAction::DoctorRule),
+            (DoctorKind::Env, PrePipelineAction::DoctorEnv),
+        ] {
+            let mut args = base_cli_args(CliMode::Compress);
+            args.doctor = Some(kind);
+            assert_eq!(select_pre_pipeline_action(&args), expected);
+        }
+    }
+
+    /// 验证预流水线动作选择：flag 型动作（rewrite/discover/gain）按字段触发。
+    #[test]
+    fn select_pre_pipeline_action_routes_flag_actions() {
+        // rewrite：任意非空值即触发
+        let mut args = base_cli_args(CliMode::Compress);
+        args.rewrite = Some("json".to_string());
+        assert_eq!(
+            select_pre_pipeline_action(&args),
+            PrePipelineAction::Rewrite
+        );
+
+        // discover：非空路径列表触发
+        let mut args = base_cli_args(CliMode::Compress);
+        args.discover = vec!["docs".into()];
+        assert_eq!(
+            select_pre_pipeline_action(&args),
+            PrePipelineAction::Discover
+        );
+
+        // gain：布尔开关触发
+        let mut args = base_cli_args(CliMode::Compress);
+        args.gain = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Gain);
+    }
+
+    /// 验证预流水线动作选择：init 由显式 mode 或 init flag 两条路径触发。
+    #[test]
+    fn select_pre_pipeline_action_routes_init_from_mode_and_flag() {
+        // 路径 1：CliMode::Init 模式
+        let args = base_cli_args(CliMode::Init);
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Init);
+
+        // 路径 2：非 Init 模式下置 init flag（init_hooks 场景常见组合）
+        let mut args = base_cli_args(CliMode::Compress);
+        args.init = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Init);
+    }
+
+    /// 验证预流水线动作选择：hooks 安装/卸载 flag 触发 Hooks，HooksStatus 模式触发查询。
+    #[test]
+    fn select_pre_pipeline_action_routes_hooks_and_hooks_status() {
+        // init_hooks=true 触发 Hooks
+        let mut args = base_cli_args(CliMode::Compress);
+        args.init_hooks = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Hooks);
+
+        // uninstall_hooks=true 同样触发 Hooks
+        let mut args = base_cli_args(CliMode::Compress);
+        args.uninstall_hooks = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Hooks);
+
+        // CliMode::HooksStatus 模式触发 HooksStatus
+        let args = base_cli_args(CliMode::HooksStatus);
+        assert_eq!(
+            select_pre_pipeline_action(&args),
+            PrePipelineAction::HooksStatus
+        );
+    }
+
+    /// 验证预流水线动作选择：mode 型动作（ExplainPlugin/Plugins/Config/ServeStatic）按模式路由。
+    #[test]
+    fn select_pre_pipeline_action_routes_mode_only_actions() {
+        for (mode, expected) in [
+            (CliMode::ExplainPlugin, PrePipelineAction::ExplainPlugin),
+            (CliMode::Plugins, PrePipelineAction::Plugins),
+            (CliMode::Config, PrePipelineAction::Config),
+            (CliMode::ServeStatic, PrePipelineAction::ServeStatic),
+        ] {
+            let args = base_cli_args(mode);
+            assert_eq!(select_pre_pipeline_action(&args), expected);
+        }
+    }
+
+    /// 验证预流水线动作优先级：前置动作优先于后置 mode 动作。
+    /// select_pre_pipeline_action 按 if 链顺序短路，前面的动作胜出：
+    /// gain(第7位) > init(第8位) > hooks(第9位) > explain-plugin(第12位)。
+    /// 该顺序是 CLI 行为契约，防止后续重排 if 链时静默改变路由优先级。
+    #[test]
+    fn select_pre_pipeline_action_priority_follows_if_chain_order() {
+        // gain 优先于 init：同时置 gain 与 init 时走 Gain
+        let mut args = base_cli_args(CliMode::Compress);
+        args.gain = true;
+        args.init = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Gain);
+
+        // init 优先于 hooks：同时置 init 与 init_hooks 时走 Init
+        let mut args = base_cli_args(CliMode::Compress);
+        args.init = true;
+        args.init_hooks = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Init);
+
+        // hooks 优先于 mode 动作：init_hooks + ExplainPlugin 模式时走 Hooks
+        let mut args = base_cli_args(CliMode::ExplainPlugin);
+        args.init_hooks = true;
+        assert_eq!(select_pre_pipeline_action(&args), PrePipelineAction::Hooks);
+    }
+
+    /// 验证 `--explain-route` 旗标从 run 命令中拆分并返回剩余参数。
     #[test]
     fn split_run_explain_route_flag_extracts_flag() {
         let run_cmd = vec![
@@ -720,9 +1012,21 @@ keep = ["^ERR:"]
         assert_eq!(remain, vec!["git".to_string(), "status".to_string()]);
     }
 
+    /// 验证 run 模式参数构造应用默认值（AI 导出/信号/路由解释/preset）。
     #[test]
     fn build_run_mode_args_applies_run_defaults() {
-        let args = build_run_mode_args(vec!["git".to_string(), "status".to_string()], true, false, false, 500, None, false, None);
+        let args = build_run_mode_args(
+            vec!["git".to_string(), "status".to_string()],
+            true,
+            false,
+            false,
+            500,
+            None,
+            false,
+            None,
+            None,
+            None,
+        );
         assert!(matches!(args.mode, CliMode::Run));
         assert_eq!(
             args.run_command,
@@ -735,6 +1039,7 @@ keep = ["^ERR:"]
         assert_eq!(args.preset, Some(Preset::Ai));
     }
 
+    /// 验证 argv 解析将 `compress` 别名命令映射到 Compress 模式与格式。
     #[test]
     fn parse_args_from_argv_maps_compress_alias_command() {
         let argv = vec![
@@ -748,6 +1053,7 @@ keep = ["^ERR:"]
         assert!(matches!(parsed.output_format, OutputFormat::Text));
     }
 
+    /// 验证 argv 解析将 `run --explain-route` 映射到 Run 模式并保留命令。
     #[test]
     fn parse_args_from_argv_maps_run_subcommand_and_explain_route() {
         let argv = vec![
@@ -766,6 +1072,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 run 路径 preset 映射：Fast/Balanced/Ai 对应保守/均衡/激进字典。
     #[test]
     fn resolve_run_path_preset_maps_cli_preset() {
         assert!(matches!(
@@ -786,6 +1093,7 @@ keep = ["^ERR:"]
         ));
     }
 
+    /// 验证 run 意图到 VCS AI 档位映射（Status/Log/Diff/Other/None）。
     #[test]
     fn resolve_vcs_ai_profile_maps_run_intent() {
         assert!(matches!(
@@ -810,6 +1118,7 @@ keep = ["^ERR:"]
         ));
     }
 
+    /// 验证 VCS 意图时 run 过滤器优先选择 vcs_plugin。
     #[test]
     fn resolve_run_filter_name_prefers_vcs_plugin_for_vcs_intent() {
         let filter =
@@ -817,6 +1126,7 @@ keep = ["^ERR:"]
         assert_eq!(filter, "vcs_plugin");
     }
 
+    /// 验证 run 过滤器回退：优先首参，无参数时用程序名。
     #[test]
     fn resolve_run_filter_name_falls_back_to_first_arg_then_program() {
         let with_args = resolve_run_filter_name("python", &["script.py".to_string()], None);
@@ -826,6 +1136,7 @@ keep = ["^ERR:"]
         assert_eq!(no_args, "python");
     }
 
+    /// 验证 run 命令字符串拼接程序名与参数。
     #[test]
     fn build_run_command_string_joins_program_and_args() {
         assert_eq!(
@@ -835,6 +1146,7 @@ keep = ["^ERR:"]
         assert_eq!(build_run_command_string("cargo", &[]), "cargo");
     }
 
+    /// 验证隐式 run 解析接受外部命令（非内置命令）。
     #[test]
     fn maybe_parse_implicit_run_command_accepts_external_command() {
         let argv = vec![
@@ -854,6 +1166,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证隐式 run 解析跳过内置命令（如 gain）。
     #[test]
     fn maybe_parse_implicit_run_command_skips_builtin_command() {
         let argv = vec![
@@ -865,6 +1178,7 @@ keep = ["^ERR:"]
         assert!(parsed.is_none());
     }
 
+    /// 验证隐式 run 解析跳过全局长旗标（如 --help）。
     #[test]
     fn maybe_parse_implicit_run_command_skips_long_flag() {
         let argv = vec!["tokenslim.exe".to_string(), "--help".to_string()];
@@ -872,6 +1186,7 @@ keep = ["^ERR:"]
         assert!(parsed.is_none());
     }
 
+    /// 验证 run 目标解析拒绝空命令并提示用法。
     #[test]
     fn parse_run_target_rejects_empty_command() {
         let args = Vec::<String>::new();
@@ -885,6 +1200,7 @@ keep = ["^ERR:"]
         assert!(msg.contains("tokenslim.exe run git status"));
     }
 
+    /// 验证 run 目标解析拒绝把选项（如 --gain）当命令并给出提示。
     #[test]
     fn parse_run_target_rejects_option_as_command() {
         let args = vec!["--gain".to_string()];
@@ -899,6 +1215,7 @@ keep = ["^ERR:"]
         assert!(msg.contains("tokenslim.exe git status"));
     }
 
+    /// 验证 run 目标解析接受合法外部命令并拆分程序与参数。
     #[test]
     fn parse_run_target_accepts_external_command() {
         let args = vec!["git".to_string(), "status".to_string()];
@@ -907,6 +1224,7 @@ keep = ["^ERR:"]
         assert_eq!(tail, &["status".to_string()]);
     }
 
+    /// 验证 clap 错误映射为外部命令提示（run gitx 等）。
     #[test]
     fn map_clap_error_adds_external_command_hint() {
         let argv = vec![
@@ -926,6 +1244,7 @@ keep = ["^ERR:"]
         assert!(msg.contains("tokenslim.exe gitx ..."));
     }
 
+    /// 验证首参外部命令判定：内置命令（如 gain）与非内置可区分。
     #[test]
     fn detect_external_like_first_arg_distinguishes_builtin_and_external() {
         let external = vec!["tokenslim.exe".to_string(), "gitx".to_string()];
@@ -939,6 +1258,7 @@ keep = ["^ERR:"]
         assert!(!is_external_builtin);
     }
 
+    /// 验证 `--ai-export` 与 `--ai-signal` 同时使用被拒绝。
     #[test]
     fn parse_rejects_ai_export_and_ai_signal_together() {
         let raw = CliRawArgs {
@@ -953,9 +1273,14 @@ keep = ["^ERR:"]
             format: "json".to_string(),
             ai_export: true,
             ai_signal: true,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -987,9 +1312,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -997,6 +1331,7 @@ keep = ["^ERR:"]
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
     }
 
+    /// 验证仅 `--ai-signal`（无 export）可被解析接受。
     #[test]
     fn parse_accepts_ai_signal_only() {
         let raw = CliRawArgs {
@@ -1012,9 +1347,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: true,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1045,9 +1385,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -1056,6 +1405,7 @@ keep = ["^ERR:"]
         assert!(!parsed.ai_export);
     }
 
+    /// 验证 init 模式可被解析接受。
     #[test]
     fn parse_accepts_init_mode() {
         let raw = CliRawArgs {
@@ -1071,9 +1421,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1104,15 +1459,25 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         let parsed = CliArgs::from_raw(raw).expect("init mode should parse");
         assert!(matches!(parsed.mode, CliMode::Init));
     }
 
+    /// 验证 mode 缺失但有 run 命令时自动推断为 Run 模式。
     #[test]
     fn from_raw_infers_run_mode_when_mode_missing_and_run_command_present() {
         let raw = CliRawArgs {
@@ -1128,9 +1493,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1161,9 +1531,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -1175,6 +1554,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 repair-file 模式参数可被解析接受。
     #[test]
     fn parse_accepts_repair_file_mode() {
         let raw = CliRawArgs {
@@ -1190,9 +1570,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1223,15 +1608,25 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         let parsed = CliArgs::from_raw(raw).expect("repair-file mode should parse");
         assert!(matches!(parsed.mode, CliMode::RepairFile));
     }
 
+    /// 验证 preset 参数拒绝非法值并返回非空错误信息。
     #[test]
     fn parse_preset_arg_rejects_invalid_value() {
         let err = parse_preset_arg(Some("unknown")).expect_err("preset should be invalid");
@@ -1241,12 +1636,14 @@ keep = ["^ERR:"]
         }
     }
 
+    /// 验证输出格式参数 `text` 解析为 Text 格式。
     #[test]
     fn parse_output_format_arg_accepts_text() {
         let fmt = parse_output_format_arg("text").expect("text format should parse");
         assert!(matches!(fmt, OutputFormat::Text));
     }
 
+    /// 验证 repair-file 别名重写自动补充默认输出文件（.repaired.log）。
     #[test]
     fn rewrite_repair_file_alias_adds_default_output() {
         let args = vec![
@@ -1270,6 +1667,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 repair-file 别名重写：指定 --inplace 时不补充 --output。
     #[test]
     fn rewrite_repair_file_alias_with_inplace_does_not_add_output() {
         let args = vec![
@@ -1285,6 +1683,7 @@ keep = ["^ERR:"]
         assert!(!rewritten.contains(&"--output".to_string()));
     }
 
+    /// 验证 workspace 别名重写保留 --inject 旗标。
     #[test]
     fn rewrite_workspace_alias_preserves_inject_flag() {
         let args = vec![
@@ -1306,6 +1705,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 --inplace 在非 repair 模式下被拒绝。
     #[test]
     fn parse_rejects_inplace_outside_repair_mode() {
         let raw = CliRawArgs {
@@ -1321,9 +1721,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1354,15 +1759,25 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         let result = CliArgs::from_raw(raw);
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
     }
 
+    /// 验证 --include 在非 repair 模式下被拒绝。
     #[test]
     fn parse_rejects_include_outside_repair_mode() {
         let raw = CliRawArgs {
@@ -1378,9 +1793,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1411,15 +1831,25 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.log".to_string()],
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         let result = CliArgs::from_raw(raw);
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
     }
 
+    /// 验证二进制文件触发 binary-guard 跳过且不写目标文件。
     #[test]
     fn run_single_repair_binary_guard_skips_and_does_not_write_target() {
         let temp_dir = make_temp_test_dir("repair_binary_guard");
@@ -1438,6 +1868,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 mojibake 文本修复：detected_enc 非空、evidence 含 repairs= 且输出为「中文」。
     #[test]
     fn run_single_repair_changes_mojibake_text_and_writes_target() {
         let temp_dir = make_temp_test_dir("repair_single_changed");
@@ -1457,6 +1888,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 inplace+backup 修复：生成 .bak 备份且原文件更新为「中文」。
     #[test]
     fn repair_file_inplace_with_backup_creates_bak_and_updates_file() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -1483,10 +1915,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1518,9 +1955,18 @@ keep = ["^ERR:"]
             backup: true,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -1536,6 +1982,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证目录 dry-run 修复不修改任何文件内容。
     #[test]
     fn repair_file_directory_dry_run_does_not_modify_files() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -1569,10 +2016,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1604,9 +2056,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("dry run should succeed");
@@ -1618,6 +2079,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证目录 inplace 修复实际改写文本文件内容。
     #[test]
     fn repair_file_directory_inplace_modifies_text_files() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -1644,10 +2106,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1679,9 +2146,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("directory repair should succeed");
@@ -1690,6 +2166,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证目录 inplace 修复按 include 过滤仅改写匹配文件。
     #[test]
     fn repair_file_directory_include_filter_only_changes_matching_files() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -1718,10 +2195,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1753,9 +2235,18 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.log".to_string()],
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("directory repair with include should succeed");
@@ -1767,6 +2258,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证目录 inplace 修复按 exclude 过滤跳过匹配文件。
     #[test]
     fn repair_file_directory_exclude_filter_skips_matching_files() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -1795,10 +2287,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1830,9 +2327,18 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.log".to_string()],
             exclude: vec!["a.log".to_string()],
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         run_repair_file_command(&args).expect("directory repair with exclude should succeed");
@@ -1844,6 +2350,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证单文件修复命中 include 过滤时跳过并保留原文件。
     #[test]
     fn repair_file_single_file_filter_skip_keeps_original() {
         let temp_dir = std::env::temp_dir().join(format!(
@@ -1870,10 +2377,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1905,9 +2417,18 @@ keep = ["^ERR:"]
             backup: false,
             include: vec!["*.txt".to_string()],
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         run_repair_file_command(&args)
@@ -1918,6 +2439,7 @@ keep = ["^ERR:"]
         std::fs::remove_dir_all(&temp_dir).ok();
     }
 
+    /// 验证 repair JSON 记录包含 repair_chain 修复链字段。
     #[test]
     fn repair_json_record_contains_repair_chain() {
         let outcome = RepairOutcome {
@@ -1940,6 +2462,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 verify 三参数（rule/fixture/expected）不全时被拒绝。
     #[test]
     fn parse_rejects_partial_verify_args() {
         let raw = CliRawArgs {
@@ -1955,9 +2478,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: Some("rule.toml".into()),
             verify_fixture: Some("fixture.log".into()),
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -1988,9 +2516,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -1998,6 +2535,7 @@ keep = ["^ERR:"]
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
     }
 
+    /// 验证 --init-hooks 与 --uninstall-hooks 冲突被拒绝。
     #[test]
     fn parse_rejects_conflicting_hook_actions() {
         let raw = CliRawArgs {
@@ -2013,9 +2551,14 @@ keep = ["^ERR:"]
             config: None,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: true,
             uninstall_hooks: true,
             hook_shell: None,
@@ -2046,15 +2589,25 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
         let result = CliArgs::from_raw(raw);
         assert!(matches!(result, Err(CliError::InvalidArgs(_))));
     }
 
+    /// 验证跨工具（git/svn/hg）VCS run 意图检测，非 VCS 工具返回 None。
     #[test]
     fn detects_vcs_run_intent_across_tools() {
         assert_eq!(
@@ -2076,6 +2629,7 @@ keep = ["^ERR:"]
         assert_eq!(detect_vcs_run_intent("cargo", &["test".to_string()]), None);
     }
 
+    /// 验证 git 全局选项（-C/--git-dir）后的子命令仍可识别 VCS 意图。
     #[test]
     fn detects_vcs_run_intent_for_git_after_global_options() {
         assert_eq!(
@@ -2095,6 +2649,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 run 插件路由按关键字映射（git→VCS、npm→Node、cargo→Build、未知→Generic）。
     #[test]
     fn detect_run_plugin_route_maps_keywords() {
         assert_eq!(detect_run_plugin_route("git", &[]), RunPluginRoute::Vcs);
@@ -2112,6 +2667,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 run 命令前的 --explain-route 旗标被剥离且保留后续命令。
     #[test]
     fn split_run_explain_route_flag_strips_flag_before_command() {
         let (explain, command) = split_run_explain_route_flag(vec![
@@ -2123,6 +2679,7 @@ keep = ["^ERR:"]
         assert_eq!(command, vec!["cargo".to_string(), "test".to_string()]);
     }
 
+    /// 验证 run 路由解释输出决策与插件链（cargo→build→rust_go）。
     #[test]
     fn explain_run_route_prints_decision_and_plugin_chain() {
         let args = CliArgs {
@@ -2136,10 +2693,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -2171,9 +2733,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -2188,6 +2759,7 @@ keep = ["^ERR:"]
         assert!(!out.contains("vcs,"));
     }
 
+    /// 验证路由解释中参数前缀候选优先于关键字候选（az→ci_log）。
     #[test]
     fn explain_run_route_shows_arg_prefix_candidate_before_keyword_candidate() {
         let args = CliArgs {
@@ -2201,10 +2773,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -2241,9 +2818,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -2260,6 +2846,7 @@ keep = ["^ERR:"]
         assert!(out.contains("route_candidate_2=vcs|group=vcs"));
     }
 
+    /// 验证 explain-plugin 模式输出候选排序与证据（含备选路由）。
     #[test]
     fn explain_plugin_for_command_line_shows_selected_alternatives_and_evidence() {
         let args = CliArgs {
@@ -2273,10 +2860,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -2308,9 +2900,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -2331,6 +2932,7 @@ keep = ["^ERR:"]
         assert!(out.contains("candidate_plugin_chain="));
     }
 
+    /// 验证 explain-plugin 对空白/非法命令行返回 none 与 invalid 原因。
     #[test]
     fn explain_plugin_for_command_line_handles_invalid_input() {
         let mut args = base_cli_args(CliMode::ExplainPlugin);
@@ -2340,6 +2942,7 @@ keep = ["^ERR:"]
         assert!(out.contains("reason=invalid_command_line"));
     }
 
+    /// 验证稳定路由（非 fallback、arg_prefix 命中）推荐接受且置信度 gap 正确。
     #[test]
     fn build_command_route_recommendation_for_stable_route_accepts() {
         let route = crate::core::plugin_config_loader::RunRouteDecision {
@@ -2372,6 +2975,7 @@ keep = ["^ERR:"]
         assert!(rec.recommendation_reason.contains("route_match:arg_prefix"));
     }
 
+    /// 验证 fallback 路由推荐 review_and_retry 且 retry_plugin 指向最高分候选。
     #[test]
     fn build_command_route_recommendation_for_fallback_requests_retry() {
         let route = crate::core::plugin_config_loader::RunRouteDecision {
@@ -2418,6 +3022,7 @@ keep = ["^ERR:"]
             .contains("fallback_route_selected"));
     }
 
+    /// 验证日志文本 explain 输出检测器得分与证据（web_log 选中）。
     #[test]
     fn explain_plugin_for_log_text_shows_detector_scores_and_evidence() {
         let log = r#"203.0.113.7 - - [13/May/2026:08:13:39 +0000] "GET /health HTTP/1.1" 200 2 "-" "kube-probe/1.29" 0.001
@@ -2439,9 +3044,12 @@ keep = ["^ERR:"]
         assert!(out.contains("confidence_gap_source=detector_score"));
         assert!(out.contains("fallback_note=nearest_candidate_non_retryable:smart_path"));
         assert!(out.contains("selected_capability="));
-        assert!(out.contains("status:missing_audit"));
+        // 能力证据行的 coverage_status 锚点：web_log 已全量 frozen（48 个 case），
+        // 早前该断言写死 "missing_audit"，在 web_log 审计完成后成为基准漂移，据此校准。
+        assert!(out.contains("status:frozen"));
     }
 
+    /// 验证空检测列表时日志 explain 推荐回退 generic_text。
     #[test]
     fn build_log_explain_recommendation_returns_fallback_for_empty_detections() {
         let detections: Vec<(String, u8, f32)> = Vec::new();
@@ -2453,6 +3061,7 @@ keep = ["^ERR:"]
         assert_eq!(rec.recommendation_confidence, "low");
     }
 
+    /// 验证竞争候选差距过小时日志 explain 推荐 review_and_retry。
     #[test]
     fn build_log_explain_recommendation_requests_retry_when_competitor_is_close() {
         let detections = vec![
@@ -2470,6 +3079,116 @@ keep = ["^ERR:"]
         assert!(rec.recommendation_reason.contains("close_competitor"));
     }
 
+    /// 验证空输入(无任何 plugin 命中)时 explain_plugin_for_log_text：
+    /// 1) 选中 generic_text；2) 注入 fallback_reason=no_plugin_detector_above_threshold；
+    /// 3) line_count/byte_count 与输入精确一致；4) alternatives=0 且无任何 alternative_* 明细行。
+    /// 这是独立于 `build_log_explain_recommendation` 之外的报告渲染层契约，之前完全未覆盖。
+    #[test]
+    fn explain_plugin_for_log_text_empty_input_emits_fallback_reason_and_metadata() {
+        // 空字符串输入不会触发任何插件 detector，因此 detections 为空。
+        // 选择空串而非乱码，避免非 ASCII 或标点偶然触发路径/噪声类 detector 的低置信度命中。
+        let input = "";
+        let out = explain_plugin_for_log_text(input, 0.15);
+
+        assert!(out.contains("plugin_selection"));
+        assert!(out.contains("input_kind=log"));
+        assert!(
+            out.contains("selected_plugin=generic_text"),
+            "空输入应回退到 generic_text。完整报告：{}",
+            out
+        );
+        // detections.is_empty() 分支写入专用锚点
+        assert!(
+            out.contains("fallback_reason=no_plugin_detector_above_threshold"),
+            "空检测报告应写 fallback_reason 锚点：{}",
+            out
+        );
+        // 元数据必须与输入精确一致：空串 .lines().count()=0，字节数=0
+        assert!(
+            out.contains("line_count=0"),
+            "空输入 line_count 应为 0（空串 lines().count() 返回 0）：{}",
+            out
+        );
+        assert!(
+            out.contains("byte_count=0"),
+            "空输入 byte_count 应为 0：{}",
+            out
+        );
+        // alternatives 必须是 0 且不产生 alternative_1= 前缀的明细行。
+        // 注意：不能用 .contains("alternative_1=")，否则会误命中兄弟字段 recommendation_alternative_1=none。
+        // 通过 '\n' 作为行首锚点精确匹配 "alternative_1=" 开的行。
+        assert!(out.contains("alternatives=0"));
+        assert!(
+            !out.contains("\nalternative_1="),
+            "alternatives=0 时不应输出 alternative_N= 明细行：{}",
+            out
+        );
+        // 选中插件 generic_text 仍应写 selected_capability 证据段
+        assert!(
+            out.contains("selected_capability="),
+            "generic_text 选中也应输出 capability 证据：{}",
+            out
+        );
+    }
+
+    /// 验证 alternatives 明细行格式契约：
+    /// 输入一段能稳定触发多个候选（web_log + smart_path + generic_text）的真实日志，
+    /// 断言 alternative_N 行采用 `name|score=X.XXX|priority=Y` 三段式格式，并与
+    /// alternatives=N 计数一致。该格式是下游 report 解析器的强契约，此前仅有 helper 层
+    /// build_log_explain_recommendation 测试，缺少渲染层端到端覆盖。
+    #[test]
+    fn explain_plugin_for_log_text_alternatives_lines_match_pipe_schema() {
+        let log = r#"203.0.113.7 - - [13/May/2026:08:13:39 +0000] "GET /health HTTP/1.1" 200 2 "-" "kube-probe/1.29" 0.001
+203.0.113.8 - - [13/May/2026:08:13:40 +0000] "GET /api/v1/orders HTTP/1.1" 503 41 "-" "Mozilla/5.0" 1.532"#;
+        let out = explain_plugin_for_log_text(log, 0.15);
+
+        // alternatives=N 行必须出现，且解析为正整数
+        let n_line = out
+            .lines()
+            .find(|l| l.starts_with("alternatives="))
+            .expect("报告必须含 alternatives=N 行");
+        let n: usize = n_line
+            .trim_start_matches("alternatives=")
+            .parse()
+            .unwrap_or_else(|_| panic!("alternatives= 后必须是十进制整数：{n_line}"));
+        assert!(n >= 1, "至少有 1 个备选插件：n={n}，报告={out}");
+
+        // 每条 alternative_N=xxx|score=X.XXX|priority=Y 需严格匹配三段式 schema
+        for idx in 1..=n {
+            let prefix = format!("alternative_{idx}=");
+            let line = out
+                .lines()
+                .find(|l| l.starts_with(&prefix))
+                .unwrap_or_else(|| panic!("缺少 {prefix} 明细行"));
+            let body = line.trim_start_matches(&prefix);
+            // 管道分隔：name | score=X.XXX | priority=N
+            //   注意这里不用 split('|')，因为 name 段不含 '|'，按 score=/priority= 做子串匹配更鲁棒。
+            assert!(
+                body.contains("|score=") && body.contains("|priority="),
+                "{prefix} 行不符合 name|score=X.XXX|priority=N 管道格式：{line}"
+            );
+            // score 必须是带小数点的浮点数文本
+            let score_start = body.find("|score=").unwrap() + "|score=".len();
+            let after_score = &body[score_start..];
+            let pipe2 = after_score.find('|').unwrap_or(after_score.len());
+            let score_str = &after_score[..pipe2];
+            assert!(
+                score_str.contains('.'),
+                "score 段应是小数格式 X.XXX：{prefix} -> score_str={score_str}，完整行={line}"
+            );
+            score_str
+                .parse::<f32>()
+                .unwrap_or_else(|_| panic!("score 段 {score_str} 不能解析为 f32：{line}"));
+            // priority 段必须是正整数
+            let prio_start = body.find("|priority=").unwrap() + "|priority=".len();
+            let prio_str = &body[prio_start..];
+            prio_str
+                .parse::<u8>()
+                .unwrap_or_else(|_| panic!("priority 段 {prio_str} 不能解析为 u8：{line}"));
+        }
+    }
+
+    /// 验证 fallback 命令样例 explain 推荐 review（generic_text 选中）。
     #[test]
     fn explain_plugin_for_command_line_fallback_sample_recommends_review() {
         let sample_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -2492,10 +3211,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Text,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -2527,9 +3251,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -2540,6 +3273,7 @@ keep = ["^ERR:"]
         assert!(out.contains("recommendation_confidence=low"));
     }
 
+    /// 验证预流水线动作 Continue 未被消费时返回 false。
     #[test]
     fn handle_pre_pipeline_action_continue_returns_false() {
         let args = base_cli_args(CliMode::Compress);
@@ -2547,6 +3281,7 @@ keep = ["^ERR:"]
         assert!(!handled);
     }
 
+    /// 验证 review 推荐样例 explain 输出含 retry_plugin（nodejs）。
     #[test]
     fn explain_plugin_for_log_text_review_recommended_sample_has_retry_plugin() {
         let sample_path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -2564,6 +3299,7 @@ keep = ["^ERR:"]
         assert!(out.contains("confidence_gap_source=detector_score"));
     }
 
+    /// 验证 explain 回放模板写入包含推荐字段占位符。
     #[test]
     fn write_explain_replay_template_contains_recommendation_fields() {
         let path = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
@@ -2586,6 +3322,7 @@ keep = ["^ERR:"]
         let _ = std::fs::remove_file(path);
     }
 
+    /// 验证 explain JSON 渲染暴露结构化推荐（contract v1 校验通过）。
     #[test]
     fn render_explain_report_json_exposes_structured_recommendation() {
         let args = CliArgs {
@@ -2599,10 +3336,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Json,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -2634,9 +3376,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -2664,6 +3415,7 @@ keep = ["^ERR:"]
         assert_eq!(value["selected"]["plugin"], "ci_log");
     }
 
+    /// 验证 explain JSON 在必填字段缺失时 contract_ok=false 且列出缺失字段。
     #[test]
     fn render_explain_report_json_marks_contract_not_ok_when_required_fields_missing() {
         let report = "plugin_selection\ninput_kind=command\nselected_plugin=generic_text\n";
@@ -2685,6 +3437,7 @@ keep = ["^ERR:"]
             .any(|item| item == &serde_json::Value::String("recommendation_action".to_string())));
     }
 
+    /// 验证 explain JSON 跳过畸形备选并按 rank 排序。
     #[test]
     fn render_explain_report_json_skips_malformed_alternative_and_sorts_rank() {
         let report = "plugin_selection\ninput_kind=command\nselected_plugin=ci_log\nfallback_decision=stable_route\nretry_plugin=none\nrecommendation_primary=ci_log\nrecommendation_confidence=high\nrecommendation_action=accept\nrecommendation_reason=route_priority_high\nconfidence_gap=0.500\nconfidence_gap_source=route_priority\nalternatives=2\nalternative_x=bad|score=0.2|priority=1\nalternative_2=vcs|score=0.5|priority=95\nalternative_1=ci_log|score=1.0|priority=100\n";
@@ -2702,6 +3455,7 @@ keep = ["^ERR:"]
         assert_eq!(alternatives[1]["plugin"], "vcs");
     }
 
+    /// 验证 explain Markdown 渲染包含推荐/证据/备选小节。
     #[test]
     fn render_explain_report_markdown_contains_recommendation_section() {
         let report = "plugin_selection\ninput_kind=log\nselected_plugin=web_log\nfallback_decision=stable_detector\nretry_plugin=none\nconfidence_gap=0.100\nconfidence_gap_source=detector_score\nrecommendation_primary=web_log\nrecommendation_confidence=medium\nrecommendation_action=accept\nrecommendation_alternative_1=smart_path\nrecommendation_alternative_2=generic_text\nrecommendation_reason=detector_stable\nselected_capability=description:web access log\nalternative_1=smart_path|score=0.9|priority=10\nalternative_1_capability=description:path helper\n";
@@ -2715,6 +3469,7 @@ keep = ["^ERR:"]
         assert!(md.contains("## Alternatives"));
     }
 
+    /// 验证 cargo build 命令的插件链排除 VCS/git_diff 并包含构建类插件。
     #[test]
     fn plugins_for_run_command_excludes_vcs_for_cargo_build_commands() {
         let plugins = plugins_for_run_command("cargo", &["build".to_string()], None);
@@ -2726,6 +3481,7 @@ keep = ["^ERR:"]
         assert!(!names.contains(&"git_diff"));
     }
 
+    /// 验证新构建/数据工具（pytest/go/gradle/cmake/docker/kubectl/az/psql 等）路由到对应插件。
     #[test]
     fn plugins_for_run_command_routes_new_build_and_data_tools() {
         let cases = [
@@ -2822,6 +3578,7 @@ keep = ["^ERR:"]
         }
     }
 
+    /// 验证 `az repos` 命令保持走 VCS 路由并包含 vcs 插件。
     #[test]
     fn plugins_for_run_command_keeps_az_repos_on_vcs_route() {
         assert_eq!(
@@ -2829,11 +3586,13 @@ keep = ["^ERR:"]
             RunPluginRoute::Vcs
         );
 
-        let plugins = plugins_for_run_command("az", &["repos".to_string(), "show".to_string()], None);
+        let plugins =
+            plugins_for_run_command("az", &["repos".to_string(), "show".to_string()], None);
         let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
         assert!(names.contains(&"vcs"));
     }
 
+    /// 验证 Node 命令的插件链排除 VCS/git_diff 并包含 nodejs。
     #[test]
     fn plugins_for_run_command_excludes_vcs_for_node_commands() {
         let plugins = plugins_for_run_command("npm", &["-g".to_string()], None);
@@ -2845,6 +3604,7 @@ keep = ["^ERR:"]
         assert_eq!(detect_vcs_run_intent("npm", &["-g".to_string()]), None);
     }
 
+    /// 验证未知命令使用通用插件链（generic_text/ansi_cleaner/noise_filter）。
     #[test]
     fn plugins_for_run_command_uses_generic_chain_for_unknown_commands() {
         let plugins = plugins_for_run_command("foobar", &["hello".to_string()], None);
@@ -2855,6 +3615,7 @@ keep = ["^ERR:"]
         assert!(!names.contains(&"vcs"));
     }
 
+    /// 验证移除 VCS 与 git_diff 插件后保留其他插件。
     #[test]
     fn remove_vcs_plugins_strips_vcs_and_git_diff() {
         let plugins = remove_vcs_plugins(get_plugins());
@@ -2864,6 +3625,7 @@ keep = ["^ERR:"]
         assert!(names.contains(&"generic_text"));
     }
 
+    /// 验证通用 run 插件链仅保留预期 4 个插件。
     #[test]
     fn keep_generic_run_plugins_only_keeps_expected_chain() {
         let plugins = keep_generic_run_plugins(get_plugins());
@@ -2871,15 +3633,18 @@ keep = ["^ERR:"]
         assert!(names.contains(&"generic_text"));
         assert!(names.contains(&"ansi_cleaner"));
         assert!(names.contains(&"noise_filter"));
-        assert_eq!(names.len(), 3);
+        assert!(names.contains(&"privacy"));
+        assert_eq!(names.len(), 4);
     }
 
+    /// 验证 VCS 路由无子命令时意图默认 Other。
     #[test]
     fn detect_vcs_run_intent_defaults_to_other_when_vcs_route_has_no_subcommand() {
         let intent = detect_vcs_run_intent("git", &[]);
         assert!(matches!(intent, Some(VcsRunIntent::Other)));
     }
 
+    /// 验证路径字典块优化：合并段且过滤无收益令牌（$P10 单次使用被展开）。
     #[test]
     fn optimize_paths_block_merges_and_filters_unprofitable_tokens() {
         let input = "changes:\nM $P1/issues.md\nM $P1/learnings.md\nM $P1/notes.md\nM $P1/plan.md\nM $P10/single.md\npaths: $P1=.sisyphus/notepads/REFACTORING_PLAN_V6.2\npaths: $P10=.tokenslim-context.md\n";
@@ -2896,6 +3661,7 @@ keep = ["^ERR:"]
         assert!(!out.contains("$P10/single.md"));
     }
 
+    /// 验证两次使用的中等长度前缀在盈亏平衡点保留。
     #[test]
     fn optimize_paths_keeps_two_use_medium_prefix_at_break_even() {
         let input = "changes:\nM $P1/a.md\nM $P1/b.md\npaths: $P1=docs/design\n";
@@ -2905,12 +3671,14 @@ keep = ["^ERR:"]
         assert!(out.contains("paths: $P1=docs/design"));
     }
 
+    /// 验证 paths 页脚行计数仅统计页脚行（排除正文中的 paths: 字样）。
     #[test]
     fn count_paths_footer_lines_counts_only_footer_lines() {
         let input = "changes:\nM foo/bar.rs\npaths: $P1=src/core\nuntracked:\n?? docs/design/paths: note\npaths: $P2=docs/design\n";
         assert_eq!(count_paths_footer_lines(input), 2);
     }
 
+    /// 验证路径令牌使用计数遵循令牌边界（$P1 不匹配 $P10）。
     #[test]
     fn count_path_token_uses_respects_token_boundaries() {
         let input = "A $P1/file\nB $P10/file\nC $P1-more\nD $P1\n";
@@ -2918,6 +3686,7 @@ keep = ["^ERR:"]
         assert_eq!(count_path_token_uses(input, "$P10"), 1);
     }
 
+    /// 验证单次使用的路径令牌不追加页脚并直接展开。
     #[test]
     fn append_paths_footer_skips_single_use_token() {
         let mut output = crate::core::compression::CompressionOutput {
@@ -2937,6 +3706,7 @@ keep = ["^ERR:"]
         assert_eq!(out, "C:\\git_work\\TokenSlim 的目录\n");
     }
 
+    /// 验证多次使用的路径令牌保留并追加页脚。
     #[test]
     fn append_paths_footer_keeps_multi_use_token_and_appends_footer() {
         let mut output = crate::core::compression::CompressionOutput {
@@ -2957,6 +3727,7 @@ keep = ["^ERR:"]
         assert!(out.contains("paths: $P1=src/core"));
     }
 
+    /// 验证已有页脚时保持原样不重复追加。
     #[test]
     fn append_paths_footer_keeps_existing_footer_unchanged() {
         let mut output = crate::core::compression::CompressionOutput {
@@ -2975,6 +3746,7 @@ keep = ["^ERR:"]
         assert_eq!(out, input);
     }
 
+    /// 验证备选排名键判定跳过元数据条目（capability/declared_patterns 等）。
     #[test]
     fn is_alternative_rank_entry_key_skips_metadata_entries() {
         assert!(is_alternative_rank_entry_key("alternative_1"));
@@ -2986,6 +3758,7 @@ keep = ["^ERR:"]
         assert!(!is_alternative_rank_entry_key("selected_plugin"));
     }
 
+    /// 验证插件能力证据解析将 detect_patterns 限制为前 5 个。
     #[test]
     fn parse_plugin_capability_evidence_limits_detect_patterns_to_top_five() {
         let plugin = serde_json::json!({
@@ -3007,14 +3780,7 @@ keep = ["^ERR:"]
         assert_eq!(evidence.detect_patterns[4], "p5");
     }
 
-    #[test]
-    fn compress_vcs_run_as_single_document_produces_single_slice_metadata() {
-        let input = "git status\nM src/main.rs\n";
-        let out = compress_vcs_run_as_single_document(input);
-        assert_eq!(out.metadata.slice_count, 1);
-        assert_eq!(out.metadata.original_size, input.len());
-    }
-
+    /// 验证 run 模式默认值应用：未显式指定时输出格式归 Text、preset 归 Ai。
     #[test]
     fn apply_run_mode_defaults_sets_text_and_ai_preset_when_not_explicit() {
         let parsed = CliArgs {
@@ -3028,10 +3794,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Json,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -3063,9 +3834,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -3076,6 +3856,7 @@ keep = ["^ERR:"]
         assert!(matches!(out.preset, Some(Preset::Ai)));
     }
 
+    /// 验证 run 模式默认值应用：显式 --format/--preset 时不被覆盖。
     #[test]
     fn apply_run_mode_defaults_respects_explicit_format_and_preset() {
         let parsed = CliArgs {
@@ -3089,10 +3870,15 @@ keep = ["^ERR:"]
             normalize: false,
             ai_export: false,
             ai_signal: false,
+            strict_rehydrate: false,
+            source_encoding_write: false,
             output_format: OutputFormat::Json,
             verify_rule: None,
             verify_fixture: None,
             verify_expected: None,
+            feature_learn: None,
+            feature_sample: None,
+            feature_lib: None,
             init_hooks: false,
             uninstall_hooks: false,
             hook_shell: None,
@@ -3124,9 +3910,18 @@ keep = ["^ERR:"]
             backup: false,
             include: Vec::new(),
             exclude: Vec::new(),
-            json: false, stream: false, flush_interval: 500, merge: false,
-            serve_static: None, serve_port: None, serve_bind: None, serve_open: false,
-            run_plugin: None, passthrough: false, tee: None,
+            json: false,
+            stream: false,
+            flush_interval: 500,
+            merge: false,
+            serve_static: None,
+            serve_port: None,
+            serve_bind: None,
+            serve_open: false,
+            run_plugin: None,
+            passthrough: false,
+            tee: None,
+            audit_jsonl: None,
             config_args: Vec::new(),
         };
 
@@ -3143,6 +3938,7 @@ keep = ["^ERR:"]
         assert!(matches!(out.preset, Some(Preset::Balanced)));
     }
 
+    /// 验证 VCS AI 精简仅在 Log 意图 + Text 输出 + Ai preset 时启用。
     #[test]
     fn should_enable_vcs_ai_compact_for_log_with_preset_text() {
         assert!(should_enable_vcs_ai_compact(
@@ -3162,6 +3958,7 @@ keep = ["^ERR:"]
         ));
     }
 
+    /// 验证单 status 页脚跳过最终路径优化，通用（无 VCS 意图）时执行。
     #[test]
     fn final_paths_optimizer_skips_single_status_footer_but_runs_for_generic() {
         let text = "changes:\nM $P1/a.rs\npaths: $P1=src/core\n";
@@ -3182,6 +3979,7 @@ keep = ["^ERR:"]
         ));
     }
 
+    /// 验证单 log 页脚与多段页脚场景均执行最终路径优化。
     #[test]
     fn final_paths_optimizer_runs_for_single_log_footer_and_multi_footer() {
         let single = "commit abc\n$P1/a.rs\npaths: $P1=src/core\n";
@@ -3199,6 +3997,7 @@ keep = ["^ERR:"]
         ));
     }
 
+    /// 验证路径字典替换解析嵌套别名（$P1→$P2/subdir→root/parent）。
     #[test]
     fn replace_paths_with_dict_resolves_nested_aliases() {
         let entries = vec![
@@ -3219,6 +4018,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证路径字典块解析保留首个令牌定义。
     #[test]
     fn parse_path_dictionary_blocks_keeps_first_token_definition() {
         let text = "[paths] $P1=src/old; $P2=src/core\n[paths] $P1=src/new\nM src/core/a.rs\n";
@@ -3228,6 +4028,7 @@ keep = ["^ERR:"]
         assert_eq!(body.trim(), "M src/core/a.rs");
     }
 
+    /// 验证无路径字典时合并操作原样返回。
     #[test]
     fn merge_path_dictionary_blocks_returns_original_when_no_dict() {
         let text = "git status\nM src/core/a.rs\n";
@@ -3235,6 +4036,7 @@ keep = ["^ERR:"]
         assert_eq!(result, text);
     }
 
+    /// 验证多段路径字典合并：字典置顶、原始路径被替换、嵌套别名生效。
     #[test]
     fn merge_path_dict_replaces_all_paths() {
         // 模拟：第一段落回退了原始路径，第二段落使用了 $P 令牌
@@ -3262,6 +4064,7 @@ keep = ["^ERR:"]
         assert!(result.contains("$P6/"), "should use $P6 token");
     }
 
+    /// 验证 VCS 输出缺命令头时前置 run 命令锚（git status）。
     #[test]
     fn prepend_run_command_anchor_for_vcs_output_without_command_header() {
         let combined = "On branch master\nnothing to commit, working tree clean\n";
@@ -3269,6 +4072,7 @@ keep = ["^ERR:"]
         assert!(out.starts_with("git status\n"), "out={}", out);
     }
 
+    /// 验证通用输出缺命令头时前置 run 命令锚（npm -g）。
     #[test]
     fn prepend_run_command_anchor_for_generic_output_without_command_header() {
         let combined = "npm <command>\nUsage:\n";
@@ -3276,6 +4080,7 @@ keep = ["^ERR:"]
         assert!(out.starts_with("npm -g\n"), "out={}", out);
     }
 
+    /// 验证命令头已存在时锚前置幂等（不重复）。
     #[test]
     fn prepend_run_command_anchor_is_idempotent_when_header_exists() {
         let combined = "npm -g\nnpm <command>\nUsage:\n";
@@ -3283,6 +4088,7 @@ keep = ["^ERR:"]
         assert_eq!(out, combined);
     }
 
+    /// 验证等价空白形式的命令头可被识别（svn   update 已存在时不重复）。
     #[test]
     fn prepend_run_command_anchor_recognizes_equivalent_whitespace_header() {
         let combined = "svn   update\nUpdated to revision 9.\n";
@@ -3290,6 +4096,7 @@ keep = ["^ERR:"]
         assert_eq!(out, combined);
     }
 
+    /// 验证 run 命令锚对含空格/特殊字符的 argv 令牌加引号。
     #[test]
     fn build_run_command_anchor_quotes_special_argv_tokens() {
         let out = build_run_command_anchor(
@@ -3307,6 +4114,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证字典合并保留命令行首行，字典紧跟其后。
     #[test]
     fn merge_path_dict_keeps_command_line_first() {
         let text = "git status\n[paths] $P1=src/core\nM src/core/a.rs\n";
@@ -3320,6 +4128,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证云端 VCS 命令（gh pr list）首行同样保留。
     #[test]
     fn merge_path_dict_keeps_cloud_vcs_command_line_first() {
         let text = "gh pr list\n[paths] $P1=src/core\nM src/core/a.rs\n";
@@ -3333,6 +4142,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证三个以上子路径共享前缀时提升公共父目录条目。
     #[test]
     fn add_common_parent_entries_promotes_shared_prefix_after_three_children() {
         let mut entries = vec![
@@ -3347,6 +4157,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 run 模式 Text 输出保持扁平化 token 内容。
     #[test]
     fn format_run_mode_tokens_text_keeps_flattened_output() {
         let output = crate::core::compression::CompressionOutput {
@@ -3361,6 +4172,7 @@ keep = ["^ERR:"]
         assert_eq!(formatted, "hello\n");
     }
 
+    /// 验证无 VCS 意图且无 paths 页脚时文本后处理原样返回。
     #[test]
     fn apply_run_mode_text_postprocessors_leaves_non_vcs_text_unchanged_without_paths_footer() {
         let options = crate::core::path_optimizer::methods::PathDictionaryOptions::default();
@@ -3370,6 +4182,7 @@ keep = ["^ERR:"]
         assert_eq!(output, input);
     }
 
+    /// 验证无命令锚时字典合并仍将字典置于顶部。
     #[test]
     fn merge_path_dict_places_dictionary_top_without_command_anchor() {
         let text = "[paths] $P1=src/core\nM src/core/a.rs\n";
@@ -3385,6 +4198,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证重复子目录路径构造派生子目录别名令牌并用于重写。
     #[test]
     fn merge_path_dict_builds_repeated_subdir_alias() {
         let text =
@@ -3403,6 +4217,7 @@ keep = ["^ERR:"]
         );
     }
 
+    /// 验证 hook 块移除幂等：重复执行同样删除 BEGIN/END 标记间内容。
     #[test]
     fn remove_hook_block_is_idempotent() {
         let content = format!("line1\n{}\nhello\n{}\nline2\n", HOOK_BEGIN, HOOK_END);
@@ -3412,9 +4227,243 @@ keep = ["^ERR:"]
         assert!(!cleaned.contains(HOOK_BEGIN));
         assert!(!cleaned.contains(HOOK_END));
     }
+
+    // -------------------------------------------------------------
+    // handle_explain_plugin_action 契约测试（编排层：输入分派/输出落地）
+    // -------------------------------------------------------------
+
+    /// 验证 explain 动作走「日志文本输入分支」：
+    /// 指定 `InputSource::File` 读取样例，写入 `OutputTarget::File`，报告必须含
+    /// `plugin_selection`/`input_kind=log`/`selected_plugin=` 三段，
+    /// 验证 handle_explain_plugin_action 能正确串联读取→识别→格式化→写入。
+    #[test]
+    fn handle_explain_plugin_action_supports_log_file_input_branch() {
+        use super::*;
+        use crate::cli::types::*;
+
+        let tmp = make_temp_test_dir("explain_log_input");
+        let input_path = tmp.join("sample.log");
+        let output_path = tmp.join("report.txt");
+        // 写入一段足够触发插件识别的典型 Spring Boot/Maven 下载日志。
+        std::fs::write(
+            &input_path,
+            "2025-01-01 12:00:00 INFO  [main] org.example.App - Starting\n\
+             Downloading from central: https://repo1.maven.org/maven2/org/spring/spring-core/6.1.0/spring-core-6.1.0.jar\n\
+             Downloaded 1.2 MB at 3.4 MB/s\n",
+        )
+        .expect("write sample log");
+
+        let mut args = base_cli_args(CliMode::Compress);
+        args.input = InputSource::File(input_path);
+        args.output = OutputTarget::File(output_path.clone());
+        args.output_format = OutputFormat::Text;
+        args.explain_command = None;
+        args.explain_fallback_gap = 0.15;
+        args.explain_replay_out = None;
+
+        let ok = handle_explain_plugin_action(&args).expect("handle explain should succeed");
+        assert!(ok, "handle_explain_plugin_action 应用适用分支返回 Ok(true)");
+
+        let report = std::fs::read_to_string(&output_path).expect("output report must exist");
+        assert!(
+            report.contains("plugin_selection"),
+            "报告头部应有 plugin_selection 标题段"
+        );
+        assert!(
+            report.contains("input_kind=log"),
+            "日志分支 input_kind 必须是 log"
+        );
+        assert!(
+            report.contains("selected_plugin="),
+            "报告必须给出 selected_plugin 字段"
+        );
+        assert!(
+            report.contains("recommendation_action="),
+            "报告必须给出 recommendation_action 字段"
+        );
+    }
+
+    /// 验证 explain 动作走「命令行输入分支」：
+    /// 通过 `explain_command=Some("git status")` 直接识别命令，报告必须含
+    /// `input_kind=command` 与 `selected_plugin=vcs_git`，
+    /// 证明 explain_plugin_for_command_line 被正确串起来。
+    #[test]
+    fn handle_explain_plugin_action_supports_command_line_branch() {
+        use super::*;
+        use crate::cli::types::*;
+
+        let tmp = make_temp_test_dir("explain_cmd_input");
+        let output_path = tmp.join("report.txt");
+
+        let mut args = base_cli_args(CliMode::Compress);
+        args.input = InputSource::Stdin; // command 分支不读 input，仍给合法默认值
+        args.output = OutputTarget::File(output_path.clone());
+        args.output_format = OutputFormat::Text;
+        args.explain_command = Some("git status --short".to_string());
+        args.explain_fallback_gap = 0.15;
+        args.explain_replay_out = None;
+
+        let ok = handle_explain_plugin_action(&args).expect("handle explain should succeed");
+        assert!(ok);
+
+        let report = std::fs::read_to_string(&output_path).expect("output report must exist");
+        assert!(
+            report.contains("input_kind=command"),
+            "命令分支 input_kind 必须是 command"
+        );
+        // route_group 是命令行分支的专属字段（日志分支通过 detector 不依赖路由配置），
+        // 用它存在 + selected_plugin 有值代替断言具体插件名，避免路由注册表变化导致的脆弱性。
+        assert!(
+            report.contains("selected_plugin=") && report.contains("route_group="),
+            "命令分支必须给出 selected_plugin 与命令行专属 route_group：{}",
+            report
+        );
+        assert!(report.contains("plugin_selection"));
+    }
+
+    /// 验证 explain 动作写 replay_case 模板：
+    /// 当 `explain_replay_out=Some(...)` 时，handle_explain_plugin_action 必须落盘一份
+    /// replay 模板到指定路径，并在最终报告末尾追加 `replay_case_template_path=...` 指示。
+    #[test]
+    fn handle_explain_plugin_action_writes_replay_template_when_requested() {
+        use super::*;
+        use crate::cli::types::*;
+
+        let tmp = make_temp_test_dir("explain_replay_out");
+        let input_path = tmp.join("sample.log");
+        let output_path = tmp.join("report.txt");
+        let replay_path = tmp.join("replay_case.json");
+        std::fs::write(&input_path, "simple log line one\nsimple log line two\n").unwrap();
+
+        let mut args = base_cli_args(CliMode::Compress);
+        args.input = InputSource::File(input_path);
+        args.output = OutputTarget::File(output_path.clone());
+        args.output_format = OutputFormat::Text;
+        args.explain_command = None;
+        args.explain_fallback_gap = 0.15;
+        args.explain_replay_out = Some(replay_path.clone());
+
+        let ok = handle_explain_plugin_action(&args).expect("handle explain should succeed");
+        assert!(ok);
+
+        assert!(
+            replay_path.exists(),
+            "explain_replay_out 指定后必须生成模板文件"
+        );
+        let replay_content = std::fs::read_to_string(&replay_path).expect("read replay template");
+        assert!(
+            replay_content.contains("input_kind:") && replay_content.contains("status: todo"),
+            "replay 模板必须采用 YAML 风书写并含 input_kind 与 status 头：\n{}",
+            replay_content
+        );
+
+        let report = std::fs::read_to_string(&output_path).unwrap();
+        assert!(
+            report.contains("replay_case_template_path="),
+            "报告尾部必须含 replay_case_template_path 锚点：{}",
+            report
+        );
+    }
+
+    /// 验证 explain 动作支持 JSON 输出格式：
+    /// output_format=Json 时，最终报告能被 serde_json::from_str 解析为 Value，
+    /// 并且顶层包含 plugin_selection 信息，证明 render_explain_report_by_format 生效。
+    #[test]
+    fn handle_explain_plugin_action_supports_json_output_format() {
+        use super::*;
+        use crate::cli::types::*;
+
+        let tmp = make_temp_test_dir("explain_json_out");
+        let input_path = tmp.join("sample.log");
+        let output_path = tmp.join("report.json");
+        std::fs::write(
+            &input_path,
+            "[2025-01-01 10:00:00] INFO  Boot: Starting application\n",
+        )
+        .unwrap();
+
+        let mut args = base_cli_args(CliMode::Compress);
+        args.input = InputSource::File(input_path);
+        args.output = OutputTarget::File(output_path.clone());
+        args.output_format = OutputFormat::Json;
+        args.explain_command = None;
+        args.explain_fallback_gap = 0.15;
+        args.explain_replay_out = None;
+
+        let ok = handle_explain_plugin_action(&args).expect("handle explain json should succeed");
+        assert!(ok);
+
+        let raw = std::fs::read_to_string(&output_path).expect("report.json exists");
+        let parsed: serde_json::Value = serde_json::from_str(&raw)
+            .unwrap_or_else(|e| panic!("json 输出应合法可解析: {e}\nraw={raw}"));
+        assert!(
+            parsed.get("plugin_selection").is_some() || parsed.get("selected_plugin").is_some(),
+            "JSON 报告顶层必须含 plugin_selection/selected_plugin 之一：{parsed}"
+        );
+    }
+
+    /// 全量 frozen 样本插件选择前瞻回放门禁（方案 1）。遍历 samples/ 全量样本，
+    /// 复用与打包压缩完全一致的运行时选择逻辑（含命令锚点对齐）做前瞻回放比对，
+    /// 产出失配清单报告到 docs/audit/plugin_selection_replay.md，并守住两条门禁：
+    ///   1) 至少命中一个命令锚定样本（证明命令锚点对齐确实被回放覆盖到）；
+    ///   2) 命令锚定的内容样本绝不允许被清理类插件抢占（noise_filter 等），
+    ///      这是修复前 CRLF 行尾导致 VCS 合并日志被 noise_filter 抢占的回归类。
+    /// 其余内容检测重叠导致的「归属插件 != 选中插件」列为信息性失配（不断言），
+    /// 使插插件选择从黑盒变为可度量、可跟踪的测量点。
+    ///
+    /// 标记 #[ignore]：全量 frozen 样本回放需对每个样本跑完整压缩链路（含 MB 级样本），
+    /// 实测约 24 分钟，若随默认 `cargo test --lib` 运行会严重拖慢变更回归流水线。
+    /// 该门禁作为「低频率重闸」保留，按需用 `cargo test -- --ignored` 或 CI 专隔档显式触发；
+    /// 默认回归不执行，但能力与报告产物仍在。
+    #[test]
+    #[ignore]
+    fn plugin_selection_forward_replay_over_all_samples_guard_cleanup_steal() {
+        // 前置回放在专用大栈线程执行：全量样本往返说明链路包含多层插件检测/
+        // 路由解析，测试宿主线程默认栈在部分路径下可能逼近溢出；分配 128MB 栈
+        // 使回放测量本身与「触发线程栈上限」解耦，保证门禁在真实压缩路由语义上生效。
+        let handle = std::thread::Builder::new()
+            .name("plugin_selection_replay".to_string())
+            .stack_size(128 * 1024 * 1024)
+            .spawn(plugin_selection_replay_report)
+            .expect("spawn replay thread");
+        let (report, stats) = handle.join().expect("replay thread must not panic");
+        let match_rate = if stats.strict_owner_total > 0 {
+            stats.strict_owner_match as f64 / stats.strict_owner_total as f64
+        } else {
+            0.0
+        };
+        eprintln!(
+            "plugin_selection_replay: strict_owner={} match={} rate={:.3} anchored={} rollup_excluded={} cleanup_steal={} mismatches={}",
+            stats.strict_owner_total,
+            stats.strict_owner_match,
+            match_rate,
+            stats.command_anchored,
+            stats.rollup_excluded,
+            stats.cleanup_steal_violations.len(),
+            stats.mismatches.len(),
+        );
+        assert!(
+            stats.command_anchored > 0,
+            "前瞻回放必须命中至少一个命令锚定样本，否则命令锚点对齐未生效"
+        );
+        assert!(
+            stats.cleanup_steal_violations.is_empty(),
+            "命令锚定样本被清理类插件抢占（回归门禁）：\n{}",
+            stats.cleanup_steal_violations.join("\n")
+        );
+        // 落盘信息性测量报告（含完整失配清单），供人工/LLM 复盘与 CI 归档。
+        let out_path = std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("docs")
+            .join("audit")
+            .join("plugin_selection_replay.md");
+        std::fs::write(&out_path, report).expect("write plugin_selection_replay report");
+    }
 }
 
-
+/// `verify` 子命令的 CLI 入口，由命令分发层调用。
+///
+/// 当 `CliArgs` 中同时提供 `verify_rule` / `verify_fixture` / `verify_expected` 时，
+/// 调用 [`run_static_rule_verify`] 执行校验并返回 `Ok(true)`；否则表示本子命令不适用，返回 `Ok(false)`。
 pub(crate) fn handle_verify_rule_action(args: &CliArgs) -> Result<bool, CliError> {
     if let (Some(rule), Some(fixture), Some(expected)) = (
         args.verify_rule.as_deref(),
@@ -3426,4 +4475,3 @@ pub(crate) fn handle_verify_rule_action(args: &CliArgs) -> Result<bool, CliError
     }
     Ok(false)
 }
-

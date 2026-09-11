@@ -1,6 +1,6 @@
 {
     "name": "nodejs",
-    "description": "Node.js 日志脱水",
+    "description": "Node.js 日志脱水，含 npm/yarn/pnpm install、tsc、eslint、webpack、jest、vitest 测试输出折叠。",
     "priority": 180,
     "enabled": true,
     "detect": {
@@ -31,14 +31,22 @@
             "threshold": 1
         }
     },
+    "decompress": {
+        "token_prefixes": [
+            "$NODE"
+        ]
+    },
     "keep_signals": [
         "Error / TypeError 行",
         "npm ERR! 行",
-        "WARN 行"
+        "WARN 行",
+        "vitest ✗ 失败测试行与 FAIL 详情（含 Test timed out）",
+        "Test Files / Tests 权威统计行"
     ],
     "compress_targets": [
         "npm 下载进度折叠",
-        "node_modules 路径压缩"
+        "node_modules 路径压缩",
+        "vitest ✓ 通过测试行折叠为 [VITEST] 摘要"
     ],
-    "design_intent": "Node.js 运行时日志脱水：保留错误和 npm 错误，折叠下载进度。"
+    "design_intent": "Node.js 运行时日志脱水：保留错误和 npm 错误，折叠下载进度；感知 vitest 测试输出，折叠 ✓ 通过行，保留 ✗ 失败测试名、失败详情与权威统计。"
 }

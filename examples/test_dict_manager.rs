@@ -4,6 +4,8 @@ use tokenslim::core::dictionary_manager::DictionaryManager;
 use tokenslim::core::stream_reader::SliceInput;
 use tokenslim::core::text_slicer::{SliceMode, SlicerConfig, TextSlicer};
 
+/// 集成测试示例：用带 `DictionaryManager` 的 `TextSlicer` 对 3 组含路径/宏/
+/// 编译命令的文本切片，等待字典异步处理后输出三类字典快照与示例条目。
 fn main() {
     println!("测试字典管理器与 TextSlicer 集成");
     println!("====================================");

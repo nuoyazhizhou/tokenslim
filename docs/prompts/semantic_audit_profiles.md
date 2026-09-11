@@ -86,3 +86,10 @@
 - Preserve stdout/stderr distinction, exit code, signal/timeout/cancel state, and shell-native failure classes such as command-not-found, permission/access denied, parser error, parameter binding error, execution policy, no-such-file, and pipe failure.
 - Repeated successful file operations or progress lines may be aggregated, but failures must remain isolated with counts and representative paths/messages.
 - Empty successful output must remain unambiguous, for example command anchor plus clean/exit-zero state; non-zero exit without output must still preserve failure state.
+
+## directory-listing
+
+- Applies to columnar directory listings: `aws s3 ls [--recursive]`, `gsutil ls -l`, `ls -l`/`ls -lh` and similar `datetime size path` table outputs.
+- The valid compaction for this family is whitespace/padding normalization only: every entry must keep its full `YYYY-MM-DD HH:MM:SS` timestamp, size value, and **complete path on the same line** (no directory-prefix lifting, no basename splitting — each output line must be independently parseable as `datetime size fullpath` with single-space separators; directory placeholder entries ending with `/` keep their full path too).
+- Size column right-alignment padding may be normalized, but size values must not be rounded, dropped, or unit-converted; per-entry timestamps must not be aggregated, dropped, or truncated.
+- If a total entry-count header is emitted, it must match the original record count exactly.

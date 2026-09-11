@@ -36,6 +36,7 @@ pub enum VcsRecord {
 }
 
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -68,6 +69,7 @@ pub struct VcsDocument {
 }
 
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 
@@ -299,6 +301,7 @@ fn compact_info_timestamp(value: &str) -> String {
     value.trim().to_string()
 }
 
+/// 判断值是否为紧凑时间戳格式（HH:MM:SS 或 HH:MM）。
 fn looks_like_compact_info_timestamp(value: &str) -> bool {
     value.len() == 19
         && value.chars().enumerate().all(|(idx, ch)| match idx {
@@ -309,6 +312,7 @@ fn looks_like_compact_info_timestamp(value: &str) -> bool {
         })
 }
 
+/// 按键名压缩 info 值（时间戳/日期/大小等）。
 fn compact_info_value(key: &str, value: &str) -> String {
     if is_info_date_key(key) {
         compact_info_timestamp(value)
@@ -319,6 +323,7 @@ fn compact_info_value(key: &str, value: &str) -> String {
     }
 }
 
+/// 判断键是否为日期类键。
 fn is_info_date_key(key: &str) -> bool {
     let lower = key.trim().to_ascii_lowercase();
     lower == "date"
@@ -350,6 +355,7 @@ fn compact_human_size_token(token: &str) -> Option<String> {
     }
 }
 
+/// 压缩大小类元数据值（KB/MB/GB 换算）。
 fn compact_size_metadata_value(key: &str, value: &str) -> Option<String> {
     let lower_key = key.trim().to_ascii_lowercase();
     let looks_like_size_key = lower_key.contains("size")
@@ -387,6 +393,7 @@ fn compact_size_metadata_value(key: &str, value: &str) -> Option<String> {
     compact_human_size_token(bytes_token)
 }
 
+/// 将零件列表压入记录并过滤空行。
 fn push_compact_raw_line(records: &mut Vec<VcsRecord>, parts: Vec<String>) {
     let compact: Vec<String> = parts
         .into_iter()
@@ -718,6 +725,7 @@ fn parse_p4_label_line(line: &str) -> Option<String> {
 // ============================================================================
 
 impl VcsParser for P4OpenedParser {
+    /// 解析 `p4 opened` 输出：将每行 `depot-path - action` 归并为状态文件记录（add/delete 推断 A/D，其余 M），输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -739,6 +747,7 @@ impl VcsParser for P4OpenedParser {
 }
 
 impl VcsParser for P4DescribeParser {
+    /// 解析 `p4 describe` 输出：提取 Change 编号作为提交记录，depot 路径归入文件、补丁/统计行交给通用解析，输出 Diff 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -769,6 +778,7 @@ impl VcsParser for P4DescribeParser {
 }
 
 impl VcsParser for P4ChangesParser {
+    /// 解析 `p4 changes` 输出：将 `Change N on date by user` 头与下一行描述拼为单条记录（含挂起状态标记），输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut pending_header: Option<String> = None;
@@ -820,6 +830,7 @@ impl VcsParser for P4ChangesParser {
 }
 
 impl VcsParser for P4FstatParser {
+    /// 解析 `p4 fstat` 输出：将 `... key value` 元数据行按路径类键归并为 LabeledFile，数值/大小类值经压缩后保留为 Raw，输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -851,6 +862,7 @@ impl VcsParser for P4FstatParser {
 }
 
 impl VcsParser for P4WhereParser {
+    /// 解析 `p4 where` 输出：将 depot/client/local 三段路径分别归并为 LabeledFile（depot/client/local），输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -883,6 +895,7 @@ impl VcsParser for P4WhereParser {
 }
 
 impl VcsParser for P4InfoParser {
+    /// 解析 `p4 info` 输出：调用紧凑记录构建，提取用户/客户端/服务端身份与根目录、版本等元数据，输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = compact_p4_info_records(raw);
         to_doc_if_any(VcsTool::P4, VcsDocKind::Show, records)
@@ -890,6 +903,7 @@ impl VcsParser for P4InfoParser {
 }
 
 impl VcsParser for P4LabelsParser {
+    /// 解析 `p4 labels` 输出：将 `Label name date time owner 'desc'` 压缩为单条记录，输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -911,6 +925,7 @@ impl VcsParser for P4LabelsParser {
 }
 
 impl VcsParser for P4DirsParser {
+    /// 解析 `p4 dirs` 输出：将每行 `//` depot 目录路径归入文件记录，输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -935,6 +950,7 @@ impl VcsParser for P4DirsParser {
 }
 
 impl VcsParser for P4SyncParser {
+    /// 解析 `p4 sync` 输出：将 updated/added/deleted 行归为状态文件，将 `N files would be updated` 预览摘为计数摘要，'Sync completed' 去重记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut emitted_sync = false;
@@ -974,6 +990,7 @@ impl VcsParser for P4SyncParser {
 }
 
 impl VcsParser for P4SubmitParser {
+    /// 解析 `p4 submit` 输出：提取去重的 Change 编号作为提交记录，depot 路径归入文件，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut last_change: Option<String> = None;
@@ -1005,6 +1022,7 @@ impl VcsParser for P4SubmitParser {
 }
 
 impl VcsParser for P4ShelveParser {
+    /// 解析 `p4 shelve` 输出：提取去重的 Change 编号作为提交记录，depot 路径归入文件，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut last_change: Option<String> = None;
@@ -1036,6 +1054,7 @@ impl VcsParser for P4ShelveParser {
 }
 
 impl VcsParser for P4UnshelveParser {
+    /// 解析 `p4 unshelve` 输出：提取去重的 Change 编号，depot 路径归入文件，`N files restored` 摘为计数摘要，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut last_change: Option<String> = None;
@@ -1072,6 +1091,7 @@ impl VcsParser for P4UnshelveParser {
 }
 
 impl VcsParser for P4ResolveParser {
+    /// 解析 `p4 resolve` 输出：将 resolved/skipped 行归为带标签（resolve/skip/merge-label）的 LabeledFile，冲突摘要单独保留，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1099,6 +1119,7 @@ impl VcsParser for P4ResolveParser {
 }
 
 impl VcsParser for P4RevertParser {
+    /// 解析 `p4 revert` 输出：将 reverted 文件归为 `R` 状态文件，`N files reverted` 摘为计数摘要，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1129,6 +1150,7 @@ impl VcsParser for P4RevertParser {
 }
 
 impl VcsParser for P4EditParser {
+    /// 解析 `p4 edit` 输出：将 opened-for-edit 文件归为 `M` 状态文件记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1154,6 +1176,7 @@ impl VcsParser for P4EditParser {
 }
 
 impl VcsParser for P4AddParser {
+    /// 解析 `p4 add` 输出：将 added-for-add 文件归为 `A` 状态文件记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1179,6 +1202,7 @@ impl VcsParser for P4AddParser {
 }
 
 impl VcsParser for P4DeleteParser {
+    /// 解析 `p4 delete` 输出：将 deleted-for-delete 文件归为 `D` 状态文件记录，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
 
@@ -1207,6 +1231,7 @@ impl VcsParser for P4DeleteParser {
 // P4 Info 紧凑记录构建（内联自 helpers.rs）
 // ============================================================================
 
+/// 压缩 p4 info 记录。
 fn compact_p4_info_records(raw: &str) -> Vec<VcsRecord> {
     let mut user = None;
     let mut client = None;

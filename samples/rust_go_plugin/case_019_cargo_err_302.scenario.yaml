@@ -1,0 +1,15 @@
+scenario: 'Cargo 项目以 cargo test 传入多余参数导致 clap 参数解析错误：error: unexpected argument 找到多余参数，随后输出 Usage 与 --help 提示；整段日志含裸 ANSI CSI 残留（脱色后不剥净）。'
+target_capability: 'Cargo 参数错误 + 裸 ANSI CSI 剥壳 + Rust/Go 专用插件路由'
+expected_keep: 'unexpected argument ''content_analyzer'' found'
+expected_compress: '[1m[91merror:[0m'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'd56103d652414abb2f65cda19beb7bfb6265fe431cfbfe77150facd1c2d69653'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:10:25.377998'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

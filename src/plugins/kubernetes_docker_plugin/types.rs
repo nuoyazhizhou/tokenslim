@@ -13,7 +13,8 @@ pub struct KubernetesDockerConfig {
 }
 
 impl Default for KubernetesDockerConfig {
-    /// 提供该插件类型的默认配置实现。
+    /// 构造 KubernetesDockerConfig 默认配置：提取 Pod 元数据、清理容器 ID、
+    /// 解包云平台 JSON 壳均开启。
     fn default() -> Self {
         KubernetesDockerConfig {
             extract_kubernetes_metadata: true,

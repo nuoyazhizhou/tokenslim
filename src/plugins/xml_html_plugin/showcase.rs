@@ -8,6 +8,7 @@ mod tests {
     use crate::plugins::xml_html_plugin::XmlHtmlPlugin;
     use std::borrow::Cow;
 
+    /// 从 `samples/xml_html_plugin` 目录读取示例文本，文件缺失时返回空串。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,6 +18,7 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
+    /// 用插件对文本切片做压缩，拼接所有 `Text` token 组成紧凑字符串返回。
     fn compress_text(plugin: &XmlHtmlPlugin, text: &str) -> String {
         let slice = Slice {
             id: 1,
@@ -42,6 +44,7 @@ mod tests {
             .collect::<String>()
     }
 
+    /// 生成 XML/HTML 压缩全景 showcase 报告：遍历多组样例，输出原文/压缩行数字节与压缩率到文件。
     #[test]
     fn generate_xml_html_showcase_report() {
         let plugin = XmlHtmlPlugin::new();

@@ -222,6 +222,7 @@ mod tests {
     use super::*;
     use serde_json::json;
 
+    /// 验证 `try_parse_deepseek` 解析 DeepSeek session：从 messages[].tool_calls[].function（execute_command/bash/shell）的 arguments.command 提取命令与 timestamp。
     #[test]
     fn test_parse_deepseek_format() {
         let json = json!({
@@ -250,6 +251,7 @@ mod tests {
         );
     }
 
+    /// 验证 `try_parse_claude` 解析 Claude session：从 content[].tool_use（execute_pwsh/execute_bash/bash）的 input.command 提取命令。
     #[test]
     fn test_parse_claude_format() {
         let json = json!({
@@ -274,6 +276,7 @@ mod tests {
         assert_eq!(commands[0].command, "cargo test");
     }
 
+    /// 验证 `try_parse_generic` 通用递归解析：在任意嵌套 JSON 中递归查找 "command" 字段，并连带提取 input/output_bytes 等元数据。
     #[test]
     fn test_parse_generic_format() {
         let json = json!({
@@ -295,6 +298,7 @@ mod tests {
         assert_eq!(commands[0].output_bytes, Some(5000));
     }
 
+    /// 验证 `try_parse_deepseek` 多命令提取：单个消息内多个 tool_calls 能全部提取为多条命令，顺序与数量正确。
     #[test]
     fn test_parse_multiple_commands() {
         let json = json!({

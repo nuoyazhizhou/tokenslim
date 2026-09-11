@@ -16,7 +16,6 @@
 //! - 长 URL（remoteUrl, webUrl 缩写为短形式）
 //! - 无冒号行视为项目名，标记为 PRJ:（show 函数中）
 pub mod methods;
-pub mod parser;
 #[cfg(test)]
 mod showcase;
 #[cfg(test)]

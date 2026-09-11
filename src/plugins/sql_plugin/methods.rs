@@ -14,14 +14,21 @@ use std::borrow::Cow;
 static SQL_KEYWORDS_RE: Lazy<Regex> = Lazy::new(|| {
     Regex::new(r"(?i)\b(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|TRUNCATE|MERGE|REPLACE|FROM|WHERE|JOIN|GROUP\s+BY|ORDER\s+BY|HAVING|LIMIT|OFFSET|UNION|ALL|EXISTS|IN|BETWEEN|LIKE|IS\s+NULL|IS\s+NOT\s+NULL)\b").unwrap()
 });
+// Q58 处置：头部动作动词。SELECT/INSERT 等强动词必任一条真实 SQL 语句起点，
+// 而 IN/LIKE/ALL/EXISTS 为英文散文高频词，单独满足 matches>=2 时（如 `in`+`like`）
+// 会把普通文本误判为 SQL。以「至少一个强动词」作为判别前置门槛。
+static SQL_HEAD_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"(?i)\b(SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|TRUNCATE|MERGE|REPLACE)\b")
+        .unwrap()
+});
 static INSERT_VALUES_RE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"(?i)(VALUES\s*)\((?P<vals>.*)\)").unwrap());
 static STR_LITERAL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"'(?:''|[^'])*'").unwrap());
 static NUM_LITERAL_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\b\d+(\.\d+)?\b").unwrap());
-#[allow(dead_code)]
-static SENSITIVE_COLS_RE: Lazy<Regex> = Lazy::new(|| {
-    Regex::new(r"(?i)\b(password|passwd|pwd|secret|token|key|credential|auth)\b").unwrap()
-});
+// P3-163（P3-127 家族扩展）：`normalize` 每次调用重建数字/未引用字符串抹除正则，
+// 提升为进程级预编译（对照本文件既有 Lazy 范式）。
+static NUM_NORM_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"\b\d+\b").unwrap());
+static STR_NORM_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"'.*?'").unwrap());
 
 impl SqlPlugin {
     /// 实例化并返回该插件的默认配置对象。
@@ -76,6 +83,12 @@ impl Plugin for SqlPlugin {
             return None;
         }
 
+        // Q58 处置：前置门槛——必须含至少一个强动作动词才判 SQL。
+        // 避免 IN/LIKE/ALL/EXISTS 等散文高频词在 matches>=2 时误判普通文本为 SQL。
+        if !SQL_HEAD_RE.is_match(text) {
+            return None;
+        }
+
         let matches = SQL_KEYWORDS_RE.find_iter(text).count();
         if matches > 0 {
             // 根据关键词数量和密度计算置信度
@@ -98,6 +111,17 @@ impl Plugin for SqlPlugin {
     ) -> CompressResult<'a> {
         let text = slice.text.as_ref();
         let mut processed = text.to_string();
+
+        // 0. P2-79 真实脱敏（obfuscate_sensitive=true 时启用）：复用 privacy 插件内置
+        //    凭证正则组（单点维护，见 privacy_plugin::redact_with_builtin_patterns），
+        //    将 password/secret/api_key/token 等赋值与 Bearer/JWT/连接串凭证替换为
+        //    `[TS_*]` 不可逆占位符。置于骨架提取与 VALUES 截断之前，确保敏感值不会
+        //    经由任何后续路径残留在产物中。默认 false（R50 行为变更门控），开启后
+        //    产物为脱敏文本且与 decompress 恒等语义一致（SQL 骨架化本就声明不可逆）。
+        if self.config.obfuscate_sensitive {
+            processed =
+                crate::plugins::privacy_plugin::redact_with_builtin_patterns(&processed);
+        }
 
         // 1. 如果是 INSERT 语句，检查是否需要截断巨大的 VALUES
         if processed.to_uppercase().contains("INSERT") {
@@ -123,11 +147,11 @@ impl Plugin for SqlPlugin {
     fn normalize(&self, text: &str) -> String {
         let mut result = text.to_string();
         // 抹除 SQL 中的数值常量
-        let num_re = regex::Regex::new(r"\b\d+\b").unwrap();
+        let num_re = &*NUM_NORM_RE;
         result = num_re.replace_all(&result, "?").to_string();
 
         // 抹除字符串常量
-        let str_re = regex::Regex::new(r"'.*?'").unwrap();
+        let str_re = &*STR_NORM_RE;
         result = str_re.replace_all(&result, "'?'").to_string();
 
         result
@@ -137,14 +161,5 @@ impl Plugin for SqlPlugin {
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         // 骨架化是不可逆的（损失了具体数值），所以解压只能返回处理后的文本
         compressed.to_string()
-    }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<SqlConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
     }
 }

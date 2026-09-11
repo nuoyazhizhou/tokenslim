@@ -5,6 +5,8 @@ use rayon::prelude::*;
 use std::fs::File;
 use std::time::Instant;
 
+/// 并行文件读取性能测试入口：mmap 打开样本后对比串行/并行分块读取
+/// 的耗时、加速比与吞吐量。
 fn main() {
     println!("=== 并行文件读取性能测试 ===\n");
 

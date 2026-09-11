@@ -19,7 +19,6 @@
 //! - key-value 字段键名压缩为短符号（如 project->PRJ）
 //! - refs/heads/ 前缀在 push 映射中移除
 pub mod methods;
-pub mod parser;
 #[cfg(test)]
 mod showcase;
 #[cfg(test)]

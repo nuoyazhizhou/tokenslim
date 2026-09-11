@@ -17,6 +17,7 @@ use std::collections::BTreeMap;
 use std::sync::OnceLock;
 
 impl PulumiPlugin {
+    /// 创建 PulumiPlugin 实例（名称 pulumi，优先级 92）。
     pub fn new() -> Self {
         Self {
             name: "pulumi",
@@ -26,14 +27,17 @@ impl PulumiPlugin {
 }
 
 impl Plugin for PulumiPlugin {
+    /// 返回插件名称 "pulumi"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 92。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：含 previewing update/updating (/pulumi:pulumi:stack 等特征得 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(
@@ -48,6 +52,7 @@ impl Plugin for PulumiPlugin {
         .then_some(0.9)
     }
 
+    /// 压缩切片：剥离 ANSI，压缩 pulumi 资源操作为摘要，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -66,11 +71,14 @@ impl Plugin for PulumiPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：解析资源操作行（+新增/~修改/-删除），统计 OPS 计数并压缩资源名，
+/// 无压缩收益时回退原文；针对 unchanged/输出/插件安装场景输出单行摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_pulumi(text: &str, dict_engine: &mut DictionaryEngine) -> String {
     static RES_RE: OnceLock<Regex> = OnceLock::new();

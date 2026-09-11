@@ -9,14 +9,21 @@ use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
 use std::borrow::Cow;
+use std::sync::OnceLock;
+
+/// P3-127 家族：草解压主路径 `restore_yaml_string` 每次调用重建 `(\$[MP]\d+)`，
+/// 提升为进程级 `OnceLock` 预编译（对照 `infra_tools_common.rs` 范式）。
+static RESTORE_TOKEN_RE: OnceLock<Regex> = OnceLock::new();
 
 impl Default for YamlPlugin {
+    /// YamlPlugin 默认实现：等价于 new()。
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl YamlPlugin {
+    /// 创建 YamlPlugin 实例（名称 yaml，优先级 145，默认配置）。
     pub fn new() -> Self {
         YamlPlugin {
             name: "yaml",
@@ -27,13 +34,16 @@ impl YamlPlugin {
 }
 
 impl Plugin for YamlPlugin {
+    /// 返回插件名称 "yaml"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 145。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：前 20 行中 YAML 指示符（列表项/键冒号）>3 且整体可被 serde_yaml 解析时得 0.85。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
         let lines: Vec<&str> = text.lines().take(20).collect();
@@ -55,6 +65,7 @@ impl Plugin for YamlPlugin {
         None
     }
 
+    /// 压缩切片：解析 YAML 并递归压缩（键字典化、长字符串路径化、序列截断），$YAML| 前缀，ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -85,6 +96,7 @@ impl Plugin for YamlPlugin {
         }
     }
 
+    /// 归一化：将 YAML 重新序列化为规范格式（用于 diff 比对）。
     fn normalize(&self, text: &str) -> String {
         if let Ok(val) = serde_yaml::from_str::<serde_yaml::Value>(text) {
             return serde_yaml::to_string(&val).unwrap_or_else(|_| text.to_string());
@@ -92,6 +104,7 @@ impl Plugin for YamlPlugin {
         text.to_string()
     }
 
+    /// 解压：剥离 $YAML| 前缀，将 $M/$P token 用词典还原为原始 YAML。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         if let Some(payload) = compressed.strip_prefix("$YAML|\n") {
             return restore_yaml_string(payload, dict);
@@ -99,20 +112,14 @@ impl Plugin for YamlPlugin {
         compressed.to_string()
     }
 
+    /// 返回后续插件列表（smart_path）。
     fn next_plugins(&self) -> Vec<&'static str> {
         vec!["smart_path"]
-    }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<YamlConfig>() {
-            self.config = c.clone();
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
     }
 }
 
 impl YamlPlugin {
+    /// 递归压缩 YAML 值：映射键按配置字典化、超长字符串路径化、序列超过限制截断。
     fn compress_yaml_value_recursive(
         &self,
         val: serde_yaml::Value,
@@ -168,8 +175,9 @@ impl YamlPlugin {
     }
 }
 
+/// 将压缩后的 YAML 文本中的 $M/$P token 用词典还原为原文。
 fn restore_yaml_string(payload: &str, dict: &Dictionary) -> String {
-    let pattern = Regex::new(r"(\$[MP]\d+)").unwrap();
+    let pattern = RESTORE_TOKEN_RE.get_or_init(|| Regex::new(r"(\$[MP]\d+)").unwrap());
     pattern
         .replace_all(payload, |caps: &regex::Captures| {
             let token = caps.get(1).unwrap().as_str();

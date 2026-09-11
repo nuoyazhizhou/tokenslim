@@ -23,7 +23,6 @@ impl TemplateDrivenPlugin {
         TemplateDrivenPlugin {
             name: "template_driven",
             priority: 100,
-            config,
             compiled_rules: compiled,
         }
     }
@@ -47,13 +46,16 @@ impl TemplateDrivenPlugin {
 }
 
 impl Plugin for TemplateDrivenPlugin {
+    /// 返回插件名称 "template_driven"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 100。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：任一编译规则正则命中文本得 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
         for (re, _) in &self.compiled_rules {
@@ -64,6 +66,7 @@ impl Plugin for TemplateDrivenPlugin {
         None
     }
 
+    /// 压缩切片：规则命中时将捕获的变量值字典化并替换 <*> 占位，未命中时原样返回。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -100,6 +103,7 @@ impl Plugin for TemplateDrivenPlugin {
         }
     }
 
+    /// 归一化：将文本中所有规则匹配片段替换为规则模式（用于 diff 比对）。
     fn normalize(&self, text: &str) -> String {
         let mut result = text.to_string();
         for (re, rule) in &self.compiled_rules {
@@ -108,21 +112,8 @@ impl Plugin for TemplateDrivenPlugin {
         result
     }
 
+    /// 解压：原文透传（模板压缩不可逆）。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
-    }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(cfg) = config.downcast_ref::<TemplateConfig>() {
-            self.config = cfg.clone();
-            self.compiled_rules.clear();
-            for rule in &self.config.rules {
-                if let Ok(re) = Regex::new(&rule.pattern) {
-                    self.compiled_rules.push((re, rule.clone()));
-                }
-            }
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
     }
 }

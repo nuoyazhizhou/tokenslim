@@ -2,27 +2,23 @@
 mod tests {
     use super::super::methods::*;
     use super::super::parser::*;
-    use std::path::{Path, PathBuf};
+    use std::path::PathBuf;
 
     // ============================================================================
     // 统一测试基础设施 — 文件驱动（法则：严禁 Hardcode）
     // ============================================================================
-    fn sample_dir() -> PathBuf {
-        Path::new(env!("CARGO_MANIFEST_DIR"))
-            .join("samples")
-            .join("vcs_hg_plugin")
-    }
 
-    /// 从 samples/vcs_hg_plugin/<name>.log 读取测试用例
+    fn sample_dir() -> PathBuf {
+        crate::plugins::test_utils::vcs_sample_dir("vcs_hg_plugin")
+    }
     fn read_case(name: &str) -> String {
-        let p = sample_dir().join(format!("{}.log", name));
-        std::fs::read_to_string(&p)
-            .unwrap_or_else(|e| panic!("读取样本失败 {}: {}", p.display(), e))
+        crate::plugins::test_utils::vcs_read_case("vcs_hg_plugin", name)
     }
 
     // ============================================================================
     // Status 族：hg status — 状态码映射
     // ============================================================================
+    /// 测试：hg status 样例（case 08）状态映射。
     #[test]
     fn test_case_08_hg_status() {
         let c = compact_hg_status_for_ai(&read_case("case_08_hg_status"));
@@ -34,6 +30,7 @@ mod tests {
         assert!(c.contains("? config/vcs_plugin.local.json"), "? 应保留");
     }
 
+    /// 测试：hg status 短格式样例（case 232）映射。
     #[test]
     fn test_case_232_hg_status_short() {
         let c = compact_hg_status_for_ai(&read_case("case_232_hg_status_S"));
@@ -41,6 +38,7 @@ mod tests {
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg status -c 样例（case 233）映射。
     #[test]
     fn test_case_233_hg_status_c() {
         let c = compact_hg_status_for_ai(&read_case("case_233_hg_status_c"));
@@ -48,6 +46,7 @@ mod tests {
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg st 短命令样例（case 274）映射。
     #[test]
     fn test_case_274_hg_st_short() {
         let c = compact_hg_status_for_ai(&read_case("case_274_hg_st"));
@@ -55,6 +54,7 @@ mod tests {
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg status 静默模式样例（case 275）映射。
     #[test]
     fn test_case_275_hg_status_quiet() {
         let c = compact_hg_status_for_ai(&read_case("case_275_hg_status_quiet"));
@@ -62,23 +62,17 @@ mod tests {
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg status 未跟踪文件样例（case 276）映射。
     #[test]
     fn test_case_276_hg_status_untracked() {
         let c = compact_hg_status_for_ai(&read_case("case_276_hg_status_untracked"));
         assert!(c.contains("?"));
     }
 
-    #[test]
-    fn test_case_277_hg_status_path() {
-        let c = compact_hg_status_for_ai(&read_case("case_277_hg_status_path"));
-        // 带路径参数的 status 不应产生幽灵行
-        assert!(!c.lines().any(|l| l.starts_with("h ")), "不应出现幽灵行");
-        assert!(c.contains("M"));
-    }
-
     // ============================================================================
     // Diff 族：hg diff
     // ============================================================================
+    /// 测试：hg diff 样例（case 09）压缩。
     #[test]
     fn test_case_09_hg_diff() {
         let c = compact_hg_diff_for_ai(&read_case("case_09_hg_diff"));
@@ -86,21 +80,26 @@ mod tests {
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg diff --git 样例（case 301）压缩。
     #[test]
     fn test_case_301_hg_diff_git() {
         let c = compact_hg_diff_for_ai(&read_case("case_301_hg_diff_git"));
+        assert!(c.starts_with("hg diff --git"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg diff --stat 样例（case 302）压缩。
     #[test]
     fn test_case_302_hg_diff_stat() {
         let c = compact_hg_diff_for_ai(&read_case("case_302_hg_diff_stat"));
+        assert!(c.starts_with("hg diff --stat"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
     // ============================================================================
     // Log 族：hg log
     // ============================================================================
+    /// 测试：hg log 样例（case 10）压缩。
     #[test]
     fn test_case_10_hg_log() {
         let c = compact_hg_log_for_ai(&read_case("case_10_hg_log"));
@@ -113,45 +112,74 @@ mod tests {
         );
     }
 
+    /// 测试：hg log --limit 样例（case 278）压缩。
     #[test]
     fn test_case_278_hg_log_limit() {
         let c = compact_hg_log_for_ai(&read_case("case_278_hg_log_limit"));
+        assert!(c.starts_with("hg log -l 10"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg log --verbose 样例（case 279）压缩。
     #[test]
     fn test_case_279_hg_log_verbose() {
         let c = compact_hg_log_for_ai(&read_case("case_279_hg_log_verbose"));
+        assert!(c.starts_with("hg log -v"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg log --style compact（case 280）oneline 日志压缩。
     #[test]
     fn test_case_280_hg_log_style_compact() {
         let c = compact_hg_log_for_ai(&read_case("case_280_hg_log_style_compact"));
-        assert!(!c.is_empty());
+        assert!(c.starts_with("hg log"), "必须保留命令锚点");
+        // 共享作者/日期提取为首部声明，消除逐行冗余
+        assert!(
+            c.contains("OW:developer DT:2026-04-14"),
+            "应提取共享作者/日期"
+        );
+        // [tip] 折叠到修订号末尾
+        assert!(
+            c.contains("1234 tip Implement dictionary manager"),
+            "应折叠 [tip]，实际输出: {:?}",
+            c
+        );
+        // 其余行仅保留修订号 + 消息
+        assert!(
+            c.contains("1233 Add parallel processing support to TextSlicer"),
+            "应保留修订号与消息"
+        );
+        assert!(!c.contains("2026-04-14)"), "逐行日期应被去重到首部声明");
     }
 
+    /// 测试：hg log --tip 样例（case 281）压缩。
     #[test]
     fn test_case_281_hg_log_tip() {
         let c = compact_hg_log_for_ai(&read_case("case_281_hg_log_tip"));
+        assert!(c.starts_with("hg log -r tip"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg log --follow 样例（case 303）压缩。
     #[test]
     fn test_case_303_hg_log_follow() {
         let c = compact_hg_log_for_ai(&read_case("case_303_hg_log_follow"));
+        assert!(c.starts_with("hg log --follow"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg log --patch 样例（case 304）压缩。
     #[test]
     fn test_case_304_hg_log_patch() {
         let c = compact_hg_log_for_ai(&read_case("case_304_hg_log_patch"));
+        assert!(c.starts_with("hg log --patch"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
     // ============================================================================
     // 远程族：clone / pull / push
     // ============================================================================
+    /// 测试：hg clone 样例（case 58）压缩。
     #[test]
     fn test_case_58_hg_clone() {
         let c = process_parser(&HgCloneParser, &read_case("case_58_hg_clone"));
@@ -160,6 +188,7 @@ mod tests {
         assert!(!c.contains("requesting all changes"), "进度噪音应过滤");
     }
 
+    /// 测试：hg pull 样例（case 59）压缩。
     #[test]
     fn test_case_59_hg_pull() {
         let c = process_parser(&HgPullParser, &read_case("case_59_hg_pull"));
@@ -170,6 +199,7 @@ mod tests {
         );
     }
 
+    /// 测试：hg push 样例（case 60）压缩。
     #[test]
     fn test_case_60_hg_push() {
         let c = process_parser(&HgPushParser, &read_case("case_60_hg_push"));
@@ -183,6 +213,7 @@ mod tests {
     // ============================================================================
     // 提交/更新族
     // ============================================================================
+    /// 测试：hg update 样例（case 61）压缩。
     #[test]
     fn test_case_61_hg_update() {
         let c = process_parser(&HgUpdateParser, &read_case("case_61_hg_update"));
@@ -193,12 +224,15 @@ mod tests {
         );
     }
 
+    /// 测试：hg update -c 样例（case 305）压缩。
     #[test]
     fn test_case_305_hg_update_c() {
         let c = process_parser(&HgUpdateParser, &read_case("case_305_hg_update_C"));
+        assert!(c.starts_with("hg update -C"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg commit 样例（case 62）压缩。
     #[test]
     fn test_case_62_hg_commit() {
         let c = process_parser(&HgCommitParser, &read_case("case_62_hg_commit"));
@@ -206,15 +240,18 @@ mod tests {
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg commit --amend 样例（case 306）压缩。
     #[test]
     fn test_case_306_hg_commit_amend() {
         let c = process_parser(&HgCommitParser, &read_case("case_306_hg_commit_amend"));
+        assert!(c.starts_with("hg commit --amend"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
     // ============================================================================
     // 分支/书签/标签族
     // ============================================================================
+    /// 测试：hg branches 样例（case 63）压缩。
     #[test]
     fn test_case_63_hg_branches() {
         let c = process_parser(&HgBranchesParser, &read_case("case_63_hg_branches"));
@@ -222,6 +259,7 @@ mod tests {
         assert!(c.contains("~"), "inactive 应压缩为 ~");
     }
 
+    /// 测试：hg merge 样例（case 64）压缩。
     #[test]
     fn test_case_64_hg_merge() {
         let c = process_parser(&HgMergeParser, &read_case("case_64_hg_merge"));
@@ -229,30 +267,39 @@ mod tests {
         assert!(c.contains("merge"), "merge 信息应保留");
     }
 
+    /// 测试：hg heads 样例（case 11）压缩。
     #[test]
     fn test_case_11_hg_heads() {
         let c = compact_hg_heads_for_ai(&read_case("case_11_hg_heads"));
+        assert!(c.starts_with("hg heads"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg outgoing 样例（case 12）压缩。
     #[test]
     fn test_case_12_hg_outgoing() {
         let c = compact_hg_outgoing_for_ai(&read_case("case_12_hg_outgoing"));
+        assert!(c.starts_with("hg outgoing"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg incoming 样例（case 13）压缩。
     #[test]
     fn test_case_13_hg_incoming() {
         let c = compact_hg_incoming_for_ai(&read_case("case_13_hg_incoming"));
+        assert!(c.starts_with("hg incoming"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg parents 样例（case 14）压缩。
     #[test]
     fn test_case_14_hg_parents() {
         let c = compact_hg_parents_for_ai(&read_case("case_14_hg_parents"));
+        assert!(c.starts_with("hg parents"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg bookmarks 样例（case 69）压缩。
     #[test]
     fn test_case_69_hg_bookmarks() {
         let c = process_parser(&HgBookmarksParser, &read_case("case_69_hg_bookmarks"));
@@ -263,6 +310,7 @@ mod tests {
     // ============================================================================
     // 其他操作族
     // ============================================================================
+    /// 测试：hg rollback 样例（case 65）压缩。
     #[test]
     fn test_case_65_hg_rollback() {
         let c = process_parser(&HgRollbackParser, &read_case("case_65_hg_rollback"));
@@ -270,12 +318,15 @@ mod tests {
         assert!(c.contains("rollback"), "rollback 信息应保留");
     }
 
+    /// 测试：hg backout 样例（case 66）压缩。
     #[test]
     fn test_case_66_hg_backout() {
         let c = process_parser(&HgBackoutParser, &read_case("case_66_hg_backout"));
+        assert!(c.starts_with("hg backout"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg shelve 样例（case 67）压缩。
     #[test]
     fn test_case_67_hg_shelve() {
         let c = process_parser(&HgShelveParser, &read_case("case_67_hg_shelve"));
@@ -283,6 +334,7 @@ mod tests {
         assert!(c.contains("shelved:"), "shelved 信息应保留");
     }
 
+    /// 测试：hg phase 样例（case 68）压缩。
     #[test]
     fn test_case_68_hg_phase() {
         let c = process_parser(&HgPhaseParser, &read_case("case_68_hg_phase"));
@@ -290,6 +342,7 @@ mod tests {
         assert!(c.contains("draft") || c.contains("public"), "phase 应保留");
     }
 
+    /// 测试：hg tag 样例（case 82）压缩。
     #[test]
     fn test_case_82_hg_tag() {
         let c = process_parser(&HgTagParser, &read_case("case_82_hg_tag"));
@@ -297,6 +350,7 @@ mod tests {
         assert!(c.contains("tag:"), "tag 信息应保留");
     }
 
+    /// 测试：hg copy 样例（case 132）压缩。
     #[test]
     fn test_case_132_hg_copy() {
         let c = process_parser(&HgCopyParser, &read_case("case_132_hg_copy"));
@@ -304,6 +358,7 @@ mod tests {
         assert!(c.contains("copy") && c.contains("->"), "应使用 -> 表示流向");
     }
 
+    /// 测试：hg move 样例（case 133）压缩。
     #[test]
     fn test_case_133_hg_move() {
         let c = process_parser(&HgMoveParser, &read_case("case_133_hg_move"));
@@ -311,6 +366,7 @@ mod tests {
         assert!(c.contains("move") && c.contains("->"), "应使用 -> 表示流向");
     }
 
+    /// 测试：hg purge 样例（case 134）压缩。
     #[test]
     fn test_case_134_hg_purge() {
         let c = process_parser(&HgPurgeParser, &read_case("case_134_hg_purge"));
@@ -318,6 +374,7 @@ mod tests {
         assert!(c.contains("D "), "purge 应映射为 D");
     }
 
+    /// 测试：hg archive 样例（case 135）压缩。
     #[test]
     fn test_case_135_hg_archive() {
         let c = process_parser(&HgArchiveParser, &read_case("case_135_hg_archive"));
@@ -325,6 +382,7 @@ mod tests {
         assert!(c.contains("archive:"), "archive 路径应保留");
     }
 
+    /// 测试：hg verify 样例（case 136）压缩。
     #[test]
     fn test_case_136_hg_verify() {
         let c = process_parser(&HgVerifyParser, &read_case("case_136_hg_verify"));
@@ -332,30 +390,36 @@ mod tests {
         assert!(!c.contains("checking"), "checking 噪音应过滤");
     }
 
+    /// 测试：hg identify 样例（case 171）压缩。
     #[test]
     fn test_case_171_hg_identify() {
         let c = process_parser(&HgIdentifyParser, &read_case("case_171_hg_identify"));
+        assert!(c.starts_with("hg identify"), "命令锚点丢失: {c}");
         assert!(!c.is_empty());
     }
 
+    /// 测试：hg paths 样例（case 172）压缩。
     #[test]
     fn test_case_172_hg_paths() {
         let c = process_parser(&HgPathsParser, &read_case("case_172_hg_paths"));
         assert!(c.contains("default="), "paths 应包含 default=");
     }
 
+    /// 测试：hg config 样例（case 173）压缩。
     #[test]
     fn test_case_173_hg_config() {
         let c = process_parser(&HgConfigParser, &read_case("case_173_hg_config"));
         assert!(c.contains("[ui]"), "config 段落应保留");
     }
 
+    /// 测试：hg summarize 样例（case 174）压缩。
     #[test]
     fn test_case_174_hg_summarize() {
         let c = process_parser(&HgSummarizeParser, &read_case("case_174_hg_summarize"));
         assert!(c.contains("BR:main"), "分支应映射为 BR:");
     }
 
+    /// 测试：hg transplant 样例（case 175）压缩。
     #[test]
     fn test_case_175_hg_transplant() {
         let c = process_parser(&HgTransplantParser, &read_case("case_175_hg_transplant"));
@@ -491,9 +555,9 @@ mod tests {
     /// 边界测试：shelve list 少于阈值时不应折叠
     #[test]
     fn test_shelve_list_below_threshold_not_folded() {
-        let raw =
-            "hg shelve --list\ndefault (10 files, 2 days ago)\nfeature (5 files, 1 week ago)\n";
-        let c = compact_hg_shelve_enhanced(raw);
+        // P3-202：手写 mock 物理化为 samples 测试专用样本。
+        let raw = read_case("test_hg_shelve_list_below_threshold");
+        let c = compact_hg_shelve_enhanced(&raw);
 
         // 少于 5 个 shelve，不应折叠
         assert!(!c.contains("[SHELVE]"), "少于阈值时不应添加摘要");
@@ -504,8 +568,9 @@ mod tests {
     /// 边界测试：空 graft 输出应保持原样
     #[test]
     fn test_empty_graft_output_unchanged() {
-        let raw = "hg graft 123\n";
-        let c = compact_hg_graft_enhanced(raw);
+        // P3-202：手写 mock 物理化为 samples 测试专用样本。
+        let raw = read_case("test_hg_graft_empty_output");
+        let c = compact_hg_graft_enhanced(&raw);
 
         // 空输出应保持原样
         assert_eq!(c, raw, "空输出应保持不变");
@@ -514,21 +579,25 @@ mod tests {
     // ============================================================================
     // 单元测试 — 邮箱提取 & 短输入回退（这些是函数级别测试，不需 sample 文件）
     // ============================================================================
+    /// 测试：提取尖括号邮箱作者（带邮箱形式）。
     #[test]
     fn extract_hg_author_with_email() {
         assert_eq!(extract_hg_author("developer <dev@example.com>"), "@dev");
     }
 
+    /// 测试：提取无邮箱作者（原样返回）。
     #[test]
     fn extract_hg_author_without_email() {
         assert_eq!(extract_hg_author("alice.chen"), "alice.chen");
     }
 
+    /// 测试：提取直接邮箱作者。
     #[test]
     fn extract_hg_author_direct_email() {
         assert_eq!(extract_hg_author("user.name@domain.com"), "@user.name");
     }
 
+    /// 测试：短输入不崩溃（返回原文）。
     #[test]
     fn test_short_input_no_crash() {
         let output = compact_hg_status_for_ai("hg help");

@@ -19,10 +19,9 @@
         {"pattern_type": "contains", "pattern": "@Override"},
         {"pattern_type": "contains", "pattern": "@Autowired"},
         {"pattern_type": "contains", "pattern": "@SpringBootApplication"},
-        {"pattern_type": "contains", "pattern": "new "},
         {"pattern_type": "contains", "pattern": "throw "},
         {"pattern_type": "contains", "pattern": "catch "},
-        {"pattern_type": "contains", "pattern": "finally"}
+        {"pattern_type": "starts_with", "pattern": "finally"}
       ]
     }
   ]

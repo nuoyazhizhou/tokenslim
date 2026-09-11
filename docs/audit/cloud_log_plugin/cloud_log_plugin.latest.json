@@ -1,8 +1,8 @@
 {
     "track": "cloud_log_plugin",
-    "version": "all_20260624-175500",
-    "generated_at": "2026-06-24T17:55:02.234557",
-    "report_path": "target\\cloud_log_plugin_compact_showcase_report.txt",
+    "version": "v20260911_r2",
+    "generated_at": "2026-09-11T14:33:08.812789",
+    "report_path": "target\\cloud_log_compact_showcase_report.txt",
     "case_count": 52,
     "cases": [
         {

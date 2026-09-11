@@ -27,6 +27,8 @@ struct Args {
     depth: usize,
 }
 
+/// 程序入口：解析命令行参数(输入日志/输出配置/相似度阈值/树深度)，
+/// 用 Drain 算法挖掘日志模板并导出 TokenSlim 插件配置(JSON)与 AI 提示词。
 fn main() {
     let args = Args::parse();
 
@@ -96,6 +98,8 @@ fn main() {
     generate_ai_prompt(&clusters);
 }
 
+/// 生成面向 AI 助手的提示词：将日志模板按出现频率排序取前 20，
+/// 拼装成请 AI 识别变量、合并相似模板并输出 TokenSlim 配置(JSON)的请求文本并打印。
 fn generate_ai_prompt(clusters: &[tokenslim::core::content_analyzer::drain::LogCluster]) {
     println!("\n--- 🤖 AI ASSISTANT PROMPT ---");
     println!("Copy the text below to your AI (ChatGPT/Claude) to refine these templates:\n");

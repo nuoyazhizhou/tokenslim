@@ -6,6 +6,7 @@ mod tests {
     use crate::core::text_slicer::SliceType;
     use crate::plugins::test_utils::*;
     use crate::plugins::webpack_vite_plugin::WebpackVitePlugin;
+    /// 测试：Vite dev server 样例被识别。
     #[test]
     fn detects_vite_dev_server_sample() {
         let plugin = WebpackVitePlugin::new();
@@ -16,6 +17,7 @@ mod tests {
         );
     }
 
+    /// 测试：Webpack 复杂样例被识别。
     #[test]
     fn detects_webpack_complex_sample() {
         let plugin = WebpackVitePlugin::new();
@@ -26,6 +28,7 @@ mod tests {
         );
     }
 
+    /// 测试：复杂样例压缩后不扩张。
     #[test]
     fn compresses_complex_sample_without_expansion() {
         let plugin = WebpackVitePlugin::new();
@@ -39,6 +42,7 @@ mod tests {
         );
     }
 
+    /// 测试：不同警告消息在折叠后仍被保留（不合并为同一计数）。
     #[test]
     fn preserves_distinct_warning_messages() {
         let plugin = WebpackVitePlugin::new();

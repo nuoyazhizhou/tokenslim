@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::test_utils::*;
     use crate::plugins::yaml_plugin::types::YamlPlugin;
 
+    /// 测试：简单 YAML 样例被识别且置信度高。
     #[test]
     fn detects_simple_yaml_sample_with_high_confidence() {
         let plugin = YamlPlugin::new();
@@ -16,6 +17,7 @@ mod tests {
         assert!(score.unwrap() > 0.5);
     }
 
+    /// 测试：Kubernetes manifest 样例被识别。
     #[test]
     fn detects_kubernetes_manifest_sample() {
         let plugin = YamlPlugin::new();
@@ -44,6 +46,7 @@ mod tests {
         assert_eq!(parsed_orig, parsed_decompressed);
     }
 
+    /// 测试：恰好可被 YAML 解析的 JSON 不被识别为 YAML。
     #[test]
     fn does_not_detect_json_that_happens_to_parse_as_yaml() {
         let plugin = YamlPlugin::new();
@@ -56,6 +59,7 @@ mod tests {
         );
     }
 
+    /// 测试：Dockerfile 不被识别为 YAML。
     #[test]
     fn does_not_detect_dockerfile_as_yaml() {
         let plugin = YamlPlugin::new();

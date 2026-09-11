@@ -6,8 +6,10 @@ mod tests {
     use crate::core::plugin_dispatcher::Plugin;
     use crate::core::text_slicer::{Slice, SliceType};
     use crate::plugins::rust_go_plugin::RustGoPlugin;
+    use crate::plugins::test_utils::full_dict_json;
     use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/rust_go_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,7 +19,9 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &RustGoPlugin, text: &str) -> String {
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本。
+    /// 返回值：(压缩文本, 字典侧通道 JSON)。字典 JSON 由共享的 full_dict_json 生成，便于对接审计插件。
+    fn compress_text(plugin: &RustGoPlugin, text: &str) -> (String, String) {
         let slice = Slice {
             id: 1,
             text: Cow::Borrowed(text),
@@ -32,16 +36,19 @@ mod tests {
         let mut dedup = DedupEngine::new(DedupConfig::default());
         let arena = bumpalo::Bump::new();
         let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
+        let compacted = result
             .tokens
             .iter()
             .filter_map(|t| match t {
                 Token::Text(s) => Some(s.as_ref()),
                 _ => None,
             })
-            .collect::<String>()
+            .collect::<String>();
+        let dict_json = full_dict_json(&dict, &compacted);
+        (compacted, dict_json)
     }
 
+    /// 测试：遍历样例生成 rust_go 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_rust_go_showcase_report() {
         let plugin = RustGoPlugin::new();
@@ -64,6 +71,8 @@ mod tests {
             ("case_016_error_code_stats", "错误码统计"),
             ("case_017_cargo_test", "Cargo 测试"),
             ("case_018_go_test", "Go 测试"),
+            ("case_019_cargo_err_302", "Cargo 参数错误·裸 ANSI 剥壳"),
+            ("case_020_cargo_test_verbose_large", "Cargo 大输入 verbose 测试·跨行折叠"),
         ];
 
         let mut all_output = String::new();
@@ -78,7 +87,7 @@ mod tests {
 
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
-            let compacted = compress_text(&plugin, &raw);
+            let (compacted, dict_json) = compress_text(&plugin, &raw);
             let compact_lines = if compacted.is_empty() {
                 0
             } else {
@@ -112,6 +121,15 @@ mod tests {
             all_output.push_str("\n");
             all_output.push_str(&compacted);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 追加字典侧通道段：仅当压缩产生可逆 token 映射时才写出，便于审计脚本重建 token->原文。
+            if !dict_json.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push('\n');
+                all_output.push_str(&dict_json);
                 all_output.push('\n');
             }
         }

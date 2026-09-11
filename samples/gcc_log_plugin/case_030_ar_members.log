@@ -1,0 +1,8 @@
+ar -t libmath.a
+
+add.o
+mul.o
+sub.o
+main.o
+vector.o
+matrix.o

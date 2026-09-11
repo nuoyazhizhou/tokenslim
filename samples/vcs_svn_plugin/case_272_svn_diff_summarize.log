@@ -1,3 +1,5 @@
 svn diff --summarize
-M       src/core/text_slicer/methods.rs
-A       src/core/dictionary_manager/mod.rs
+M        src/api/client.py
+A        src/api/models.py
+D        src/legacy/old_client.py
+R        src/util/helper.py

@@ -28,6 +28,7 @@ pub struct DrainConfig {
 }
 
 impl Default for DrainConfig {
+    /// 返回 Drain 算法默认配置：最大深度 4、相似度阈值 0.5、子节点上限 100，并以常见分隔符分词。
     fn default() -> Self {
         Self {
             max_depth: 4,

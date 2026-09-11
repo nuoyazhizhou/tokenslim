@@ -1,20 +1,16 @@
 use super::methods::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 // ============================================================================
 // 测试基础设施 — 文件驱动
 // ============================================================================
 
-fn sample_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("samples")
-        .join("vcs_p4_plugin")
-}
 
-/// 从 samples/vcs_p4_plugin/<name>.log 读取测试用例
+fn sample_dir() -> PathBuf {
+    crate::plugins::test_utils::vcs_sample_dir("vcs_p4_plugin")
+}
 fn read_case(name: &str) -> String {
-    let p = sample_dir().join(format!("{}.log", name));
-    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("读取样本失败 {}: {}", p.display(), e))
+    crate::plugins::test_utils::vcs_read_case("vcs_p4_plugin", name)
 }
 
 /// 【红线断言 1】输出的第一行必须等于输入的第一行（命令锚点保护）
@@ -40,6 +36,7 @@ fn extract_field(line: &str, prefix: &str) -> String {
 // ============================================================================
 // Case 15: opened — edit/add 状态映射正确性 + 版本号剔除
 // ============================================================================
+/// 测试：p4 opened 样例（case 15）动作映射。
 #[test]
 fn test_case_15_p4_opened() {
     let output = compact_p4_opened_for_ai(&read_case("case_15_p4_opened"));
@@ -68,6 +65,7 @@ fn test_case_15_p4_opened() {
 // ============================================================================
 // Case 90: p4 add — 【红线断言】输出包含 A: 而非 M:
 // ============================================================================
+/// 测试：p4 add 映射为 A 而非 M（case 90）。
 #[test]
 fn test_case_90_p4_add_maps_to_a_not_m() {
     let output = compact_p4_add_for_ai(&read_case("case_90_p4_add"));
@@ -89,6 +87,7 @@ fn test_case_90_p4_add_maps_to_a_not_m() {
 // ============================================================================
 // Case 91: p4 delete — 【红线断言】输出包含 D: 而非 M:
 // ============================================================================
+/// 测试：p4 delete 映射为 D 而非 M（case 91）。
 #[test]
 fn test_case_91_p4_delete_maps_to_d_not_m() {
     let output = compact_p4_delete_for_ai(&read_case("case_91_p4_delete"));
@@ -109,6 +108,7 @@ fn test_case_91_p4_delete_maps_to_d_not_m() {
 // ============================================================================
 // Case 89: p4 edit — edit → M:
 // ============================================================================
+/// 测试：p4 edit 样例（case 89）映射为 M。
 #[test]
 fn test_case_89_p4_edit() {
     let output = compact_p4_edit_for_ai(&read_case("case_89_p4_edit"));
@@ -125,6 +125,7 @@ fn test_case_89_p4_edit() {
 // ============================================================================
 // Case 17: changes — 标准符号化 CH: CR: OW: ST: CM:
 // ============================================================================
+/// 测试：p4 changes 样例（case 17）CH/CR/OW 提取。
 #[test]
 fn test_case_17_p4_changes() {
     let output = compact_p4_changes_for_ai(&read_case("case_17_p4_changes"));
@@ -147,6 +148,7 @@ fn test_case_17_p4_changes() {
 // ============================================================================
 // Case 236: changes -m — 【红线断言】CR: 字段不为空
 // ============================================================================
+/// 测试：changes max 变体（case 236）CR 非空。
 #[test]
 fn test_case_236_changes_max_cr_not_empty() {
     let output = compact_p4_changes_for_ai(&read_case("case_236_p4_changes_max"));
@@ -177,6 +179,7 @@ fn test_case_236_changes_max_cr_not_empty() {
 // ============================================================================
 // Case 308: changes -l — 【红线断言】描述信息中不含换行符
 // ============================================================================
+/// 测试：changes -l 变体（case 308）CM 无换行。
 #[test]
 fn test_case_308_changes_l_no_newlines_in_cm() {
     let output = compact_p4_changes_for_ai(&read_case("case_308_p4_changes_l"));
@@ -214,6 +217,7 @@ fn test_case_308_changes_l_no_newlines_in_cm() {
 // ============================================================================
 // Case 234: opened long — 锚点保护 + 长格式处理
 // ============================================================================
+/// 测试：opened 长锚点保留（case 234）。
 #[test]
 fn test_case_234_p4_opened_long_anchor_preserved() {
     let output = compact_p4_opened_for_ai(&read_case("case_234_p4_opened_long"));
@@ -239,6 +243,7 @@ fn test_case_234_p4_opened_long_anchor_preserved() {
 // ============================================================================
 // Case 83: sync — 命令锚点 + 状态映射 + 噪音消除
 // ============================================================================
+/// 测试：p4 sync 样例（case 83）压缩。
 #[test]
 fn test_case_83_p4_sync() {
     let output = compact_p4_sync_for_ai(&read_case("case_83_p4_sync"));
@@ -254,6 +259,7 @@ fn test_case_83_p4_sync() {
 // ============================================================================
 // Case 84: submit — 命令锚点 + Change X created/submitted 废话消除
 // ============================================================================
+/// 测试：p4 submit 样例（case 84）压缩。
 #[test]
 fn test_case_84_p4_submit() {
     let output = compact_p4_submit_for_ai(&read_case("case_84_p4_submit"));
@@ -276,6 +282,7 @@ fn test_case_84_p4_submit() {
 // ============================================================================
 // Case 85: shelve — 命令锚点 + Shelve change 废话消除
 // ============================================================================
+/// 测试：p4 shelve 样例（case 85）压缩。
 #[test]
 fn test_case_85_p4_shelve() {
     let output = compact_p4_shelve_for_ai(&read_case("case_85_p4_shelve"));
@@ -293,17 +300,22 @@ fn test_case_85_p4_shelve() {
 // ============================================================================
 // Case 86: unshelve — 命令锚点
 // ============================================================================
+/// 测试：p4 unshelve 样例（case 86）压缩。
 #[test]
 fn test_case_86_p4_unshelve() {
     let output = compact_p4_unshelve_for_ai(&read_case("case_86_p4_unshelve"));
     assert_anchor_preserved("case_86_p4_unshelve", &output);
+    // 变更号必须保留（法则 P4-3 语义保真），符号化为 commit <id>
     assert!(
-        !output.contains("Unshelved change"),
-        "Unshelved change 废话应被消除"
+        output.contains("commit 12345"),
+        "变更号应符号化为 commit 12345, 实际输出: {}",
+        output
     );
+    // 恢复文件计数必须保留
     assert!(
-        !output.contains("files restored"),
-        "files restored 废话应被消除"
+        output.contains("2 restored"),
+        "恢复文件计数应保留为 2 restored, 实际输出: {}",
+        output
     );
     assert!(
         output.contains("//depot/main/src/main.rs"),
@@ -314,6 +326,7 @@ fn test_case_86_p4_unshelve() {
 // ============================================================================
 // Case 87: resolve — 命令锚点
 // ============================================================================
+/// 测试：p4 resolve 样例（case 87）压缩。
 #[test]
 fn test_case_87_p4_resolve() {
     let output = compact_p4_resolve_for_ai(&read_case("case_87_p4_resolve"));
@@ -328,6 +341,7 @@ fn test_case_87_p4_resolve() {
 // ============================================================================
 // Case 88: revert — 命令锚点
 // ============================================================================
+/// 测试：p4 revert 样例（case 88）压缩。
 #[test]
 fn test_case_88_p4_revert() {
     let output = compact_p4_revert_for_ai(&read_case("case_88_p4_revert"));
@@ -342,6 +356,7 @@ fn test_case_88_p4_revert() {
 // ============================================================================
 // Case 307: diff — DIFF: 头部压缩
 // ============================================================================
+/// 测试：p4 diff 样例（case 307）压缩。
 #[test]
 fn test_case_307_p4_diff() {
     let output = compact_p4_other_for_ai(&read_case("case_307_p4_diff"));
@@ -359,6 +374,7 @@ fn test_case_307_p4_diff() {
 // ============================================================================
 // 短输入回退测试
 // ============================================================================
+/// 测试：短输入不崩溃。
 #[test]
 fn test_short_input_no_crash() {
     // 极短输入 → 回退到原文
@@ -366,6 +382,7 @@ fn test_short_input_no_crash() {
     assert!(output.starts_with("p4 help"), "短输入应原样返回");
 }
 
+/// 测试：p4 命令行检测。
 #[test]
 fn test_p4_command_line_detection() {
     // 验证 p4 命令行识别
@@ -379,6 +396,7 @@ fn test_p4_command_line_detection() {
 // ============================================================================
 // Case 235: describe -s — 锚点 + author 保留
 // ============================================================================
+/// 测试：p4 describe 短格式（case 235）压缩。
 #[test]
 fn test_case_235_p4_describe_short() {
     let output = compact_p4_describe_for_ai(&read_case("case_235_p4_describe_short"));
@@ -394,6 +412,7 @@ fn test_case_235_p4_describe_short() {
 // ============================================================================
 // Case 20: info — 锚点 + 键值压缩
 // ============================================================================
+/// 测试：p4 info 样例（case 20）压缩。
 #[test]
 fn test_case_20_p4_info() {
     let output = compact_p4_info_for_ai(&read_case("case_20_p4_info"));
@@ -415,6 +434,7 @@ fn test_case_20_p4_info() {
 // ============================================================================
 // Case 22: dirs — 前缀提取
 // ============================================================================
+/// 测试：p4 dirs 样例（case 22）根前缀提取。
 #[test]
 fn test_case_22_p4_dirs() {
     let output = compact_p4_dirs_for_ai(&read_case("case_22_p4_dirs"));
@@ -426,6 +446,7 @@ fn test_case_22_p4_dirs() {
 // ============================================================================
 // Case 310: sync -n — 预览模式
 // ============================================================================
+/// 测试：p4 sync 预览（case 310）压缩。
 #[test]
 fn test_case_310_p4_sync_preview() {
     let output = compact_p4_sync_for_ai(&read_case("case_310_p4_sync_n"));
@@ -440,6 +461,7 @@ fn test_case_310_p4_sync_preview() {
 // ============================================================================
 // Case 16: describe — 单行化 + 无 commit 噪音 + 状态前缀
 // ============================================================================
+/// 测试：p4 describe 扁平化（case 16）。
 #[test]
 fn test_case_16_p4_describe_flattened() {
     let output = compact_p4_describe_for_ai(&read_case("case_16_p4_describe"));
@@ -463,7 +485,6 @@ fn test_case_16_p4_describe_flattened() {
         "edit 应映射为 M:"
     );
     // DIFF 头部符号化
-    // DIFF 头部符号化
     assert!(
         output.contains("DIFF://depot/main/src/plugins/vcs_plugin/parser.rs"),
         "==== 应转为 DIFF:"
@@ -473,6 +494,7 @@ fn test_case_16_p4_describe_flattened() {
 // ============================================================================
 // Case 18: fstat — 键名缩写 + 单行拍扁（法则 P4-2）
 // ============================================================================
+/// 测试：p4 fstat 缩写（case 18）。
 #[test]
 fn test_case_18_p4_fstat_abbreviated() {
     let output = compact_p4_fstat_for_ai(&read_case("case_18_p4_fstat"));
@@ -512,6 +534,7 @@ fn test_case_18_p4_fstat_abbreviated() {
 // ============================================================================
 // Case 312: fstat -T — 单行拍扁（法则 P4-2）
 // ============================================================================
+/// 测试：p4 fstat -T（case 312）。
 #[test]
 fn test_case_312_p4_fstat_t() {
     let output = compact_p4_fstat_for_ai(&read_case("case_312_p4_fstat_T"));
@@ -540,6 +563,7 @@ fn test_case_312_p4_fstat_t() {
 // ============================================================================
 // Case 184: p4 files — #N - action → A:/M:/D: + 路径 符号化（法则 P4-3）
 // ============================================================================
+/// 测试：p4 files 符号化（case 184）。
 #[test]
 fn test_case_184_p4_files_symbolized() {
     let output = compact_p4_files_for_ai(&read_case("case_184_p4_files"));
@@ -562,6 +586,7 @@ fn test_case_184_p4_files_symbolized() {
 // ============================================================================
 // Case 142: p4 move — moved from → R:dest <- source 符号化（法则 P4-3）
 // ============================================================================
+/// 测试：p4 move 符号化（case 142）。
 #[test]
 fn test_case_142_p4_move_symbolized() {
     let output = compact_p4_move_for_ai(&read_case("case_142_p4_move"));
@@ -578,6 +603,7 @@ fn test_case_142_p4_move_symbolized() {
 // ============================================================================
 // Case 143: p4 copy — -> → C:src -> dest 符号化（法则 P4-3）
 // ============================================================================
+/// 测试：p4 copy 符号化（case 143）。
 #[test]
 fn test_case_143_p4_copy_symbolized() {
     let output = compact_p4_copy_for_ai(&read_case("case_143_p4_copy"));
@@ -596,6 +622,7 @@ fn test_case_143_p4_copy_symbolized() {
 // ============================================================================
 // Case 144: p4 integrate — -> → C:src -> dest 符号化（法则 P4-3）
 // ============================================================================
+/// 测试：p4 integrate 符号化（case 144）。
 #[test]
 fn test_case_144_p4_integrate_symbolized() {
     let output = compact_p4_integrate_for_ai(&read_case("case_144_p4_integrate"));
@@ -614,6 +641,7 @@ fn test_case_144_p4_integrate_symbolized() {
 // ============================================================================
 // Case 185: filelog — 深度粉碎 #N|CH:X|M|date|@user
 // ============================================================================
+/// 测试：p4 filelog 符号化（case 185）。
 #[test]
 fn test_case_185_p4_filelog_symbold() {
     let output = compact_p4_filelog_for_ai(&read_case("case_185_p4_filelog"));
@@ -637,6 +665,7 @@ fn test_case_185_p4_filelog_symbold() {
 // ============================================================================
 // Case 236: changes -m — ST: 默认 submitted
 // ============================================================================
+/// 测试：changes 默认 submitted 状态（case 236 变体）。
 #[test]
 fn test_case_236_st_default_submitted() {
     let output = compact_p4_changes_for_ai(&read_case("case_236_p4_changes_max"));
@@ -651,4 +680,64 @@ fn test_case_236_st_default_submitted() {
             line
         );
     }
+}
+
+// ============================================================================
+// Case 179: branch — 实体压缩 BR: + 日期符号化 + View 保留
+// ============================================================================
+/// 测试：p4 branch 实体压缩（case 179）。
+/// 契约：名称 / 描述 / View 路径全量保留；日期 2026/04/01 符号化为 20260401。
+#[test]
+fn test_case_179_p4_branch() {
+    let output = compact_p4_branch_label_for_ai(&read_case("case_179_p4_branch"));
+    assert_anchor_preserved("case_179_p4_branch", &output);
+    assert!(
+        output.contains("BR:feature-auth"),
+        "branch 头行应以 BR: 指纹开头: {}",
+        output
+    );
+    // 日期符号化（scenario expected_compress=2026/04/01）
+    assert!(
+        output.contains("20260401"),
+        "日期 2026/04/01 应符号化为 20260401: {}",
+        output
+    );
+    assert!(!output.contains("2026/04/01"), "日期 / 应被剥掉");
+    // 描述与 View 全量保留（scenario expected_keep）
+    assert!(
+        output.contains("Feature branch for auth"),
+        "描述应保留: {}",
+        output
+    );
+    assert!(
+        output.contains("//depot/feature-auth/..."),
+        "View 路径应保留: {}",
+        output
+    );
+}
+
+// ============================================================================
+// Case 180: label — 实体压缩 LB: + 日期符号化
+// ============================================================================
+/// 测试：p4 label 实体压缩（case 180）。
+/// 契约：名称 / View 保留；日期 2026/04/08 符号化为 20260408。
+#[test]
+fn test_case_180_p4_label() {
+    let output = compact_p4_branch_label_for_ai(&read_case("case_180_p4_label"));
+    assert_anchor_preserved("case_180_p4_label", &output);
+    assert!(
+        output.contains("LB:v1.0.0"),
+        "label 头行应以 LB: 指纹开头: {}",
+        output
+    );
+    assert!(
+        output.contains("20260408"),
+        "日期 2026/04/08 应符号化为 20260408: {}",
+        output
+    );
+    assert!(
+        output.contains("//depot/main/..."),
+        "View 路径应保留: {}",
+        output
+    );
 }

@@ -1,2 +1,5 @@
-svn copy source.txt dest.txt
-A         dest.txt
+svn copy src/plugins src/plugins_bak
+A         src/plugins_bak
+A         src/plugins_bak/parser.rs
+A         src/plugins_bak/ir.rs
+A         src/plugins_bak/rules.rs

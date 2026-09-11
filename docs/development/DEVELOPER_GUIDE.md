@@ -112,6 +112,14 @@ tokenslim run powershell -File scripts/audit_all_case_metrics.ps1 -Version <vers
 
 ---
 
-## 六、贡献流程
+## 六、文档同步要求
 
-贡献前请先阅读 [CONTRIBUTING.md](../../CONTRIBUTING.md) 和 [`PLUGIN_DEVELOPMENT.md`](./PLUGIN_DEVELOPMENT.md) / [`TESTING.md`](./TESTING.md)。
+每次完成开发任务后必须同步：
+
+- `docs/plans/*.md` 或 `docs/tasks/*.md`
+- `docs/reports/IMPLEMENTATION_STATUS.md`
+- 对应插件或功能报告
+- `docs/audit/non_vcs_case_semantic_audit.md` 或 `docs/audit/vcs_case_semantic_audit.md`
+- `README.md` 和 `DOCS_ORGANIZATION.md`
+
+完成的旧计划应归档到 `docs/archive/`，不要继续留在根目录或活跃计划区误导后续开发。

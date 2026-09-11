@@ -5,6 +5,7 @@ use crate::core::text_slicer::SliceType;
 use crate::plugins::pulumi_plugin::PulumiPlugin;
 use crate::plugins::test_utils::{compress_to_string, make_log_slice, read_sample_file};
 
+/// 测试：pulumi preview 输出被插件识别。
 #[test]
 fn detects_pulumi_preview() {
     let plugin = PulumiPlugin::new();
@@ -12,6 +13,7 @@ fn detects_pulumi_preview() {
     assert!(plugin.detect(&make_log_slice(&raw)).is_some());
 }
 
+/// 测试：pulumi 资源操作被压缩为含 OPS 计数的摘要且不膨胀。
 #[test]
 fn compresses_pulumi_ops() {
     let plugin = PulumiPlugin::new();

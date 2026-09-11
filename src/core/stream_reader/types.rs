@@ -42,6 +42,10 @@ pub enum CharsetEncoding {
 }
 
 impl std::fmt::Display for CharsetEncoding {
+    /// 将字符编码枚举格式化为可读字符串（如 UTF-8、GBK、Shift-JIS）。
+    ///
+    /// 输出一律为纯 ASCII 规范编码名，不带任何自然语言注释——该字符串可能
+    /// 作为编码标识出现在诊断输出中，保持单一稳定形式便于跨 locale 比对。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             CharsetEncoding::Utf8 => "UTF-8",
@@ -54,21 +58,16 @@ impl std::fmt::Display for CharsetEncoding {
             CharsetEncoding::Big5 => "Big5",
             CharsetEncoding::Latin1 => "Latin-1 (ISO-8859-1)",
             CharsetEncoding::ShiftJis => "Shift-JIS",
-            // 韩文
             CharsetEncoding::EucKr => "EUC-KR",
-            CharsetEncoding::Cp949 => "CP949 (EUC-KR 超集)",
-            // 西里尔文
-            CharsetEncoding::Windows1251 => "Windows-1251 (西里尔文)",
-            CharsetEncoding::Koi8R => "KOI8-R (俄语)",
-            CharsetEncoding::Iso8859_5 => "ISO-8859-5 (西里尔文)",
-            // 阿拉伯语
-            CharsetEncoding::Windows1256 => "Windows-1256 (阿拉伯语)",
-            CharsetEncoding::Iso8859_6 => "ISO-8859-6 (阿拉伯语)",
-            // 希伯来语
-            CharsetEncoding::Windows1255 => "Windows-1255 (希伯来语)",
-            CharsetEncoding::Iso8859_8 => "ISO-8859-8 (希伯来语)",
-            // 其他西欧
-            CharsetEncoding::Windows1252 => "Windows-1252 (西欧)",
+            CharsetEncoding::Cp949 => "CP949",
+            CharsetEncoding::Windows1251 => "Windows-1251",
+            CharsetEncoding::Koi8R => "KOI8-R",
+            CharsetEncoding::Iso8859_5 => "ISO-8859-5",
+            CharsetEncoding::Windows1256 => "Windows-1256",
+            CharsetEncoding::Iso8859_6 => "ISO-8859-6",
+            CharsetEncoding::Windows1255 => "Windows-1255",
+            CharsetEncoding::Iso8859_8 => "ISO-8859-8",
+            CharsetEncoding::Windows1252 => "Windows-1252",
             CharsetEncoding::Unknown => "Unknown",
         };
         write!(f, "{}", s)
@@ -91,6 +90,7 @@ pub enum FileType {
 }
 
 impl std::fmt::Display for FileType {
+    /// 将文件类型格式化为可读字符串（如 PlainText、Binary、WindowsShortcut (.lnk)）。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             FileType::Text => "PlainText",
@@ -114,6 +114,7 @@ pub enum Bom {
 }
 
 impl std::fmt::Display for Bom {
+    /// 将 BOM 类型格式化为可读字符串（如 UTF-8 BOM、UTF-16 LE BOM）。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let s = match self {
             Bom::Utf8 => "UTF-8 BOM",
@@ -190,7 +191,6 @@ pub struct StreamReader<'a> {
 }
 
 pub enum Inner<'a> {
-    Mmap(memmap2::Mmap),
     Buffer(Vec<u8>),
     Bytes(&'a [u8]),
 }
@@ -206,6 +206,8 @@ pub struct LineIterator<'a> {
 impl<'a> Iterator for LineIterator<'a> {
     type Item = SliceInput<'a>;
 
+    /// 迭代器下一行：用 memchr 搜索换行符，处理 LF/CRLF/CR-only 三种行尾，
+    /// 产出 SliceInput 并推进偏移与行号。
     fn next(&mut self) -> Option<Self::Item> {
         if self.current_offset >= self.data.len() {
             return None;
@@ -292,6 +294,8 @@ pub struct BlockIterator<'a> {
 impl<'a> Iterator for BlockIterator<'a> {
     type Item = SliceInput<'a>;
 
+    /// 迭代器下一块：按块大小切分，必要时前后调整以保证 UTF-8 字符边界完整，
+    /// 产出 SliceInput 并推进偏移。
     fn next(&mut self) -> Option<Self::Item> {
         if self.current_offset >= self.data.len() {
             return None;
@@ -333,45 +337,11 @@ impl<'a> Iterator for BlockIterator<'a> {
     }
 }
 
+/// 判断 index 是否为 UTF-8 字符边界：位于开头/末尾或字节高位不为连续字节前缀时视为边界。
 fn is_char_boundary(data: &[u8], index: usize) -> bool {
     if index == 0 || index == data.len() {
         return true;
     }
     let b = data[index];
     (b as i8) >= -0x40
-}
-
-/// 存储类型
-#[derive(Debug, Clone, PartialEq, Eq)]
-#[allow(dead_code)]
-pub enum StorageType {
-    SSD,
-    HDD,
-    Unknown,
-}
-
-/// 系统信息
-#[derive(Debug, Clone)]
-#[allow(dead_code)]
-pub struct SystemInfo {
-    pub available_memory: u64,     // 可用内存（字节）
-    pub storage_type: StorageType, // 存储类型
-}
-
-/// StreamReader load config
-#[derive(Debug, Clone)]
-pub struct StreamReadConfig {
-    /// mmap threshold in bytes; None means auto threshold.
-    pub mmap_threshold: Option<usize>,
-    /// Pre-allocated buffer size for eager read path.
-    pub buffer_size: usize,
-}
-
-impl Default for StreamReadConfig {
-    fn default() -> Self {
-        Self {
-            mmap_threshold: None,
-            buffer_size: 8 * 1024,
-        }
-    }
 }

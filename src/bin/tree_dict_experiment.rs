@@ -12,6 +12,8 @@ struct TrieNode {
 }
 
 impl TrieNode {
+    /// 将一条路径的各段插入 Trie：沿 segments 逐层创建子节点并累加计数，
+    /// 段耗尽时标记当前节点为路径终点。
     fn insert(&mut self, segments: &[&str]) {
         self.count += 1;
         if segments.is_empty() {
@@ -29,6 +31,7 @@ struct DictionaryBuilder {
 }
 
 impl DictionaryBuilder {
+    /// 创建目录字典构建器：初始化 $D 自增计数器(next_d_id=1)与空目录映射表。
     fn new() -> Self {
         Self {
             next_d_id: 1,
@@ -36,6 +39,8 @@ impl DictionaryBuilder {
         }
     }
 
+    /// 递归从 Trie 中提取目录锚点：对高频分支或高频叶子且路径足够长的节点生成 $D token，
+    /// 记录到目录字典并继续向下递归，以支撑后续路径压缩。
     fn extract_directories(
         &mut self,
         node: &TrieNode,
@@ -77,6 +82,8 @@ impl DictionaryBuilder {
         }
     }
 
+    /// 解析并排序 $D 目录表：将含嵌套 $D 的目录值向上回溯替换为父级真实路径，
+    /// 按解析后路径长度降序返回，保证最长前缀优先匹配。
     fn build_resolved_dirs(&self) -> Vec<(String, String)> {
         let mut resolved_dirs = HashMap::new();
         for (k, v) in &self.directories {
@@ -96,6 +103,8 @@ impl DictionaryBuilder {
         sorted_dirs
     }
 
+    /// 压缩单条原始路径：遍历按长度降序排列的已解析 $D 目录表，
+    /// 若原路径以某目录前缀开头则替换为其 $D token，否则原样返回。
     fn compress_path(
         &self,
         original_path: &str,
@@ -110,6 +119,8 @@ impl DictionaryBuilder {
     }
 }
 
+/// 程序入口(实验)：读取 100MB 基准日志，正则抽取唯一路径，构建基数 Trie，
+/// 提取 $D 目录锚点并压缩 $P 路径，打印各阶段耗时与样例结果。
 fn main() {
     let start_total = Instant::now();
 
@@ -184,7 +195,8 @@ fn main() {
 
     println!("========== Sample $D Directories ==========");
     let mut dirs: Vec<_> = builder.directories.iter().collect();
-    dirs.sort_by_key(|(k, _)| k[2..].parse::<usize>().unwrap_or(0));
+    // P3-183（D-1）：键形如 `$Dn`，改 trim_start_matches 避免非 `$D` 键 panic
+    dirs.sort_by_key(|(k, _)| k.trim_start_matches("$D").parse::<usize>().unwrap_or(0));
     for (k, v) in dirs.iter().take(20) {
         println!("{}: {}", k, v);
     }

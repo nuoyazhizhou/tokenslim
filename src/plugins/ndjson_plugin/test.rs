@@ -5,6 +5,7 @@ use crate::core::plugin_dispatcher::Plugin;
 use crate::core::text_slicer::SliceType;
 use crate::plugins::test_utils::{compress_to_string, make_test_slice, read_sample_file};
 
+/// 测试：插件创建后名称与优先级符合预期。
 #[test]
 fn test_ndjson_plugin_creation() {
     let plugin = NdjsonPlugin::new();
@@ -12,6 +13,7 @@ fn test_ndjson_plugin_creation() {
     assert_eq!(plugin.priority(), 145);
 }
 
+/// 测试：Go test -json 输出被识别且置信度 >0.9。
 #[test]
 fn test_detect_go_test_json() {
     let plugin = NdjsonPlugin::new();
@@ -21,6 +23,7 @@ fn test_detect_go_test_json() {
     assert!(confidence.unwrap() > 0.9);
 }
 
+/// 测试：通用 NDJSON 输出被识别且置信度 >0.8。
 #[test]
 fn test_detect_generic_ndjson() {
     let plugin = NdjsonPlugin::new();
@@ -30,6 +33,7 @@ fn test_detect_generic_ndjson() {
     assert!(confidence.unwrap() > 0.8);
 }
 
+/// 测试：非 NDJSON 文本不被识别。
 #[test]
 fn test_detect_not_ndjson() {
     let plugin = NdjsonPlugin::new();
@@ -38,6 +42,7 @@ fn test_detect_not_ndjson() {
     assert!(confidence.is_none());
 }
 
+/// 测试：单行 JSON（行数不足）不被识别为 NDJSON。
 #[test]
 fn test_detect_single_json() {
     let plugin = NdjsonPlugin::new();
@@ -46,6 +51,7 @@ fn test_detect_single_json() {
     assert!(confidence.is_none());
 }
 
+/// 测试：Go test -json 输入被聚合压缩为包/测试摘要。
 #[test]
 fn test_compress_go_test_json() {
     let plugin = NdjsonPlugin::new();
@@ -61,6 +67,7 @@ fn test_compress_go_test_json() {
     assert!(compressed.contains("1 failed"));
 }
 
+/// 测试：通用 NDJSON 输入被截断压缩。
 #[test]
 fn test_compress_generic_ndjson() {
     let mut plugin = NdjsonPlugin::new();

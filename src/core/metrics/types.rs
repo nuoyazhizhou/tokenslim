@@ -70,6 +70,7 @@ pub struct MetricsConfig {
 }
 
 impl Default for MetricsConfig {
+    /// 为 `MetricsConfig` 提供默认配置：默认启用指标收集、模块耗时统计、插件统计与错误日志，最多保留 100 条错误日志。
     fn default() -> Self {
         Self {
             enabled: true,

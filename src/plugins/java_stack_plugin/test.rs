@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::java_stack_plugin::types::JavaStackPlugin;
     use crate::plugins::test_utils::*;
 
+    /// 测试：新建插件名称与优先级符合预期。
     #[test]
     fn new_has_expected_name_and_priority() {
         let plugin = JavaStackPlugin::new();
@@ -14,6 +15,7 @@ mod tests {
         assert_eq!(plugin.priority(), 86);
     }
 
+    /// 测试：简单异常样例被识别且置信度 >0.5。
     #[test]
     fn detects_simple_exception_sample() {
         let plugin = JavaStackPlugin::new();
@@ -23,6 +25,7 @@ mod tests {
         assert!(score.unwrap() > 0.5);
     }
 
+    /// 测试：链式异常（Caused by）样例被识别。
     #[test]
     fn detects_chained_exceptions_sample() {
         let plugin = JavaStackPlugin::new();
@@ -30,6 +33,7 @@ mod tests {
         assert!(plugin.detect(&make_log_slice(&raw)).is_some());
     }
 
+    /// 测试：长堆栈样例压缩输出包含 $JST/$JEX/$JCB 标记。
     #[test]
     fn compresses_long_stack_sample_produces_jst_or_jex_tokens() {
         let plugin = JavaStackPlugin::new();

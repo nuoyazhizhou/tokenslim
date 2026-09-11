@@ -1,6 +1,6 @@
 [package]
 name = "tokenslim"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2021"
 
 [workspace]
@@ -15,11 +15,9 @@ serde_json = "1.0"
 serde_yaml = "0.9"
 toml = "1.0.6"
 toml_edit = "0.22"
-libloading = "0.9.0"
 log = "0.4"
 rayon = "1.8"
 memmap2 = "0.9"
-plugin-interface = { path = "./crates/plugin-interface", version = "0.5.0" }
 pyo3 = { version = "0.28.2", features = ["extension-module"] }
 
 [dependencies]
@@ -42,11 +40,8 @@ serde_json.workspace = true
 serde_yaml.workspace = true
 toml.workspace = true
 toml_edit = { version = "0.22", features = ["serde"] }
-libloading.workspace = true
 log.workspace = true
 rayon.workspace = true
-memmap2.workspace = true
-plugin-interface.workspace = true
 tiktoken-rs = "0.9.1"
 env_logger = "0.11.9"
 tracing = { version = "0.1", features = ["release_max_level_info"] }
@@ -72,10 +67,12 @@ jsonwebtoken = "9"
 portable-pty = "0.8"
 
 [dev-dependencies]
+memmap2.workspace = true
 criterion = "0.8.2"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 serde_json = "1.0"
 tower = { version = "0.5", features = ["util"] }
+sha2 = "0.10"
 
 
 

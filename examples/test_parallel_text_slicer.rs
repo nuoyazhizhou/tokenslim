@@ -4,6 +4,9 @@ use tokenslim::core::dictionary_manager::DictionaryManager;
 use tokenslim::core::stream_reader::SliceInput;
 use tokenslim::core::text_slicer::{SliceMode, SlicerConfig, TextSlicer};
 
+/// 并行切片测试示例：对 10 条含路径（含 Windows 反斜杠）/宏/编译命令/
+/// 栈跟踪/日志头的文本调用 `process_parallel` 并行切片，输出切片标记与
+/// 字典管理器累积的三类字典内容。
 fn main() {
     // 创建字典管理器
     let dict_manager = Arc::new(DictionaryManager::new());

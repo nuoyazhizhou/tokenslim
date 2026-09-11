@@ -1,12 +1,14 @@
 use super::methods::*;
 use std::path::{Path, PathBuf};
 
+/// 测试辅助：返回样例目录路径。
 fn sample_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples")
         .join("vcs_glab_plugin")
 }
 
+/// 测试辅助：读取指定 glab 样例文件。
 fn read_case(case_name: &str) -> String {
     let file_path = sample_dir().join(format!("{case_name}.log"));
     std::fs::read_to_string(&file_path)
@@ -16,6 +18,7 @@ fn read_case(case_name: &str) -> String {
 // ============================================================================
 // Case 95: mr list — 命令锚点 + 列解析
 // ============================================================================
+/// 测试：glab mr list 样例（case 95）行解析。
 #[test]
 fn test_mr_list_case_95() {
     let raw = read_case("case_95_glab_mr_list");
@@ -39,6 +42,7 @@ fn test_mr_list_case_95() {
 // ============================================================================
 // Case 108: mr view — 命令锚点 + K-V 扁平化 + DESC
 // ============================================================================
+/// 测试：glab mr view 样例（case 108）K-V 扁平化。
 #[test]
 fn test_mr_view_case_108() {
     let raw = read_case("case_108_glab_mr_view");
@@ -73,6 +77,7 @@ fn test_mr_view_case_108() {
 // ============================================================================
 // Case 109: mr create — 命令锚点 + A: 映射 + URL 消除
 // ============================================================================
+/// 测试：glab mr create 样例（case 109）A: 映射。
 #[test]
 fn test_mr_create_case_109() {
     let raw = read_case("case_109_glab_mr_create");
@@ -90,6 +95,7 @@ fn test_mr_create_case_109() {
 // ============================================================================
 // Case 159: mr create (variant) — 命令锚点 + ✓ 去除 + A: 映射
 // ============================================================================
+/// 测试：glab mr create 样例（case 159）A: 映射。
 #[test]
 fn test_mr_create_case_159() {
     let raw = read_case("case_159_glab_mr_create");
@@ -104,6 +110,7 @@ fn test_mr_create_case_159() {
 // ============================================================================
 // Case 110: issue list — 命令锚点 + 表头清除 + 列解析
 // ============================================================================
+/// 测试：glab issue list 样例（case 110）行解析。
 #[test]
 fn test_issue_list_case_110() {
     let raw = read_case("case_110_glab_issue_list");
@@ -131,6 +138,7 @@ fn test_issue_list_case_110() {
 // ============================================================================
 // Case 111: issue view — 命令锚点 + K-V 扁平化 + DESC
 // ============================================================================
+/// 测试：glab issue view 样例（case 111）K-V 扁平化。
 #[test]
 fn test_issue_view_case_111() {
     let raw = read_case("case_111_glab_issue_view");
@@ -160,6 +168,7 @@ fn test_issue_view_case_111() {
 // ============================================================================
 // Case 206: issue create — 命令锚点 + ✓ 去除 + A: 映射
 // ============================================================================
+/// 测试：glab issue create 样例（case 206）A: 映射。
 #[test]
 fn test_issue_create_case_206() {
     let raw = read_case("case_206_glab_issue_create");
@@ -177,6 +186,7 @@ fn test_issue_create_case_206() {
 // ============================================================================
 // 短输入回退 + 噪音检测 + 异常映射
 // ============================================================================
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let raw = "glab help";
@@ -184,6 +194,7 @@ fn test_short_input_fallback() {
     assert_eq!(compacted, raw, "过短输入应直接返回原始文本");
 }
 
+/// 测试：glab 噪音行检测。
 #[test]
 fn test_glab_noise_detection() {
     assert!(super::methods::is_glab_noise_line(
@@ -198,9 +209,22 @@ fn test_glab_noise_detection() {
     assert!(!super::methods::is_glab_noise_line("Status: Open"));
 }
 
+/// 测试：glab 警报行映射。
 #[test]
 fn test_glab_alert_mapping() {
     assert!(super::methods::map_glab_alert("CONFLICT: merge conflict").is_some());
     assert!(super::methods::map_glab_alert("error: something wrong").is_some());
     assert!(super::methods::map_glab_alert("!123 Add feature").is_none());
+}
+
+// ============================================================================
+// 负路径回归（P3-188：4-token issue 行切片 panic 防御）
+// ============================================================================
+/// 回归：4-token 行（ID+1 词标题+作者+状态）时 tokens[1..len-4]=tokens[1..0] 会 panic，
+/// 守卫收紧后该行应回退为原文透传而不崩溃。
+#[test]
+fn test_issue_row_four_tokens_no_panic() {
+    let c = compact_glab_log_for_ai("glab issue list --state opened\n1  Fix  alice  Open");
+    assert!(c.starts_with("glab issue list"), "{}", c);
+    assert!(!c.contains("panicked"), "{}", c);
 }

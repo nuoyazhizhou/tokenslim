@@ -1,0 +1,15 @@
+#!/bin/sh
+# Versioned pre-commit gate for semantic-preservation audit changes.
+set -eu
+
+repo_root=$(git rev-parse --show-toplevel)
+staged=$(git diff --cached --name-only)
+
+case "$staged" in
+  *docs/audit/semantic_preservation_audit.md*|*docs/audit/*/cases/*|*scripts/validate_sap_audit_ledger.py*|*scripts/run_sap_audit_ledger_gate.ps1*)
+    cd "$repo_root"
+    exec python scripts/validate_sap_audit_ledger.py --max-errors 80
+    ;;
+esac
+
+exit 0

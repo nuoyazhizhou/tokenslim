@@ -1,6 +1,7 @@
 use super::parser::*;
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
 
+/// 用 VcsParser 解析文本并渲染记录，强制保留首行命令锚点。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {
@@ -25,44 +26,52 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     }
 }
 
+/// 压缩 hg status 输出：用 HgStatusParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_status_for_ai(raw: &str) -> String {
     let out = process_parser(&HgStatusParser, raw);
     out
 }
 
+/// 压缩 hg diff 输出：用 HgDiffParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_diff_for_ai(raw: &str) -> String {
     let out = process_parser(&HgDiffParser, raw);
     out
 }
 
+/// 压缩 hg log 输出：用 HgLogParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_log_for_ai(raw: &str) -> String {
     let out = process_parser(&HgLogParser, raw);
     out
 }
 
+/// 压缩 hg heads 输出：用 HgHeadsParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_heads_for_ai(raw: &str) -> String {
     process_parser(&HgHeadsParser, raw)
 }
 
+/// 压缩 hg outgoing 输出：用 HgOutgoingParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_outgoing_for_ai(raw: &str) -> String {
     process_parser(&HgOutgoingParser, raw)
 }
 
+/// 压缩 hg incoming 输出：用 HgIncomingParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_incoming_for_ai(raw: &str) -> String {
     process_parser(&HgIncomingParser, raw)
 }
 
+/// 压缩 hg parents 输出：用 HgParentsParser 解析并锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_parents_for_ai(raw: &str) -> String {
     process_parser(&HgParentsParser, raw)
 }
 
+/// hg 其他输出入口：按子命令分派到 copy/move/purge/verify/identify 等专用 parser。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_other_for_ai(raw: &str) -> String {
     // 统一走 route parser，避免被全局参数或多空白干扰子命令识别。
@@ -81,11 +90,13 @@ pub fn compact_hg_other_for_ai(raw: &str) -> String {
     }
 }
 
+/// 返回文本中第一个非空行。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn first_non_empty_line(raw: &str) -> &str {
     raw.lines().find(|l| !l.trim().is_empty()).unwrap_or("")
 }
 
+/// hg log 家族压缩入口：按块类型分派到 heads/outgoing/incoming/parents/merge 等。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_hg_log_family_for_ai(raw: &str) -> String {
     if is_hg_heads_block(raw) {
@@ -118,6 +129,7 @@ pub fn compact_hg_log_family_for_ai(raw: &str) -> String {
     }
 }
 
+/// 判断是否为 hg 其他类命令块（copy/move/purge/archive/verify 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_other_like_block(raw: &str) -> bool {
     matches!(
@@ -135,6 +147,7 @@ pub fn is_hg_other_like_block(raw: &str) -> bool {
     )
 }
 
+/// 判断是否为 hg status 块（status/st/summary/update 或 M/A/? 开头行）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_status_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -147,18 +160,21 @@ pub fn is_hg_status_block(text: &str) -> bool {
     is_hg && !is_hg_diff_block(text)
 }
 
+/// 判断是否为 hg diff 块（diff 子命令或含 "diff -r "）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_diff_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     matches!(hg_subcommand_from_raw(text).as_deref(), Some("diff")) || lower.contains("diff -r ")
 }
 
+/// 判断是否为 hg log 块（log 子命令或含 changeset:）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_log_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     matches!(hg_subcommand_from_raw(text).as_deref(), Some("log")) || lower.contains("changeset:")
 }
 
+/// 判断是否为 hg heads 块（heads 子命令或 changeset: 开头）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_heads_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -166,6 +182,7 @@ pub fn is_hg_heads_block(text: &str) -> bool {
         || lower.starts_with("changeset:")
 }
 
+/// 判断是否为 hg outgoing 块（outgoing 子命令或含 searching for changes）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_outgoing_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -173,6 +190,7 @@ pub fn is_hg_outgoing_block(text: &str) -> bool {
         || lower.contains("searching for changes")
 }
 
+/// 判断是否为 hg incoming 块（incoming 子命令或含 comparing with）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_incoming_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -180,6 +198,7 @@ pub fn is_hg_incoming_block(text: &str) -> bool {
         || lower.contains("comparing with ")
 }
 
+/// 判断是否为 hg parents 块（parents 子命令或 changeset: 开头）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_parents_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
@@ -187,6 +206,7 @@ pub fn is_hg_parents_block(text: &str) -> bool {
         || lower.starts_with("changeset:")
 }
 
+/// 判断是否为 hg merge 类块（含 merging with/auto-merging 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_merge_like_block(raw: &str) -> bool {
     let lower = raw.to_ascii_lowercase();
@@ -195,29 +215,34 @@ pub fn is_hg_merge_like_block(raw: &str) -> bool {
         || lower.contains("merge completed")
 }
 
+/// 判断是否为 hg rollback 类块（含 rollback completed 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_rollback_like_block(raw: &str) -> bool {
     let lower = raw.to_ascii_lowercase();
     lower.contains("rollback completed") || lower.contains("rolling back to ")
 }
 
+/// 判断是否为 hg backout 类块（含 backing out changeset 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_backout_like_block(raw: &str) -> bool {
     let lower = raw.to_ascii_lowercase();
     lower.contains("backing out changeset ") || lower.contains("backed out changeset ")
 }
 
+/// 判断是否为 hg shelve 类块（含 shelved as）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_shelve_like_block(raw: &str) -> bool {
     raw.to_ascii_lowercase().contains("shelved as ")
 }
 
+/// 判断是否为 hg phase 类块（含 (public)/(draft)）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_phase_like_block(raw: &str) -> bool {
     let lower = raw.to_ascii_lowercase();
     lower.contains(" (public)") || lower.contains(" (draft)")
 }
 
+/// 判断是否为 hg bookmarks 类块（含 * 或 @ 书签行）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_bookmarks_like_block(raw: &str) -> bool {
     let mut saw_bookmark_line = false;
@@ -237,6 +262,7 @@ pub fn is_hg_bookmarks_like_block(raw: &str) -> bool {
     saw_bookmark_line
 }
 
+/// 判断是否为 hg tag 类块（含 "tag '"）。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn is_hg_tag_like_block(raw: &str) -> bool {
     raw.to_ascii_lowercase().contains("tag '")

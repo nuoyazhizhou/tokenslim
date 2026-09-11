@@ -11,6 +11,7 @@ use super::types::VcsTool;
 use std::collections::HashSet;
 
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 

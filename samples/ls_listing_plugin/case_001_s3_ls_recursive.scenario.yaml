@@ -1,0 +1,15 @@
+scenario: 'aws s3 ls --recursive 大输入列式清单：命令行锚点 + 188 条「日期 时间 右对齐尺寸 路径」记录（11.6KB，≥2048B），物理取自 run 模式真实登记样本（3.4MB 裁样：assets/ 等距 170 条 + 全部 18 个非 assets 目录记录），覆盖 19 个目录（含非 ASCII 目录名）、19 个目录占位条目、126 个不同日期。'
+target_capability: '列式清单无损结构规约：目录前缀上提为块头、尺寸列右对齐填充规约为单空格；日期时间、尺寸数值与路径全量零丢失'
+expected_keep: '每条记录的完整日期时间、尺寸数值与路径（basename + 块头目录前缀）；命令行锚点'
+expected_compress: '尺寸列左填充空格、重复目录前缀'
+source: 'manual'
+generated_at: '2026-09-11T03:26:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '5e64f22d136fca38c59dc4542b71a29fac5731f94bbb077749cf93ea390c50f3'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:37.205910'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

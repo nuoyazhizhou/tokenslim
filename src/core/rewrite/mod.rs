@@ -82,6 +82,7 @@ pub fn rewrite_command(command: &str, config: &RewriteConfig) -> String {
 mod tests {
     use super::*;
 
+    /// 测试：普通命令（echo hello）不被重写，原样返回。
     #[test]
     fn test_rewrite_simple_command() {
         let config = RewriteConfig::default();
@@ -89,6 +90,7 @@ mod tests {
         assert_eq!(result, "echo hello");
     }
 
+    /// 测试：make 命令被注入 SHELL=tokenslim 包装。
     #[test]
     fn test_rewrite_make_command() {
         let config = RewriteConfig::default();
@@ -96,6 +98,7 @@ mod tests {
         assert!(result.contains("SHELL=tokenslim"));
     }
 
+    /// 测试：复合命令中每个子命令都被独立重写，分隔符保留。
     #[test]
     fn test_rewrite_compound_command() {
         let config = RewriteConfig::default();
@@ -105,6 +108,7 @@ mod tests {
         assert!(result.contains("SHELL=tokenslim"));
     }
 
+    /// 测试：透明命令（ssh user@host）整体不参与重写。
     #[test]
     fn test_transparent_command_not_rewritten() {
         let config = RewriteConfig::default();
@@ -112,6 +116,7 @@ mod tests {
         assert_eq!(result, "ssh user@host");
     }
 
+    /// 测试：环境变量前缀在重写后被保留在结果开头。
     #[test]
     fn test_env_prefix_preserved() {
         let config = RewriteConfig::default();

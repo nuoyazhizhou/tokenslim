@@ -13,7 +13,6 @@ use crate::core::plugin_config_loader::CompiledPluginConfig;
 use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
-use std::any::Any;
 use std::borrow::Cow;
 
 impl Default for XmlHtmlPlugin {
@@ -80,7 +79,8 @@ impl Plugin for XmlHtmlPlugin {
         None
     }
 
-    /// 执行核心的压缩与特征提取逻辑。将输入文本中的重复长字符串、路径、包名等转换为紧凑的 Token，并存入字典引擎。
+    /// 对 XML/HTML 文本做轻量压缩：用正则把标签之间的空白（`>\s+<`）合并为 `><`，去除换行与缩进。
+    /// 这是半有损压缩——被丢弃的换行无法完美还原；不抽取 Token、不写字典引擎，仅输出单个 `Token::Text`。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -103,23 +103,12 @@ impl Plugin for XmlHtmlPlugin {
         }
     }
 
-    /// 执行反向的还原逻辑。利用字典引擎中存储的上下文，将压缩后的 Token 流重新展开为完整、人类可读的原始文本。
+    /// 还原压缩结果。由于 `compress` 丢弃了标签间换行（半有损），无法完美恢复原始缩进，
+    /// 这里直接原样返回压缩文本（未使用字典引擎 `_dict`）。后续可接入美化算法提升可读性。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         // 由于 XML 的换行是被我们丢弃的，这属于半有损压缩，无法完美恢复原缩进。
         // 在这我们可以尝试使用一个快速美化算法或者原样返回
         compressed.to_string()
-    }
-
-    /// 从外部的配置文件或数据源加载并覆盖当前插件的配置项。
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(compiled_config) = config.downcast_ref::<CompiledPluginConfig>() {
-            let new_plugin = XmlHtmlPlugin::with_config(compiled_config.clone());
-            self.name = new_plugin.name;
-            self.priority = new_plugin.priority;
-            self.config = new_plugin.config;
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
     }
 
     /// 返回当前插件执行完毕后，推荐调度器优先尝试执行的后续插件列表（构建处理管道）。

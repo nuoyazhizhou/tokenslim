@@ -1,0 +1,77 @@
+   Compiling my-project v0.1.0 (/home/user/my-project)
+    Finished test [unoptimized + debuginfo] target(s) in 2.11s
+     Running unittests src/lib.rs (target/debug/deps/my_project-abc123)
+
+running 56 tests
+test arith::adds_two_positive_integers ... ok
+test arith::subtracts_larger_from_smaller ... ok
+test arith::multiplies_by_zero_returns_zero ... ok
+test arith::divides_with_truncated_remainder ... ok
+test arith::returns_error_on_division_by_zero ... ok
+test arith::raises_to_zeroth_power ... ok
+test arith::saturates_on_u8_overflow ... ok
+test arith::saturates_on_i32_underflow ... ok
+test arith::computes_gcd_of_coprime_numbers ... ok
+test lexer::skips_leading_whitespace ... ok
+test lexer::skips_line_comments ... ok
+test lexer::reads_escaped_double_quote ... ok
+test lexer::tracks_line_and_column_numbers ... ok
+test lexer::reports_unterminated_block_comment ... FAILED
+test lexer::emits_eof_token_at_end_of_input ... ok
+test parser::parses_empty_object_literal ... ok
+test parser::parses_nested_array_literals ... ok
+test parser::parses_key_value_pairs_with_colons ... ok
+test parser::rejects_trailing_comma_in_array ... ok
+test parser::accepts_unicode_identifiers ... ok
+test parser::recovers_from_unexpected_token ... ok
+test parser::parses_negative_number_literals ... ok
+test parser::parses_boolean_and_null_keywords ... ok
+test parser::reports_line_of_first_syntax_error ... ok
+test store::persists_records_across_restart ... ok
+test store::evicts_least_recently_used_entry ... ok
+test store::returns_none_for_unknown_key ... ok
+test store::compacts_log_after_threshold ... ok
+test store::rejects_duplicate_primary_key ... ok
+test store::handles_concurrent_writers ... ok
+test store::restores_from_snapshot_file ... ok
+test cli_args::parses_short_flags_with_values ... ok
+test cli_args::parses_long_flags_with_equals ... ok
+test cli_args::rejects_unknown_flag_name ... ok
+test cli_args::collects_positional_arguments ... ok
+test cli_args::supports_double_dash_separator ... ok
+test cli_args::reports_missing_required_argument ... ok
+test cli_args::accepts_repeated_flag_occurrences ... ok
+test cli_args::defaults_to_standard_output ... ok
+test render::formats_table_header_row ... ok
+test render::truncates_cells_exceeding_width ... ok
+test render::right_aligns_numeric_columns ... ok
+test render::escapes_pipe_characters_in_cells ... ok
+test render::wraps_text_at_terminal_width ... ok
+test render::pads_columns_to_equal_width ... ok
+test render::omits_empty_trailing_columns ... ok
+test render::preserves_ansi_color_codes ... ok
+test render::renders_unicode_box_drawing ... ok
+test config::loads_defaults_when_file_absent ... ok
+test config::overrides_defaults_from_file ... ok
+test config::rejects_invalid_duration_format ... ok
+test config::expands_environment_variables ... ok
+test config::merges_nested_sections ... ok
+test config::reports_unknown_keys_as_warnings ... ok
+test config::keeps_last_value_for_duplicate_keys ... ok
+test config::validates_required_fields ... ok
+
+failures:
+
+---- lexer::reports_unterminated_block_comment stdout ----
+thread 'lexer::reports_unterminated_block_comment' panicked at src/lexer.rs:214:9:
+assertion `left == right` failed
+  left: Err(LexError::UnterminatedBlockComment)
+ right: Ok(Token::Eof)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+failures:
+    lexer::reports_unterminated_block_comment
+
+test result: FAILED. 55 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
+error: test failed, to rerun pass `--lib`

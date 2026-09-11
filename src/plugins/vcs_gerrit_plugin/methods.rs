@@ -2,6 +2,14 @@
 //! Gerrit 压缩方法 — Compression Protocol V1
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
 use regex::Regex;
+use std::sync::LazyLock;
+
+/// P3-190：热路径正则缓存——`extract_quoted` 在 checkout 每行触发，
+/// 旧实现每次调用 `Regex::new` 重复编译；改 `LazyLock` 首次编译后复用。
+static EXTRACT_QUOTED_RE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(r#""([^"]+)"|'(\[?[^\]]+\]?)'"#)
+        .expect("gerrit extract_quoted 正则是编译期字面量，必合法")
+});
 
 /// 主入口：将 Gerrit 输出压缩为语义化紧凑格式
 #[tracing::instrument(level = "debug", skip_all)]
@@ -39,6 +47,7 @@ pub fn compact_gerrit_log_for_ai(raw: &str) -> String {
 // ============================================================================
 // 1. Query 语义萃取 (Case 97)
 // ============================================================================
+/// 压缩 gerrit query 输出：保留锚点，change 行与缩进 KV 萃取为 CHG @id + 符号化字段。
 fn compact_gerrit_query(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -83,6 +92,7 @@ fn compact_gerrit_query(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将当前 change 缓冲区的字段合并为一行输出并清空。
 fn flush_change(out: &mut Vec<String>, buf: &mut Vec<String>) {
     if !buf.is_empty() {
         out.push(buf.join(" "));
@@ -90,6 +100,7 @@ fn flush_change(out: &mut Vec<String>, buf: &mut Vec<String>) {
     }
 }
 
+/// 将缩进 KV 行映射为符号标记（PRJ/BR/ST/OW/RV/SJ 等）。
 fn compact_query_kv(line: &str) -> Option<String> {
     let trimmed = line.trim_start();
     let (k, v) = trimmed.split_once(':')?;
@@ -163,6 +174,7 @@ fn compact_gerrit_review(raw: &str) -> String {
     }
 }
 
+/// 压缩 review 标签行 "Code-Review+2 (alice)" 为 CR+2@alice。
 fn compact_review_label(line: &str) -> Option<String> {
     let trimmed = line.trim();
     let open = trimmed.find('(')?;
@@ -184,6 +196,7 @@ fn compact_review_label(line: &str) -> Option<String> {
 // ============================================================================
 // 3. Push 语义萃取 (Case 126)
 // ============================================================================
+/// 压缩 gerrit/git push 输出：保留锚点，refs 映射行压缩为 src->dst 或 @change。
 fn compact_gerrit_push(raw: &str) -> String {
     let mut out = Vec::new();
     let mut refs: Vec<String> = Vec::new();
@@ -235,6 +248,7 @@ fn compact_gerrit_push(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 压缩 refs 映射行：精简 refs/heads/ 与 refs/changes/ 前缀。
 fn compact_push_ref(line: &str) -> Option<String> {
     let trimmed = line.trim();
     let parts: Vec<&str> = trimmed.split(" -> ").collect();
@@ -245,6 +259,7 @@ fn compact_push_ref(line: &str) -> Option<String> {
     let dst = parts[1].trim();
 
     // 精简 refs/heads/ 前缀
+    /// 精简 ref 路径前缀（refs/heads/、refs/changes/）。
     fn simplify_ref_path(s: &str) -> &str {
         if let Some(rest) = s.strip_prefix("refs/heads/") {
             rest
@@ -325,9 +340,9 @@ fn compact_gerrit_checkout(raw: &str) -> String {
     }
 }
 
+/// 从行中提取引号包裹的字符串（双引号或单引号）。
 fn extract_quoted(line: &str) -> Option<String> {
-    let re = Regex::new(r#""([^"]+)"|'(\[?[^\]]+\]?)'"#).ok()?;
-    re.captures(line).and_then(|cap| {
+    EXTRACT_QUOTED_RE.captures(line).and_then(|cap| {
         cap.get(1)
             .or_else(|| cap.get(2))
             .map(|m| m.as_str().to_string())
@@ -384,6 +399,7 @@ fn compact_gerrit_generic(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 判断是否为 gerrit 噪音行（description/commit message/diff/remote: 等，警报行除外）。
 fn is_gerrit_noise(line: &str) -> bool {
     let lower = line.to_ascii_lowercase();
     if lower.starts_with("remote:") {
@@ -405,6 +421,7 @@ fn is_gerrit_noise(line: &str) -> bool {
     noise.iter().any(|n| lower.starts_with(n))
 }
 
+/// 缩写 URL 主机名（gerrit/github/gitlab/azure/bitbucket/ssh）。
 fn abbreviate_url(url: &str) -> String {
     url.replace("https://gerrit.example.com/", "gr:")
         .replace("https://github.com/", "gh:")
@@ -444,12 +461,17 @@ pub(super) fn map_file_status(status: &str) -> &str {
     }
 }
 
+/// gerrit 其他输出的 AI 压缩入口：委托 compact_gerrit_log_for_ai。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_gerrit_other_for_ai(raw: &str) -> String {
     compact_gerrit_log_for_ai(raw)
 }
 
+/// 判断是否为 gerrit 命令块：首个非空行以 gerrit 命令头开头。
 #[tracing::instrument(level = "debug", skip_all)]
-pub fn is_gerrit_log_block(_: &str) -> bool {
-    true
+pub fn is_gerrit_log_block(text: &str) -> bool {
+    text.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim_start().starts_with("gerrit "))
+        .unwrap_or(false)
 }

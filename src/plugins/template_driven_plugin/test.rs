@@ -6,6 +6,7 @@ mod tests {
     use crate::core::text_slicer::SliceType;
     use crate::plugins::template_driven_plugin::{TemplateConfig, TemplateDrivenPlugin};
     use crate::plugins::test_utils::*;
+    /// 测试：空配置时 detect 对样例返回 None。
     #[test]
     fn empty_config_detect_returns_none_on_sample() {
         let plugin = TemplateDrivenPlugin::new(TemplateConfig::default());
@@ -13,6 +14,7 @@ mod tests {
         assert!(plugin.detect(&make_log_slice(&raw)).is_none());
     }
 
+    /// 测试：空配置时 compress 不扩张样例。
     #[test]
     fn empty_config_compress_does_not_expand_sample() {
         let plugin = TemplateDrivenPlugin::new(TemplateConfig::default());
@@ -26,6 +28,7 @@ mod tests {
         );
     }
 
+    /// 测试：空配置对噪声样例安全处理（不 panic）。
     #[test]
     fn empty_config_handles_noise_sample_safely() {
         let plugin = TemplateDrivenPlugin::new(TemplateConfig::default());

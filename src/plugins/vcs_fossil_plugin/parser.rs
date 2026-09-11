@@ -29,6 +29,7 @@ pub enum VcsRecord {
     Raw(String),
 }
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -59,6 +60,7 @@ pub struct VcsDocument {
     pub records: Vec<VcsRecord>,
 }
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 pub struct FossilStatusParser;
@@ -72,6 +74,7 @@ pub struct FossilMergeParser;
 pub struct FossilSyncParser;
 
 // --- helpers ---
+/// 非空记录列表包装为 VcsDocument；空列表返回 None。
 #[tracing::instrument(level = "debug", skip_all)]
 fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Option<VcsDocument> {
     if records.is_empty() {
@@ -84,6 +87,7 @@ fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Op
         })
     }
 }
+/// 解析单字符状态码 + 路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     let token_end = line.find(char::is_whitespace).unwrap_or(line.len());
@@ -119,6 +123,7 @@ fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     };
     Some((status, rest.to_string()))
 }
+/// 判断字符串是否为 VCS 路径形态（过滤邮箱/URL/代码调用/方法名）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_vcs_path(path: &str) -> bool {
     let trimmed = path.trim_matches('"');
@@ -169,10 +174,12 @@ fn looks_like_vcs_path(path: &str) -> bool {
             && trimmed.chars().any(|c| c.is_ascii_alphabetic()))
         || trimmed.starts_with('.')
 }
+/// 折叠行内连续空白为单空格。
 #[tracing::instrument(level = "debug", skip_all)]
 fn collapse_inline_whitespace(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
+/// 解析 diff 的 index/---/+++/@@ 行与 +/- 补丁行，分类为 Raw/Hunk/Patch 记录。
 fn parse_generic_patch_or_stat_line(
     line: &str,
     trimmed: &str,
@@ -195,6 +202,7 @@ fn parse_generic_patch_or_stat_line(
     }
     false
 }
+/// 按长词状态前缀（modified:/added: 等）解析状态码与路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     let lower = line.to_ascii_lowercase();
@@ -217,6 +225,7 @@ fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     None
 }
 
+/// 通用 status 解析：按命令前缀过滤，解析状态行与路径为 File 记录。
 fn parse_generic_status_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -260,6 +269,7 @@ fn parse_generic_status_for_tool(
     }
     to_doc_if_any(tool, VcsDocKind::Status, records)
 }
+/// 通用 log 解析：按命令前缀过滤，解析 revno/author/date/缩进消息为记录。
 fn parse_generic_log_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -312,6 +322,7 @@ fn parse_generic_log_for_tool(
     }
     to_doc_if_any(tool, VcsDocKind::Log, records)
 }
+/// 通用 diff 解析：降维 diff 头，解析补丁/路径为记录。
 fn parse_generic_diff_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -359,46 +370,55 @@ fn parse_generic_diff_for_tool(
 
 // --- Parsers ---
 impl VcsParser for FossilStatusParser {
+    /// 解析 `fossil status`/`fossil changes` 输出：委托通用状态解析器，将文件状态行归并为 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_status_for_tool(raw, VcsTool::Fossil, &["fossil status", "fossil changes"])
     }
 }
 impl VcsParser for FossilDiffParser {
+    /// 解析 `fossil diff`/`fossil gdiff` 输出：委托通用差异解析器，将补丁片段归并为 Diff 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_diff_for_tool(raw, VcsTool::Fossil, &["fossil diff", "fossil gdiff"])
     }
 }
 impl VcsParser for FossilLogParser {
+    /// 解析 `fossil log`/`fossil timeline` 输出：委托通用日志解析器，将版本历史归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Fossil, &["fossil log", "fossil timeline"])
     }
 }
 impl VcsParser for FossilChangesParser {
+    /// 解析 `fossil changes` 输出：委托通用状态解析器，将变更文件状态行归并为 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_status_for_tool(raw, VcsTool::Fossil, &["fossil changes"])
     }
 }
 impl VcsParser for FossilTimelineParser {
+    /// 解析 `fossil timeline` 输出：委托通用日志解析器，将时间线记录归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Fossil, &["fossil timeline"])
     }
 }
 impl VcsParser for FossilUndoParser {
+    /// 解析 `fossil undo` 输出：委托通用日志解析器，将撤销记录归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Fossil, &["fossil undo"])
     }
 }
 impl VcsParser for FossilStashParser {
+    /// 解析 `fossil stash` 输出：委托通用日志解析器，将暂存记录归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Fossil, &["fossil stash"])
     }
 }
 impl VcsParser for FossilMergeParser {
+    /// 解析 `fossil merge` 输出：委托通用日志解析器，将合并记录归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Fossil, &["fossil merge"])
     }
 }
 impl VcsParser for FossilSyncParser {
+    /// 解析 `fossil sync` 输出：委托通用日志解析器，将同步记录归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Fossil, &["fossil sync"])
     }

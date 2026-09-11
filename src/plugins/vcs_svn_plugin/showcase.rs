@@ -1,6 +1,8 @@
 #[cfg(test)]
 mod tests {
     use super::super::methods::*;
+    use crate::core::path_compressor::types::PathCompressor;
+    /// 测试：遍历 svn 样例生成 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_vcs_svn_showcase_report() {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
@@ -94,8 +96,14 @@ mod tests {
                 "other" => compact_svn_other_for_ai(&raw),
                 _ => raw.clone(),
             };
-            // 法则 A: 对压缩结果中的路径执行字典压缩
-            let compacted = compress_svn_paths(&compacted_raw);
+            // 法则 A: 对压缩结果中的路径执行字典压缩。
+            // 本地构造 PathCompressor（与 compress_svn_paths 相同的 min_prefix_length / min_occurrences）
+            // 得到与线上完全一致的 compact，同时保留同一实例用于提取 `$Pn` token -> 原路径 的词典，
+            // 确保每个 case 的词典与写进报告的 compact 一一对应。
+            let mut compressor = PathCompressor::new();
+            compressor.set_min_prefix_length(10); // SVN 路径前缀通常较短
+            compressor.set_min_occurrences(2);
+            let compacted = compressor.extract_and_compress_from_text(&compacted_raw);
             let cl = if compacted.is_empty() {
                 0
             } else {
@@ -128,6 +136,29 @@ mod tests {
             out.push_str("\n");
             out.push_str(&compacted);
             if !out.ends_with('\n') {
+                out.push('\n');
+            }
+            // 字典侧通道：从该 case 专属的 PathCompressor 提取 token->原文 映射并序列化为 JSON，
+            // 仅保留 compact 中实际引用的 `$Pn` token；用 BTreeMap 保证序列化序稳定、报告可复现，
+            // 不改变上方 compact 段内容（哈希不变）。
+            let prefix_map = compressor.get_prefix_map();
+            let mut dict_map: std::collections::BTreeMap<String, String> =
+                std::collections::BTreeMap::new();
+            for (token, path) in prefix_map {
+                if compacted.contains(token) {
+                    dict_map.insert(token.clone(), path.clone());
+                }
+            }
+            let dict_json = if dict_map.is_empty() {
+                String::new()
+            } else {
+                serde_json::to_string(&dict_map).unwrap_or_default()
+            };
+            if !dict_json.is_empty() {
+                out.push_str("-- Dictionary (full) --\n");
+                out.push_str(&"-".repeat(80));
+                out.push('\n');
+                out.push_str(&dict_json);
                 out.push('\n');
             }
             out.push('\n');

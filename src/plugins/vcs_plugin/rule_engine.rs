@@ -4,6 +4,7 @@ use super::types::VcsTool;
 pub struct VcsRuleEngine;
 
 impl VcsRuleEngine {
+    /// VcsRuleEngine 归一化：应用规则到 VcsDocument。
     pub fn normalize(mut doc: VcsDocument) -> VcsDocument {
         for record in &mut doc.records {
             match record {
@@ -34,11 +35,13 @@ impl VcsRuleEngine {
         doc
     }
 
+    /// VcsRuleEngine 渲染：将文档渲染为文本。
     pub fn render_text(doc: &VcsDocument) -> String {
         render_vcs_document(doc)
     }
 }
 
+/// 渲染 VcsDocument 的各记录为紧凑文本。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_vcs_document(doc: &VcsDocument) -> String {
     let mut out = String::new();

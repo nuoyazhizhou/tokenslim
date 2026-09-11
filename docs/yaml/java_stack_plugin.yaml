@@ -1,0 +1,117 @@
+module:
+  name: java_stack_plugin
+  path: src/plugins/java_stack
+  dependencies:
+    - regex = "1.10"
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::JavaStackPlugin;
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use crate::core::plugin_dispatcher::Plugin;
+        use crate::core::text_slicer::Slice;
+        use crate::core::dictionary_engine::Dictionary;
+        use crate::core::compression::Token;
+        use crate::core::plugin_dispatcher::CompressResult;
+
+        /// Java 堆栈插件主结构
+        pub struct JavaStackPlugin {
+            name: &'static str,
+            priority: u8,
+        }
+
+        /// 解析后的堆栈帧（内部使用）
+        struct StackFrame {
+            class: String,
+            method: String,
+            file: String,
+            line: u32,
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use crate::core::plugin_dispatcher::{Plugin, CompressResult};
+        use crate::core::text_slicer::Slice;
+        use crate::core::dictionary_engine::{Dictionary, DictionaryEngine};
+        use crate::core::compression::Token;
+        use regex::Regex;
+        use crate::core::dedup_engine::DedupEngine;
+
+        impl JavaStackPlugin {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 JavaStackPlugin 实例
+            ///
+            /// # 返回值
+            /// - `Self`: JavaStackPlugin 实例
+            ///
+            /// # 实现要求
+            /// 设置 name 为 "java_stack"，priority 为 200。
+            ///
+            /// # 测试要点
+            /// - 名称和优先级正确。
+            ///
+            /// MVP 优先级
+            pub fn new() -> Self {
+                todo!()
+            }
+
+            // ---------- 内部辅助函数 ----------
+            /// 解析一行 Java 堆栈（内部）
+            ///
+            /// # 参数
+            /// - `line`: 单行文本
+            ///
+            /// # 返回值
+            /// - `Option<StackFrame>`: 解析成功返回帧结构，否则 None
+            ///
+            /// # 实现要求
+            /// 使用正则匹配格式如 `at com.example.Class.method(File.java:123)`。
+            ///
+            /// MVP 优先级
+            fn parse_stack_line(line: &str) -> Option<StackFrame> {
+                todo!()
+            }
+        }
+
+        impl Plugin for JavaStackPlugin {
+            fn name(&self) -> &'static str {
+                self.name
+            }
+
+            fn priority(&self) -> u8 {
+                self.priority
+            }
+
+            // 添加生命周期参数以匹配 Plugin trait 定义
+            fn detect<'a>(&self, slice: &Slice<'a>) -> Option<f32> {
+                // 使用正则检测是否为 Java 堆栈行
+                todo!()
+            }
+
+            fn compress(&self, slice: &Slice, dict_engine: &mut DictionaryEngine, dedup_engine: &mut DedupEngine) -> CompressResult {
+                // 压缩逻辑
+                todo!()
+            }
+
+            fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
+                // 还原逻辑
+                todo!()
+            }
+
+            // next_plugins 使用默认实现（返回空）
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

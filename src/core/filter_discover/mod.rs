@@ -3,11 +3,13 @@
 
 pub mod aggregator;
 pub mod classifier;
+pub mod filter_name;
 pub mod parser;
 pub mod types;
 
 pub use aggregator::*;
 pub use classifier::*;
+pub use filter_name::*;
 pub use types::*;
 
 use crate::core::tracking::Tracker;

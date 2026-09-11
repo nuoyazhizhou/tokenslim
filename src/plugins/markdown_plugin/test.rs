@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::markdown_plugin::types::MarkdownPlugin;
     use crate::plugins::test_utils::*;
 
+    /// 验证含链接的 Markdown 样本能被 `detect` 命中且置信度 ≥ 0.5。
     #[test]
     fn detects_links_sample() {
         let plugin = MarkdownPlugin::new();
@@ -16,6 +17,7 @@ mod tests {
         assert!(score.unwrap() >= 0.5);
     }
 
+    /// 验证含标题的 Markdown 样本能被 `detect` 命中。
     #[test]
     fn detects_headers_sample() {
         let plugin = MarkdownPlugin::new();
@@ -25,6 +27,7 @@ mod tests {
             .is_some());
     }
 
+    /// 验证链接样本压缩后保留可渲染 Markdown 链接语法且不显著扩张。
     #[test]
     fn compresses_links_sample_preserves_renderable_markdown_without_expansion() {
         let plugin = MarkdownPlugin::new();

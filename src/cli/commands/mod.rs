@@ -6,6 +6,7 @@ pub mod config;
 pub mod decompress;
 pub mod doctor;
 pub mod export;
+pub mod feature;
 pub mod repair;
 pub mod run;
 pub mod serve_static;

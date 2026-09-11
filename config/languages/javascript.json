@@ -10,7 +10,7 @@
       "patterns": [
         {"pattern_type": "contains", "pattern": "function "},
         {"pattern_type": "contains", "pattern": "const "},
-        {"pattern_type": "contains", "pattern": "let "},
+        {"pattern_type": "starts_with", "pattern": "let "},
         {"pattern_type": "contains", "pattern": "var "},
         {"pattern_type": "contains", "pattern": "=>"},
         {"pattern_type": "contains", "pattern": "console.log("},
@@ -21,7 +21,7 @@
         {"pattern_type": "contains", "pattern": "class "},
         {"pattern_type": "contains", "pattern": "extends "},
         {"pattern_type": "contains", "pattern": "interface "},
-        {"pattern_type": "contains", "pattern": "type "},
+        {"pattern_type": "starts_with", "pattern": "type "},
         {"pattern_type": "contains", "pattern": "Promise<"},
         {"pattern_type": "contains", "pattern": "React."},
         {"pattern_type": "contains", "pattern": "ReactDOM."}

@@ -13,7 +13,8 @@ pub struct SpringBootConfig {
 }
 
 impl Default for SpringBootConfig {
-    /// 提供该插件类型的默认配置实现。
+    /// 构造 SpringBootConfig 默认配置：折叠 Maven 下载日志、合并生命周期日志、
+    /// 提取 Bean 与包名到字典均开启。
     fn default() -> Self {
         SpringBootConfig {
             fold_maven_downloads: true,

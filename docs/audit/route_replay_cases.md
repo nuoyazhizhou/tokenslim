@@ -1,112 +1,14 @@
 # Route Misclassification Replay Cases
 
-- generated_at: 2026-06-24T17:55:11.422689
-- source_audit_version: all_20260624-175500
+- generated_at: 2026-09-11T14:36:43.280632
+- source_audit_version: v20260911_r2
 - tokenslim_explain_binary: target\debug\tokenslim.exe
 
 Use this file when a compact/original mirror looks suspicious: replay the input through `tokenslim explain-plugin`, inspect `fallback_decision`, `retry_plugin`, `recommendation_*`, and capability evidence, then decide whether the issue is a real route/detector mismatch or an expected generic fallback.
 
 ## Active Audit Replay Templates
 
-### android_gradle_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/android_gradle_plugin/android_gradle_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### ansi_cleaner_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/ansi_cleaner_plugin/ansi_cleaner_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### ansible_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/ansible_plugin/ansible_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### artifact_summary_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/artifact_summary_plugin/artifact_summary_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### bazel_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/bazel_plugin/bazel_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### ci_log_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/ci_log_plugin/ci_log_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### cloudformation_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/cloudformation_plugin/cloudformation_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### db_log_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/db_log_plugin/db_log_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### dotnet_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/dotnet_plugin/dotnet_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### gcc_log_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/gcc_log_plugin/gcc_log_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### generic_text_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/generic_text_plugin/generic_text_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### git_diff_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/git_diff_plugin/git_diff_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### helm_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/helm_plugin/helm_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### java_stack_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/java_stack_plugin/java_stack_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### json_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/json_plugin/json_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### kubernetes_docker_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/kubernetes_docker_plugin/kubernetes_docker_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### markdown_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/markdown_plugin/markdown_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### maven_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/maven_plugin/maven_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### ndjson_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/ndjson_plugin/ndjson_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
-
-### node_error_plugin
-
-- reason: plugin_failed_or_needs_manual_case_lookup
-- action: inspect `docs/audit/node_error_plugin/node_error_plugin.latest.json` and export a focused case with `audit_case_metrics.py` before replay.
+- None. Current audit has no failed or auditing case requiring route replay.
 
 ## Smoke Explainability Baseline
 
@@ -163,7 +65,7 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
         "alternative_1": "vcs|group=vcs|matched_by=keyword|pattern=az|intent=other|priority=100|fallback=false",
         "alternative_1_capability": "description:|tags:|route:vcs|samples:0|showcase:0|audit:0|frozen:0|status:orchestrator",
         "alternatives": "1",
-        "candidate_plugin_chain": "android_gradle, ansible, ansi_cleaner, artifact_summary, bazel, cloud_log, cloudformation, ci_log, db_log, dotnet, gcc_log, helm, java_stack, json, kubernetes_docker, ndjson, markdown, maven, node_error, nodejs, noise_filter, generic_text, php_ruby, protobuf, pulumi, pytest, python_traceback, rust_go, shell_session, smart_code, smart_path, spring_boot, sql, static_rule, syslog, terraform, unity_unreal, web_log, xcode_log, webpack_vite, xml_html, template_driven, yaml",
+        "candidate_plugin_chain": "android_gradle, ansible, ansi_cleaner, artifact_summary, bazel, cloud_log, cloudformation, ci_log, db_log, dotnet, gcc_log, helm, java_stack, json, kubernetes_docker, ls_listing, ndjson, markdown, maven, node_error, nodejs, noise_filter, generic_text, php_ruby, protobuf, pulumi, privacy, pytest, python_traceback, rust_go, shell_session, smart_code, smart_path, spring_boot, sql, static_rule, syslog, terraform, toml_ini, unity_unreal, web_log, xcode_log, webpack_vite, xml_html, yaml",
         "command": "az pipelines runs show",
         "confidence_gap": "60",
         "confidence_gap_source": "route_priority",
@@ -181,7 +83,7 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
         "retry_plugin": "none",
         "route_group": "build",
         "run_route_view": "available_with:tokenslim run --explain-route az pipelines runs show",
-        "selected_capability": "description:CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs|tags:|route:build|samples:88|showcase:44|audit:0|frozen:0|status:missing_audit",
+        "selected_capability": "description:CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs|tags:|route:build|samples:44|showcase:44|audit:44|frozen:44|status:frozen",
         "selected_declared_patterns": "::(group/endgroup/error/warning):: ; (section_start:/section_end:/Running with gitlab-runner) ; (\\[Pipeline\\]/##\\[(section/error/warning/command)\\]/buildkite-agent/circleci) ; (##teamcity\\[/travis_(fold/time):/\\[(ACME-CI/ci)\\]/### Step:)",
         "selected_plugin": "ci_log",
         "top_score_gap": "60",
@@ -216,13 +118,13 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
     "retry_plugin": "none",
     "selected": {
         "capability": {
-            "audit": "0",
+            "audit": "44",
             "description": "CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs",
-            "frozen": "0",
+            "frozen": "44",
             "route": "build",
-            "samples": "88",
+            "samples": "44",
             "showcase": "44",
-            "status": "missing_audit",
+            "status": "frozen",
             "tags": ""
         },
         "declared_patterns": "::(group/endgroup/error/warning):: ; (section_start:/section_end:/Running with gitlab-runner) ; (\\[Pipeline\\]/##\\[(section/error/warning/command)\\]/buildkite-agent/circleci) ; (##teamcity\\[/travis_(fold/time):/\\[(ACME-CI/ci)\\]/### Step:)",
@@ -259,13 +161,13 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
     "alternatives": [
         {
             "capability": {
-                "audit": "0",
+                "audit": "12",
                 "description": "\u667a\u80fd\u8def\u5f84\u8131\u6c34",
-                "frozen": "0",
+                "frozen": "12",
                 "route": "none",
-                "samples": "24",
+                "samples": "12",
                 "showcase": "12",
-                "status": "missing_audit",
+                "status": "frozen",
                 "tags": ""
             },
             "key": "alternative_1",
@@ -278,13 +180,13 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
         },
         {
             "capability": {
-                "audit": "0",
+                "audit": "15",
                 "description": "\u901a\u7528\u6587\u672c\u8131\u6c34",
-                "frozen": "0",
+                "frozen": "15",
                 "route": "generic",
-                "samples": "24",
-                "showcase": "12",
-                "status": "missing_audit",
+                "samples": "15",
+                "showcase": "15",
+                "status": "frozen",
                 "tags": ""
             },
             "key": "alternative_2",
@@ -301,9 +203,9 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
     "fallback_decision": "stable_detector",
     "fields": {
         "alternative_1": "smart_path|score=0.900|priority=250",
-        "alternative_1_capability": "description:\u667a\u80fd\u8def\u5f84\u8131\u6c34|tags:|route:none|samples:24|showcase:12|audit:0|frozen:0|status:missing_audit",
+        "alternative_1_capability": "description:\u667a\u80fd\u8def\u5f84\u8131\u6c34|tags:|route:none|samples:12|showcase:12|audit:12|frozen:12|status:frozen",
         "alternative_2": "generic_text|score=0.110|priority=160",
-        "alternative_2_capability": "description:\u901a\u7528\u6587\u672c\u8131\u6c34|tags:|route:generic|samples:24|showcase:12|audit:0|frozen:0|status:missing_audit",
+        "alternative_2_capability": "description:\u901a\u7528\u6587\u672c\u8131\u6c34|tags:|route:generic|samples:15|showcase:15|audit:15|frozen:15|status:frozen",
         "alternatives": "2",
         "byte_count": "599",
         "confidence_gap": "0.100",
@@ -322,9 +224,10 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
         "replay_case_template": "available_with:--explain-replay-out <path>",
         "retry_plugin": "none",
         "retry_score_gap": "1.000",
-        "selected_capability": "description:Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals|tags:|route:none|samples:96|showcase:48|audit:0|frozen:0|status:missing_audit",
+        "selected_capability": "description:Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals|tags:|route:none|samples:48|showcase:48|audit:48|frozen:48|status:frozen",
         "selected_declared_patterns": "^\\d+\\.\\d+\\.\\d+\\.\\d+ ; INFO:\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+\\s+-\\s+\\\"(GET/POST/PUT/PATCH/DELETE) ; \\\"(request_method/ClientRequestMethod/httpRequest/message)\\\" ; ^#Fields:\\s+.*cs-method.*sc-status ; ^\\[\\d{4}-\\d{2}-\\d{2}T[^\\]]+\\]\\s+\\\"(GET/POST/PUT/PATCH/DELETE)",
         "selected_plugin": "web_log",
+        "selection_source": "content_detector",
         "top_score_gap": "0.100",
         "why": "content_detector_score:1.000|plugin_priority:170|candidate_rank:1"
     },
@@ -357,13 +260,13 @@ Use this file when a compact/original mirror looks suspicious: replay the input 
     "retry_plugin": "none",
     "selected": {
         "capability": {
-            "audit": "0",
+            "audit": "48",
             "description": "Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals",
-            "frozen": "0",
+            "frozen": "48",
             "route": "none",
-            "samples": "96",
+            "samples": "48",
             "showcase": "48",
-            "status": "missing_audit",
+            "status": "frozen",
             "tags": ""
         },
         "declared_patterns": "^\\d+\\.\\d+\\.\\d+\\.\\d+ ; INFO:\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+\\s+-\\s+\\\"(GET/POST/PUT/PATCH/DELETE) ; \\\"(request_method/ClientRequestMethod/httpRequest/message)\\\" ; ^#Fields:\\s+.*cs-method.*sc-status ; ^\\[\\d{4}-\\d{2}-\\d{2}T[^\\]]+\\]\\s+\\\"(GET/POST/PUT/PATCH/DELETE)",

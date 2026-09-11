@@ -1,0 +1,177 @@
+module:
+  name: compression_pipeline
+  path: src/core/compression_pipeline
+  dependencies:
+    - thiserror = "1.0"
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{CompressionPipeline, PipelineConfig, CompressionOutput, CompressionMetadata, PipelineError};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use crate::core::stream_reader::StreamReader;
+        use crate::core::text_slicer::{TextSlicer, SlicerConfig, Slice};
+        use crate::core::content_analyzer::{ContentAnalyzer, AnalyzerConfig};
+        use crate::core::plugin_dispatcher::{PluginDispatcher, DispatcherConfig, Plugin};
+        use crate::core::dictionary_engine::{DictionaryEngine, Dictionary};
+        use crate::core::dedup_engine::{DedupEngine, DedupConfig};
+        use crate::core::compression::Token;
+        use crate::core::metrics::MetricsCollector;
+        use std::path::Path;
+
+        /// 压缩流水线配置
+        pub struct PipelineConfig {
+            pub slicer_config: SlicerConfig,
+            pub analyzer_config: AnalyzerConfig,
+            pub dispatcher_config: DispatcherConfig,
+            pub dedup_config: DedupConfig,
+            pub stream_buffer_size: usize,
+        }
+
+        /// 压缩结果
+        pub struct CompressionOutput {
+            pub tokens: Vec<Token>,
+            pub dictionary: Dictionary,
+            pub metadata: CompressionMetadata,
+        }
+
+        /// 压缩元数据
+        pub struct CompressionMetadata {
+            pub original_size: usize,
+            pub compressed_size: usize,
+            pub compression_ratio: f32,
+            pub slice_count: usize,
+            pub processing_time_ms: u128,
+        }
+
+        /// 压缩流水线错误类型
+        #[derive(Debug, thiserror::Error)]
+        pub enum PipelineError {
+            #[error("Stream error: {0}")]
+            Stream(#[from] crate::core::stream_reader::StreamError),
+            #[error("Slicer error: {0}")]
+            Slicer(String), // 可根据需要细化为具体错误类型
+            #[error("Analyzer error: {0}")]
+            Analyzer(#[from] crate::core::content_analyzer::AnalyzerError),
+            #[error("Dispatcher error: {0}")]
+            Dispatcher(String),
+            #[error("Dictionary error: {0}")]
+            Dictionary(#[from] crate::core::dictionary_engine::DictError),
+            #[error("Dedup error: {0}")]
+            Dedup(String),
+            #[error("IO error: {0}")]
+            Io(#[from] std::io::Error),
+        }
+
+        /// 压缩流水线主结构
+        pub struct CompressionPipeline {
+            pub(crate) slicer: TextSlicer,
+            pub(crate) analyzer: ContentAnalyzer,
+            pub(crate) dispatcher: PluginDispatcher,
+            pub(crate) dict_engine: DictionaryEngine,
+            pub(crate) dedup_engine: DedupEngine,
+            pub(crate) metrics: MetricsCollector,   // 新增 metrics 收集器
+            pub(crate) config: PipelineConfig,
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use crate::core::stream_reader::{StreamReader, SliceInput, StreamError};
+        use crate::core::text_slicer::{TextSlicer, Slice, SlicerConfig};
+        use crate::core::content_analyzer::{ContentAnalyzer, AnalyzerConfig};
+        use crate::core::plugin_dispatcher::{PluginDispatcher, DispatcherConfig, Plugin};
+        use crate::core::dictionary_engine::{DictionaryEngine, Dictionary};
+        use crate::core::dedup_engine::{DedupEngine, DedupConfig};
+        use crate::core::metrics::MetricsCollector;
+        use std::path::Path;
+        use std::io::Read;
+
+        impl CompressionPipeline {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 CompressionPipeline 实例
+            ///
+            /// # 参数
+            /// - `config`: 流水线配置
+            /// - `plugins`: 插件列表
+            /// - `metrics`: 指标收集器
+            ///
+            /// # 返回值
+            /// - `Self`: CompressionPipeline 实例
+            ///
+            /// MVP 优先级
+            pub fn new(
+                config: PipelineConfig,
+                plugins: Vec<Box<dyn Plugin>>,
+                metrics: MetricsCollector,
+            ) -> Self {
+                todo!()
+            }
+
+            /// 从文件压缩
+            ///
+            /// # 参数
+            /// - `path`: 文件路径
+            ///
+            /// # 返回值
+            /// - `Result<CompressionOutput, PipelineError>`
+            ///
+            /// MVP 优先级
+            pub fn compress_file(&mut self, path: &Path) -> Result<CompressionOutput, PipelineError> {
+                todo!()
+            }
+
+            /// 从字符串压缩
+            ///
+            /// # 参数
+            /// - `text`: 输入字符串
+            ///
+            /// # 返回值
+            /// - `Result<CompressionOutput, PipelineError>`
+            ///
+            /// MVP 优先级
+            pub fn compress_str(&mut self, text: &str) -> Result<CompressionOutput, PipelineError> {
+                todo!()
+            }
+
+            /// 核心压缩流程（内部）
+            ///
+            /// # 参数
+            /// - `reader`: StreamReader 实例
+            ///
+            /// # 返回值
+            /// - `Result<CompressionOutput, PipelineError>`
+            ///
+            /// MVP 优先级
+            fn compress_stream<'a>(&mut self, reader: StreamReader<'a>) -> Result<CompressionOutput, PipelineError> {
+                // 此处应调用 metrics 记录开始时间、输入大小等
+                // 例如：
+                // self.metrics.start_module("stream_reader");
+                // ... 处理 ...
+                // self.metrics.end_module("stream_reader");
+                // self.metrics.set_input_size(...);
+                // self.metrics.set_output_size(...);
+                // self.metrics.add_slice_count(...);
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+
+            /// 重置流水线状态（未来）
+            pub fn reset(&mut self) {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

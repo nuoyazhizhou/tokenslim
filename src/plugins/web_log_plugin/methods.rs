@@ -81,13 +81,16 @@ struct AccessV3Collection<'a> {
     health_count: usize,
     static_count: usize,
     bot_count: usize,
+    scan_ips: BTreeSet<String>,
 }
 
+/// 折叠连续空白为单空格。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_spaces(value: &str) -> String {
     value.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 紧凑化时间：ISO 8601 T 分隔转空格，剥离小数秒/时区与 UTC 后缀。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_time(value: &str) -> String {
     let trimmed = value.trim().trim_matches('"');
@@ -103,6 +106,7 @@ fn compact_time(value: &str) -> String {
         .replace(" UTC", "")
 }
 
+/// 紧凑化 stream 名：路径截断保留前两段与尾段前 8 字符。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_stream(value: &str) -> String {
     let parts = value.split('/').collect::<Vec<_>>();
@@ -114,6 +118,7 @@ fn compact_stream(value: &str) -> String {
     value.to_string()
 }
 
+/// 将文本截断至指定字节数并追加省略号。
 #[tracing::instrument(level = "debug", skip_all)]
 fn trim_to(value: &str, max_len: usize) -> String {
     if value.len() <= max_len {
@@ -122,6 +127,7 @@ fn trim_to(value: &str, max_len: usize) -> String {
     format!("{}...", &value[..max_len])
 }
 
+/// 归一化路由：URL 去 scheme/query，UUID/长数字段替换为 :id。
 #[tracing::instrument(level = "debug", skip_all)]
 fn normalize_route(path: &str) -> String {
     let path_only = path_from_url(path).split('?').next().unwrap_or(path);
@@ -146,6 +152,7 @@ fn normalize_route(path: &str) -> String {
     }
 }
 
+/// 从 URL 提取路径部分（http(s) 去主机）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn path_from_url(value: &str) -> &str {
     let trimmed = value.trim();
@@ -161,6 +168,7 @@ fn path_from_url(value: &str) -> &str {
     trimmed
 }
 
+/// 将状态码映射为桶（2xx/3xx/4xx/5xx/other）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn status_bucket(status: &str) -> &'static str {
     match status.chars().next().unwrap_or('0') {
@@ -172,11 +180,13 @@ fn status_bucket(status: &str) -> &'static str {
     }
 }
 
+/// BTreeMap 计数自增。
 #[tracing::instrument(level = "debug", skip_all)]
 fn inc(map: &mut BTreeMap<String, usize>, key: impl Into<String>) {
     *map.entry(key.into()).or_insert(0) += 1;
 }
 
+/// 取 map 中计数最高的 N 项并格式化为 key:count 逗号串。
 #[tracing::instrument(level = "debug", skip_all)]
 fn top_entries(map: &BTreeMap<String, usize>, limit: usize) -> String {
     let mut entries = map.iter().collect::<Vec<_>>();
@@ -189,6 +199,25 @@ fn top_entries(map: &BTreeMap<String, usize>, limit: usize) -> String {
         .join(",")
 }
 
+/// 取 map 中计数最高的 N 项，并以 token 引用其值（复用字典 token，避免重复嵌入完整 UA/IP 串）。
+/// 无对应 token 时回退为截断原值。
+#[tracing::instrument(level = "debug", skip_all)]
+fn top_entries_tok(
+    map: &BTreeMap<String, usize>,
+    limit: usize,
+    tokens: &BTreeMap<String, String>,
+) -> String {
+    let mut entries = map.iter().collect::<Vec<_>>();
+    entries.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
+    entries
+        .into_iter()
+        .take(limit)
+        .map(|(key, count)| format!("{}:{}", token_ref(key, tokens), count))
+        .collect::<Vec<_>>()
+        .join(",")
+}
+
+/// 取 map 中计数最高的 N 项返回排序列表。
 #[tracing::instrument(level = "debug", skip_all)]
 fn sorted_counts(map: &BTreeMap<String, usize>, limit: usize) -> Vec<(String, usize)> {
     let mut entries = map
@@ -200,6 +229,7 @@ fn sorted_counts(map: &BTreeMap<String, usize>, limit: usize) -> Vec<(String, us
     entries
 }
 
+/// 从压缩文本解析 records= 计数。
 #[tracing::instrument(level = "debug", skip_all)]
 fn aggregate_record_count(compacted: &str) -> usize {
     compacted
@@ -215,6 +245,7 @@ fn aggregate_record_count(compacted: &str) -> usize {
         .unwrap_or(0)
 }
 
+/// 将状态码映射为人类可读原因短语。
 #[tracing::instrument(level = "debug", skip_all)]
 fn status_reason(status: &str) -> &'static str {
     match status {
@@ -237,6 +268,7 @@ fn status_reason(status: &str) -> &'static str {
     }
 }
 
+/// 判断 IP 是否为内网地址（127/10/192.168/fc/fd/172.16-31）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_internal_ip(ip: &str) -> bool {
     ip == "127.0.0.1"
@@ -252,6 +284,7 @@ fn is_internal_ip(ip: &str) -> bool {
             .is_some_and(|octet| (16..=31).contains(&octet))
 }
 
+/// 将 IP 分类为 Unknown/Internal/Documentation/External。
 #[tracing::instrument(level = "debug", skip_all)]
 fn ip_class(ip: &str) -> &'static str {
     if ip == "-" || ip.is_empty() {
@@ -267,6 +300,7 @@ fn ip_class(ip: &str) -> &'static str {
     }
 }
 
+/// 将 UA 分类为 Health/Bot/Browser/Other。
 #[tracing::instrument(level = "debug", skip_all)]
 fn ua_class(ua: &str) -> &'static str {
     let lower = ua.to_ascii_lowercase();
@@ -293,6 +327,7 @@ fn ua_class(ua: &str) -> &'static str {
     }
 }
 
+/// 返回 UA 的基础 token 名（$UA_KUBE/$UA_BROWSER 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn ua_token_base(ua: &str) -> &'static str {
     let lower = ua.to_ascii_lowercase();
@@ -315,6 +350,7 @@ fn ua_token_base(ua: &str) -> &'static str {
     }
 }
 
+/// 生成唯一 token：base 已用则追加序号。
 #[tracing::instrument(level = "debug", skip_all)]
 fn unique_token(base: &str, used: &mut BTreeSet<String>, counter: usize) -> String {
     if used.insert(base.to_string()) {
@@ -325,6 +361,7 @@ fn unique_token(base: &str, used: &mut BTreeSet<String>, counter: usize) -> Stri
     token
 }
 
+/// 判断路由或 UA 是否为健康检查（/health//ready/kube-probe 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_health_route(route: &str, ua: &str) -> bool {
     let route_lower = route.to_ascii_lowercase();
@@ -337,6 +374,7 @@ fn is_health_route(route: &str, ua: &str) -> bool {
         || ua_lower.contains("elb-healthchecker")
 }
 
+/// 判断路由是否为静态资源（.js/.css/.png 等后缀）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_static_route(route: &str) -> bool {
     let lower = route.to_ascii_lowercase();
@@ -347,6 +385,7 @@ fn is_static_route(route: &str) -> bool {
     .any(|suffix| lower.ends_with(suffix))
 }
 
+/// 判断路由是否为敏感探测目标（.env/wp-/admin/.git 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_sensitive_probe(route: &str) -> bool {
     let lower = route.to_ascii_lowercase();
@@ -366,6 +405,7 @@ fn is_sensitive_probe(route: &str) -> bool {
     .any(|needle| lower.contains(needle))
 }
 
+/// 将记录分类为 health/static/bot/routine。
 #[tracing::instrument(level = "debug", skip_all)]
 fn routine_kind(record: &WebAccessRecord, route: &str) -> &'static str {
     if is_health_route(route, &record.ua) {
@@ -379,6 +419,7 @@ fn routine_kind(record: &WebAccessRecord, route: &str) -> &'static str {
     }
 }
 
+/// 为 IP 计数构建 token 映射（扫描 IP 用 $IP_ATK，其余 $IP1..）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn build_ip_tokens(
     counts: &BTreeMap<String, usize>,
@@ -403,6 +444,7 @@ fn build_ip_tokens(
     tokens
 }
 
+/// 为 UA 计数构建 token 映射（按 UA 类生成基础 token）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn build_ua_tokens(counts: &BTreeMap<String, usize>) -> BTreeMap<String, String> {
     let mut tokens = BTreeMap::new();
@@ -415,6 +457,7 @@ fn build_ua_tokens(counts: &BTreeMap<String, usize>) -> BTreeMap<String, String>
     tokens
 }
 
+/// 引用 token 或截断原值。
 #[tracing::instrument(level = "debug", skip_all)]
 fn token_ref(value: &str, tokens: &BTreeMap<String, String>) -> String {
     tokens
@@ -423,6 +466,7 @@ fn token_ref(value: &str, tokens: &BTreeMap<String, String>) -> String {
         .unwrap_or_else(|| trim_to(value, 28))
 }
 
+/// 引用 token 集合（单值转 token，多值标 Mixed）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn token_set_ref(values: &BTreeSet<String>, tokens: &BTreeMap<String, String>) -> String {
     if values.is_empty() {
@@ -434,6 +478,7 @@ fn token_set_ref(values: &BTreeSet<String>, tokens: &BTreeMap<String, String>) -
     }
 }
 
+/// 收集访问记录的 v3 统计集合（IP/UA/状态计数、routine 桶、扫描组、突发组）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn collect_access_v3_collection<'a>(records: &'a [WebAccessRecord]) -> AccessV3Collection<'a> {
     let mut ip_counts = BTreeMap::new();
@@ -513,6 +558,47 @@ fn collect_access_v3_collection<'a>(records: &'a [WebAccessRecord]) -> AccessV3C
         .filter_map(|(_, items)| (items.len() >= 3).then_some(items))
         .collect::<Vec<_>>();
 
+    // 全局扫描源统计：窗口内每个源 IP 对敏感探针路径（403/404）发起探测的次数。
+    // 用于识别「分布式扫描」——攻击源分散在多个 IP，单个 IP|UA 组不足以触发单组扫描阈值，
+    // 但整片窗口敏感探针总量显著且跨 ≥2 源，应归并为单一 SCAN 行而非保留逐路由 ANOMALY。
+    let mut probe_ip_counts = BTreeMap::<String, usize>::new();
+    let mut sensitive_targets = BTreeSet::new();
+    let mut sensitive_probe_total = 0usize;
+    for record in records {
+        if record.status == "404" || record.status == "403" {
+            let route = normalize_route(&record.path);
+            if is_sensitive_probe(&route) {
+                *probe_ip_counts.entry(record.ip.clone()).or_default() += 1;
+                sensitive_targets.insert(route);
+                sensitive_probe_total += 1;
+            }
+        }
+    }
+    let distributed_scan = probe_ip_counts.len() >= 2 && sensitive_probe_total >= 6;
+
+    // 分布式扫描归并：将全部扫描源 IP 纳入 scan_ips（供 ANOMALY 抑制与 $IP_ATK 生成），
+    // 并以单条聚合 SCAN 行覆盖整片探测，替代多组扫描与未抑制的逐路径 ANOMALY。
+    let (scans, scan_ips) = if distributed_scan {
+        let mut items = Vec::new();
+        for record in records {
+            if record.status == "404" || record.status == "403" {
+                let route = normalize_route(&record.path);
+                if is_sensitive_probe(&route) {
+                    items.push(record);
+                }
+            }
+        }
+        let scan_ips = probe_ip_counts.into_keys().collect::<BTreeSet<_>>();
+        (vec![(items, sensitive_targets)], scan_ips)
+    } else {
+        // 非分布式：scan_ips 仅收录命中单组扫描判定的源 IP（复用各组首条记录）。
+        let scan_ips = scans
+            .iter()
+            .filter_map(|(items, _)| items.first().map(|record| record.ip.clone()))
+            .collect::<BTreeSet<_>>();
+        (scans, scan_ips)
+    };
+
     let mut routine_entries = routines.into_values().collect::<Vec<_>>();
     routine_entries.sort_by(|a, b| {
         b.count
@@ -531,43 +617,49 @@ fn collect_access_v3_collection<'a>(records: &'a [WebAccessRecord]) -> AccessV3C
         health_count,
         static_count,
         bot_count,
+        scan_ips,
     }
 }
 
+/// 追加 v3 IR 输出（字典行/诊断/例行/扫描/突发）。
 #[tracing::instrument(level = "debug", skip_all)]
-fn append_access_v3_ir(out: &mut String, records: &[WebAccessRecord]) {
-    if !should_emit_access_v3(records) {
+fn append_access_v3_ir(
+    out: &mut String,
+    records: &[WebAccessRecord],
+    collection: &AccessV3Collection<'_>,
+    ip_tokens: &BTreeMap<String, String>,
+    ua_tokens: &BTreeMap<String, String>,
+) {
+    if !should_emit_access_v3(records, !collection.scans.is_empty()) {
         return;
     }
-    let collection = collect_access_v3_collection(records);
 
-    let scanner_ips = collection
-        .scans
-        .iter()
-        .filter_map(|(items, _)| items.first().map(|record| record.ip.clone()))
-        .collect::<BTreeSet<_>>();
-    let ip_tokens = build_ip_tokens(&collection.ip_counts, &scanner_ips);
-    let ua_tokens = build_ua_tokens(&collection.ua_counts);
-
-    if let Some(ip_dict_line) = render_access_ip_dict_line(&collection.ip_counts, &ip_tokens) {
+    if let Some(ip_dict_line) = render_access_ip_dict_line(&collection.ip_counts, ip_tokens) {
         out.push_str(&ip_dict_line);
     }
-    if let Some(ua_dict_line) = render_access_ua_dict_line(&collection.ua_counts, &ua_tokens) {
+    if let Some(ua_dict_line) = render_access_ua_dict_line(&collection.ua_counts, ua_tokens) {
         out.push_str(&ua_dict_line);
     }
-    emit_access_diag(
-        out,
-        records,
-        &collection.status_counts,
-        collection.health_count,
-        collection.static_count,
-        collection.bot_count,
-    );
-    emit_access_routines(out, collection.routine_entries, &ip_tokens, &ua_tokens);
-    emit_access_scans(out, collection.scans, &ip_tokens, &ua_tokens);
-    emit_access_bursts(out, collection.bursts, &ip_tokens);
+    // 小样本（records<24）走 SCAN 触发 v3 时，省略与 SUMMARY 冗余的 DIAG 诊断行。
+    // 该场景的聚合 IR 若承载完整 DIAG/字典会逼近甚至超过原始输入，触发 ROI 门槛
+    // 回退到逐行透传，丢失 SCAN/ROUTINE 等优质聚合信号；SUMMARY 已携带 4xx/5xx
+    // 计数，err_rate 可推导，小样本省略 DIAG 收益大于损失。
+    if records.len() >= 24 {
+        emit_access_diag(
+            out,
+            records,
+            &collection.status_counts,
+            collection.health_count,
+            collection.static_count,
+            collection.bot_count,
+        );
+    }
+    emit_access_routines(out, &collection.routine_entries, ip_tokens, ua_tokens);
+    emit_access_scans(out, &collection.scans, ip_tokens, ua_tokens);
+    emit_access_bursts(out, &collection.bursts, ip_tokens);
 }
 
+/// 渲染通用字典行（$W|DICT_xxx|entries）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_dict_line(kind: &str, entries: Vec<String>) -> Option<String> {
     if entries.is_empty() {
@@ -576,6 +668,7 @@ fn render_access_dict_line(kind: &str, entries: Vec<String>) -> Option<String> {
     Some(format!("$W|{kind}|{}\n", entries.join(",")))
 }
 
+/// 渲染 IP 字典行（$W|DICT_IP|token=ip(类别)）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_ip_dict_line(
     ip_counts: &BTreeMap<String, usize>,
@@ -595,6 +688,7 @@ fn render_access_ip_dict_line(
     render_access_dict_line("DICT_IP", entries)
 }
 
+/// 渲染 UA 字典行（$W|DICT_UA|token=ua(类别)）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_ua_dict_line(
     ua_counts: &BTreeMap<String, usize>,
@@ -614,11 +708,18 @@ fn render_access_ua_dict_line(
     render_access_dict_line("DICT_UA", entries)
 }
 
+/// 判断是否应输出 v3 IR。
+///
+/// 触发条件为「记录数 ≥24」或「存在真实扫描组」。允许小样本但语义上确
+/// 定为攻魔扫描的日志（如 BadBot 连续探测敏感路径）走 SCAN 聚合，将逐路
+/// 径 ANOMALY 折叠为单条 SCAN 行，同时由 emit_access_anomaly_lines 的
+/// scan_represented 门控在该场景下正确抑制冗余 ANOMALY。
 #[tracing::instrument(level = "debug", skip_all)]
-fn should_emit_access_v3(records: &[WebAccessRecord]) -> bool {
-    records.len() >= 24
+fn should_emit_access_v3(records: &[WebAccessRecord], has_scan: bool) -> bool {
+    records.len() >= 24 || has_scan
 }
 
+/// 输出诊断行（错误率/4xx/5xx/噪音计数）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_diag(
     out: &mut String,
@@ -654,22 +755,24 @@ fn emit_access_diag(
     }
 }
 
+/// 输出例行桶行（count≥2 或非 routine，最多 8 条）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_routines(
     out: &mut String,
-    routine_entries: Vec<RoutineBucket>,
+    routine_entries: &[RoutineBucket],
     ip_tokens: &BTreeMap<String, String>,
     ua_tokens: &BTreeMap<String, String>,
 ) {
     for bucket in routine_entries
-        .into_iter()
+        .iter()
         .filter(|bucket| bucket.count >= 2 || bucket.kind != "routine")
         .take(8)
     {
-        out.push_str(&render_access_routine_line(&bucket, ip_tokens, ua_tokens));
+        out.push_str(&render_access_routine_line(bucket, ip_tokens, ua_tokens));
     }
 }
 
+/// 渲染例行桶行（kind/状态/方法/路由/计数/ip/ua/avg_ms）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_routine_line(
     bucket: &RoutineBucket,
@@ -691,6 +794,7 @@ fn render_access_routine_line(
     )
 }
 
+/// 渲染例行桶平均耗时（无计时数据时输出 -）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_routine_avg_ms(bucket: &RoutineBucket) -> String {
     if bucket.timed_count > 0 {
@@ -700,20 +804,22 @@ fn render_routine_avg_ms(bucket: &RoutineBucket) -> String {
     }
 }
 
+/// 输出扫描组行（最多 5 条）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_scans(
     out: &mut String,
-    scans: Vec<(Vec<&WebAccessRecord>, BTreeSet<String>)>,
+    scans: &[(Vec<&WebAccessRecord>, BTreeSet<String>)],
     ip_tokens: &BTreeMap<String, String>,
     ua_tokens: &BTreeMap<String, String>,
 ) {
-    for (items, targets) in scans.into_iter().take(5) {
+    for (items, targets) in scans.iter().take(5) {
         out.push_str(&render_access_scan_line(
-            &items, &targets, ip_tokens, ua_tokens,
+            items, targets, ip_tokens, ua_tokens,
         ));
     }
 }
 
+/// 渲染扫描行（源/UA/窗口/目标数/样本）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_scan_line(
     items: &[&WebAccessRecord],
@@ -721,20 +827,24 @@ fn render_access_scan_line(
     ip_tokens: &BTreeMap<String, String>,
     ua_tokens: &BTreeMap<String, String>,
 ) -> String {
-    let first = items.first().unwrap();
     let (window_start, window_end) = render_scan_window(items);
     let sample = render_scan_target_sample(targets, 8);
+    // 源/IP 可能不止一个（分布式扫描归并）：用 token_set_ref 表达（单源退化为单个 token）。
+    let source_ips = items.iter().map(|r| r.ip.clone()).collect::<BTreeSet<_>>();
+    let source_uas = items.iter().map(|r| r.ua.clone()).collect::<BTreeSet<_>>();
     format!(
-        "!$W|SCAN|source={}|ua={}|window={}..{}|targets={}|sample={}\n",
-        token_ref(&first.ip, ip_tokens),
-        token_ref(&first.ua, ua_tokens),
+        "!$W|SCAN|source={}|ua={}|window={}..{}|hits={}|targets={}|sample={}\n",
+        token_set_ref(&source_ips, ip_tokens),
+        token_set_ref(&source_uas, ua_tokens),
         window_start,
         window_end,
         items.len(),
+        targets.len(),
         sample
     )
 }
 
+/// 渲染扫描目标样本（前 N 个目标）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_scan_target_sample(targets: &BTreeSet<String>, limit: usize) -> String {
     targets
@@ -745,6 +855,7 @@ fn render_scan_target_sample(targets: &BTreeSet<String>, limit: usize) -> String
         .join(",")
 }
 
+/// 渲染扫描窗口（首尾时间）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_scan_window(items: &[&WebAccessRecord]) -> (String, String) {
     let first = items.first().unwrap();
@@ -752,17 +863,19 @@ fn render_scan_window(items: &[&WebAccessRecord]) -> (String, String) {
     (first.time.clone(), last.time.clone())
 }
 
+/// 输出突发组行（最多 5 条）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_bursts(
     out: &mut String,
-    bursts: Vec<Vec<&WebAccessRecord>>,
+    bursts: &[Vec<&WebAccessRecord>],
     ip_tokens: &BTreeMap<String, String>,
 ) {
-    for items in bursts.into_iter().take(5) {
-        out.push_str(&render_access_burst_line(&items, ip_tokens));
+    for items in bursts.iter().take(5) {
+        out.push_str(&render_access_burst_line(items, ip_tokens));
     }
 }
 
+/// 渲染突发行（状态/方法/路由/窗口/计数/IP 数）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_burst_line(
     items: &[&WebAccessRecord],
@@ -785,6 +898,7 @@ fn render_access_burst_line(
     )
 }
 
+/// 收集突发组的去重 IP 集合。
 #[tracing::instrument(level = "debug", skip_all)]
 fn collect_burst_ips(items: &[&WebAccessRecord]) -> BTreeSet<String> {
     let mut burst_ips = BTreeSet::new();
@@ -794,6 +908,7 @@ fn collect_burst_ips(items: &[&WebAccessRecord]) -> BTreeSet<String> {
     burst_ips
 }
 
+/// 渲染突发窗口（首尾时间）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_burst_window(items: &[&WebAccessRecord]) -> (String, String) {
     let first = items.first().unwrap();
@@ -801,6 +916,7 @@ fn render_burst_window(items: &[&WebAccessRecord]) -> (String, String) {
     (first.time.clone(), last.time.clone())
 }
 
+/// 收集访问汇总统计（状态/方法/URL/IP/UA/引用/异常/慢请求）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn collect_access_summary_stats<'a>(records: &'a [WebAccessRecord]) -> AccessSummaryStats<'a> {
     let mut stats = AccessSummaryStats::default();
@@ -833,6 +949,7 @@ fn collect_access_summary_stats<'a>(records: &'a [WebAccessRecord]) -> AccessSum
     stats
 }
 
+/// 输出透传行（无法解析的行原样保留）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_passthrough_lines(out: &mut String, passthrough: &[String]) {
     for line in passthrough {
@@ -841,6 +958,7 @@ fn emit_passthrough_lines(out: &mut String, passthrough: &[String]) {
     }
 }
 
+/// 尝试输出紧凑健康汇总（仅健康路由且无异常时）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn try_emit_compact_health_summary(
     out: &mut String,
@@ -862,11 +980,15 @@ fn try_emit_compact_health_summary(
     true
 }
 
+/// 输出访问汇总块（记录数/窗口/状态分布/Top 列表）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_summary_block(
     out: &mut String,
     records: &[WebAccessRecord],
     stats: &AccessSummaryStats<'_>,
+    ip_tokens: &BTreeMap<String, String>,
+    ua_tokens: &BTreeMap<String, String>,
+    has_scan: bool,
 ) {
     let first_time = records
         .first()
@@ -895,10 +1017,20 @@ fn emit_access_summary_block(
         top_entries(&stats.sources, 4)
     ));
     out.push_str(&format!("$W|TOP_URL|{}\n", top_entries(&stats.urls, 8)));
+    // 仅当 v3 字典行实际输出（records≥24）时复用 token，否则回退完整原始串，避免未定义 token。
+    let use_tokens = should_emit_access_v3(records, has_scan);
     out.push_str(&format!(
         "$W|TOP_IP|{}|$W|TOP_UA|{}",
-        top_entries(&stats.ips, 8),
-        top_entries(&stats.uas, 6)
+        if use_tokens {
+            top_entries_tok(&stats.ips, 8, ip_tokens)
+        } else {
+            top_entries(&stats.ips, 8)
+        },
+        if use_tokens {
+            top_entries_tok(&stats.uas, 6, ua_tokens)
+        } else {
+            top_entries(&stats.uas, 6)
+        }
     ));
     if !stats.referers.is_empty() {
         out.push_str(&format!("|$W|TOP_REF|{}", top_entries(&stats.referers, 6)));
@@ -906,14 +1038,26 @@ fn emit_access_summary_block(
     out.push('\n');
 }
 
+/// 输出异常行（4xx/5xx 分组，最多 8 条）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_anomaly_lines(
     out: &mut String,
     anomalies: &BTreeMap<String, Vec<&WebAccessRecord>>,
+    scan_ips: &BTreeSet<String>,
+    scan_represented: bool,
 ) {
     let mut anomaly_entries = anomalies.iter().collect::<Vec<_>>();
     anomaly_entries.sort_by(|a, b| b.1.len().cmp(&a.1.len()).then_with(|| a.0.cmp(b.0)));
     for (key, items) in anomaly_entries.into_iter().take(8) {
+        // 跳过纯扫描源异常：仅当本轮确实输出了 SCAN 行（v3 分支激活、记录数 ≥24）且该探测组
+        // 的所有命中 IP 均已在扫描判定中作为扫描源聚合时才抑制，避免既无 SCAN 替代表达又丢关键
+        // ANOMALY 信息（例如记录数不足 24 的小样本扫描场景）。
+        if scan_represented
+            && !scan_ips.is_empty()
+            && items.iter().all(|record| scan_ips.contains(&record.ip))
+        {
+            continue;
+        }
         let mut anomaly_ips = BTreeMap::new();
         for record in items {
             inc(&mut anomaly_ips, record.ip.clone());
@@ -937,6 +1081,7 @@ fn emit_access_anomaly_lines(
     }
 }
 
+/// 输出慢请求行（最多 5 条）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn emit_access_slow_lines(out: &mut String, slow: &[&WebAccessRecord]) {
     for record in sort_slow_access_records(slow).into_iter().take(5) {
@@ -944,6 +1089,7 @@ fn emit_access_slow_lines(out: &mut String, slow: &[&WebAccessRecord]) {
     }
 }
 
+/// 按耗时降序排序慢请求。
 #[tracing::instrument(level = "debug", skip_all)]
 fn sort_slow_access_records<'a>(slow: &'a [&'a WebAccessRecord]) -> Vec<&'a WebAccessRecord> {
     let mut sorted = slow.to_vec();
@@ -951,6 +1097,7 @@ fn sort_slow_access_records<'a>(slow: &'a [&'a WebAccessRecord]) -> Vec<&'a WebA
     sorted
 }
 
+/// 渲染慢请求行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_access_slow_line(record: &WebAccessRecord) -> String {
     let (method, route) = render_slow_identity(record);
@@ -965,11 +1112,13 @@ fn render_access_slow_line(record: &WebAccessRecord) -> String {
     )
 }
 
+/// 渲染慢请求身份（方法 + 归一化路由）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_slow_identity(record: &WebAccessRecord) -> (String, String) {
     (record.method.clone(), normalize_route(&record.path))
 }
 
+/// 解析耗时（支持秒后缀与秒/毫秒数值，转毫秒）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_duration_ms(value: &str) -> Option<u64> {
     let trimmed = value.trim().trim_matches('"');
@@ -988,6 +1137,7 @@ fn parse_duration_ms(value: &str) -> Option<u64> {
         .map(|value| (value * 1000.0).round() as u64)
 }
 
+/// 判断是否为 CloudWatch 表格噪音行（分隔线/表头）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_cloudwatch_table_noise(line: &str) -> bool {
     if line.is_empty() {
@@ -1004,6 +1154,7 @@ fn is_cloudwatch_table_noise(line: &str) -> bool {
     lower.contains("|") && lower.contains("timestamp") && lower.contains("message")
 }
 
+/// 拆分 CSV 行（支持引号与转义）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn split_csv_line(line: &str) -> Vec<String> {
     let mut fields = Vec::new();
@@ -1029,6 +1180,7 @@ fn split_csv_line(line: &str) -> Vec<String> {
     fields
 }
 
+/// 按空白拆分 W3C 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn split_w3c_line(line: &str) -> Vec<String> {
     line.split_whitespace()
@@ -1036,6 +1188,7 @@ fn split_w3c_line(line: &str) -> Vec<String> {
         .collect()
 }
 
+/// 解析 W3C 表头（#Fields: 行）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn w3c_header(line: &str) -> Option<W3cState> {
     let trimmed = line.trim_start();
@@ -1053,6 +1206,7 @@ fn w3c_header(line: &str) -> Option<W3cState> {
     }
 }
 
+/// 按候选字段名取 W3C 值。
 #[tracing::instrument(level = "debug", skip_all)]
 fn w3c_value(fields: &[String], values: &[String], candidates: &[&str]) -> Option<String> {
     for candidate in candidates {
@@ -1063,6 +1217,7 @@ fn w3c_value(fields: &[String], values: &[String], candidates: &[&str]) -> Optio
     None
 }
 
+/// 解码 W3C URL 转义（%20/%2F 等）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_w3c_text(value: &str) -> String {
     value
@@ -1074,6 +1229,7 @@ fn compact_w3c_text(value: &str) -> String {
         .replace('+', " ")
 }
 
+/// 解析 CSV 表头（含 message/status/method 特征）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn csv_header(line: &str) -> Option<CsvState> {
     let trimmed = line.trim_start();
@@ -1100,6 +1256,7 @@ fn csv_header(line: &str) -> Option<CsvState> {
     }
 }
 
+/// 按候选列名取 CSV 值（精确后模糊匹配）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn csv_value(headers: &[String], fields: &[String], candidates: &[&str]) -> Option<String> {
     for candidate in candidates {
@@ -1115,6 +1272,7 @@ fn csv_value(headers: &[String], fields: &[String], candidates: &[&str]) -> Opti
     None
 }
 
+/// 沿路径从 JSON 取字符串。
 #[tracing::instrument(level = "debug", skip_all)]
 fn json_string<'a>(value: &'a Value, path: &[&str]) -> Option<&'a str> {
     let mut cursor = value;
@@ -1124,6 +1282,7 @@ fn json_string<'a>(value: &'a Value, path: &[&str]) -> Option<&'a str> {
     cursor.as_str()
 }
 
+/// 沿路径从 JSON 取状态（字符串或数字）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn json_status(value: &Value, path: &[&str]) -> Option<String> {
     let mut cursor = value;
@@ -1137,6 +1296,7 @@ fn json_status(value: &Value, path: &[&str]) -> Option<String> {
 }
 
 impl WebLogPlugin {
+    /// 创建 WebLogPlugin 实例（名称 web_log，优先级 170），预编译各日志格式正则。
     pub fn new() -> Self {
         Self {
             name: "web_log",
@@ -1152,6 +1312,7 @@ impl WebLogPlugin {
         }
     }
 
+    /// 解析访问消息（ALB/Envoy/uvicorn/combined/common 五种格式）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_access_message(
         &self,
@@ -1229,7 +1390,10 @@ impl WebLogPlugin {
                 status: status.clone(),
                 bytes: "-".to_string(),
                 referer: "-".to_string(),
-                ua: caps.name("level")?.as_str().to_string(),
+                // uvicorn access 格式（`INFO: ip:port - "GET /x HTTP/1.1" 200 OK`）无 User-Agent 字段，
+                // 日志级别（捕获组 level）只是日志前缀，不得当作 UA 计入统计。统一置为 "-"（无 UA），
+                // 否则会把 "INFO" 这类级别串污染进 TOP_UA（见 case_027）。
+                ua: "-".to_string(),
                 reason: compact_spaces(caps.name("reason")?.as_str()),
                 duration_ms: None,
                 raw: raw.to_string(),
@@ -1279,6 +1443,7 @@ impl WebLogPlugin {
         None
     }
 
+    /// 解析 JSON 记录（message/log/textPayload/httpRequest 等形态）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_json_record(&self, line: &str) -> Option<WebAccessRecord> {
         let value = serde_json::from_str::<Value>(line.trim()).ok()?;
@@ -1373,6 +1538,7 @@ impl WebLogPlugin {
         })
     }
 
+    /// 解析 CSV 记录（按表头取字段）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_csv_record(&self, state: &CsvState, line: &str) -> Option<WebAccessRecord> {
         let fields = split_csv_line(line);
@@ -1450,6 +1616,7 @@ impl WebLogPlugin {
         })
     }
 
+    /// 解析 W3C 记录（按字段名取值）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_w3c_record(&self, state: &W3cState, line: &str) -> Option<WebAccessRecord> {
         let fields = split_w3c_line(line);
@@ -1510,8 +1677,35 @@ impl WebLogPlugin {
         })
     }
 
+    /// 解析包裹记录（AWS logs tail/CloudWatch 表格行）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_wrapped_record(&self, line: &str) -> Option<WebAccessRecord> {
+        // 单行云 CSV 包装器：无表头时形如 `2026-05-13T08:34:03Z,azure,"10.0.0.3 - - [...] "GET /x HTTP/1.1" 500 ..."`
+        // 的 `timestamp,provider,"message"`（消息字段用 CSV 双引号转义）。三重守卫避免误伤真实 raw 访问行：
+        // 1) split_csv_line 恰好 3 字段；2) 字段0 形如时间戳（含 ':'）；3) 字段1 为短 provider 令牌。
+        // 消息字段经 split_csv_line 的引号转义还原后再走标准访问解析，从而把包装行内的 4xx/5xx 信号聚合进 records。
+        // 必须置于宽松的 aws_logs_tail 之前：否则该行会被其 `timestamp stream message` 误匹配，message 抽成
+        // 垃圾串、内层解析失败即 return，导致本回退永不触发。
+        {
+            let fields = split_csv_line(line.trim());
+            if fields.len() == 3
+                && fields[0].contains(':')
+                && !fields[1].is_empty()
+                && fields[1].len() <= 32
+                && fields[1]
+                    .chars()
+                    .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+            {
+                if let Some(record) = self.parse_access_message(
+                    &fields[2],
+                    &fields[1],
+                    Some(fields[0].as_str()),
+                    line,
+                ) {
+                    return Some(record);
+                }
+            }
+        }
         if let Some(caps) = self.aws_logs_tail_pattern.captures(line.trim()) {
             let message = caps.name("message")?.as_str();
             let source = format!("AWS:{}", compact_stream(caps.name("stream")?.as_str()));
@@ -1533,6 +1727,7 @@ impl WebLogPlugin {
         None
     }
 
+    /// 解析访问记录（按 w3c/csv/包裹/JSON/纯文本 依次尝试）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_access_record(
         &self,
@@ -1559,11 +1754,23 @@ impl WebLogPlugin {
             .or_else(|| self.parse_access_message(trimmed, "WEB", None, line))
     }
 
+    /// 压缩访问记录：解析后汇总输出（摘要/异常/慢请求/v3 IR），ROI 门控。
     #[tracing::instrument(level = "debug", skip_all)]
     fn compress_access_records(&self, text: &str) -> Option<String> {
         let (records, passthrough) = self.parse_access_records_and_passthrough(text);
 
         if records.len() < 2 {
+            return None;
+        }
+
+        // 升级/重定向（1xx 与 3xx 非 304）是决策相关信号：WebSocket 升级、redirect 链的目标路径都在
+        // 这两类状态码里。聚合摘要默认只把它们归入 st=/3xx= 计数，不保留代表性样本，会让语义门禁判定
+        // "升级/重定向意图信息不足"（见 case_035）。此类切片回退到逐行 $W|A 输出，完整保留每条的状态码
+        // 与路径，语义无损。
+        if records
+            .iter()
+            .any(|r| r.status.starts_with('1') || (r.status.starts_with('3') && r.status != "304"))
+        {
             return None;
         }
 
@@ -1575,14 +1782,25 @@ impl WebLogPlugin {
             return Some(out);
         }
 
-        emit_access_summary_block(&mut out, &records, &stats);
-        append_access_v3_ir(&mut out, &records);
-        emit_access_anomaly_lines(&mut out, &stats.anomalies);
+        let collection = collect_access_v3_collection(&records);
+        let ip_tokens = build_ip_tokens(&collection.ip_counts, &collection.scan_ips);
+        let ua_tokens = build_ua_tokens(&collection.ua_counts);
+        let has_scan = !collection.scans.is_empty();
+        emit_access_summary_block(&mut out, &records, &stats, &ip_tokens, &ua_tokens, has_scan);
+        append_access_v3_ir(&mut out, &records, &collection, &ip_tokens, &ua_tokens);
+        // 仅当 v3 分支激活（会输出 SCAN 行）时才允许抑制纯扫描源 ANOMALY，见 emit_access_anomaly_lines。
+        emit_access_anomaly_lines(
+            &mut out,
+            &stats.anomalies,
+            &collection.scan_ips,
+            should_emit_access_v3(&records, has_scan),
+        );
         emit_access_slow_lines(&mut out, &stats.slow);
 
         Some(out)
     }
 
+    /// 解析访问记录与透传行（识别表头与噪音）。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse_access_records_and_passthrough(
         &self,
@@ -1622,19 +1840,55 @@ impl WebLogPlugin {
 }
 
 impl Default for WebLogPlugin {
+    /// Default 实现：等价于 new()。
     fn default() -> Self {
         Self::new()
     }
 }
 
+/// 去掉局部字典条目值末尾的 (class) 注解，如 `10.0.0.52(Internal)` -> `10.0.0.52`。
+fn strip_dict_class(val: &str) -> String {
+    match val.rfind('(') {
+        Some(idx) if val[idx..].ends_with(')') => val[..idx].to_string(),
+        _ => val.to_string(),
+    }
+}
+
+/// 解析插件局部字典行（$W|DICT_IP / $W|DICT_UA），返回 token->值 映射。
+/// 压缩侧把 IP/UA 写成局部协议行（不进全局 dictionary），解压侧需自行解析。
+fn parse_web_log_local_dict(compressed: &str) -> BTreeMap<String, String> {
+    let mut map: BTreeMap<String, String> = BTreeMap::new();
+    for line in compressed.lines() {
+        let rest = if let Some(r) = line.strip_prefix("$W|DICT_IP|") {
+            r
+        } else if let Some(r) = line.strip_prefix("$W|DICT_UA|") {
+            r
+        } else {
+            continue;
+        };
+        for entry in rest.trim_end().split(',') {
+            if let Some((tok, val)) = entry.split_once('=') {
+                let tok = tok.trim();
+                if !tok.is_empty() {
+                    map.insert(tok.to_string(), strip_dict_class(val.trim()));
+                }
+            }
+        }
+    }
+    map
+}
+
 impl Plugin for WebLogPlugin {
+    /// 返回插件名称 "web_log"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 170。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：前 12 行中可解析行占比 ≥25% 时命中。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lines: Vec<&str> = slice.text.lines().take(12).collect();
         if lines.is_empty() {
@@ -1673,6 +1927,7 @@ impl Plugin for WebLogPlugin {
         }
     }
 
+    /// 压缩切片：聚合摘要优先，否则逐行 token 化（$W|A/$W|E），ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -1726,10 +1981,14 @@ impl Plugin for WebLogPlugin {
             })
             .collect();
         let compacted = match aggregate {
+            // 优先选择聚合摘要：它在不扩张原始输入的前提下，把包裹/JSON/原始访问行统一归一为结构化
+            // SUMMARY + ANOMALY，语义更利于 LLM 消费。原阈值把 record_count>=8 作为小样本聚合门的近似，
+            // 导致 case_036 这类仅数行的混合包装样本即便聚合更优（5xx 已折叠进摘要）也因 477 vs 491 的
+            // 字节大小而回退到逐行透传，丢失聚合信号。改以"聚合后不超过原始输入"为准。
             Some(aggregate)
                 if aggregate.len() < legacy.len()
                     || (aggregate.len() < text.len()
-                        && aggregate_record_count(&aggregate) >= 8) =>
+                        && aggregate_record_count(&aggregate) >= 2) =>
             {
                 aggregate
             }
@@ -1744,15 +2003,44 @@ impl Plugin for WebLogPlugin {
         }
     }
 
+    /// 解压：将 $W|A/$W|E 行还原为访问/错误日志格式；
+    /// 对聚合摘要行（ROUTINE/SCAN/BURST/ANOMALY/SLOW/DIAG 等）行内替换局部 IP/UA token；
+    /// 局部字典行（$W|DICT_IP/$W|DICT_UA）禁止泄漏，直接丢弃（T-011 根治）。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
+        let local = parse_web_log_local_dict(compressed);
+        // 预编译替换正则：按 key 长度降序，避免 $IP1 误匹配 $IP10 等长前缀 token。
+        let mut keys: Vec<&String> = local.keys().collect();
+        keys.sort_by(|a, b| b.len().cmp(&a.len()));
+        let re = if keys.is_empty() {
+            None
+        } else {
+            let pat = keys
+                .iter()
+                .map(|k| regex::escape(k))
+                .collect::<Vec<_>>()
+                .join("|");
+            Regex::new(&format!("({})", pat)).ok()
+        };
+
         let mut out = String::new();
         for line in compressed.lines() {
+            // 局部字典行：禁止泄漏，直接丢弃。
+            if line.starts_with("$W|DICT_IP|") || line.starts_with("$W|DICT_UA|") {
+                continue;
+            }
             if line.starts_with("$W|A|") {
                 let parts: Vec<&str> = line.split('|').collect();
                 if parts.len() >= 10 {
-                    let ip = dict.resolve_or_self(parts[2]);
+                    let ip = local
+                        .get(parts[2])
+                        .cloned()
+                        .unwrap_or_else(|| dict.resolve_or_self(parts[2]).to_string());
                     let path = dict.resolve_or_self(parts[5]);
-                    let ua = dict.resolve_or_self(&parts[9..].join("|"));
+                    let ua_joined = parts[9..].join("|");
+                    let ua = local
+                        .get(&ua_joined)
+                        .cloned()
+                        .unwrap_or_else(|| dict.resolve_or_self(&ua_joined).to_string());
                     out.push_str(&format!(
                         "{} - - [{}] \"{} {} HTTP/1.1\" {} {} \"{}\" \"{}\"\n",
                         ip, parts[3], parts[4], path, parts[6], parts[7], parts[8], ua
@@ -1769,12 +2057,25 @@ impl Plugin for WebLogPlugin {
                     continue;
                 }
             }
-            out.push_str(line);
+            // 其余行（聚合摘要行等）：行内替换局部 IP/UA token。
+            let resolved = match &re {
+                Some(re) => re
+                    .replace_all(line, |caps: &regex::Captures| {
+                        local
+                            .get(caps.get(0).unwrap().as_str())
+                            .cloned()
+                            .unwrap_or_default()
+                    })
+                    .into_owned(),
+                None => line.to_string(),
+            };
+            out.push_str(&resolved);
             out.push('\n');
         }
         out
     }
 
+    /// 返回后续插件列表（smart_path）。
     fn next_plugins(&self) -> Vec<&'static str> {
         vec!["smart_path"]
     }
@@ -1784,6 +2085,7 @@ impl Plugin for WebLogPlugin {
 mod tests {
     use super::*;
 
+    /// 测试辅助：构造样例 WebAccessRecord。
     fn sample_record() -> WebAccessRecord {
         WebAccessRecord {
             source: "WEB".to_string(),
@@ -1801,11 +2103,13 @@ mod tests {
         }
     }
 
+    /// 测试：空条目字典行返回 None。
     #[test]
     fn render_access_dict_line_returns_none_when_entries_empty() {
         assert!(render_access_dict_line("DICT_IP", Vec::new()).is_none());
     }
 
+    /// 测试：无计时数据时 routine 行 avg_ms 为 -。
     #[test]
     fn render_access_routine_line_uses_dash_avg_when_no_timing() {
         let mut ips = BTreeSet::new();
@@ -1827,6 +2131,7 @@ mod tests {
         assert!(line.contains("avg_ms=-"), "line={line}");
     }
 
+    /// 测试：扫描行包含窗口与样本目标。
     #[test]
     fn render_access_scan_line_includes_window_and_sample_targets() {
         let record = sample_record();
@@ -1840,6 +2145,63 @@ mod tests {
         assert!(line.contains("sample=/.env,/wp-admin") || line.contains("sample=/wp-admin,/.env"));
     }
 
+    /// 契约测试：`render_access_ip_dict_line` 按 ip_tokens 过滤并按 ip 计数排序渲染 DICT_IP 字典行。
+    #[test]
+    fn render_access_ip_dict_line_filters_by_tokens() {
+        let mut counts = BTreeMap::new();
+        counts.insert("10.0.0.1".to_string(), 5usize);
+        counts.insert("10.0.0.2".to_string(), 3usize);
+        let mut tokens = BTreeMap::new();
+        tokens.insert("10.0.0.1".to_string(), "ia".to_string());
+        // 10.0.0.2 未在 tokens 中，应被过滤掉
+        let line = render_access_ip_dict_line(&counts, &tokens).expect("tokens 非空应有字典行");
+        assert!(line.starts_with("$W|DICT_IP|"), "line={line}");
+        assert!(line.contains("ia=10.0.0.1"), "line={line}");
+        assert!(
+            !line.contains("10.0.0.2"),
+            "未被打点 IP 不应出现在行内: {line}"
+        );
+
+        // 空 tokens 返回 None
+        assert!(render_access_ip_dict_line(&counts, &BTreeMap::new()).is_none());
+    }
+
+    /// 契约测试：`render_access_ua_dict_line` 按 ua_tokens 过滤并按 ua 计数排序渲染 DICT_UA 字典行。
+    #[test]
+    fn render_access_ua_dict_line_filters_by_tokens() {
+        let mut counts = BTreeMap::new();
+        counts.insert("curl/8.0".to_string(), 5usize);
+        counts.insert("python-requests".to_string(), 2usize);
+        let mut tokens = BTreeMap::new();
+        tokens.insert("curl/8.0".to_string(), "ub".to_string());
+        let line = render_access_ua_dict_line(&counts, &tokens).expect("tokens 非空应有字典行");
+        assert!(line.starts_with("$W|DICT_UA|"), "line={line}");
+        assert!(line.contains("ub=curl/8.0("), "line={line}");
+        assert!(
+            !line.contains("python-requests"),
+            "未被打点 UA 不应出现在行内: {line}"
+        );
+
+        // 空 tokens 返回 None
+        assert!(render_access_ua_dict_line(&counts, &BTreeMap::new()).is_none());
+    }
+
+    /// 契约测试：`parse_web_log_local_dict` 解析 DICT_IP/DICT_UA 行并忽略其余行，剥离 (类别) 后缀并丢弃空 token。
+    #[test]
+    fn parse_web_log_local_dict_roundtrips_dict_lines() {
+        let compressed = "$W|DICT_IP|ia=10.0.0.1(private),ib=10.0.0.2(private)\n\
+                          $W|DICT_UA|ub=curl/8.0(cli)\n\
+                          $W|DIAG|err_rate=0.0\n\
+                          $W|DICT_IP|=emptytoken\n";
+        let map = parse_web_log_local_dict(compressed);
+        assert_eq!(map.get("ia").map(String::as_str), Some("10.0.0.1"));
+        assert_eq!(map.get("ib").map(String::as_str), Some("10.0.0.2"));
+        assert_eq!(map.get("ub").map(String::as_str), Some("curl/8.0"));
+        assert!(!map.contains_key("err_rate"), "非字典行应被忽略");
+        assert!(!map.contains_key(""), "空 token 条目应被丢弃");
+    }
+
+    /// 测试：突发行统计去重 IP 数。
     #[test]
     fn render_access_burst_line_counts_unique_ips() {
         let first = sample_record();
@@ -1852,6 +2214,7 @@ mod tests {
         assert!(line.contains("ips=2"), "line={line}");
     }
 
+    /// 测试：慢请求行归一化路由 ID。
     #[test]
     fn render_access_slow_line_normalizes_route_id() {
         let record = sample_record();

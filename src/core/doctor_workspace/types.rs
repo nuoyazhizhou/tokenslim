@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 
+/// 工作区风险分级：Ok（无风险）/Warn（需关注）/Fail（高失败风险）。
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum WorkspaceRiskLevel {
     Ok,
@@ -7,6 +8,7 @@ pub enum WorkspaceRiskLevel {
     Fail,
 }
 
+/// 项目信息：主要/次要语言、框架、包管理器、构建/测试命令与版本方言等。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProjectInfo {
     pub primary: String,
@@ -15,14 +17,15 @@ pub struct ProjectInfo {
     pub package_manager: Option<String>,
     pub build: String,
     pub test: String,
-    /// Version dialect info (e.g. "spring-boot-3", "c++17", "python-2.7")
+    /// 版本方言信息（如 "spring-boot-3"、"c++17"、"python-2.7"）。
     pub dialect: Option<String>,
-    /// Database type inferred from ORM/migration files
+    /// 由 ORM/迁移文件推断出的数据库类型。
     pub database: Option<String>,
-    /// Module system (e.g. "esm", "cjs")
+    /// 模块系统（如 "esm"、"cjs"）。
     pub module_system: Option<String>,
 }
 
+/// 各语言/工具链探测到的版本号集合（未探测到为 None）。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ToolVersions {
     pub rust: Option<String>,
@@ -58,6 +61,7 @@ pub struct ToolVersions {
     pub cobol: Option<String>,
 }
 
+/// IDE 探测结果：标记当前目录检测到的各类编辑器/IDE。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct IdeInfo {
     pub vscode: bool,
@@ -80,6 +84,7 @@ pub struct IdeInfo {
     pub vim: bool,
 }
 
+/// 仓库探测结果：git/svn/hg/p4/cvs/bzr/fossil/darcs 等 VCS 是否存在。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RepoInfo {
     pub git: bool,
@@ -94,6 +99,7 @@ pub struct RepoInfo {
     pub darcs: bool,
 }
 
+/// 工作区诊断报告全集：风险、环境信号与各探测结构体集合、可执行动作与插件能力。
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct WorkspaceDoctorReport {
     pub risk: WorkspaceRiskLevel,
@@ -110,6 +116,7 @@ pub struct WorkspaceDoctorReport {
     pub plugins: Vec<crate::core::plugin_config_loader::PluginSummary>,
 }
 
+/// 工作区报告输出格式：Text（纯文本）/Json/LLM 紧凑/JsonMin。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WorkspaceReportFormat {
     Text,
@@ -118,6 +125,7 @@ pub enum WorkspaceReportFormat {
     JsonMin,
 }
 
+/// 工作区 LLM 紧凑报告的仓库字段（借用报告生命周期）。
 #[derive(Debug, Clone, Serialize)]
 pub struct WorkspaceLlmRepo<'a> {
     pub v: &'a str,
@@ -132,6 +140,7 @@ pub struct WorkspaceLlmRepo<'a> {
     pub darcs: bool,
 }
 
+/// 工作区 LLM 紧凑报告结构体：以最短字段名承载风险/环境/项目/IDE/仓库/插件摘要。
 #[derive(Debug, Clone, Serialize)]
 pub struct WorkspaceLlmCompact<'a> {
     pub r: &'a str,

@@ -4,12 +4,13 @@ expected_keep: 'docker build -t myapp:latest .'
 expected_compress: 'Sending build context to Docker daemon  2.048kB'
 source: 'llm'
 generated_at: '2026-06-08T15:40:55Z'
+expected_dispatch_chain: ['shell_session_plugin', 'kubernetes_docker_plugin']
 
 # === audit 字段（自动维护，请勿手填内容字段）===
 audit:
-  content_hash: 'c3710ff045bacf6a63bca18b08432480a6783429e14e609e122aafbc3d22e43b'
-  final_status: 'routing_boundary_unclear'
-  llm_invoked: true
-  llm_verified_at: '2026-06-10T05:56:39.118977'
+  content_hash: '10439245bbd8ad2ce146e1209893e7c2f938cd93be6dec6dc785c3c9c2163eea'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:10:38.302583'
   last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

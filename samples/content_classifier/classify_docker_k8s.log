@@ -1,0 +1,5 @@
+NAME          READY   STATUS    RESTARTS   AGE
+web-6b7f5d    1/1     Running   0          2d
+nginx-8fbcc   1/1     Running   0          3d
+NAME          IMAGE               PORTS     STATUS
+my-container   myapp:v1.2.0       8080/tcp  Up 5 minutes

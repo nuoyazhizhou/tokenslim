@@ -1,6 +1,6 @@
 {
     "name": "gcc_log",
-    "description": "GCC/Clang 编译日志脱水",
+    "description": "GCC/Clang 编译日志脱水，含 nm/readelf/size/objdump 符号·节表·反汇编·重定位和 ar 归档成员/创建等 binutils 工具输出压缩。",
     "priority": 200,
     "enabled": true,
     "detect": {
@@ -40,7 +40,16 @@
         "token_prefixes": [
             "$GCC",
             "$MAKE",
-            "$CMAKE"
+            "$CMAKE",
+            "$NM",
+            "$SIZE",
+            "$SECTION",
+            "$OBJ",
+            "$AR",
+            "$FUNC",
+            "$ASM",
+            "$RELOC",
+            "$AR_CREATE"
         ]
     },
     "keep_signals": [
@@ -50,13 +59,27 @@
         "undefined reference 行（链接器错误）",
         "Build files have been written to: 等关键行",
         "CMake Error 等构建错误行",
-        "Error 1 或 Error 2 结尾的行"
+        "Error 1 或 Error 2 结尾的行",
+        "nm 未定义/全局/弱符号（U/T/D/B/W 及带版本尾）",
+        "readelf/size 节名与 Size",
+        "objdump -t 全局/弱符号（$OBJ）",
+        "objdump -d 函数标签与助记符（$FUNC/$ASM）",
+        "ar -t 归档成员名（$AR）",
+        "objdump -r 重定位类型与符号名（$RELOC）",
+        "ar rcs 创建归档添加成员与归档名（$AR_CREATE）"
     ],
     "compress_targets": [
         "长路径替换为 $GCC 令牌字典",
         "宏定义（-D...）替换为令牌",
         "相同 warning 超过阈值的后续行（折叠）",
-        "重复行去重（threshold=1）"
+        "重复行去重（threshold=1）",
+        "nm 符号表去地址 + 局部/弱符号类型折叠",
+        "readelf 节表折叠冗余地址/偏移列",
+        "objdump -t 符号表去地址/Size + 局部符号类型折叠",
+        "objdump -d 反汇编折叠偏移/机器码字节，保留助记符",
+        "ar -t 成员清单折叠为 $AR 计数+扩展名摘要",
+        "objdump -r 重定位表折叠 Offset/Info/addend，保留类型与符号名",
+        "ar rcs 创建 verbose 折叠创建命令行，保留添加成员与归档名"
     ],
-    "design_intent": "GCC/Clang编译日志脱水：保留错误、警告和关键信息，折叠重复警告，压缩长路径和宏定义。"
+    "design_intent": "GCC/Clang编译日志脱水：保留错误、警告和关键信息，折叠重复警告，压缩长路径和宏定义。同时感知压缩 nm（符号表）、size（节大小）、readelf/objdump（节表/符号表/反汇编/重定位表）、ar（归档成员清单/创建操作）等 binutils 分析工具输出，去地址扁平化并保留符号/节/指令/重定位/成员语义可读。"
 }

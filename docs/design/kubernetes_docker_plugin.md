@@ -1,0 +1,1 @@
+- **功能描述**: 针对 K8s 常见的探测（Liveness/Readiness Probe）日志进行折叠。

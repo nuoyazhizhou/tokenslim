@@ -10,7 +10,6 @@ use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use once_cell::sync::Lazy;
 use regex::Regex;
-use std::any::Any;
 use std::borrow::Cow;
 use std::collections::HashMap;
 
@@ -18,6 +17,18 @@ static EXCEPTION_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"Exception in thread
 static STACK_FRAME_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\s*at ").unwrap());
 static CAUSED_BY_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\t?Caused by:").unwrap());
 static SUPPRESSED_RE: Lazy<Regex> = Lazy::new(|| Regex::new(r"^\s*Suppressed:").unwrap());
+/// P1-07：异常类名行——Logback/Spring Boot/`e.printStackTrace()` 的常见形态是
+/// 首行直接为全限定异常类名（可带 `: message` 后缀），而非 `Exception in thread`。
+/// 形如 `java.lang.NullPointerException: null`、`javax.servlet.ServletException: x`。
+static EXCEPTION_HEAD_RE: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r#"^\s*[\w$]+(?:\.[\w$]+)*(?:Exception|Error|Throwable)(?::.*)?$"#).unwrap()
+});
+
+/// P1-07：异常头判定——`Exception in thread`、`Caused by:` 或异常类名行三者任一。
+/// `Caused by` 链也视为异常头（其后仍有栈帧，一个栈内可能有多段 caused-by）。
+fn is_exception_head(line: &str) -> bool {
+    EXCEPTION_RE.is_match(line) || CAUSED_BY_RE.is_match(line) || EXCEPTION_HEAD_RE.is_match(line)
+}
 
 /// 深层堆栈截断阈值：超过此数量的堆栈帧将被折叠
 const STACK_FRAME_THRESHOLD: usize = 20;
@@ -230,12 +241,19 @@ fn truncate_deep_stack(text: &str) -> String {
     let mut result = String::new();
     let mut frame_count = 0;
     let mut in_stack = false;
+    // P1-07 附带性能修复：帧总数只统计一次（原实现在每个异常块首次超阈值时
+    // 全量重扫文本，多异常 × 大文本场景为 O(异常数 × 总行数) 次正则匹配）。
+    let total_frames = text.lines().filter(|l| STACK_FRAME_RE.is_match(l)).count();
 
     for line in text.lines() {
-        if EXCEPTION_RE.is_match(line) {
+        // P1-07：异常头判定从单一 `Exception in thread` 扩展为主流 Java 栈形态
+        // （异常类名行 / Caused by 链），否则 Logback/Spring Boot/printStackTrace
+        // 场景下 in_stack 恒为 false，深栈截断永不触发。
+        if is_exception_head(line) {
             result.push_str(line);
             result.push('\n');
             in_stack = true;
+            // 每个异常头（含多段 caused-by）都重置帧计数。
             frame_count = 0;
         } else if in_stack && STACK_FRAME_RE.is_match(line) {
             frame_count += 1;
@@ -244,7 +262,6 @@ fn truncate_deep_stack(text: &str) -> String {
                 result.push('\n');
             } else if frame_count == STACK_FRAME_THRESHOLD + 1 {
                 // 第一次超过阈值时，添加摘要
-                let total_frames = text.lines().filter(|l| STACK_FRAME_RE.is_match(l)).count();
                 result.push_str(&format!(
                     "[STACK] {} frames (first {} shown, {} omitted)\n",
                     total_frames,
@@ -252,7 +269,9 @@ fn truncate_deep_stack(text: &str) -> String {
                     total_frames - STACK_FRAME_THRESHOLD
                 ));
             }
-        } else if in_stack && (CAUSED_BY_RE.is_match(line) || line.trim().is_empty()) {
+        } else if in_stack && line.trim().is_empty() {
+            // 空行结束当前栈（P1-07：Caused by 不再结束栈——它是异常头，
+            // 其后仍有栈帧，由上方的 is_exception_head 分支处理）。
             in_stack = false;
             result.push_str(line);
             result.push('\n');
@@ -286,7 +305,10 @@ fn extract_exception_summary(text: &str) -> String {
         let total = exception_counts.values().sum::<usize>();
         let mut summary = format!("[SUMMARY] {} exceptions: ", total);
         let mut parts: Vec<_> = exception_counts.iter().collect();
-        parts.sort_by_key(|&(_, count)| std::cmp::Reverse(*count));
+        // 按计数降序排列；计数相同时按异常类型名字典序升序，作为稳定 tie-breaker。
+        // 否则排序源是 HashMap.iter()（随机迭代顺序），等计数时相对顺序每次运行都可能不同，
+        // 导致 [SUMMARY] 行哈希漂移、`frozen` 基线反复报警成 `auditing`。
+        parts.sort_by(|a, b| b.1.cmp(a.1).then_with(|| a.0.cmp(b.0)));
 
         for (i, (exc_type, count)) in parts.iter().enumerate() {
             if i > 0 {
@@ -341,52 +363,40 @@ fn compress_suppressed_exceptions(text: &str) -> String {
 }
 
 impl JavaStackPlugin {
+    /// 创建 JavaStackPlugin 实例（名称 java_stack，优先级 86）。
     pub fn new() -> Self {
         Self {
             name: "java_stack",
             priority: 86,
-            config: JavaStackConfig::default(),
         }
     }
-}
 
-impl Plugin for JavaStackPlugin {
-    fn name(&self) -> &'static str {
-        self.name
-    }
-    fn priority(&self) -> u8 {
-        self.priority
-    }
-
-    fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
-        let text = slice.text.as_ref();
-        if text.contains("at ") && (text.contains(".java:") || text.contains(".kt:")) {
-            return Some(0.9);
-        }
-        if text.contains("Exception in thread") || text.contains("Caused by:") {
-            return Some(0.95);
-        }
-        None
-    }
-
-    fn compress<'a>(
+    /// 核心压缩逻辑：去重/截断/折叠/摘要后统一匹配编码进 $JEX/$JST/$JCB，再做 ROI 门控。
+    /// 逐行归一化（convert_line）由 `context` 可选控制；产出最终文本，内存归属由调用方决定。
+    #[tracing::instrument(level = "debug", skip_all)]
+    fn compress_lines_to_text(
         &self,
-        slice: &'a Slice<'a>,
+        text: &str,
         dict_engine: &mut DictionaryEngine,
-        _dedup_engine: &mut DedupEngine,
-        _arena: &'a Bump,
-    ) -> CompressResult<'a> {
-        let text = slice.text.as_ref();
-
+        mut context: Option<&mut CompressionContext>,
+    ) -> String {
         // 应用新的压缩功能
         let text_after_dedup = dedupe_same_stack(text);
         let text_after_truncate = truncate_deep_stack(&text_after_dedup);
         let text_after_suppressed = compress_suppressed_exceptions(&text_after_truncate);
         let text_with_summary = extract_exception_summary(&text_after_suppressed);
 
-        let mut tokens = Vec::new();
+        let mut compacted = String::new();
+        for raw_line in text_with_summary.lines() {
+            // 哈希规范化临时 Cow，保证 line 的借用在整个迭代内有效
+            let normalized_cow;
+            let line: &str = if let Some(ctx) = context.as_deref_mut() {
+                normalized_cow = ctx.convert_line(Cow::Borrowed(raw_line));
+                normalized_cow.as_ref()
+            } else {
+                raw_line
+            };
 
-        for line in text_with_summary.lines() {
             if EXCEPTION_RE.is_match(line) {
                 // Exception in thread "main" java.lang.NullPointerException: ...
                 if let Some(pos) = line.find("java.") {
@@ -394,14 +404,14 @@ impl Plugin for JavaStackPlugin {
                     let end_pos = class_part.find(':').unwrap_or(class_part.len());
                     let class_name = &class_part[..end_pos];
                     let token = encode_exception_class_name(class_name, dict_engine);
-                    tokens.push(Token::Text(Cow::Owned(format!(
+                    compacted.push_str(&format!(
                         "$JEX|{}|{}|{}\n",
                         &line[..pos],
                         token,
                         &class_part[end_pos..]
-                    ))));
+                    ));
                 } else {
-                    tokens.push(Token::Text(Cow::Owned(format!("{}\n", line))));
+                    compacted.push_str(&format!("{}\n", line));
                 }
             } else if STACK_FRAME_RE.is_match(line) {
                 // at com.pkg.Class.method(File.java:123)
@@ -414,20 +424,20 @@ impl Plugin for JavaStackPlugin {
                             let pkg = &full_method[..second_last_dot];
                             let class_method = &full_method[second_last_dot + 1..];
                             let token = dict_engine.add_package(pkg);
-                            tokens.push(Token::Text(Cow::Owned(format!(
+                            compacted.push_str(&format!(
                                 "$JST|{}|{}|{}\n",
                                 token,
                                 class_method,
                                 &content[paren_pos..]
-                            ))));
+                            ));
                         } else {
-                            tokens.push(Token::Text(Cow::Owned(format!("{}\n", line))));
+                            compacted.push_str(&format!("{}\n", line));
                         }
                     } else {
-                        tokens.push(Token::Text(Cow::Owned(format!("{}\n", line))));
+                        compacted.push_str(&format!("{}\n", line));
                     }
                 } else {
-                    tokens.push(Token::Text(Cow::Owned(format!("{}\n", line))));
+                    compacted.push_str(&format!("{}\n", line));
                 }
             } else if CAUSED_BY_RE.is_match(line) {
                 if let Some(pos) = line.find("Caused by: ") {
@@ -435,29 +445,53 @@ impl Plugin for JavaStackPlugin {
                     let end_pos = class_part.find(':').unwrap_or(class_part.len());
                     let class_name = &class_part[..end_pos];
                     let token = encode_exception_class_name(class_name, dict_engine);
-                    tokens.push(Token::Text(Cow::Owned(format!(
-                        "$JCB|{}|{}\n",
-                        token,
-                        &class_part[end_pos..]
-                    ))));
+                    compacted.push_str(&format!("$JCB|{}|{}\n", token, &class_part[end_pos..]));
                 } else {
-                    tokens.push(Token::Text(Cow::Owned(format!("{}\n", line))));
+                    compacted.push_str(&format!("{}\n", line));
                 }
             } else {
-                tokens.push(Token::Text(Cow::Owned(format!("{}\n", line))));
+                compacted.push_str(&format!("{}\n", line));
             }
         }
 
         // 法则 A ROI 门控：小样本或无命中行场景下，tokens 尾部 IR 头可能反而扩张，
         // 整段回退原文。参考 `docs/prompts/non_vcs_classical_prompts.md` § 1.3。
-        let compacted: String = tokens
-            .iter()
-            .map(|t| match t {
-                Token::Text(s) => s.as_ref(),
-                _ => "",
-            })
-            .collect();
-        let final_text = crate::core::utils::roi::prefer_non_expanding(text, compacted);
+        crate::core::utils::roi::prefer_non_expanding(text, compacted)
+    }
+}
+
+impl Plugin for JavaStackPlugin {
+    /// 返回插件名称 "java_stack"。
+    fn name(&self) -> &'static str {
+        self.name
+    }
+    /// 返回插件优先级 86。
+    fn priority(&self) -> u8 {
+        self.priority
+    }
+
+    /// 检测：含 "at " 且带 .java:/.kt: 文件名视为 Java 堆栈（0.9）；含 Exception in thread/Caused by 得 0.95。
+    fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
+        let text = slice.text.as_ref();
+        if text.contains("at ") && (text.contains(".java:") || text.contains(".kt:")) {
+            return Some(0.9);
+        }
+        if text.contains("Exception in thread") || text.contains("Caused by:") {
+            return Some(0.95);
+        }
+        None
+    }
+
+    /// 压缩切片：复用核心逻辑，统一走 Owned 内存归属。
+    fn compress<'a>(
+        &self,
+        slice: &'a Slice<'a>,
+        dict_engine: &mut DictionaryEngine,
+        _dedup_engine: &mut DedupEngine,
+        _arena: &'a Bump,
+    ) -> CompressResult<'a> {
+        let text = slice.text.as_ref();
+        let final_text = self.compress_lines_to_text(text, dict_engine, None);
 
         CompressResult {
             tokens: vec![Token::Text(Cow::Owned(final_text))],
@@ -466,6 +500,7 @@ impl Plugin for JavaStackPlugin {
         }
     }
 
+    /// 带上下文压缩：复用核心逻辑（逐行归一化），token 内存归属改为 arena 借用。
     fn compress_with_context<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -475,95 +510,7 @@ impl Plugin for JavaStackPlugin {
         context: &mut CompressionContext,
     ) -> CompressResult<'a> {
         let text = slice.text.as_ref();
-
-        // 应用新的压缩功能
-        let text_after_dedup = dedupe_same_stack(text);
-        let text_after_truncate = truncate_deep_stack(&text_after_dedup);
-        let text_after_suppressed = compress_suppressed_exceptions(&text_after_truncate);
-        let text_with_summary = extract_exception_summary(&text_after_suppressed);
-
-        let mut tokens: Vec<Token<'a>> = Vec::new();
-
-        for raw_line in text_with_summary.lines() {
-            let normalized = context.convert_line(Cow::Borrowed(raw_line));
-            let line = normalized.as_ref();
-
-            if EXCEPTION_RE.is_match(line) {
-                if let Some(pos) = line.find("java.") {
-                    let class_part = &line[pos..];
-                    let end_pos = class_part.find(':').unwrap_or(class_part.len());
-                    let class_name = &class_part[..end_pos];
-                    let token = encode_exception_class_name(class_name, dict_engine);
-                    let out = bumpalo::format!(
-                        in arena,
-                        "$JEX|{}|{}|{}\n",
-                        &line[..pos],
-                        token,
-                        &class_part[end_pos..]
-                    );
-                    tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                } else {
-                    let out = bumpalo::format!(in arena, "{}\n", line);
-                    tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                }
-            } else if STACK_FRAME_RE.is_match(line) {
-                let trimmed = line.trim_start();
-                let content = &trimmed[3..];
-                if let Some(paren_pos) = content.find('(') {
-                    let full_method = &content[..paren_pos];
-                    if let Some(last_dot) = full_method.rfind('.') {
-                        if let Some(second_last_dot) = full_method[..last_dot].rfind('.') {
-                            let pkg = &full_method[..second_last_dot];
-                            let class_method = &full_method[second_last_dot + 1..];
-                            let token = dict_engine.add_package(pkg);
-                            let out = bumpalo::format!(
-                                in arena,
-                                "$JST|{}|{}|{}\n",
-                                token,
-                                class_method,
-                                &content[paren_pos..]
-                            );
-                            tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                        } else {
-                            let out = bumpalo::format!(in arena, "{}\n", line);
-                            tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                        }
-                    } else {
-                        let out = bumpalo::format!(in arena, "{}\n", line);
-                        tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                    }
-                } else {
-                    let out = bumpalo::format!(in arena, "{}\n", line);
-                    tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                }
-            } else if CAUSED_BY_RE.is_match(line) {
-                if let Some(pos) = line.find("Caused by: ") {
-                    let class_part = &line[pos + 11..];
-                    let end_pos = class_part.find(':').unwrap_or(class_part.len());
-                    let class_name = &class_part[..end_pos];
-                    let token = encode_exception_class_name(class_name, dict_engine);
-                    let out =
-                        bumpalo::format!(in arena, "$JCB|{}|{}\n", token, &class_part[end_pos..]);
-                    tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                } else {
-                    let out = bumpalo::format!(in arena, "{}\n", line);
-                    tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-                }
-            } else {
-                let out = bumpalo::format!(in arena, "{}\n", line);
-                tokens.push(Token::Text(Cow::Borrowed(out.into_bump_str())));
-            }
-        }
-
-        // 法则 A ROI 门控：参考 `docs/prompts/non_vcs_classical_prompts.md` § 1.3。
-        let compacted: String = tokens
-            .iter()
-            .map(|t| match t {
-                Token::Text(s) => s.as_ref(),
-                _ => "",
-            })
-            .collect();
-        let final_text = crate::core::utils::roi::prefer_non_expanding(text, compacted);
+        let final_text = self.compress_lines_to_text(text, dict_engine, Some(context));
         let final_in_arena = arena.alloc_str(&final_text);
 
         CompressResult {
@@ -573,6 +520,7 @@ impl Plugin for JavaStackPlugin {
         }
     }
 
+    /// 解压：将 $JEX/$JST/$JCB 行用词典还原为原始异常/堆栈帧/Caused by 文本。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         let mut result = String::new();
         for line in compressed.lines() {
@@ -608,22 +556,64 @@ impl Plugin for JavaStackPlugin {
         }
         result
     }
-
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<JavaStackConfig>() {
-            self.config = new_config.clone();
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
-    }
 }
 
 impl Clone for JavaStackPlugin {
+    /// 克隆插件实例：复制名称与优先级。
     fn clone(&self) -> Self {
         Self {
             name: self.name,
             priority: self.priority,
-            config: self.config.clone(),
         }
+    }
+}
+
+#[cfg(test)]
+mod p1_07_truncate_tests {
+    use super::truncate_deep_stack;
+
+    /// P1-07 回归：主流 Java 栈形态（异常类名行开头，无 `Exception in thread`）
+    /// 必须触发深栈截断（旧实现 in_stack 恒为 false，截断永不生效）。
+    #[test]
+    fn truncates_deep_stack_without_exception_in_thread_header() {
+        let mut text = String::from("java.lang.NullPointerException: null\n");
+        for i in 0..40 {
+            text.push_str(&format!("    at com.foo.Bar.baz(Bar.java:{})\n", i));
+        }
+        let out = truncate_deep_stack(&text);
+        assert!(out.contains("[STACK]"), "深栈应被截断并生成摘要:\n{out}");
+        assert!(out.contains("first 20 shown"), "摘要应标注保留帧数:\n{out}");
+    }
+
+    /// 旧路径回归：经典 `Exception in thread` 头仍触发截断。
+    #[test]
+    fn truncates_deep_stack_with_classic_header() {
+        let mut text =
+            String::from("Exception in thread \"main\" java.lang.NullPointerException\n");
+        for i in 0..30 {
+            text.push_str(&format!("    at com.foo.Bar.baz(Bar.java:{})\n", i));
+        }
+        let out = truncate_deep_stack(&text);
+        assert!(out.contains("[STACK]"), "经典头仍应触发截断:\n{out}");
+    }
+
+    /// P1-07：Caused by 链作为异常头重置帧计数，其后栈帧继续被截断管理
+    /// （旧实现把 Caused by 当栈结束符，多段 caused-by 场景失效）。
+    #[test]
+    fn caused_by_chain_resets_frame_count_and_keeps_truncating() {
+        let mut text = String::from("java.lang.IllegalStateException: wrapped\n");
+        for i in 0..25 {
+            text.push_str(&format!("    at com.foo.Outer.a(Outer.java:{})\n", i));
+        }
+        text.push_str("Caused by: java.lang.NullPointerException: root\n");
+        for i in 0..25 {
+            text.push_str(&format!("    at com.foo.Inner.b(Inner.java:{})\n", i));
+        }
+        let out = truncate_deep_stack(&text);
+        assert_eq!(
+            out.matches("[STACK]").count(),
+            2,
+            "两段深栈应各自截断（Caused by 重置计数）:\n{out}"
+        );
     }
 }

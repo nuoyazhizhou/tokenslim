@@ -1,129 +1,8 @@
 {
-    "generated_at": "2026-06-24T17:55:12.920333",
-    "source_audit_version": "all_20260624-175500",
+    "generated_at": "2026-09-11T14:36:44.343315",
+    "source_audit_version": "v20260911_r2",
     "tokenslim_explain_binary": "target\\debug\\tokenslim.exe",
-    "active_replay_cases": [
-        {
-            "plugin": "android_gradle_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "ansi_cleaner_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "ansible_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "artifact_summary_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "bazel_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "ci_log_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "cloudformation_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "db_log_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "dotnet_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "gcc_log_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "generic_text_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "git_diff_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "helm_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "java_stack_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "json_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "kubernetes_docker_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "markdown_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "maven_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "ndjson_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        },
-        {
-            "plugin": "node_error_plugin",
-            "case_id": "",
-            "reason": "plugin_failed_or_needs_manual_case_lookup",
-            "status": "needs_manual_case_lookup"
-        }
-    ],
+    "active_replay_cases": [],
     "smoke_baseline": [
         {
             "kind": "command",
@@ -171,7 +50,7 @@
                     "alternative_1": "vcs|group=vcs|matched_by=keyword|pattern=az|intent=other|priority=100|fallback=false",
                     "alternative_1_capability": "description:|tags:|route:vcs|samples:0|showcase:0|audit:0|frozen:0|status:orchestrator",
                     "alternatives": "1",
-                    "candidate_plugin_chain": "android_gradle, ansible, ansi_cleaner, artifact_summary, bazel, cloud_log, cloudformation, ci_log, db_log, dotnet, gcc_log, helm, java_stack, json, kubernetes_docker, ndjson, markdown, maven, node_error, nodejs, noise_filter, generic_text, php_ruby, protobuf, pulumi, pytest, python_traceback, rust_go, shell_session, smart_code, smart_path, spring_boot, sql, static_rule, syslog, terraform, unity_unreal, web_log, xcode_log, webpack_vite, xml_html, template_driven, yaml",
+                    "candidate_plugin_chain": "android_gradle, ansible, ansi_cleaner, artifact_summary, bazel, cloud_log, cloudformation, ci_log, db_log, dotnet, gcc_log, helm, java_stack, json, kubernetes_docker, ls_listing, ndjson, markdown, maven, node_error, nodejs, noise_filter, generic_text, php_ruby, protobuf, pulumi, privacy, pytest, python_traceback, rust_go, shell_session, smart_code, smart_path, spring_boot, sql, static_rule, syslog, terraform, toml_ini, unity_unreal, web_log, xcode_log, webpack_vite, xml_html, yaml",
                     "command": "az pipelines runs show",
                     "confidence_gap": "60",
                     "confidence_gap_source": "route_priority",
@@ -189,7 +68,7 @@
                     "retry_plugin": "none",
                     "route_group": "build",
                     "run_route_view": "available_with:tokenslim run --explain-route az pipelines runs show",
-                    "selected_capability": "description:CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs|tags:|route:build|samples:88|showcase:44|audit:0|frozen:0|status:missing_audit",
+                    "selected_capability": "description:CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs|tags:|route:build|samples:44|showcase:44|audit:44|frozen:44|status:frozen",
                     "selected_declared_patterns": "::(group/endgroup/error/warning):: ; (section_start:/section_end:/Running with gitlab-runner) ; (\\[Pipeline\\]/##\\[(section/error/warning/command)\\]/buildkite-agent/circleci) ; (##teamcity\\[/travis_(fold/time):/\\[(ACME-CI/ci)\\]/### Step:)",
                     "selected_plugin": "ci_log",
                     "top_score_gap": "60",
@@ -224,13 +103,13 @@
                 "retry_plugin": "none",
                 "selected": {
                     "capability": {
-                        "audit": "0",
+                        "audit": "44",
                         "description": "CI/CD shell wrapper semantic compaction for GitHub Actions, GitLab CI, Jenkins, Azure Pipelines, CircleCI, Buildkite, local act, TeamCity, Travis CI, and organization-specific banner logs",
-                        "frozen": "0",
+                        "frozen": "44",
                         "route": "build",
-                        "samples": "88",
+                        "samples": "44",
                         "showcase": "44",
-                        "status": "missing_audit",
+                        "status": "frozen",
                         "tags": ""
                     },
                     "declared_patterns": "::(group/endgroup/error/warning):: ; (section_start:/section_end:/Running with gitlab-runner) ; (\\[Pipeline\\]/##\\[(section/error/warning/command)\\]/buildkite-agent/circleci) ; (##teamcity\\[/travis_(fold/time):/\\[(ACME-CI/ci)\\]/### Step:)",
@@ -259,13 +138,13 @@
                 "alternatives": [
                     {
                         "capability": {
-                            "audit": "0",
+                            "audit": "12",
                             "description": "\u667a\u80fd\u8def\u5f84\u8131\u6c34",
-                            "frozen": "0",
+                            "frozen": "12",
                             "route": "none",
-                            "samples": "24",
+                            "samples": "12",
                             "showcase": "12",
-                            "status": "missing_audit",
+                            "status": "frozen",
                             "tags": ""
                         },
                         "key": "alternative_1",
@@ -278,13 +157,13 @@
                     },
                     {
                         "capability": {
-                            "audit": "0",
+                            "audit": "15",
                             "description": "\u901a\u7528\u6587\u672c\u8131\u6c34",
-                            "frozen": "0",
+                            "frozen": "15",
                             "route": "generic",
-                            "samples": "24",
-                            "showcase": "12",
-                            "status": "missing_audit",
+                            "samples": "15",
+                            "showcase": "15",
+                            "status": "frozen",
                             "tags": ""
                         },
                         "key": "alternative_2",
@@ -301,9 +180,9 @@
                 "fallback_decision": "stable_detector",
                 "fields": {
                     "alternative_1": "smart_path|score=0.900|priority=250",
-                    "alternative_1_capability": "description:\u667a\u80fd\u8def\u5f84\u8131\u6c34|tags:|route:none|samples:24|showcase:12|audit:0|frozen:0|status:missing_audit",
+                    "alternative_1_capability": "description:\u667a\u80fd\u8def\u5f84\u8131\u6c34|tags:|route:none|samples:12|showcase:12|audit:12|frozen:12|status:frozen",
                     "alternative_2": "generic_text|score=0.110|priority=160",
-                    "alternative_2_capability": "description:\u901a\u7528\u6587\u672c\u8131\u6c34|tags:|route:generic|samples:24|showcase:12|audit:0|frozen:0|status:missing_audit",
+                    "alternative_2_capability": "description:\u901a\u7528\u6587\u672c\u8131\u6c34|tags:|route:generic|samples:15|showcase:15|audit:15|frozen:15|status:frozen",
                     "alternatives": "2",
                     "byte_count": "599",
                     "confidence_gap": "0.100",
@@ -322,9 +201,10 @@
                     "replay_case_template": "available_with:--explain-replay-out <path>",
                     "retry_plugin": "none",
                     "retry_score_gap": "1.000",
-                    "selected_capability": "description:Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals|tags:|route:none|samples:96|showcase:48|audit:0|frozen:0|status:missing_audit",
+                    "selected_capability": "description:Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals|tags:|route:none|samples:48|showcase:48|audit:48|frozen:48|status:frozen",
                     "selected_declared_patterns": "^\\d+\\.\\d+\\.\\d+\\.\\d+ ; INFO:\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+\\s+-\\s+\\\"(GET/POST/PUT/PATCH/DELETE) ; \\\"(request_method/ClientRequestMethod/httpRequest/message)\\\" ; ^#Fields:\\s+.*cs-method.*sc-status ; ^\\[\\d{4}-\\d{2}-\\d{2}T[^\\]]+\\]\\s+\\\"(GET/POST/PUT/PATCH/DELETE)",
                     "selected_plugin": "web_log",
+                    "selection_source": "content_detector",
                     "top_score_gap": "0.100",
                     "why": "content_detector_score:1.000|plugin_priority:170|candidate_rank:1"
                 },
@@ -357,13 +237,13 @@
                 "retry_plugin": "none",
                 "selected": {
                     "capability": {
-                        "audit": "0",
+                        "audit": "48",
                         "description": "Web access log v3 semantic aggregation for Nginx, Apache, ingress, Uvicorn, Envoy/Istio, CloudFront/IIS W3C, Cloudflare, native ALB, and cloud-wrapped CSV/JSON/table/plain access logs with dictionaries, routine folding, noise diagnostics, scan/burst spotlight, anomalies, and slow request signals",
-                        "frozen": "0",
+                        "frozen": "48",
                         "route": "none",
-                        "samples": "96",
+                        "samples": "48",
                         "showcase": "48",
-                        "status": "missing_audit",
+                        "status": "frozen",
                         "tags": ""
                     },
                     "declared_patterns": "^\\d+\\.\\d+\\.\\d+\\.\\d+ ; INFO:\\s+\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+\\s+-\\s+\\\"(GET/POST/PUT/PATCH/DELETE) ; \\\"(request_method/ClientRequestMethod/httpRequest/message)\\\" ; ^#Fields:\\s+.*cs-method.*sc-status ; ^\\[\\d{4}-\\d{2}-\\d{2}T[^\\]]+\\]\\s+\\\"(GET/POST/PUT/PATCH/DELETE)",

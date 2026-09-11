@@ -1,0 +1,32 @@
+{
+  "name": "privacy",
+  "description": "在其他压缩插件之前单向替换高置信度凭证，防止敏感值外发给 AI。",
+  "detect": {
+    "type": "regex",
+    "min_match_ratio": 0.01,
+    "patterns": [
+      "AWS access key",
+      "AWS secret assignment",
+      "GitHub token",
+      "Authorization Bearer token",
+      "JWT",
+      "PEM private key",
+      "database connection credentials"
+    ]
+  },
+  "compress": {
+    "token_prefix": "[TS_",
+    "irreversible": true
+  },
+  "design_intent": "在压缩流水线最前端生成不含原文的类型化占位符；不保存或回填真实 secret。",
+  "keep_signals": [
+    "凭证所属类别",
+    "非敏感日志上下文",
+    "错误、告警与诊断字段"
+  ],
+  "compress_targets": [
+    "AWS/GitHub/Bearer/JWT 凭证",
+    "PEM 私钥",
+    "数据库连接串中的认证信息"
+  ]
+}

@@ -8,24 +8,16 @@
     {
       "type": "any",
       "patterns": [
-        {"pattern_type": "contains", "pattern": "---"},
-        {"pattern_type": "contains", "pattern": "..."},
-        {"pattern_type": "contains", "pattern": "  "},
-        {"pattern_type": "contains", "pattern": "- "},
-        {"pattern_type": "contains", "pattern": ": "},
-        {"pattern_type": "contains", "pattern": "#"},
-        {"pattern_type": "contains", "pattern": "&"},
-        {"pattern_type": "contains", "pattern": "*"},
-        {"pattern_type": "contains", "pattern": "<<"},
-        {"pattern_type": "contains", "pattern": "|"},
-        {"pattern_type": "contains", "pattern": ">"},
+        {"pattern_type": "starts_with", "pattern": "---"},
+        {"pattern_type": "starts_with", "pattern": "..."},
+        {"pattern_type": "starts_with", "pattern": "  "},
+        {"pattern_type": "starts_with", "pattern": "- "},
+        {"pattern_type": "starts_with", "pattern": "#"},
+        {"pattern_type": "starts_with", "pattern": "<<"},
+        {"pattern_type": "starts_with", "pattern": ">"},
         {"pattern_type": "contains", "pattern": "%YAML"},
         {"pattern_type": "contains", "pattern": "%TAG"},
-        {"pattern_type": "contains", "pattern": "!!"},
-        {"pattern_type": "contains", "pattern": "null"},
-        {"pattern_type": "contains", "pattern": "~"},
-        {"pattern_type": "contains", "pattern": "true"},
-        {"pattern_type": "contains", "pattern": "false"}
+        {"pattern_type": "contains", "pattern": "!!"}
       ]
     }
   ]

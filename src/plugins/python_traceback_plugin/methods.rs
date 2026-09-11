@@ -4,12 +4,10 @@ use super::types::*;
 use crate::core::compression::Token;
 use crate::core::dedup_engine::DedupEngine;
 use crate::core::dictionary_engine::{Dictionary, DictionaryEngine};
-use crate::core::plugin_config_loader::CompiledPluginConfig;
 use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
-use std::any::Any;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::sync::Arc;
@@ -21,6 +19,7 @@ const STACK_FRAME_THRESHOLD: usize = 15;
 const DUPLICATE_EXCEPTION_THRESHOLD: usize = 2;
 
 impl PythonTracebackPlugin {
+    /// 创建 PythonTracebackPlugin 实例（名称 python_traceback，优先级 80），预编译三个解析正则。
     pub fn new() -> Self {
         Self {
             name: "python_traceback",
@@ -32,7 +31,6 @@ impl PythonTracebackPlugin {
                 Regex::new(r#"  File "([^"]+)", line (\d+), in (.+)"#).unwrap(),
             ),
             exception_pattern: Arc::new(Regex::new(r"^([a-zA-Z0-9_.]+): (.*)$").unwrap()),
-            config: None,
         }
     }
 
@@ -297,13 +295,16 @@ impl PythonTracebackPlugin {
 }
 
 impl Plugin for PythonTracebackPlugin {
+    /// 返回插件名称 "python_traceback"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 80。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：含 Traceback 头或 ".py", line 特征得 0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
         if self.trace_header_pattern.is_match(text) || text.contains(".py\", line ") {
@@ -312,6 +313,8 @@ impl Plugin for PythonTracebackPlugin {
         None
     }
 
+    /// 压缩切片：按多 traceback（去重+摘要）/深层堆栈（截断）/链式异常（折叠）分派，
+    /// 将帧与异常编码为 $PY|FL/$PY|EX token，ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -432,13 +435,19 @@ impl Plugin for PythonTracebackPlugin {
         }
     }
 
+    /// 解压：将 $PY|TB/$PY|FL/$PY|EX 行用词典还原为原始 traceback 文本。
+    /// 支持行内标记（T-008 复审）：真实链式异常载荷中，解释性分隔文本与下一段标记可能
+    /// 拼接在同一物理行（如 "...following exception:$PY|TB"）。逐行定位首个标记，
+    /// 前缀分隔文本独立成行保留，标记行内重水合。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         let mut result = String::new();
         for line in compressed.lines() {
-            if line.starts_with("$PY|TB") {
+            if let Some(pos) = line.find("$PY|TB") {
+                emit_prefix(&mut result, &line[..pos]);
                 result.push_str("Traceback (most recent call last):\n");
-            } else if line.starts_with("$PY|FL|") {
-                let parts: Vec<&str> = line.split('|').collect();
+            } else if let Some(pos) = line.find("$PY|FL|") {
+                emit_prefix(&mut result, &line[..pos]);
+                let parts: Vec<&str> = line[pos..].split('|').collect();
                 if parts.len() >= 5 {
                     let line_num = parts[2];
                     let func_name = parts[3];
@@ -448,11 +457,14 @@ impl Plugin for PythonTracebackPlugin {
                         file_path, line_num, func_name
                     ));
                 }
-            } else if line.starts_with("$PY|EX|") {
-                let parts: Vec<&str> = line.split('|').collect();
+            } else if let Some(pos) = line.find("$PY|EX|") {
+                emit_prefix(&mut result, &line[..pos]);
+                let parts: Vec<&str> = line[pos..].split('|').collect();
                 if parts.len() >= 4 {
                     let class_name = dict.resolve_or_self(parts[2]);
-                    let msg = parts[3];
+                    // P2-77 修复：消息体可能含 '|'（compress 端不转义），
+                    // 取 parts[3..] 整段回接，避免首个 '|' 之后内容被截断丢失。
+                    let msg = parts[3..].join("|");
                     result.push_str(&format!("{}: {}\n", class_name, msg));
                 }
             } else {
@@ -462,17 +474,19 @@ impl Plugin for PythonTracebackPlugin {
         }
         result
     }
+}
 
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<CompiledPluginConfig>() {
-            self.config = Some(c.clone());
-            return Ok(());
-        }
-        Err("Invalid config".to_string())
+/// 行内标记前缀文本处理：非空前缀（如链式异常解释分隔文本）独立成行保留，保持可读性。
+fn emit_prefix(result: &mut String, prefix: &str) {
+    let trimmed = prefix.trim_end_matches('\r');
+    if !trimmed.trim().is_empty() {
+        result.push_str(trimmed);
+        result.push('\n');
     }
 }
 
 impl Clone for PythonTracebackPlugin {
+    /// 克隆插件实例：复制名称、优先级与正则。
     fn clone(&self) -> Self {
         Self {
             name: self.name,
@@ -480,7 +494,6 @@ impl Clone for PythonTracebackPlugin {
             trace_header_pattern: self.trace_header_pattern.clone(),
             file_line_pattern: self.file_line_pattern.clone(),
             exception_pattern: self.exception_pattern.clone(),
-            config: self.config.clone(),
         }
     }
 }

@@ -48,22 +48,26 @@ pub fn is_transparent_command(command: &str) -> bool {
 mod tests {
     use super::*;
 
+    /// 测试：ssh 命令（含带参数形式）被识别为透明命令。
     #[test]
     fn test_ssh_is_transparent() {
         assert!(is_transparent_command("ssh user@host"));
         assert!(is_transparent_command("ssh -p 22 user@host"));
     }
 
+    /// 测试：mysql 命令被识别为透明命令。
     #[test]
     fn test_mysql_is_transparent() {
         assert!(is_transparent_command("mysql -u root -p"));
     }
 
+    /// 测试：docker 命令被识别为透明命令。
     #[test]
     fn test_docker_is_transparent() {
         assert!(is_transparent_command("docker run nginx"));
     }
 
+    /// 测试：make/cargo/npm 等普通命令不被识别为透明命令。
     #[test]
     fn test_regular_command_not_transparent() {
         assert!(!is_transparent_command("make test"));
@@ -71,6 +75,7 @@ mod tests {
         assert!(!is_transparent_command("npm test"));
     }
 
+    /// 测试：空命令或纯空白命令不被识别为透明命令。
     #[test]
     fn test_empty_command() {
         assert!(!is_transparent_command(""));

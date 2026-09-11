@@ -205,6 +205,21 @@ impl MetricsCollector {
         }
     }
 
+    /// 汇总各插件的回退计数（`parse_tier != full` 的次数），供审计写盘。
+    ///
+    /// 仅返回回退次数 > 0 的插件，键为插件名、值为回退次数。回退计数是
+    /// `plugin_stats` 内已累计值的快照，不改变内部状态，可在压缩收尾时安全调用。
+    pub fn plugin_fallback_counts(&self) -> HashMap<String, usize> {
+        if !(self.config.enabled && self.config.enable_plugin_stats) {
+            return HashMap::new();
+        }
+        self.plugin_stats
+            .iter()
+            .filter(|(_, s)| s.fallback_count > 0)
+            .map(|(name, s)| (name.clone(), s.fallback_count))
+            .collect()
+    }
+
     /// 记录一条错误日志。
     pub fn log_error(&mut self, error: ErrorLog) {
         if self.config.enabled

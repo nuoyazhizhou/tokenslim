@@ -12,7 +12,6 @@
 //! 第二个时间戳：`[2026-03-05T02:52:32.123Z]`
 //! 相对时间戳：`[T+526ms]`
 
-pub mod methods;
 pub mod types;
 
 pub use types::*;

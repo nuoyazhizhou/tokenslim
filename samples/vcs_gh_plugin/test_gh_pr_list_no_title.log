@@ -1,0 +1,2 @@
+gh pr list --state all --limit 50
+#1 a/b [open] 2026-01-01

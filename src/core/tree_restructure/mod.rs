@@ -23,7 +23,14 @@ use regex::Regex;
 pub fn restructure_as_tree(text: &str, config: &TreeConfig) -> String {
     // 1. 解析每一行，提取路径
     let mut matched_entries = Vec::new();
-    let re = Regex::new(&config.path_pattern).unwrap_or_else(|_| {
+    let re = Regex::new(&config.path_pattern).unwrap_or_else(|err| {
+        // Q496 处置：配置的 path_pattern 编译失败时静默回退默认正则会让用户误以为行为异常，
+        // 记录警告以便诊断。
+        tracing::warn!(
+            path_pattern = %config.path_pattern,
+            error = %err,
+            "restructure_as_tree: path_pattern 编译失败，回退默认路径匹配正则"
+        );
         // 默认路径模式：匹配文件路径
         Regex::new(r"(?:^|\s)([a-zA-Z0-9_./\\-]+\.[a-zA-Z0-9]+)(?:\s|$)").unwrap()
     });
@@ -63,8 +70,8 @@ pub fn restructure_as_tree(text: &str, config: &TreeConfig) -> String {
         sort_node(&mut root);
     }
 
-    // 8. 渲染
-    render_tree(&root, &config.style)
+    // 8. 渲染（P2-60：排序承诺在渲染处落实，config.sort 传入渲染排序标志）
+    render_tree(&root, &config.style, config.sort)
 }
 
 /// 解析一行，提取路径信息
@@ -136,6 +143,7 @@ pub struct MatchedEntry {
 mod tests {
     use super::*;
 
+    /// 测试：parse_line 从含装饰前缀的行中提取路径、组件、装饰与尾部。
     #[test]
     fn test_parse_line() {
         // 使用更精确的正则表达式，匹配包含路径分隔符的文件路径
@@ -152,6 +160,7 @@ mod tests {
         assert_eq!(entry.components, vec!["tests", "test.rs"]);
     }
 
+    /// 测试：calculate_shared_depth 计算多路径的最长公共目录深度。
     #[test]
     fn test_calculate_shared_depth() {
         let entries = vec![
@@ -182,6 +191,7 @@ mod tests {
         assert_eq!(calculate_shared_depth(&entries), 1);
     }
 
+    /// 测试：匹配文件数低于 min_files 门控时返回原始文本。
     #[test]
     fn test_restructure_as_tree_with_gating() {
         let config = TreeConfig {

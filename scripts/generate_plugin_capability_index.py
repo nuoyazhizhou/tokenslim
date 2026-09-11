@@ -59,7 +59,9 @@ def count_case_files(plugin_name, samples_dir):
     for d in dirs:
         if os.path.exists(d):
             try:
-                files = [f for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and re.match(r'^case_.*\.[^.]+$', f)]
+                # 与 audit_llm_common.walk_physical_samples 口径一致，
+                # 排除 sidecar (.scenario.yaml) 与多扩展名元数据(.tar.gz 等)。
+                files = [f for f in os.listdir(d) if os.path.isfile(os.path.join(d, f)) and re.match(r'^case_[^.]*\.(?!scenario\.yaml$)[^.]+$', f)]
                 return len(files)
             except Exception:
                 pass
@@ -95,8 +97,18 @@ def get_showcase_text(plugin_name, source_dir):
         return ""
 
 def get_audit_summary(plugin_name, audit_dir):
-    d = os.path.join(audit_dir, plugin_name)
-    latest = os.path.join(d, f"{plugin_name}.latest.json")
+    # 审计产物目录命名与 audit_case_metrics.py 一致：`<name>_plugin`（如 docs/audit/web_log_plugin）。
+    # 此前误用 `os.path.join(audit_dir, plugin_name)`（无 _plugin 后缀）导致永远读不到 latest.json，
+    # 令容量索引把所有插件的 audit_cases/frozen_cases 虚报为 0、误标 missing_audit。
+    d = os.path.join(audit_dir, f"{plugin_name}_plugin")
+    # latest 文件名存在两种约定：标准命名 `{name}_plugin.latest.json`（track 含 _plugin 后缀），
+    # 以及旧命名 `{name}.latest.json`（track 去掉 _plugin）。两者都可能存在且内容一致；
+    # shell_session 等高版本插件只有标准命名文件。优先读标准命名，缺失时回退旧命名。
+    candidates = [
+        os.path.join(d, f"{plugin_name}_plugin.latest.json"),
+        os.path.join(d, f"{plugin_name}.latest.json"),
+    ]
+    latest = next((p for p in candidates if os.path.exists(p)), candidates[0])
     state = os.path.join(d, "audit_state.json")
     frozen = os.path.join(d, "frozen_cases.json")
 
@@ -240,7 +252,18 @@ def get_claim_rules():
         {"claim": "ansible", "needles": ["ansible"]},
         {"claim": "helm", "needles": ["helm"]},
         {"claim": "pulumi", "needles": ["pulumi"]},
-        {"claim": "cloudformation", "needles": ["cloudformation"]}
+        {"claim": "cloudformation", "needles": ["cloudformation"]},
+        # binutils 分析工具族（gcc_log 扩展）：declared 由 config 描述命中，covered 由样本文件名/showcase 命中。
+        # 注意用裸词（nm/readelf/size）而非带空格前缀——样本文件名如 nm_symbols/nm_dynamic 中词前是下划线。
+        {"claim": "binutils_nm", "needles": ["nm", "symbol table", "binutils"]},
+        {"claim": "binutils_readelf", "needles": ["readelf", "section", "binutils"]},
+        {"claim": "binutils_size", "needles": ["size", "section size", "binutils"]},
+        {"claim": "binutils_objdump", "needles": ["objdump", "symbol table", "binutils"]},
+        # ar 用「归档成员」而非裸 `ar`（`ar` 会命中 cargo/laravel 等大量无关描述）。
+        {"claim": "binutils_ar", "needles": ["归档成员", "archive member", "ar -t"]},
+        # vitest 测试输出折叠（nodejs 扩展）：declared 由 config 描述命中，covered 由样例文件名
+        # （case_023_vitest_pass/case_024_vitest_fail）与 showcase 文本命中。
+        {"claim": "nodejs_vitest", "needles": ["vitest"]}
     ]
 
 def get_evidence_text(plugin_name, samples_dir, source_dir):
@@ -423,7 +446,7 @@ def main():
         "plugins": sorted(plugins, key=lambda x: x["name"])
     }
 
-    with open(args.json_out, "w", encoding="utf-8") as f:
+    with open(args.json_out, "w", encoding="utf-8", newline="\n") as f:
         json.dump(index, f, indent=4)
 
     md = [
@@ -446,7 +469,7 @@ def main():
         warnings = warnings.replace("|", "/")
         md.append(f"| {p['name']} | {p['coverage_status']} | {tags} | {route} | {p['sample_cases']} | {p['showcase_cases']} | {p['audit_cases']} | {p['frozen_cases']} | {p['auditing_cases']} | {warnings} | {desc} |")
         
-    with open(args.markdown_out, "w", encoding="utf-8") as f:
+    with open(args.markdown_out, "w", encoding="utf-8", newline="\n") as f:
         f.write("\n".join(md))
 
     print(f"plugin_capability_index={args.json_out}")

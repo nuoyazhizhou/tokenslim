@@ -1,0 +1,15 @@
+scenario: '对 a.out 运行 nm -D 查看动态符号表，输出含未定义符号、弱符号与全局符号，符号名带版本尾（@@GLIBC 等）。'
+target_capability: 'binutils nm -D 动态符号表压缩（带 @GLIBC 版本尾、弱符号语义保留）'
+expected_keep: 'U printf@GLIBC_2.2.5'
+expected_compress: '00000000004004a9 T main'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1acaf01a1a22947f1310b83d500ad76d177654924f5600cce0060b570a542d55'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

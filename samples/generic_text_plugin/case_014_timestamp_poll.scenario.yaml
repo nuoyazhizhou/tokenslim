@@ -1,0 +1,15 @@
+scenario: '带行首时间戳的轮询日志：时间戳数值无决策意义，应归一为占位符并合并重复行。'
+target_capability: '时间戳归一 + 重复行收敛（normalize_timestamps + collapse_repeats）'
+expected_keep: 'health ok（归一为 [T] health ok）与关键状态行'
+expected_compress: '各行行首时间戳归一到 [T]，重复的 polling service A 收敛为 1 行'
+source: 'manual'
+generated_at: '2026-09-04T07:35:32Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '2837e962f19f196e72f8be5e4db57665c52cb5919f5f2adb8d6e0f90d896cc03'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:14.186822'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

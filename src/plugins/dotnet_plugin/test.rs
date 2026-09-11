@@ -6,6 +6,7 @@ mod tests {
     use crate::core::text_slicer::SliceType;
     use crate::plugins::dotnet_plugin::DotNetPlugin;
     use crate::plugins::test_utils::*;
+    /// 验证真实 .NET 多行堆栈样本能被 `detect` 命中且置信度 ≥ 0.5。
     #[test]
     fn detects_real_stack_trace_sample() {
         let plugin = DotNetPlugin::new();
@@ -15,6 +16,7 @@ mod tests {
         assert!(score.unwrap() >= 0.5);
     }
 
+    /// 验证 .NET 堆栈样本压缩后不得显著扩张（允许 +4 字节内）。
     #[test]
     fn compresses_stack_trace_sample_without_expansion() {
         let plugin = DotNetPlugin::new();
@@ -28,6 +30,7 @@ mod tests {
         );
     }
 
+    /// 验证 msbuild 样本压缩后不得显著扩张（允许 +4 字节内）。
     #[test]
     fn compresses_msbuild_sample_without_expansion() {
         let plugin = DotNetPlugin::new();

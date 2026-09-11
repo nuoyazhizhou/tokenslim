@@ -11,6 +11,8 @@ pub use parser::*;
 pub use renderer::*;
 pub use types::*;
 
+/// 将模板渲染的内部错误码映射为带 i18n 文案的错误信息；
+/// 未识别的错误码原样返回。
 fn map_template_error(err: String) -> String {
     let (code, detail) = match err.split_once(':') {
         Some((code, detail)) => (code, detail),
@@ -69,6 +71,7 @@ pub fn render_template(template: &str, context: &TemplateContext) -> Result<Stri
 mod tests {
     use super::*;
 
+    /// 测试：单个变量 {{name}} 被替换为上下文中的值。
     #[test]
     fn test_simple_variable_replacement() {
         let mut context = TemplateContext::new();
@@ -79,6 +82,7 @@ mod tests {
         assert_eq!(result, "Hello Alice!");
     }
 
+    /// 测试：多个变量在模板中同时被替换。
     #[test]
     fn test_multiple_variables() {
         let mut context = TemplateContext::new();
@@ -90,6 +94,7 @@ mod tests {
         assert_eq!(result, "Bob has 5 items");
     }
 
+    /// 测试：缺失的变量替换为空字符串。
     #[test]
     fn test_missing_variable() {
         let context = TemplateContext::new();
@@ -100,6 +105,7 @@ mod tests {
         assert_eq!(result, "Hello !");
     }
 
+    /// 测试：{{errors}} 形式的 section 内容被整体插入。
     #[test]
     fn test_section_content() {
         let mut context = TemplateContext::new();
@@ -110,6 +116,7 @@ mod tests {
         assert_eq!(result, "Found errors:\nError 1\nError 2\nError 3");
     }
 
+    /// 测试：{{#if show}} 变量为真时渲染块内容。
     #[test]
     fn test_conditional_if_true() {
         let mut context = TemplateContext::new();
@@ -120,6 +127,7 @@ mod tests {
         assert_eq!(result, "Visible");
     }
 
+    /// 测试：{{#if show}} 变量缺失（假）时块内容被省略。
     #[test]
     fn test_conditional_if_false() {
         let context = TemplateContext::new();
@@ -129,6 +137,7 @@ mod tests {
         assert_eq!(result, "");
     }
 
+    /// 测试：{{#unless show}} 变量缺失（假）时渲染块内容。
     #[test]
     fn test_conditional_unless_true() {
         let context = TemplateContext::new();
@@ -138,6 +147,7 @@ mod tests {
         assert_eq!(result, "Hidden");
     }
 
+    /// 测试：{{#unless show}} 变量为真时块内容被省略。
     #[test]
     fn test_conditional_unless_false() {
         let mut context = TemplateContext::new();
@@ -148,6 +158,7 @@ mod tests {
         assert_eq!(result, "");
     }
 
+    /// 测试：{{errors.count}} 渲染为 section 计数。
     #[test]
     fn test_section_count() {
         let mut context = TemplateContext::new();
@@ -158,6 +169,7 @@ mod tests {
         assert_eq!(result, "Found 3 errors");
     }
 
+    /// 测试：{{files.items}} 渲染为逗号分隔的条目列表。
     #[test]
     fn test_section_items() {
         let mut context = TemplateContext::new();
@@ -168,6 +180,7 @@ mod tests {
         assert_eq!(result, "Files: a.rs, b.rs");
     }
 
+    /// 测试：未闭合的条件块返回错误。
     #[test]
     fn test_invalid_syntax() {
         let context = TemplateContext::new();

@@ -3,6 +3,7 @@
 use crate::plugins::ci_log_plugin::CiLogPlugin;
 use crate::plugins::infra_tools_common::{write_showcase_report, ShowcaseCase};
 
+/// 测试：生成 ci_log 插件的 showcase 对比报告并写入 target 目录。
 #[test]
 fn generate_ci_log_showcase_report() {
     let plugin = CiLogPlugin::new();

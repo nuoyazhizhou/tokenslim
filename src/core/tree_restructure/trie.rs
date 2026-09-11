@@ -134,34 +134,23 @@ pub fn collapse_single_child(node: &mut TrieNode) {
 
 /// 排序节点
 ///
-/// 目录在前，文件在后，同类按字母排序
+/// 目录在前，文件在后，同类按字母排序。
+/// P2-60 修正：HashMap 无序，排序结果存回 HashMap 即刻丢失——本函数只做递归，
+/// 实际的「目录在前/字母序」排序在渲染时按 `sort_children` 标志执行（render.rs）。
 #[tracing::instrument(level = "trace", skip_all)]
 pub fn sort_node(node: &mut TrieNode) {
-    // 递归排序所有子节点
     for child in node.children.values_mut() {
         sort_node(child);
     }
-
-    // 将子节点转换为 Vec 并排序
-    let mut children: Vec<_> = node.children.drain().collect();
-    children.sort_by(|a, b| {
-        // 目录在前
-        match (a.1.is_leaf, b.1.is_leaf) {
-            (false, true) => std::cmp::Ordering::Less,
-            (true, false) => std::cmp::Ordering::Greater,
-            _ => a.0.cmp(&b.0),
-        }
-    });
-
-    // 重新插入
-    node.children = children.into_iter().collect();
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    /// 测试：insert_path 按组件逐层插入 Trie，叶子节点记录装饰。
     #[test]
+    /// 契约：`src/main.rs` 路径应逐级插入为 `src` → `main.rs` 两级节点，末节点标记叶子并携带装饰 `M`。
     fn test_insert_path() {
         let mut root = TrieNode::new("");
         insert_path(
@@ -183,7 +172,9 @@ mod tests {
         assert_eq!(main_rs.decoration, "M");
     }
 
+    /// 测试：collapse_single_child 将单孩子链折叠为 a/b 形式的节点名。
     #[test]
+    /// 契约：`src/core/mod.rs` 中 `src` 只有单一子目录 `core`（非叶子）时应折叠为 `src/core` 单节点且保留 `mod.rs` 子节点。
     fn test_collapse_single_child() {
         let mut root = TrieNode::new("");
         insert_path(
@@ -210,7 +201,9 @@ mod tests {
         assert!(collapsed.children.contains_key("mod.rs"));
     }
 
+    /// 测试：sort_node 排序后目录在前、文件在后（按分组断言）。
     #[test]
+    /// 契约：排序后目录（src/tests）应排在文件（README.md）之前（HashMap 无序性通过分组断言规避）。
     fn test_sort_node() {
         let mut root = TrieNode::new("");
         insert_path(
@@ -242,7 +235,9 @@ mod tests {
         assert_eq!(files.len(), 1); // README.md
     }
 
+    /// 测试：has_single_child 在 0/1/2 个子节点时分别返回 false/true/false。
     #[test]
+    /// 契约：无子节点时非单孩子；1 个子节点时为单孩子；2 个及以上时恢复非单孩子。
     fn test_has_single_child() {
         let mut node = TrieNode::new("test");
         assert!(!node.has_single_child());

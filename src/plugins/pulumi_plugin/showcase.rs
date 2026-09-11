@@ -3,6 +3,7 @@
 use crate::plugins::infra_tools_common::{write_showcase_report, ShowcaseCase};
 use crate::plugins::pulumi_plugin::PulumiPlugin;
 
+/// 测试：生成 pulumi 插件的 showcase 对比报告并写入 target 目录。
 #[test]
 fn generate_pulumi_showcase_report() {
     let plugin = PulumiPlugin::new();

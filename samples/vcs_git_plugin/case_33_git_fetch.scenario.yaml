@@ -10,6 +10,6 @@ audit:
   content_hash: '028f1746223b338529c5b0ae9daf560e64c0a002b4dd04473108ae683f0dba9f'
   final_status: 'valid'
   llm_invoked: false
-  llm_verified_at: '2026-06-24T17:49:19.913754'
+  llm_verified_at: '2026-09-11T14:11:58.659245'
   last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

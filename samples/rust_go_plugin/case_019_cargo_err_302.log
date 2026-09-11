@@ -1,0 +1,6 @@
+cargo test --lib compression_pipeline content_analyzer rust_go
+[1m[91merror:[0m unexpected argument '[1m[93mcontent_analyzer[0m' found
+
+[1m[92mUsage:[0m [1m[96mcargo.exe test[0m [36m[OPTIONS][0m [36m[TESTNAME][0m [1m[96m[--[0m [36m[ARGS]...[0m[1m[96m][0m
+
+For more information, try '[1m[96m--help[0m'.

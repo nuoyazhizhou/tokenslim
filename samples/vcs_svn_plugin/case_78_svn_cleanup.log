@@ -1,3 +1,5 @@
 svn cleanup
 Cleaned up.
+Removed 3 stale locks.
+Tidied 2 unversioned directories.
 Cleanup completed.

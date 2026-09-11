@@ -167,6 +167,7 @@ pub fn get_framework_configs() -> &'static [FrameworkDetectionConfig] {
 
 /// 通用框架检测函数
 fn detect_framework_syntax(text: &str, config: &FrameworkDetectionConfig) -> bool {
+    /// 按特征模式类型（包含/前缀/后缀/前缀字符/成对定界符）对单行文本进行匹配判断。
     fn match_pattern(text: &str, pattern: &FeaturePattern) -> bool {
         match pattern.pattern_type {
             FeaturePatternType::Contains => text.contains(&pattern.pattern),
@@ -189,6 +190,8 @@ fn detect_framework_syntax(text: &str, config: &FrameworkDetectionConfig) -> boo
         }
     }
 
+    /// 按规则类型（Any/All/Combo）对文本执行检测：Any 任一命中、All 全部命中、
+    /// Combo 必需模式全中且可选模式至少一中。
     fn match_rule(text: &str, rule: &DetectionRule) -> bool {
         match rule {
             DetectionRule::Any(patterns) => patterns.iter().any(|p| match_pattern(text, p)),
@@ -662,6 +665,7 @@ impl TextSlicer {
         }
     }
 
+    /// 构造仅含指定数量换行符的显式换行 Slice，用于在不跳过空行时补回被消费的空行分隔。
     fn slice_explicit_newlines<'a>(&self, input: &SliceInput<'a>, count: usize) -> Slice<'a> {
         let id = self.next_id.fetch_add(1, Ordering::SeqCst);
         let newline_count = count.max(1);

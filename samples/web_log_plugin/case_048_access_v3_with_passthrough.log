@@ -1,13 +1,20 @@
 Testu@66d01df8f117:~$ aws --profile "$AWS_PROFILE" logs tail /ecs/cloud-document/backend --region "$AWS_REGION" --since 20m
 UNMATCHED_DIAGNOSTIC: cache warmup start
-
+UNMATCHED_DIAGNOSTIC: config reload triggered by SIGHUP
+UNMATCHED_WARN: high memory usage detected (85%)
+UNMATCHED_ERROR: database connection pool exhausted, retrying in 500ms
+UNMATCHED_NOTICE: deployment v2.3.1 rolled out to 3 of 5 nodes
 2026-05-13T08:13:39.939000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
 2026-05-13T08:13:40.150000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:14:09.969000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:14:10.158000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:14:39.999000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:14:40.186000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:15:10.029000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:15:10.206000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:15:40.058000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
-2026-05-13T08:15:40.237000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:14:09.969000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /api/v1/orders/123 HTTP/1.1" 200 OK
+2026-05-13T08:14:10.158000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /api/v1/orders/123 HTTP/1.1" 200 OK
+2026-05-13T08:15:10.029000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /static/app.js HTTP/1.1" 200 OK
+2026-05-13T08:15:10.206000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.0.231:0 - "GET /static/app.css HTTP/1.1" 200 OK
+2026-05-13T08:15:40.058000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "POST /api/v1/checkout HTTP/1.1" 200 OK
+2026-05-13T08:15:40.237000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     198.51.100.45:0 - "GET /api/v1/orders/456 HTTP/1.1" 200 OK
+2026-05-13T08:16:09.501000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     198.51.100.45:0 - "GET /health HTTP/1.1" 200 OK
+UNMATCHED_ERROR: query timeout beyond 30s on table orders_2026
+2026-05-13T08:16:40.011000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 WARN:     10.0.0.231:0 - "GET /api/v1/orders/789 HTTP/1.1" 503 Service Unavailable
+UNMATCHED_WARN: disk usage at 78%, consider pruning logs
+2026-05-13T08:17:20.088000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     10.0.1.94:0 - "GET /health HTTP/1.1" 200 OK
+2026-05-13T08:17:40.312000+00:00 ecs/backend/f6bf6a1fb38440c992e4e33e1691b589 INFO:     198.51.100.45:0 - "GET /static/logo.png HTTP/1.1" 200 OK

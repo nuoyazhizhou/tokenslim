@@ -1,0 +1,15 @@
+scenario: '对 main.o 运行 objdump -r 查看重定位表，输出多个重定位节记录（RELOCATION RECORDS FOR [.text]:），每条含 Offset/Type/Value，符号带 -0x addend 后缀，printf 带 @GLIBC 版本尾。'
+target_capability: 'binutils objdump -r 重定位表压缩（保留 $RELOC 类型与重定位符号名，折叠 Offset/addend，感知链接缺口）'
+expected_keep: 'R_X86_64_PC32 printf@GLIBC_2.2.5'
+expected_compress: '000000000000000c R_X86_64_PC32 func_add-0x0000000000000004'
+source: 'llm'
+generated_at: '2026-09-03T08:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '6104717f53b576bca26af18216871bd2aebfaad0750cbad337d76f3e4ab69889'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

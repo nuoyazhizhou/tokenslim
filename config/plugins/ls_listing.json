@@ -1,0 +1,33 @@
+{
+    "name": "ls_listing",
+    "description": "columnar directory listing compaction (aws s3 ls / ls -l family)",
+    "priority": 165,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "regex",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\s+\\d+\\s+\\S"
+            }
+        ],
+        "min_match_ratio": 0.5
+    },
+    "compress": {
+        "token_prefix": "$LS",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "命令行锚点（首个非空行）",
+        "全部路径（目录前缀块头 + basename 逐行，零丢失）",
+        "全部尺寸数值（逐行，零丢失）",
+        "杂散行（PRE 行等）原样保留"
+    ],
+    "compress_targets": [
+        "日期/时间列聚合为 distinct 计数 + min..max 区间（有损，骨架化口径）",
+        "目录前缀上提为行首块头（同目录只出现一次）",
+        "尺寸列右对齐填充空格规约为单空格"
+    ],
+    "design_intent": "ls_listing 脱水（P3-206② 方案 A）：认领 aws s3 ls / ls -l 列式清单命令族，把 ≈38% 的列式冗余（日期列重复 + 尺寸列填充 + 目录前缀重复）折叠为块头摘要；可逆性口径为「有损但零丢失」——路径与尺寸集合完整保留，日期/时间聚合不可逆。"
+}

@@ -1,0 +1,15 @@
+scenario: '在 CI 中运行 vitest run 部分失败场景，输出 ✓/✗ 混合测试行、3 个失败详情（含 AssertionError 与 Test timed out）、Tests 统计与 FAIL 退出信号。'
+target_capability: 'vitest 测试输出压缩（折叠 ✓ 通过行，保留 ✗ 失败测试名、失败详情与失败计数）'
+expected_keep: "3 failed, Test timed out, Expected: \"$-100.00\""
+expected_compress: '✓ src/hooks/useAuth.test.ts (1 test) 19ms'
+source: 'llm'
+generated_at: '2026-09-03T10:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'db873f37a0482285c54e343311cfa1816392b762db7fe379c6cccc7decb4d760'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:56.243856'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

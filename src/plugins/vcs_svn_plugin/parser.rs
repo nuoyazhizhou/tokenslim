@@ -32,6 +32,7 @@ pub enum VcsRecord {
 }
 
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -130,9 +131,11 @@ pub struct VcsDocument {
 }
 
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 
+/// 判断字符串是否为 VCS 路径形态。
 pub fn looks_like_vcs_path(path: &str) -> bool {
     let trimmed = path.trim_matches('"');
     if trimmed.contains('@') || trimmed.starts_with("http://") || trimmed.starts_with("https://") {
@@ -167,6 +170,7 @@ pub fn looks_like_vcs_path(path: &str) -> bool {
         || trimmed.starts_with('.')
 }
 
+/// 非空记录列表包装为 VcsDocument；空列表返回 None。
 fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Option<VcsDocument> {
     if records.is_empty() {
         None
@@ -198,6 +202,7 @@ pub struct SvnResolveParser;
 pub struct SvnExportParser;
 
 impl VcsParser for SvnStatusParser {
+    /// 解析 `svn status` 输出：将单字符状态行归为状态文件，丢弃叙述性噪音（checked out revision/switched/relocated 等），输出 Status 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -248,6 +253,7 @@ impl VcsParser for SvnStatusParser {
 }
 
 impl VcsParser for SvnDiffParser {
+    /// 解析 `svn diff` 输出：将 Index 行降维为 DIFF: 头、跳过冗余 ---/+++ 行，diff --summarize 状态行归为文件，输出 Diff 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -312,12 +318,19 @@ impl VcsParser for SvnDiffParser {
 }
 
 impl VcsParser for SvnLogParser {
+    /// 解析 `svn log` 输出：将 `rN | author | date` 头与后续 message 拍扁合并为单条记录，跳过 changed paths 块，输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
-        let mut skip_changed_paths = false;
+        // 标志是否处于 `svn log -v` 的 Changed paths 块内。
+        // 原实现直接跳过该块，导致变更文件全部丢失，触发语义门禁 G5 失败；
+        // 现改为保留带状态字母的文件记录（见下方 parse_svn_changed_path_line）。
+        let mut in_changed_paths = false;
         let mut pending_message: Vec<String> = Vec::new();
         let mut last_was_header = false;
+        // 当前 revision 头在 records 中的索引：合并 CM 时必须锚定 header，
+        // 不能依赖 records.last()（-v 时 Changed paths 的 File 记录会穿插在 header 与 message 之间）。
+        let mut header_index: Option<usize> = None;
         for line in raw.lines() {
             let trimmed = line.trim_end_matches('\r').trim();
             if trimmed.is_empty() {
@@ -326,7 +339,7 @@ impl VcsParser for SvnLogParser {
 
             if trimmed.starts_with("----") {
                 if trimmed.chars().all(|c| c == '-') {
-                    skip_changed_paths = false;
+                    in_changed_paths = false;
                     continue;
                 }
                 records.push(VcsRecord::Raw(trimmed.to_string()));
@@ -334,30 +347,52 @@ impl VcsParser for SvnLogParser {
             }
 
             if trimmed.eq_ignore_ascii_case("changed paths:") {
-                skip_changed_paths = true;
+                in_changed_paths = true;
                 continue;
             }
-            if skip_changed_paths {
-                continue;
+            // svn log -v 块内：变更文件（状态字母 + /路径）是核心语义，保留为 File 记录。
+            if in_changed_paths {
+                if let Some((st, path)) = parse_svn_changed_path_line(trimmed) {
+                    records.push(VcsRecord::File {
+                        status: Some(st),
+                        path,
+                    });
+                    continue;
+                }
+                if trimmed.starts_with('r') {
+                    // 遇到下一条 revision 头（rN | ...）即结束本块，
+                    // 不 continue，落回下方 strip_prefix('r') 流程处理该头。
+                    in_changed_paths = false;
+                } else if last_was_header && !trimmed.starts_with('(') {
+                    // commit message 行：收集到 pending_message，交由 CM 合并逻辑拍扁进 header。
+                    pending_message.push(trimmed.to_string());
+                    continue;
+                } else {
+                    // 拷贝来源标记（"(from ...)"）等其余噪音行丢弃。
+                    continue;
+                }
             }
 
             if let Some(rest) = trimmed.strip_prefix('r') {
-                // 拍扁：将上一个 revision 的 message 行合并到 header
-                if last_was_header && !pending_message.is_empty() {
-                    let header = records.last_mut().unwrap();
-                    if let VcsRecord::Raw(h) = header {
-                        h.push_str(" | CM:");
-                        h.push_str(&pending_message.join(" "));
+                // 拍扁：将上一个 revision 的 message 行合并到其 header
+                if let Some(idx) = header_index {
+                    if !pending_message.is_empty() {
+                        if let Some(VcsRecord::Raw(h)) = records.get_mut(idx) {
+                            h.push_str(" | CM:");
+                            h.push_str(&pending_message.join(" "));
+                        }
+                        pending_message.clear();
                     }
-                    pending_message.clear();
                 }
                 if let Some((rev, author, date)) = parse_svn_log_header(rest) {
+                    let idx = records.len();
                     records.push(VcsRecord::Raw(format!(
                         "r{} | {} | {}",
                         rev,
                         author,
                         compact_log_date_value(&date)
                     )));
+                    header_index = Some(idx);
                     last_was_header = true;
                     continue;
                 }
@@ -379,11 +414,12 @@ impl VcsParser for SvnLogParser {
             records.push(VcsRecord::Subject(trimmed.to_string()));
         }
         // 处理最后一个 revision 的 message
-        if last_was_header && !pending_message.is_empty() {
-            let header = records.last_mut().unwrap();
-            if let VcsRecord::Raw(h) = header {
-                h.push_str(" | CM:");
-                h.push_str(&pending_message.join(" "));
+        if let Some(idx) = header_index {
+            if !pending_message.is_empty() {
+                if let Some(VcsRecord::Raw(h)) = records.get_mut(idx) {
+                    h.push_str(" | CM:");
+                    h.push_str(&pending_message.join(" "));
+                }
             }
         }
         to_doc_if_any(VcsTool::Svn, VcsDocKind::Log, records)
@@ -391,6 +427,7 @@ impl VcsParser for SvnLogParser {
 }
 
 impl VcsParser for SvnBlameParser {
+    /// 解析 `svn blame` 输出：将每行 版本/作者 标注解析为记录（连续相同标注行折叠去重），输出 Show 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -437,6 +474,7 @@ impl VcsParser for SvnBlameParser {
 }
 
 impl VcsParser for SvnListParser {
+    /// 解析 `svn list` 输出：将目录条目归为文件记录，输出 Show 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -459,6 +497,7 @@ impl VcsParser for SvnListParser {
 }
 
 impl VcsParser for SvnPropParser {
+    /// 解析 `svn propget/proplist/propset` 输出：将 `Properties on 'path'` 块内键值对拍扁为 PROPS:path 单行，set 反馈归为标签文件，输出 Show 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -553,6 +592,7 @@ fn flush_prop_block(
 }
 
 impl VcsParser for SvnInfoParser {
+    /// 解析 `svn info` 输出：委托紧凑信息记录构建，提取 URL/根/版本/最后修改等元数据，输出 Show 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let records = compact_svn_info_records(raw);
@@ -561,6 +601,7 @@ impl VcsParser for SvnInfoParser {
 }
 
 impl VcsParser for SvnUpdateParser {
+    /// 解析 `svn update` 输出：将更新路径归为 M 状态文件（U 保留给冲突），提取 Updated/At revision 计数为 Raw，输出 Status 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -624,6 +665,7 @@ impl VcsParser for SvnUpdateParser {
 }
 
 impl VcsParser for SvnSwitchParser {
+    /// 解析 `svn switch` 输出：将更新路径归为 M 状态文件，提取 `Switched to new URL` 与目标，输出 Status 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -677,6 +719,7 @@ impl VcsParser for SvnSwitchParser {
 }
 
 impl VcsParser for SvnRelocateParser {
+    /// 解析 `svn relocate` 输出：将 `Relocated 'path' to new URL` 归为记录（匹配命令目标时省略 URL），输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -712,6 +755,7 @@ impl VcsParser for SvnRelocateParser {
 }
 
 impl VcsParser for SvnMergeParser {
+    /// 解析 `svn merge` 输出：将合并路径行归为 LabeledFile，合并版本摘要压缩，输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -753,6 +797,7 @@ impl VcsParser for SvnMergeParser {
 }
 
 impl VcsParser for SvnLockParser {
+    /// 解析 `svn lock` 输出：将引号路径按锁标签归为 LabeledFile，输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -777,6 +822,7 @@ impl VcsParser for SvnLockParser {
 }
 
 impl VcsParser for SvnUnlockParser {
+    /// 解析 `svn unlock` 输出：将引号路径归为 unlock 标签文件，输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -803,6 +849,7 @@ impl VcsParser for SvnUnlockParser {
 }
 
 impl VcsParser for SvnRevertParser {
+    /// 解析 `svn revert` 输出：将 `Reverted path` 归为 R 状态文件，其余路径作兜底，输出 Status 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -837,6 +884,7 @@ impl VcsParser for SvnRevertParser {
 }
 
 impl VcsParser for SvnCleanupParser {
+    /// 解析 `svn cleanup` 输出：将 `Cleaned up.` 去重为 ST:[CLEANED] 记录，输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -866,6 +914,7 @@ impl VcsParser for SvnCleanupParser {
 }
 
 impl VcsParser for SvnResolveParser {
+    /// 解析 `svn resolve` 输出：将 `Resolved conflict at`/`Resolved:` 路径归为 resolved 标签文件，输出 Status 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -910,6 +959,7 @@ impl VcsParser for SvnResolveParser {
 }
 
 impl VcsParser for SvnExportParser {
+    /// 解析 `svn export` 输出：将 `Exported revision`/`Exporting path` 归为记录，`Export complete.` 去重为 ST:[EXPORTED]，输出 Log 类文档。
     #[tracing::instrument(level = "debug", skip_all)]
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
@@ -946,6 +996,7 @@ impl VcsParser for SvnExportParser {
     }
 }
 
+/// 判断行是否为 git oneline 头。
 fn is_git_oneline_header(line: &str) -> bool {
     let mut parts = line.splitn(2, ' ');
     let hash = parts.next().unwrap_or_default();
@@ -956,6 +1007,7 @@ fn is_git_oneline_header(line: &str) -> bool {
         && hash.chars().all(|c| c.is_ascii_hexdigit())
 }
 
+/// 确保 commit 边界换行。
 fn enforce_commit_boundaries(input: &str) -> String {
     let mut out = String::with_capacity(input.len() + 16);
     let mut i = 0usize;
@@ -983,6 +1035,7 @@ fn enforce_commit_boundaries(input: &str) -> String {
     out
 }
 
+/// 解析 git diff 头。
 fn parse_diff_git_header(line: &str) -> Option<(String, String)> {
     let rest = line.strip_prefix("diff --git ")?;
     let (left, consumed_left) = parse_git_path_token(rest)?;
@@ -991,6 +1044,7 @@ fn parse_diff_git_header(line: &str) -> Option<(String, String)> {
     Some((left, right))
 }
 
+/// 解析 git 路径 token。
 fn parse_git_path_token(input: &str) -> Option<(String, usize)> {
     let bytes = input.as_bytes();
     if bytes.is_empty() {
@@ -1024,6 +1078,7 @@ fn parse_git_path_token(input: &str) -> Option<(String, usize)> {
     }
 }
 
+/// 解析 git 补丁/统计行。
 fn parse_git_patch_or_stat_line(line: &str, trimmed: &str, records: &mut Vec<VcsRecord>) -> bool {
     if trimmed.starts_with("index ")
         || trimmed.starts_with("new file mode ")
@@ -1062,6 +1117,7 @@ fn parse_git_patch_or_stat_line(line: &str, trimmed: &str, records: &mut Vec<Vcs
     false
 }
 
+/// 通用 status 解析。
 fn parse_generic_status_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -1116,6 +1172,7 @@ fn parse_generic_status_for_tool(
     to_doc_if_any(tool, VcsDocKind::Status, records)
 }
 
+/// 通用 log 解析。
 fn parse_generic_log_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -1213,6 +1270,7 @@ fn parse_generic_log_for_tool(
     to_doc_if_any(tool, VcsDocKind::Log, records)
 }
 
+/// 通用 diff 解析。
 fn parse_generic_diff_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -1281,6 +1339,7 @@ fn parse_generic_diff_for_tool(
     to_doc_if_any(tool, VcsDocKind::Diff, records)
 }
 
+/// 按长词状态前缀解析状态码与路径。
 fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     let lower = line.to_ascii_lowercase();
     let candidates = [
@@ -1314,6 +1373,7 @@ fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     None
 }
 
+/// 解析 "Modified: path" 文件头行。
 fn parse_modified_file_header(line: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
     if let Some(rest) = lower.strip_prefix("=== modified file") {
@@ -1327,6 +1387,7 @@ fn parse_modified_file_header(line: &str) -> Option<String> {
     None
 }
 
+/// 解析 darcs hunk 行。
 fn parse_darcs_hunk_record(line: &str) -> Option<VcsRecord> {
     let trimmed = line.trim();
     let rest = trimmed.strip_prefix("hunk ")?;
@@ -1344,6 +1405,7 @@ fn parse_darcs_hunk_record(line: &str) -> Option<VcsRecord> {
     })
 }
 
+/// 判断是否为 diff stat 行。
 fn looks_like_diff_stat_line(line: &str) -> bool {
     if line.contains(" | ") {
         return true;
@@ -1357,6 +1419,7 @@ fn looks_like_diff_stat_line(line: &str) -> bool {
         || line.contains("deletions(-)")
 }
 
+/// 解析单字符状态码 + 路径。
 fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     let token_end = line.find(char::is_whitespace).unwrap_or(line.len());
     if token_end == 0 {
@@ -1403,6 +1466,7 @@ fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     Some((status, rest_trimmed.to_string()))
 }
 
+/// 按允许状态码集合解析单字符状态行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_single_char_status_path(line: &str, allowed: &[char]) -> Option<(char, String)> {
     let token_end = line.find(char::is_whitespace).unwrap_or(line.len());
@@ -1423,6 +1487,7 @@ fn parse_single_char_status_path(line: &str, allowed: &[char]) -> Option<(char, 
     Some((status, path.to_string()))
 }
 
+/// 从 Checking in 行提取路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_cvs_checking_in_path(line: &str) -> Option<String> {
     let path = line
@@ -1435,6 +1500,7 @@ fn parse_cvs_checking_in_path(line: &str) -> Option<String> {
     Some(path.to_string())
 }
 
+/// 判断是否为 CVS 修订号 token。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_cvs_revision_token(line: &str) -> bool {
     let trimmed = line.trim();
@@ -1445,6 +1511,7 @@ fn looks_like_cvs_revision_token(line: &str) -> bool {
             .all(|ch| ch.is_ascii_digit() || ch == '.' || ch == '_')
 }
 
+/// 从 cvs tag 命令行解析标签名。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_cvs_tag_name_from_command(line: &str) -> Option<String> {
     let mut parts = line.split_whitespace();
@@ -1460,6 +1527,7 @@ fn parse_cvs_tag_name_from_command(line: &str) -> Option<String> {
         .filter(|part| !part.is_empty())
 }
 
+/// 解析引号包裹的路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_cvs_quoted_path(line: &str) -> Option<String> {
     let extract = |start_char: char, end_char: char| -> Option<String> {
@@ -1478,6 +1546,7 @@ fn parse_cvs_quoted_path(line: &str) -> Option<String> {
         .or_else(|| extract('"', '"'))
 }
 
+/// 解析 bzr 修订计数。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_bzr_revision_count_line(line: &str, prefix: &str) -> Option<usize> {
     let rest = line.strip_prefix(prefix)?.trim();
@@ -1485,6 +1554,7 @@ fn parse_bzr_revision_count_line(line: &str, prefix: &str) -> Option<usize> {
     Some(count)
 }
 
+/// 解析 bzr 总修订数。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_bzr_total_revisions_line(line: &str) -> Option<usize> {
     let rest = line.strip_prefix("Total ")?.trim();
@@ -1492,6 +1562,7 @@ fn parse_bzr_total_revisions_line(line: &str) -> Option<usize> {
     Some(count)
 }
 
+/// 解析 git remote 传输记录。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_remote_transfer_records(raw: &str, remote_prefix: &str) -> Vec<VcsRecord> {
     let mut records = Vec::new();
@@ -1527,6 +1598,7 @@ fn parse_git_remote_transfer_records(raw: &str, remote_prefix: &str) -> Vec<VcsR
     records
 }
 
+/// 判断是否为 git 传输噪音行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_git_transfer_noise_line(line: &str) -> bool {
     let lower = line.trim().to_ascii_lowercase();
@@ -1542,6 +1614,7 @@ fn is_git_transfer_noise_line(line: &str) -> bool {
         || lower.starts_with("total ")
 }
 
+/// 紧凑化 git remote 位置。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_git_remote_location(location: &str) -> String {
     let trimmed = location.trim();
@@ -1557,11 +1630,13 @@ fn compact_git_remote_location(location: &str) -> String {
         .to_string()
 }
 
+/// 紧凑化 git ref 更新行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_git_ref_update_line(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 紧凑化 diff stat 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_diff_stat_line(line: &str) -> String {
     let normalized = line.split_whitespace().collect::<Vec<_>>().join(" ");
@@ -1610,6 +1685,7 @@ fn compact_diff_stat_line(line: &str) -> String {
     normalized
 }
 
+/// 从 ref 更新行解析 git pull 目标。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_pull_target_from_ref_update(line: &str) -> Option<String> {
     let normalized = compact_git_ref_update_line(line);
@@ -1622,6 +1698,7 @@ fn parse_git_pull_target_from_ref_update(line: &str) -> Option<String> {
     }
 }
 
+/// 紧凑化 git pull 文件统计行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_git_pull_file_stat_line(line: &str) -> Option<String> {
     let (path, rhs) = line.split_once('|')?;
@@ -1636,6 +1713,7 @@ fn compact_git_pull_file_stat_line(line: &str) -> Option<String> {
     Some(format!("{path}:{count}"))
 }
 
+/// 解析 git pull 变更摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_pull_change_summary(line: &str) -> Option<String> {
     let normalized = compact_diff_stat_line(line);
@@ -1691,6 +1769,7 @@ fn parse_git_pull_change_summary(line: &str) -> Option<String> {
     Some(format!("{files} {noun} changed +{ins} -{del}"))
 }
 
+/// 紧凑化 git 汇总行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_git_summary_line(line: &str) -> String {
     let trimmed = line.trim();
@@ -1710,6 +1789,7 @@ fn compact_git_summary_line(line: &str) -> String {
     }
 }
 
+/// 压缩 hg update 汇总行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_hg_update_summary_line(line: &str) -> Option<String> {
     let mut compact = Vec::new();
@@ -1746,6 +1826,7 @@ fn compact_hg_update_summary_line(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 git clean 动作行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_clean_action_line(line: &str) -> Option<(String, String)> {
     if let Some(path) = line.strip_prefix("Removing ") {
@@ -1765,6 +1846,7 @@ fn parse_git_clean_action_line(line: &str) -> Option<(String, String)> {
     None
 }
 
+/// 解析 git pull 记录。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_pull_records(raw: &str) -> Vec<VcsRecord> {
     let mut records = Vec::new();
@@ -1854,6 +1936,7 @@ fn parse_git_pull_records(raw: &str) -> Vec<VcsRecord> {
     records
 }
 
+/// 解析 git grep 匹配行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_grep_match_line(line: &str) -> Option<(&str, &str, &str)> {
     // Accept both:
@@ -1871,6 +1954,7 @@ fn parse_git_grep_match_line(line: &str) -> Option<(&str, &str, &str)> {
     Some((path, line_no, content))
 }
 
+/// 在连续空白处切分行。
 fn split_first_token(input: &str) -> Option<(&str, &str)> {
     let trimmed = input.trim_start();
     if trimmed.is_empty() {
@@ -1906,6 +1990,7 @@ struct CvsAnnotateLine {
     blanked_rendered: String,
 }
 
+/// 解析 svn blame 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_blame_line(line: &str) -> Option<SvnBlameLine> {
     let line_trimmed_end = line.trim_end_matches('\r');
@@ -1950,6 +2035,7 @@ fn parse_svn_blame_line(line: &str) -> Option<SvnBlameLine> {
     })
 }
 
+/// 解析 git blame 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_git_blame_line(line: &str) -> Option<GitBlameLine> {
     let line = line.trim_end_matches('\r');
@@ -2017,6 +2103,7 @@ fn parse_git_blame_line(line: &str) -> Option<GitBlameLine> {
     })
 }
 
+/// 解析 cvs annotate 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_cvs_annotate_line(line: &str) -> Option<CvsAnnotateLine> {
     let line = line.trim_end_matches('\r');
@@ -2058,6 +2145,7 @@ fn parse_cvs_annotate_line(line: &str) -> Option<CvsAnnotateLine> {
     })
 }
 
+/// 判断是否形如 git blame 日期时间。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_git_blame_datetime(date: &str) -> bool {
     date.len() == 19
@@ -2069,6 +2157,7 @@ fn looks_like_git_blame_datetime(date: &str) -> bool {
         })
 }
 
+/// 渲染空白化 blame 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn blank_compacted_blame_line(prefix: &str, content: &str) -> String {
     let mut chars: Vec<char> = prefix.chars().collect();
@@ -2083,6 +2172,7 @@ fn blank_compacted_blame_line(prefix: &str, content: &str) -> String {
     rendered
 }
 
+/// 将字节范围替换为空格。
 #[tracing::instrument(level = "debug", skip_all)]
 fn blank_byte_ranges_with_spaces(input: &str, ranges: &[(usize, usize)]) -> String {
     let mut chars: Vec<char> = input.chars().collect();
@@ -2096,6 +2186,7 @@ fn blank_byte_ranges_with_spaces(input: &str, ranges: &[(usize, usize)]) -> Stri
     chars.into_iter().collect()
 }
 
+/// 渲染紧凑化 blame 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn render_compacted_blame_line(prefix: &str, content: &str) -> String {
     let stripped = prefix.trim_start();
@@ -2109,6 +2200,7 @@ fn render_compacted_blame_line(prefix: &str, content: &str) -> String {
     out
 }
 
+/// 解析 svn list 条目。
 fn parse_svn_list_entry(line: &str) -> Option<String> {
     let mut tokens: Vec<String> = line.split_whitespace().map(|s| s.to_string()).collect();
     if tokens.is_empty() {
@@ -2120,6 +2212,21 @@ fn parse_svn_list_entry(line: &str) -> Option<String> {
         || (tokens.len() >= 4 && looks_like_iso_date_token(&tokens[0]))
     {
         compact_svn_list_size_field(&mut tokens);
+        return Some(tokens.join(" "));
+    }
+
+    // `svn list --verbose` 列布局：revision author size Mon DD HH:MM path。
+    // 大小位于 tokens[2]，仅折叠列宽并把大小转为人读缩写（日期时间保留原文）。
+    if tokens.len() >= 6
+        && tokens[0].chars().all(|c| c.is_ascii_digit())
+        && tokens[2].parse::<u64>().is_ok()
+        && tokens[3].len() == 3
+        && tokens[4].len() == 2
+        && looks_like_hhmm_token(&tokens[5])
+    {
+        if let Some(size) = compact_human_size_token(&tokens[2]) {
+            tokens[2] = size;
+        }
         return Some(tokens.join(" "));
     }
 
@@ -2135,6 +2242,7 @@ fn parse_svn_list_entry(line: &str) -> Option<String> {
     }
 }
 
+/// 紧凑化 svn list 大小字段。
 fn compact_svn_list_size_field(tokens: &mut [String]) {
     // Common verbose form:
     // YYYY-MM-DD HH:MM author size path
@@ -2154,6 +2262,7 @@ fn compact_svn_list_size_field(tokens: &mut [String]) {
     }
 }
 
+/// 判断 token 是否为 HH:MM 时间。
 fn looks_like_hhmm_token(token: &str) -> bool {
     let mut parts = token.split(':');
     let h = parts.next().unwrap_or_default();
@@ -2165,6 +2274,7 @@ fn looks_like_hhmm_token(token: &str) -> bool {
         && m.chars().all(|c| c.is_ascii_digit())
 }
 
+/// 紧凑化人类可读大小 token。
 fn compact_human_size_token(token: &str) -> Option<String> {
     let bytes = token.parse::<u64>().ok()?;
     if bytes < 1024 {
@@ -2186,6 +2296,7 @@ fn compact_human_size_token(token: &str) -> Option<String> {
     }
 }
 
+/// 压缩大小类元数据值。
 fn compact_size_metadata_value(key: &str, value: &str) -> Option<String> {
     let lower_key = key.trim().to_ascii_lowercase();
     let looks_like_size_key = lower_key.contains("size")
@@ -2224,6 +2335,7 @@ fn compact_size_metadata_value(key: &str, value: &str) -> Option<String> {
     compact_human_size_token(bytes_token)
 }
 
+/// 判断 token 是否为 ISO 日期。
 fn looks_like_iso_date_token(token: &str) -> bool {
     let mut parts = token.split('-');
     let y = parts.next().unwrap_or_default();
@@ -2238,6 +2350,7 @@ fn looks_like_iso_date_token(token: &str) -> bool {
         && d.chars().all(|c| c.is_ascii_digit())
 }
 
+/// 压缩 blame 代码缩进。
 fn compact_blame_code_indent(content: &str) -> String {
     let trimmed_end = content.trim_end();
     if trimmed_end.is_empty() {
@@ -2266,6 +2379,7 @@ fn compact_blame_code_indent(content: &str) -> String {
     format!("{}{}", kept_spaces, body)
 }
 
+/// 压缩 blame 前缀后内容。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_blame_content_after_prefix(content: &str) -> String {
     let trimmed = content
@@ -2275,6 +2389,7 @@ fn compact_blame_content_after_prefix(content: &str) -> String {
     compact_blame_code_indent(trimmed)
 }
 
+/// 从 svn prop 命令解析属性名。
 fn parse_svn_property_name_from_command(line: &str) -> Option<String> {
     let mut parts = line.split_whitespace();
     let tool = parts.next()?;
@@ -2295,6 +2410,7 @@ fn parse_svn_property_name_from_command(line: &str) -> Option<String> {
     None
 }
 
+/// 解析 K-V 行。
 fn parse_key_value_line(line: &str) -> Option<(String, String)> {
     let (key, value) = line.split_once(':')?;
     let key = key.trim();
@@ -2305,6 +2421,7 @@ fn parse_key_value_line(line: &str) -> Option<(String, String)> {
     Some((key.to_string(), value.to_string()))
 }
 
+/// 判断行是否为纯 URL。
 fn is_url_only_line(line: &str) -> bool {
     let trimmed = line.trim();
     trimmed.starts_with("https://")
@@ -2314,6 +2431,7 @@ fn is_url_only_line(line: &str) -> bool {
         || trimmed.starts_with("file://")
 }
 
+/// 解析 svn 首个引号路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_first_quoted_path(line: &str) -> Option<String> {
     let start = line.find('\'')?;
@@ -2326,6 +2444,7 @@ fn parse_svn_first_quoted_path(line: &str) -> Option<String> {
     Some(path.to_string())
 }
 
+/// 解析 svn 前缀后路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_path_after_prefix(line: &str, prefix: &str) -> Option<String> {
     let rest = line.strip_prefix(prefix)?.trim();
@@ -2342,6 +2461,7 @@ fn parse_svn_path_after_prefix(line: &str, prefix: &str) -> Option<String> {
     Some(path.to_string())
 }
 
+/// 解析 svn update 路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_update_path(line: &str) -> Option<String> {
     parse_svn_path_after_prefix(line, "Updating ")
@@ -2377,6 +2497,7 @@ fn parse_svn_update_status_line(line: &str) -> Option<(char, String)> {
     Some((code, path))
 }
 
+/// 提取 svn 命令目标路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn extract_svn_cmd_target(raw: &str, cmd_prefix: &str) -> Option<String> {
     let line = raw.lines().find(|l| !l.trim().is_empty())?.trim();
@@ -2391,6 +2512,7 @@ fn extract_svn_cmd_target(raw: &str, cmd_prefix: &str) -> Option<String> {
     rest.split_whitespace().last().map(|s| s.to_string())
 }
 
+/// 解析 svn 修订行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_revision_line(line: &str, prefix: &str) -> Option<String> {
     let revision = line
@@ -2410,6 +2532,7 @@ fn parse_svn_revision_line(line: &str, prefix: &str) -> Option<String> {
     }
 }
 
+/// 紧凑化 svn 文件计数行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_svn_file_count_line(line: &str, prefix: &str) -> Option<String> {
     let rest = line
@@ -2431,6 +2554,7 @@ fn compact_svn_file_count_line(line: &str, prefix: &str) -> Option<String> {
     Some(format!("{} {}", count, noun))
 }
 
+/// 紧凑化 svn merge 修订行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_svn_merge_revision_line(line: &str) -> Option<String> {
     let rest = line
@@ -2447,6 +2571,7 @@ fn compact_svn_merge_revision_line(line: &str) -> Option<String> {
     Some(format!("merge {}..{}", start, end))
 }
 
+/// 解析 svn merge 路径行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_merge_path_line(line: &str) -> Option<(String, String)> {
     let rest = line.strip_prefix("-- ")?.trim();
@@ -2467,6 +2592,7 @@ fn parse_svn_merge_path_line(line: &str) -> Option<(String, String)> {
     Some((label, path.to_string()))
 }
 
+/// 解析 svn lock 标签。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_svn_lock_label(line: &str) -> String {
     if let Some((_, tail)) = line.rsplit_once(" locked by user '") {
@@ -2480,8 +2606,216 @@ fn parse_svn_lock_label(line: &str) -> String {
     "lock".to_string()
 }
 
+/// 判断是否为 `svn info --xml` 输出：首行命令含 xml 标志，或文本带 `<?xml`/`<info>` 标记。
+fn looks_like_svn_info_xml(raw: &str) -> bool {
+    let mut svn_info = false;
+    let mut xml = false;
+    for line in raw.lines() {
+        let t = line.trim();
+        if t.to_ascii_lowercase().starts_with("svn info") {
+            if t.to_ascii_lowercase().contains("xml") {
+                return true;
+            }
+            svn_info = true;
+        } else if t.starts_with("<?xml") || t.starts_with("<info>") {
+            xml = true;
+        }
+    }
+    svn_info && xml
+}
+
+/// 解析 XML 开标签中的键值属性列表，正确处理含空白字符的引号值（如 wcroot 路径）。
+fn parse_xml_attrs(tag: &str) -> Vec<(String, String)> {
+    let mut attrs = Vec::new();
+    let mut rest = tag.trim_start_matches('<').trim_start();
+    // 跳过标签名，定位属性区
+    if let Some(i) = rest.find(char::is_whitespace) {
+        rest = &rest[i..];
+    } else {
+        return attrs;
+    }
+    while let Some(eq) = rest.find('=') {
+        let key = rest[..eq].trim().to_string();
+        let after_eq = rest[eq + 1..].trim_start();
+        if let Some(after_quote) = after_eq.strip_prefix('"') {
+            if let Some(close) = after_quote.find('"') {
+                let val = after_quote[..close].to_string();
+                if !key.is_empty() {
+                    attrs.push((key, val));
+                }
+                rest = &after_quote[close + 1..];
+                continue;
+            }
+        }
+        break;
+    }
+    attrs
+}
+
+/// 提取单个标签开始与结束标记之间的文本内容。
+fn xml_tag_text(line: &str, open: &str, close: &str) -> Option<String> {
+    let start = line.find(open)? + open.len();
+    let tail = &line[start..];
+    let end = tail.find(close)?;
+    Some(tail[..end].trim().to_string())
+}
+
+/// 判断行是否仅为纯 XML 标记（去掉标签后无任何文本内容），如容器标签/闭合标签/声明。
+/// 这类行无语义价值，压缩时应丢弃。
+fn is_pure_xml_markup(line: &str) -> bool {
+    let t = line.trim();
+    if t.is_empty() || (t.starts_with("<?") && t.ends_with('>')) {
+        return true;
+    }
+    let stripped: String = t
+        .split('<')
+        .filter_map(|seg| match seg.find('>') {
+            Some(idx) => Some(&seg[idx + 1..]),
+            None => Some(seg),
+        })
+        .collect();
+    stripped.trim().is_empty()
+}
+
+/// 解析 `svn info --xml` 输出，抽取语义字段集合并折叠 XML 结构标记，与文本版 info 输出同构。
+#[tracing::instrument(level = "debug", skip_all)]
+fn compact_svn_info_xml_records(raw: &str) -> Vec<VcsRecord> {
+    let mut path = None;
+    let mut node_kind = None;
+    let mut revision = None;
+    let mut wc_root = None;
+    let mut url = None;
+    let mut repo_root = None;
+    let mut uuid = None;
+    let mut depth = None;
+    let mut commit_rev = None;
+    let mut author = None;
+    let mut date = None;
+    let mut extras = Vec::new();
+
+    for line in raw.lines() {
+        let t = line.trim_end_matches('\r').trim();
+        if t.is_empty() || t.to_ascii_lowercase().starts_with("svn info") {
+            continue;
+        }
+        if t.starts_with("<entry") {
+            for (k, v) in parse_xml_attrs(t) {
+                match k.as_str() {
+                    "path" => path = Some(v),
+                    "kind" => node_kind = Some(v),
+                    "revision" => revision = Some(v),
+                    "wcroot" => wc_root = Some(v),
+                    _ => {}
+                }
+            }
+            continue;
+        }
+        if t.starts_with("<commit") {
+            for (k, v) in parse_xml_attrs(t) {
+                if k == "revision" {
+                    commit_rev = Some(v);
+                }
+            }
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<url>", "</url>") {
+            url = Some(v);
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<root>", "</root>") {
+            repo_root = Some(v);
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<uuid>", "</uuid>") {
+            uuid = Some(v);
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<wcroot>", "</wcroot>") {
+            wc_root = Some(v);
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<depth>", "</depth>") {
+            depth = Some(v);
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<author>", "</author>") {
+            author = Some(v);
+            continue;
+        }
+        if let Some(v) = xml_tag_text(t, "<date>", "</date>") {
+            date = Some(v);
+            continue;
+        }
+        // 丢弃无文本内容的纯结构标记（容器/闭合/声明），其子内容已在前序分支捕获。
+        if is_pure_xml_markup(t) {
+            continue;
+        }
+        extras.push(t.to_string());
+    }
+
+    let mut records = Vec::new();
+    if let Some(path) = path {
+        records.push(VcsRecord::LabeledFile {
+            label: "Path".to_string(),
+            path,
+        });
+    }
+    if let Some(wc) = wc_root {
+        records.push(VcsRecord::LabeledFile {
+            label: "WCRoot".to_string(),
+            path: wc,
+        });
+    }
+
+    let mut location_parts = Vec::new();
+    if let Some(url) = url {
+        location_parts.push(format!("URL: {}", url));
+    }
+    if let Some(repo_root) = repo_root {
+        location_parts.push(format!("Repo: {}", repo_root));
+    }
+    push_compact_raw_line(&mut records, location_parts);
+
+    let mut meta_parts = Vec::new();
+    if let Some(revision) = revision {
+        meta_parts.push(format!("Rev: {}", revision));
+    }
+    if let Some(node_kind) = node_kind {
+        meta_parts.push(format!("Kind: {}", node_kind));
+    }
+    if let Some(depth) = depth {
+        meta_parts.push(format!("Depth: {}", depth));
+    }
+    if let Some(uuid) = uuid {
+        if let Some(short) = uuid.get(..8) {
+            meta_parts.push(format!("UUID: {}", short));
+        }
+    }
+    push_compact_raw_line(&mut records, meta_parts);
+
+    let mut commit_parts = Vec::new();
+    if let Some(commit_rev) = commit_rev {
+        commit_parts.push(format!("CommitRev: {}", commit_rev));
+    }
+    if let Some(author) = author {
+        commit_parts.push(format!("Author: {}", author));
+    }
+    if let Some(date) = date {
+        commit_parts.push(format!("Date: {}", date));
+    }
+    push_compact_raw_line(&mut records, commit_parts);
+    push_compact_raw_line(&mut records, extras);
+
+    records
+}
+
+/// 紧凑化 svn info 记录。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_svn_info_records(raw: &str) -> Vec<VcsRecord> {
+    // `svn info --xml` 走专属 XML 解析，文本形态走键值行解析。
+    if looks_like_svn_info_xml(raw) {
+        return compact_svn_info_xml_records(raw);
+    }
     let mut path = None;
     let mut wc_root = None;
     let mut url = None;
@@ -2582,6 +2916,7 @@ fn compact_svn_info_records(raw: &str) -> Vec<VcsRecord> {
     records
 }
 
+/// 紧凑化 p4 info 记录。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_p4_info_records(raw: &str) -> Vec<VcsRecord> {
     let mut user = None;
@@ -2684,6 +3019,7 @@ fn compact_p4_info_records(raw: &str) -> Vec<VcsRecord> {
     records
 }
 
+/// 将零件列表压入记录并过滤空行。
 fn push_compact_raw_line(records: &mut Vec<VcsRecord>, parts: Vec<String>) {
     let compact: Vec<String> = parts
         .into_iter()
@@ -2694,6 +3030,7 @@ fn push_compact_raw_line(records: &mut Vec<VcsRecord>, parts: Vec<String>) {
     }
 }
 
+/// 紧凑化 info 时间戳。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_info_timestamp(value: &str) -> String {
     if value.len() >= 19 {
@@ -2705,6 +3042,7 @@ fn compact_info_timestamp(value: &str) -> String {
     value.trim().to_string()
 }
 
+/// 判断值是否为紧凑时间戳。
 fn looks_like_compact_info_timestamp(value: &str) -> bool {
     value.len() == 19
         && value.chars().enumerate().all(|(idx, ch)| match idx {
@@ -2715,6 +3053,7 @@ fn looks_like_compact_info_timestamp(value: &str) -> bool {
         })
 }
 
+/// 紧凑化 svn node kind 值。
 fn compact_svn_node_kind(value: &str) -> Option<String> {
     let normalized = value.trim().to_ascii_lowercase();
     match normalized.as_str() {
@@ -2725,6 +3064,7 @@ fn compact_svn_node_kind(value: &str) -> Option<String> {
     }
 }
 
+/// 紧凑化 svn schedule 值。
 fn compact_svn_schedule(value: &str) -> Option<String> {
     let trimmed = value.trim();
     if trimmed.eq_ignore_ascii_case("normal") || trimmed.is_empty() {
@@ -2734,6 +3074,7 @@ fn compact_svn_schedule(value: &str) -> Option<String> {
     }
 }
 
+/// 按键名压缩 info 值。
 fn compact_info_value(key: &str, value: &str) -> String {
     if is_info_date_key(key) {
         compact_info_timestamp(value)
@@ -2744,6 +3085,7 @@ fn compact_info_value(key: &str, value: &str) -> String {
     }
 }
 
+/// 判断键是否为日期类键。
 fn is_info_date_key(key: &str) -> bool {
     let lower = key.trim().to_ascii_lowercase();
     lower == "date"
@@ -2755,6 +3097,7 @@ fn is_info_date_key(key: &str) -> bool {
         || lower.ends_with("-timestamp")
 }
 
+/// 缩写 svn info 键名。
 fn shorten_svn_info_key(key: &str) -> String {
     match key {
         "Working Copy Root Path" => "WCRoot".to_string(),
@@ -2770,6 +3113,7 @@ fn shorten_svn_info_key(key: &str) -> String {
     }
 }
 
+/// 缩写 p4 info 键名。
 fn shorten_p4_info_key(key: &str) -> String {
     match key {
         "User name" => "User".to_string(),
@@ -2787,6 +3131,23 @@ fn shorten_p4_info_key(key: &str) -> String {
     }
 }
 
+/// 解析 svn log -v 的 Changed paths 变更行，如 `   A /trunk/src/foo.c`，返回 (状态字母, 路径)。
+/// 要求路径以 `/` 开头以区分正文行（正文首字母单词不以 `/` 开头）。
+fn parse_svn_changed_path_line(trimmed: &str) -> Option<(char, String)> {
+    let t = trimmed.trim();
+    let mut chars = t.chars();
+    let st = chars.next()?;
+    if !st.is_ascii_alphabetic() {
+        return None;
+    }
+    let rest = chars.as_str().trim_start();
+    if !rest.starts_with('/') {
+        return None;
+    }
+    Some((st, rest.to_string()))
+}
+
+/// 解析 svn log 头。
 fn parse_svn_log_header(rest: &str) -> Option<(String, String, String)> {
     let mut parts = rest.split('|').map(|s| s.trim());
     let rev = parts.next()?.to_string();
@@ -2798,6 +3159,7 @@ fn parse_svn_log_header(rest: &str) -> Option<(String, String, String)> {
     Some((rev, author, date))
 }
 
+/// 紧凑化日志日期值。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_log_date_value(value: &str) -> String {
     // 裁剪掉 "(Mon, 14 Apr 2026)" 部分
@@ -2864,6 +3226,7 @@ fn strip_seconds(value: &str) -> String {
     value.to_string()
 }
 
+/// 将 hg 日期规范化为 YYYY-MM-DD HH:MM:SS。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_hg_date_value(value: &str) -> Option<String> {
     let parts: Vec<&str> = value.split_whitespace().collect();
@@ -2891,16 +3254,19 @@ fn compact_hg_date_value(value: &str) -> Option<String> {
     Some(format!("{}-{:02}-{:02} {}", year, month, day, time))
 }
 
+/// 判断 token 是否为英文星期缩写。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_hg_weekday(token: &str) -> bool {
     matches!(token, "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun")
 }
 
+/// 判断 token 是否为 4 位年份。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_hg_year(token: &str) -> bool {
     token.len() == 4 && token.chars().all(|ch| ch.is_ascii_digit())
 }
 
+/// 判断 token 是否为 HH:MM:SS 时间。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_hg_time_token(token: &str) -> bool {
     let mut parts = token.split(':');
@@ -2917,6 +3283,7 @@ fn looks_like_hg_time_token(token: &str) -> bool {
         && second.chars().all(|ch| ch.is_ascii_digit())
 }
 
+/// 将英文月份缩写映射为数字。
 #[tracing::instrument(level = "debug", skip_all)]
 fn hg_month_number(token: &str) -> Option<u32> {
     match token {
@@ -2936,6 +3303,7 @@ fn hg_month_number(token: &str) -> Option<u32> {
     }
 }
 
+/// 解析 p4 depot 路径。
 fn parse_p4_depot_path(line: &str) -> Option<String> {
     let start = line.find("//")?;
     let tail = &line[start..];
@@ -2950,6 +3318,7 @@ fn parse_p4_depot_path(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 p4 depot spec。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_depot_spec(line: &str) -> Option<String> {
     let start = line.find("//")?;
@@ -2963,6 +3332,7 @@ fn parse_p4_depot_spec(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 p4 opened 行。
 fn parse_p4_opened_line(line: &str) -> Option<(char, String)> {
     let path = parse_p4_depot_path(line)?;
     let lower = line.to_ascii_lowercase();
@@ -2976,6 +3346,7 @@ fn parse_p4_opened_line(line: &str) -> Option<(char, String)> {
     Some((status, path))
 }
 
+/// 解析 p4 action-path 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_action_path_line(line: &str) -> Option<(String, String)> {
     let trimmed = line.trim();
@@ -2990,6 +3361,7 @@ fn parse_p4_action_path_line(line: &str) -> Option<(String, String)> {
     Some((path, right.trim().to_string()))
 }
 
+/// 解析 p4 sync 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_sync_line(line: &str) -> Option<(char, String)> {
     let (path, action) = parse_p4_action_path_line(line)?;
@@ -3010,6 +3382,7 @@ fn parse_p4_sync_line(line: &str) -> Option<(char, String)> {
     Some((status, path))
 }
 
+/// 紧凑化 p4 sync 预览汇总。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_p4_sync_preview_summary(line: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
@@ -3024,6 +3397,7 @@ fn compact_p4_sync_preview_summary(line: &str) -> Option<String> {
     Some(format!("{count} would-update"))
 }
 
+/// 解析 p4 change 编号。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_change_number(line: &str) -> Option<String> {
     let tokens: Vec<&str> = line.split_whitespace().collect();
@@ -3040,6 +3414,7 @@ fn parse_p4_change_number(line: &str) -> Option<String> {
     }
 }
 
+/// 紧凑化 p4 files 汇总。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_p4_files_summary(line: &str, action: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
@@ -3056,6 +3431,7 @@ fn compact_p4_files_summary(line: &str, action: &str) -> Option<String> {
     Some(format!("{} {}", count, action))
 }
 
+/// 解析 p4 resolve 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_resolve_line(line: &str) -> Option<(String, String)> {
     let (path, action) = parse_p4_action_path_line(line)?;
@@ -3084,6 +3460,7 @@ fn parse_p4_resolve_line(line: &str) -> Option<(String, String)> {
     None
 }
 
+/// 紧凑化 p4 resolve 汇总。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_p4_resolve_summary(line: &str) -> Option<String> {
     let lower = line.to_ascii_lowercase();
@@ -3099,6 +3476,7 @@ fn compact_p4_resolve_summary(line: &str) -> Option<String> {
     Some(compact)
 }
 
+/// 解析 p4 revert 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_revert_line(line: &str) -> Option<String> {
     let (path, action) = parse_p4_action_path_line(line)?;
@@ -3109,6 +3487,7 @@ fn parse_p4_revert_line(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 p4 edit 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_edit_line(line: &str) -> Option<String> {
     let (path, action) = parse_p4_action_path_line(line)?;
@@ -3119,6 +3498,7 @@ fn parse_p4_edit_line(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 p4 add 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_add_line(line: &str) -> Option<String> {
     let (path, action) = parse_p4_action_path_line(line)?;
@@ -3129,6 +3509,7 @@ fn parse_p4_add_line(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 p4 delete 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_delete_line(line: &str) -> Option<String> {
     let (path, action) = parse_p4_action_path_line(line)?;
@@ -3139,6 +3520,7 @@ fn parse_p4_delete_line(line: &str) -> Option<String> {
     }
 }
 
+/// 解析 hg changeset 类记录。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_hg_changeset_like_records(raw: &str, command_prefixes: &[&str]) -> Vec<VcsRecord> {
     let mut records = Vec::new();
@@ -3212,6 +3594,7 @@ fn parse_hg_changeset_like_records(raw: &str, command_prefixes: &[&str]) -> Vec<
     records
 }
 
+/// 确保 hg changeset 边界换行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn enforce_hg_changeset_boundaries(input: &str) -> String {
     let mut out = String::with_capacity(input.len() + 16);
@@ -3245,20 +3628,24 @@ fn enforce_hg_changeset_boundaries(input: &str) -> String {
     out
 }
 
+/// 剥离 hg 字段前缀。
 fn strip_hg_field_prefix<'a>(line: &'a str, prefix: &str) -> Option<&'a str> {
     line.strip_prefix(prefix).map(|value| value.trim_start())
 }
 
+/// 折叠行内连续空白。
 fn collapse_inline_whitespace(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 紧凑化 hg branch 行。
 fn compact_hg_branch_line(line: &str) -> String {
     line.strip_suffix(" (inactive)")
         .map(|prefix| format!("{prefix}~"))
         .unwrap_or_else(|| line.to_string())
 }
 
+/// 在连续空白处切分行。
 fn split_on_repeated_whitespace(line: &str) -> Option<(&str, &str)> {
     let mut run_start: Option<usize> = None;
     let mut run_len = 0usize;
@@ -3288,18 +3675,21 @@ fn split_on_repeated_whitespace(line: &str) -> Option<(&str, &str)> {
     None
 }
 
+/// 解析 p4 元数据行。
 fn parse_p4_metadata_line(line: &str) -> Option<(String, String)> {
     let rest = line.strip_prefix("... ")?;
     let (key, value) = split_first_token(rest)?;
     Some((key.to_string(), value.to_string()))
 }
 
+/// 判断键是否为 p4 路径元数据键。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_p4_path_metadata_key(key: &str) -> bool {
     let lower = key.to_ascii_lowercase();
     lower.ends_with("file") || lower.ends_with("path") || lower == "path"
 }
 
+/// 判断值是否为 p4 路径值。
 #[tracing::instrument(level = "debug", skip_all)]
 fn is_p4_path_value(value: &str) -> bool {
     let trimmed = value.trim();
@@ -3315,6 +3705,7 @@ fn is_p4_path_value(value: &str) -> bool {
             && trimmed.as_bytes()[0].is_ascii_alphabetic())
 }
 
+/// 解析 p4 where 行。
 fn parse_p4_where_line(line: &str) -> Option<(String, String, String)> {
     let (depot, rest) = split_first_token(line)?;
     let (client, local) = split_first_token(rest)?;
@@ -3325,6 +3716,7 @@ fn parse_p4_where_line(line: &str) -> Option<(String, String, String)> {
     Some((depot.to_string(), client.to_string(), local.to_string()))
 }
 
+/// 解析 svn property 行。
 fn parse_svn_property_line(line: &str) -> Option<(String, String)> {
     let trimmed = line.trim();
     if !trimmed.contains(':') {
@@ -3344,6 +3736,7 @@ fn parse_svn_property_line(line: &str) -> Option<(String, String)> {
     None
 }
 
+/// 解析 p4 label 行。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_p4_label_line(line: &str) -> Option<String> {
     let rest = line.trim();
@@ -3385,6 +3778,7 @@ fn parse_p4_label_line(line: &str) -> Option<String> {
     Some(compact)
 }
 
+/// 判断 token 是否为 p4 时间格式。
 fn looks_like_p4_time_token(token: &str) -> bool {
     let trimmed = token.trim();
     if trimmed.len() < 4 || !trimmed.contains(':') {
@@ -3406,6 +3800,7 @@ fn looks_like_p4_time_token(token: &str) -> bool {
     digits >= 4
 }
 
+/// 解析 diff 的 index/---/+++/@@ 行与 +/- 补丁行。
 fn parse_generic_patch_or_stat_line(
     line: &str,
     trimmed: &str,

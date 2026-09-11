@@ -17,7 +17,6 @@
 //! - 长键名替换为短符号（如 workflow -> WF, status -> ST）
 //! - run list 中块内多行合并为一行（空格分隔）
 pub mod methods;
-pub mod parser;
 #[cfg(test)]
 mod showcase;
 #[cfg(test)]

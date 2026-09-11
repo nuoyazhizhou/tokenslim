@@ -154,13 +154,14 @@ ai_export = false
 # 预设配置: fast (速度优先), balanced (均衡), ai (AI 信号优先)
 preset = "balanced"
 
+[debug.audit]
+# 仅在本项目内保存经脱敏的压缩前后 JSONL 审计数据；默认关闭。
+enabled = false
+# 相对于 `.tokenslim.toml` 所在工作区目录。
+path = ".tokenslim/audit/compression.jsonl"
 [encoding]
 # 强制 UTF-8 输出 (避免 Windows 下的编码问题)
 force_utf8 = true
-
-[plugins]
-# 启用动态插件链 (允许多个插件连续处理同一文本)
-plugin_chain = true
 
 [token_optimizer]
 # 全局 token 优化开关（字典经济模型）
@@ -375,6 +376,24 @@ fn install_hooks_simple(shell: &str, dry_run: bool) -> Result<(), String> {
     Ok(())
 }
 
+/// 从 `reg query ... /v AutoRun` 的 stdout 解析已有 AutoRun 值。
+///
+/// P2-53：reg.exe 值行格式为 `    AutoRun    REG_SZ    <value>`（4 空格缩进开头），
+/// 旧过滤器按「不以空格开头」筛选时把值行全部滤掉，导致 existing 恒空、
+/// `reg add /f` 退化为覆盖写（第三方 AutoRun 被静默清除）。
+/// 现取含 `AutoRun` 的值行，以 `REG_SZ` 类型标记为界取其后内容（保留值内空格）；
+/// 无值行/值行缺 REG_SZ 标记时返回空串。
+fn parse_reg_autorun_value(stdout: &str) -> String {
+    stdout
+        .lines()
+        .find(|l| l.trim_start().starts_with("AutoRun"))
+        .and_then(|l| {
+            let idx = l.find("REG_SZ")?;
+            Some(l[idx + "REG_SZ".len()..].trim().to_string())
+        })
+        .unwrap_or_default()
+}
+
 /// cmd (Windows) 钩子安装：写 doskey 宏文件 + 设置 AutoRun 注册表
 fn install_hooks_cmd(dry_run: bool) -> Result<(), String> {
     let home = std::env::var("USERPROFILE").unwrap_or_else(|_| ".".to_string());
@@ -419,7 +438,11 @@ fn install_hooks_cmd(dry_run: bool) -> Result<(), String> {
     fs::write(&hook_path, hook_content).map_err(|e| format!("{E_INIT_WRITE_HOOK_FILE}:{e}"))?;
 
     // 设置 AutoRun 注册表（追加到已有 AutoRun 之后）
-    let existing = String::from_utf8_lossy(
+    // P2-53：reg.exe 值行实测格式为 `    AutoRun    REG_SZ    <value>`（4 空格缩进）。
+    // 旧过滤器 `!l.starts_with(' ')` 把值行全部滤掉 → existing 恒为空 → `/f` 退化为
+    // 覆盖写，第三方 AutoRun（clink/ConEmu/自定义脚本等）被静默清除且不可逆。
+    // ALREADY_INSTALLED 早退（上方 contains("tokenslim_hook")）不受影响。
+    let reg_stdout = String::from_utf8_lossy(
         &std::process::Command::new("reg")
             .args([
                 "query",
@@ -431,11 +454,12 @@ fn install_hooks_cmd(dry_run: bool) -> Result<(), String> {
             .map(|o| o.stdout)
             .unwrap_or_default(),
     )
-    .lines()
-    .filter(|l| !l.trim().is_empty() && !l.starts_with("HKEY_") && !l.starts_with(' '))
-    .last()
-    .map(|l| l.trim().to_string())
-    .unwrap_or_default();
+    .to_string();
+    let existing = parse_reg_autorun_value(&reg_stdout);
+    if !existing.is_empty() {
+        // 覆盖前回显旧值，供用户手工备份（环境破坏防护）
+        println!("{}", t1("core_init_autorun_existing", &existing));
+    }
 
     let auto_run_value = if existing.is_empty() {
         hook_path.to_string_lossy().to_string()
@@ -753,5 +777,40 @@ pub fn print_init_summary(result: &InitResult) {
         let names: Vec<String> = capabilities.into_iter().map(|c| c.name).collect();
         println!("   {}", names.join(", "));
         println!();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_reg_autorun_value;
+
+    /// P2-53 回归：reg.exe 值行以 4 空格缩进开头——旧过滤器 `!l.starts_with(' ')`
+    /// 将其全部滤掉导致 existing 恒空、`/f` 退化为覆盖写（第三方 AutoRun 被静默清除）。
+    /// 修复后必须能从值行提取已有值，实现真正的「追加」语义。
+    #[test]
+    fn parses_indented_autorun_value_line() {
+        let stdout = "\r\nHKEY_CURRENT_USER\\Software\\Microsoft\\Command Processor\r\n    AutoRun    REG_SZ    C:\\tools\\clink.bat\r\n\r\n";
+        assert_eq!(
+            parse_reg_autorun_value(stdout),
+            "C:\\tools\\clink.bat",
+            "4 空格缩进的值行必须被解析（P2-53 核心缺陷）"
+        );
+    }
+
+    /// 值本身含空格/&&（组合命令）时应完整保留，不得截断为最后一个空白段。
+    #[test]
+    fn preserves_spaces_and_operators_in_value() {
+        let stdout = "    AutoRun    REG_SZ    clink inject && chcp 65001\r\n";
+        assert_eq!(
+            parse_reg_autorun_value(stdout),
+            "clink inject && chcp 65001"
+        );
+    }
+
+    /// 无值行（值不存在时 reg query 返回非零且无 AutoRun 行）应返回空串。
+    #[test]
+    fn returns_empty_when_value_missing() {
+        let stdout = "\r\nHKEY_CURRENT_USER\\Software\\Microsoft\\Command Processor\r\n\r\n";
+        assert_eq!(parse_reg_autorun_value(stdout), "");
     }
 }

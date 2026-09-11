@@ -26,8 +26,8 @@
 # Versioning:
 #   The package versions in packages/cli-binary-*/package.json and in
 #   packages/sdk-nodejs/package.json must be updated in lockstep with the
-#   pushed tag.  See `scripts/bump-version.mjs` (planned) or update
-#   them by hand before tagging.
+#   pushed tag.  Run `node scripts/bump-version.mjs <version>` before
+#   tagging; `validate-versions` below enforces the lockstep on CI.
 
 name: build-release
 
@@ -36,6 +36,21 @@ on:
     tags:
       - "v*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Release version to validate (e.g. 0.5.1). Must match all version-bearing files (bump-version.mjs lockstep)."
+        required: true
+        type: string
+      ref:
+        description: "Git ref to validate (commit SHA or branch). Default: the ref that triggered the dispatch."
+        required: false
+        default: ""
+        type: string
+    # NOTE: workflow_dispatch is ALWAYS a fixed dry run.  There is no
+    # `dry_run` input: the side-effect jobs (release / publish-platforms /
+    # publish-sdk / update-lockfile) are hard-gated to
+    #   github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    # so a dispatch can only build + pack + verify, never release/publish/push.
 
 permissions:
   contents: write   # create GitHub Release
@@ -44,22 +59,24 @@ permissions:
 
 jobs:
   # ---------------------------------------------------------------------
-  # Stage 0: validate that every version-bearing file matches the git
-  # tag.  Runs before `build` so a forgotten `bump-version.mjs` call
-  # fails in seconds instead of wasting 30 minutes on cross-platform
-  # builds that npm would reject anyway with
-  #   ENEEDAUTH / "cannot publish over the previously published versions"
-  # The expected version is derived from the tag (e.g. `v0.2.3` -> `0.2.3`),
-  # so the tag is the single source of truth: bump the files, tag, push.
+  # Stage 0: validate that every version-bearing file matches the expected
+  # version.  Runs on BOTH triggers (tag push and workflow_dispatch dry run)
+  # so the "dry run before tag push" control is actually executable.
+  #   - tag push:        expected version derived from the tag (v0.2.3 -> 0.2.3)
+  #   - workflow_dispatch: expected version from the `version` input
+  # The expected version is the single source of truth: bump the files
+  # (node scripts/bump-version.mjs <version>), then validate.
   # ---------------------------------------------------------------------
   validate-versions:
-    name: validate versions == tag
+    name: validate versions == expected
     runs-on: ubuntu-22.04
     timeout-minutes: 2
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) || github.event_name == 'workflow_dispatch'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.ref || github.ref }}
 
       - name: Set up Node 24
         # We need Node only to run `bump-version.mjs --check`; a system
@@ -69,18 +86,21 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Derive expected version from tag
+      - name: Derive expected version
         id: derive
         shell: bash
         run: |
           set -euo pipefail
-          TAG="${{ github.ref_name }}"
-          # github.ref_name for a tag push is the bare tag (e.g. "v0.2.3"),
-          # but be defensive and also accept "refs/tags/v0.2.3" in case
-          # the trigger is ever re-wired.
-          VERSION="${TAG#refs/tags/}"
-          VERSION="${VERSION#v}"
-          echo "expected version from tag ${TAG}: ${VERSION}"
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            VERSION="${{ github.event.inputs.version }}"
+            VERSION="${VERSION#v}"
+            echo "expected version from dispatch input: ${VERSION}"
+          else
+            TAG="${{ github.ref_name }}"
+            VERSION="${TAG#refs/tags/}"
+            VERSION="${VERSION#v}"
+            echo "expected version from tag ${TAG}: ${VERSION}"
+          fi
           echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Verify all files agree
@@ -103,24 +123,22 @@ jobs:
     needs: validate-versions
     # NOTE on the build matrix:
     #
-    #   `darwin-x64` (macos-13 / Intel Mac) is currently disabled.  As
-    #   of 2026-06 the macos-13 runner pool on GitHub Actions is
-    #   severely starved: jobs sit in the queue for hours and we have
-    #   observed runs cancelled by the 6-hour hard timeout.  We keep
-    #   darwin-arm64 (macos-14 / Apple Silicon) enabled because the
-    #   macos-14 pool is healthy.  To re-enable darwin-x64, simply add
-    #   the line back into the matrix:
-    #
-    #     - { os: macos-13, label: darwin-x64, target: x86_64-apple-darwin }
-    #
-    #   and re-push the tag.
+    #   `darwin-x64` (macos-13 / Intel Mac) was disabled in 0.5.0 because
+    #   the macos-13 runner pool on GitHub Actions was severely starved
+    #   (6-hour queue timeouts observed).  Independent release audit
+    #   (2026-08-19) requires restoring it: the SDK's optionalDependencies
+    #   contract pins `@tokenslim/cli-binary-darwin-x64` at the exact
+    #   release version, so shipping `tokenslim` without the darwin-x64
+    #   binary package would break Intel-macOS installs.  Keep this entry
+    #   in the matrix; if the macos-13 pool degrades again, raise it as a
+    #   release-blocking issue rather than silently dropping the platform.
     strategy:
       fail-fast: false
       matrix:
         include:
           - { os: ubuntu-22.04,    label: linux-x64-gnu,    target: x86_64-unknown-linux-gnu  }
           - { os: ubuntu-22.04-arm, label: linux-arm64-gnu, target: aarch64-unknown-linux-gnu }
-          # - { os: macos-13,        label: darwin-x64,       target: x86_64-apple-darwin        }  # temporarily disabled, see note above
+          - { os: macos-13,        label: darwin-x64,       target: x86_64-apple-darwin        }
           - { os: macos-14,        label: darwin-arm64,     target: aarch64-apple-darwin       }
           - { os: windows-2022,    label: windows-x64,      target: x86_64-pc-windows-msvc     }
           - { os: windows-11-arm,  label: windows-arm64,    target: aarch64-pc-windows-msvc    }
@@ -128,6 +146,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.ref || github.ref }}
 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
@@ -145,10 +165,19 @@ jobs:
           set -euo pipefail
           cargo build --release --bins --target "${{ matrix.target }}"
           mkdir -p artifacts/bin
-          cp "target/${{ matrix.target }}/release/tokenslim"      "artifacts/bin/tokenslim"
-          cp "target/${{ matrix.target }}/release/tokenslim-server" "artifacts/bin/tokenslim-server"
-          cp "target/${{ matrix.target }}/release/log_reorder"     "artifacts/bin/log_reorder"
-          cp "target/${{ matrix.target }}/release/log_miner"       "artifacts/bin/log_miner"
+          # Windows produces `*.exe`; Linux/macOS produce suffix-less
+          # binaries.  Resolve the suffix from the runner so the copy
+          # paths match the actual artifacts on every platform
+          # (independent release audit, 2026-08-19: suffix-less copies
+          # failed on Windows runners — no `tokenslim` etc. on disk).
+          if [[ "${{ runner.os }}" == "Windows" ]]; then EXE=".exe"; else EXE=""; fi
+          for BIN in tokenslim tokenslim-server log_reorder log_miner; do
+            SRC="target/${{ matrix.target }}/release/${BIN}${EXE}"
+            # Fail-fast at the source: a missing binary must surface here,
+            # not as a confusing npm pack failure later.
+            test -f "${SRC}" || { echo "MISSING BINARY: ${SRC}"; exit 1; }
+            cp "${SRC}" "artifacts/bin/${BIN}${EXE}"
+          done
           ls -lh artifacts/bin/
 
       - name: Build platform npm package
@@ -171,15 +200,114 @@ jobs:
           retention-days: 14
 
   # ---------------------------------------------------------------------
-  # Stage 2: aggregate SHA-256 manifest + GitHub Release.
-  # Runs once after all build jobs finish.
+  # Dry-run verification (workflow_dispatch only).
+  # The 6 platform builds already ran in `build`; this job aggregates the
+  # tarballs, generates the SHA-256 manifest, and verifies package versions
+  # + SDK optionalDependencies alignment.  It NEVER creates a GitHub Release,
+  # NEVER runs `npm publish`, and NEVER pushes the lockfile — all side-effect
+  # jobs are hard-gated to tag-push events, so workflow_dispatch is a fixed
+  # dry run by construction (no `dry_run` input; see `on.workflow_dispatch`).
   # ---------------------------------------------------------------------
-  release:
-    name: github release
+  dry-run-verify:
+    name: dry run verify (6 tarballs + manifest + versions)
     needs: build
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - name: Set up Node 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Download all platform tarballs
+        uses: actions/download-artifact@v4
+        with:
+          path: .
+          merge-multiple: true
+
+      - name: 'Generate SHA-256 manifest (fail-fast: count == 6)'
+        shell: bash
+        run: |
+          set -euo pipefail
+          COUNT=$(ls -1 dist/*.tgz 2>/dev/null | wc -l)
+          echo "tarball_count=${COUNT}"
+          ls -1 dist/*.tgz 2>/dev/null
+          # Fail-fast: a dry run MUST have exactly the 6 platform tarballs.
+          test "${COUNT}" = "6" || { echo "FAIL: expected exactly 6 platform tarballs, got ${COUNT}"; exit 1; }
+          cd dist
+          sha256sum -b *.tgz | tee SHA256SUMS
+          cat SHA256SUMS
+
+      - name: 'Verify tarball package names + versions (fail-fast: exact 6-set)'
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION="${VERSION#v}"
+          # The exact expected platform-package name set (6).  Any duplicate,
+          # missing, or unexpected package fails the dry run.
+          EXPECTED="@tokenslim/cli-binary-linux-x64-gnu @tokenslim/cli-binary-linux-arm64-gnu @tokenslim/cli-binary-darwin-x64 @tokenslim/cli-binary-darwin-arm64 @tokenslim/cli-binary-windows-x64 @tokenslim/cli-binary-windows-arm64"
+          SEEN=""
+          for tgz in dist/*.tgz; do
+            PKGJSON=$(tar -xzOf "$tgz" package/package.json)
+            NAME=$(echo "$PKGJSON" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).name))")
+            PKGVER=$(echo "$PKGJSON" | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>console.log(JSON.parse(s).version))")
+            echo "$(basename "$tgz"): name=${NAME} version=${PKGVER}"
+            test "$PKGVER" = "$VERSION" || { echo "VERSION MISMATCH: ${NAME} ${PKGVER} != ${VERSION}"; exit 1; }
+            echo "$EXPECTED" | tr ' ' '\n' | grep -qx "$NAME" || { echo "UNEXPECTED PACKAGE: ${NAME}"; exit 1; }
+            case " $SEEN " in *" $NAME "*) echo "DUPLICATE PACKAGE: ${NAME}"; exit 1;; esac
+            SEEN="${SEEN} ${NAME}"
+          done
+          COUNT=$(echo "$SEEN" | tr ' ' '\n' | grep -c '.')
+          test "$COUNT" = "6" || { echo "FAIL: expected 6 distinct packages, got ${COUNT}:${SEEN}"; exit 1; }
+          echo "OK: exact 6 platform packages present, all versions == ${VERSION}"
+
+      - name: Verify SDK optionalDependencies alignment
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ github.event.inputs.version }}"
+          VERSION="${VERSION#v}"
+          node -e "
+            const pkg = require('./packages/sdk-nodejs/package.json');
+            const deps = pkg.optionalDependencies || {};
+            const names = Object.keys(deps).filter(k => k.startsWith('@tokenslim/cli-binary-'));
+            console.log('binary optionalDependencies:', JSON.stringify(names));
+            if (names.length !== 6) { console.error('expected 6 platform packages, got ' + names.length); process.exit(1); }
+            for (const n of names) {
+              if (deps[n] !== '$VERSION') { console.error('MISMATCH ' + n + '=' + deps[n] + ' != ' + '$VERSION'); process.exit(1); }
+            }
+            console.log('SDK optionalDependencies: 6/6 == ' + '$VERSION');
+          "
+
+      - name: Provenance preconditions (static)
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "permissions.id-token: write (static) — OIDC identity present for a real publish"
+          echo "npm version: $(npm --version)"
+          echo "NOTE: registry-side acceptance of provenance attestation can only be proven by a real controlled publish (test scope/registry or approved prerelease); this dry run verifies packaging and preconditions only."
+
+  # ---------------------------------------------------------------------
+  # Stage 2: aggregate SHA-256 manifest + GitHub Release.
+  # Runs only after publish-sdk (-> publish-platforms -> build) so the
+  # GitHub Release is created only once all 6 platform packages AND the
+  # SDK have been published — "release is externally visible only when
+  # the full publish set succeeded" (independent release audit, 2026-08-19).
+  # The tarballs come from `build`'s uploaded artifacts, which persist.
+  # ---------------------------------------------------------------------
+  release:
+    name: github release
+    needs: publish-sdk
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -225,14 +353,14 @@ jobs:
     needs: build
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     strategy:
       fail-fast: false
       matrix:
         include:
           - { label: linux-x64-gnu,    name: "@tokenslim/cli-binary-linux-x64-gnu"    }
           - { label: linux-arm64-gnu,  name: "@tokenslim/cli-binary-linux-arm64-gnu"  }
-          # - { label: darwin-x64,       name: "@tokenslim/cli-binary-darwin-x64"       }  # see note in build job, darwin-x64 build is currently disabled
+          - { label: darwin-x64,       name: "@tokenslim/cli-binary-darwin-x64"       }
           - { label: darwin-arm64,     name: "@tokenslim/cli-binary-darwin-arm64"     }
           - { label: windows-x64,      name: "@tokenslim/cli-binary-windows-x64"      }
           - { label: windows-arm64,    name: "@tokenslim/cli-binary-windows-arm64"    }
@@ -335,9 +463,15 @@ jobs:
           cd package
           npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
           echo "Publishing $TARBALL → ${{ matrix.name }}"
+          # `--provenance` is a real publish promise (workflow header + audit):
+          # the job has `id-token: write`, checks out the tag so npm can verify
+          # the source repo, and Node 24 bundles npm 11.x which reads provenance
+          # metadata correctly.  Publishing from the extracted folder (not the
+          # tarball path) avoids npm 11.x's SSH-URL provenance fallback bug.
           npm publish \
             --access public \
-            --tag latest
+            --tag latest \
+            --provenance
 
   # ---------------------------------------------------------------------
   # Stage 4: publish the JS-only `tokenslim` package.  It has no
@@ -349,7 +483,7 @@ jobs:
     needs: publish-platforms
     runs-on: ubuntu-22.04
     timeout-minutes: 10
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
     steps:
@@ -390,18 +524,21 @@ jobs:
         # automatically before `npm publish`, so we don't invoke `npm run build`
         # explicitly here.
         #
-        # We omit `--provenance` for the SDK for the same reason as
-        # `publish-platforms`: npm 11.x's tarball-publish fallback
-        # still triggers `git ls-remote` under certain paths, and
-        # the SDK is a pure-JS package, so provenance is not a
-        # useful attestation here.
+        # Independent release audit (2026-08-19): the workflow header claims
+        # `--provenance` for the SDK, so the actual command must match the
+        # promise.  `id-token: write` + actions/checkout of the tag give npm
+        # the OIDC identity and the source repo to attest against; Node 24's
+        # npm 11.x reads provenance correctly.  Publishing from the repo CWD
+        # (packages/sdk-nodejs is inside the checked-out tag) avoids npm 11.x's
+        # tarball-path SSH-URL provenance fallback bug.
         run: |
           set -euo pipefail
           echo "--- debug: token length=${#NODE_AUTH_TOKEN}, npm=$(npm --version) ---"
           npm config set //registry.npmjs.org/:_authToken "$NODE_AUTH_TOKEN"
           npm publish \
             --access public \
-            --tag latest
+            --tag latest \
+            --provenance
 
   # ---------------------------------------------------------------------
   # Stage 5: 发版完成后，自动重新生成 package-lock.json 并提交回 main。
@@ -415,7 +552,7 @@ jobs:
     needs: publish-sdk
     runs-on: ubuntu-22.04
     timeout-minutes: 5
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v4
         with:

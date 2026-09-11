@@ -5,6 +5,7 @@ use crate::core::text_slicer::SliceType;
 use crate::plugins::terraform_plugin::TerraformPlugin;
 use crate::plugins::test_utils::{compress_to_string, make_log_slice, read_sample_file};
 
+/// 测试：terraform plan 输出被插件识别。
 #[test]
 fn detects_terraform_plan() {
     let plugin = TerraformPlugin::new();
@@ -12,6 +13,7 @@ fn detects_terraform_plan() {
     assert!(plugin.detect(&make_log_slice(&raw)).is_some());
 }
 
+/// 测试：terraform plan 被压缩为含 PLAN 汇总与资源行的摘要且不膨胀。
 #[test]
 fn compresses_terraform_plan_summary() {
     let plugin = TerraformPlugin::new();

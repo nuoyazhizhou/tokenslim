@@ -8,6 +8,7 @@ mod tests {
     use crate::plugins::template_driven_plugin::{TemplateConfig, TemplateDrivenPlugin};
     use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/template_driven_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,6 +18,7 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本。
     fn compress_text(plugin: &TemplateDrivenPlugin, text: &str) -> String {
         let slice = Slice {
             id: 1,
@@ -42,6 +44,7 @@ mod tests {
             .collect::<String>()
     }
 
+    /// 测试：遍历样例生成 template_driven 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_template_driven_showcase_report() {
         let plugin = TemplateDrivenPlugin::new(TemplateConfig::default());

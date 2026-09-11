@@ -4,14 +4,13 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct PhpRubyConfig {
     pub strip_html_wrappers: bool,
-    pub fold_internal_frames: bool,
 }
 
 impl Default for PhpRubyConfig {
+    /// PhpRubyConfig 默认值：剥离 HTML 包装开启。
     fn default() -> Self {
         Self {
             strip_html_wrappers: true,
-            fold_internal_frames: true,
         }
     }
 }

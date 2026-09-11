@@ -9,6 +9,12 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+use std::sync::OnceLock;
+
+/// P2-38：`parse_vcs_command_words_from_line` 每次调用从磁盘重载全部 route 配置
+/// （`load_run_route_capabilities`），被 15+ VCS 插件 compress 热路径反复调用。route
+/// 配置在进程内基本不变，用 `OnceLock` 缓存首次加载结果，避免重复磁盘扫描与解析。
+static ROUTE_CAPABILITIES_CACHE: OnceLock<Vec<RunRouteCapability>> = OnceLock::new();
 
 const E_PLUGIN_CONFIG_READ: &str = "E_PLUGIN_CONFIG_READ";
 const E_PLUGIN_CONFIG_PARSE: &str = "E_PLUGIN_CONFIG_PARSE";
@@ -35,6 +41,8 @@ pub struct PluginConfigFile {
     pub decompress: DecompressConfig,
 }
 
+/// 返回插件 enabled 字段的序列化默认值。
+/// 当配置 JSON 未显式声明 enabled 时，插件默认处于启用状态。
 fn default_enabled() -> bool {
     true
 }
@@ -49,6 +57,8 @@ pub struct DetectConfig {
     pub min_match_ratio: f32,
 }
 
+/// 返回检测配置 min_match_ratio 字段的默认比例（0.15）。
+/// 即匹配行数占样本行数的最低比例，低于该值则视为内容不匹配。
 fn default_min_ratio() -> f32 {
     0.15
 }
@@ -61,6 +71,11 @@ pub enum DetectionRule {
     Any { patterns: Vec<String> },
     /// 符合正则表达式
     Regex { pattern: String },
+    /// P2-36：未知/非法 `type` 变体兜底。serde `#[serde(other)]` 捕获 tag 中
+    /// 无法映射到已知变体的值，避免整文件反序列化失败而拒载——让单个坏规则
+    /// 降级为「该规则被忽略」，而非报废整个插件配置。
+    #[serde(other)]
+    Unknown,
 }
 
 /// 核心压缩转换配置
@@ -100,10 +115,14 @@ pub struct DedupConfig {
     pub threshold: usize,
 }
 
+/// 返回去重配置 enabled 字段的默认值。
+/// 当插件配置未声明去重开关时，默认开启内容去重逻辑。
 fn default_dedup_enabled() -> bool {
     true
 }
 
+/// 返回去重触发阈值 threshold 字段的默认值（1）。
+/// 即重复内容出现次数达到该阈值时才进行去重替换。
 fn default_threshold() -> usize {
     1
 }
@@ -175,6 +194,11 @@ impl CompiledDetectConfig {
                             patterns: vec![pattern.clone()],
                         }
                     }
+                },
+                // P2-36：未知 type 变体在反序列化阶段已被兜底为 Unknown，编译时直接忽略，
+                // 不作为任何检测规则生效。
+                DetectionRule::Unknown => CompiledDetectionRule::Any {
+                    patterns: Vec::new(),
                 },
             })
             .collect();
@@ -322,6 +346,67 @@ impl PluginConfigLoader {
         PathBuf::from("./config/plugins")
     }
 
+    /// 解析配置目录（`config/` 目录本身），作为全库统一路径基准。
+    ///
+    /// P2-27/P3-57：收敛 feature_reader 特征库、gain 定价配置、path_optimizer
+    /// 内置配置等曾各自写死 `config/...` CWD 相对路径的问题——换目录运行时
+    /// 会静默失效。本函数复用 `find_config_dir` 的多路径探测结果取父目录，
+    /// 与插件配置目录解析保持同一基准；探测失败时回退 `"config"`，与旧
+    /// CWD 相对行为一致。
+    pub fn resolve_config_dir() -> PathBuf {
+        Self::find_config_dir()
+            .parent()
+            .map(|p| p.to_path_buf())
+            .unwrap_or_else(|| PathBuf::from("config"))
+    }
+
+    /// 判断路径是否为插件配置文件：仅 `.json` 且非路由配置（`*.route.json`）。
+    /// 路由配置与插件配置同处 `config/plugins` 目录，但属另一配置族
+    /// （`load_run_route_capabilities` 按 `*_route.json`/`*.route.json` 后缀加载），
+    /// 插件目录扫描必须跳过，否则每次压缩都会对路由文件误解析并告警。
+    fn is_plugin_config_file(path: &Path) -> bool {
+        if path.extension().and_then(|s| s.to_str()) != Some("json") {
+            return false;
+        }
+        let name = path.file_name().and_then(|s| s.to_str()).unwrap_or("");
+        !(name.ends_with("_route.json") || name.ends_with(".route.json"))
+    }
+
+    /// 扫描配置目录，返回全部插件配置（含 disabled），按加载顺序排列。
+    /// 供 CLI `config plugin status` 展示完整清单（`load_all_configs` 只返回启用项，
+    /// 会漏掉被禁用的插件）。
+    pub fn load_all_raw_configs(&self) -> Vec<PluginConfigFile> {
+        let mut configs = Vec::new();
+
+        if !self.config_dir.exists() {
+            log::warn!(
+                "{}",
+                t1(
+                    "core_plugin_config_dir_not_found",
+                    format!("{:?}", self.config_dir)
+                )
+            );
+            return configs;
+        }
+
+        if let Ok(entries) = fs::read_dir(&self.config_dir) {
+            for entry in entries.flatten() {
+                let path = entry.path();
+                if Self::is_plugin_config_file(&path) {
+                    match self.load_config(&path) {
+                        Ok(config) => configs.push(config),
+                        // P2-36：单文件加载/解析失败显式告警（同 load_all_configs）。
+                        Err(e) => {
+                            log::warn!("{E_PLUGIN_CONFIG_PARSE}:{:?}:{e}", path);
+                        }
+                    }
+                }
+            }
+        }
+
+        configs
+    }
+
     /// 扫描配置目录，加载并返回所有已启用的插件配置映射表。
     pub fn load_all_configs(&self) -> HashMap<String, PluginConfigFile> {
         let mut configs = HashMap::new();
@@ -340,11 +425,18 @@ impl PluginConfigLoader {
         if let Ok(entries) = fs::read_dir(&self.config_dir) {
             for entry in entries.flatten() {
                 let path = entry.path();
-                if path.extension().and_then(|s| s.to_str()) == Some("json") {
-                    if let Ok(config) = self.load_config(&path) {
-                        if config.enabled {
-                            log::debug!("{}", t1("core_plugin_config_loaded", &config.name));
-                            configs.insert(config.name.clone(), config);
+                if Self::is_plugin_config_file(&path) {
+                    match self.load_config(&path) {
+                        Ok(config) => {
+                            if config.enabled {
+                                log::debug!("{}", t1("core_plugin_config_loaded", &config.name));
+                                configs.insert(config.name.clone(), config);
+                            }
+                        }
+                        // P2-36：单文件加载/解析失败不再静默吞掉（此前 `if let Ok` 统一丢弃），
+                        // 显式告警以便定位坏配置，同时不影响其它配置文件加载。
+                        Err(e) => {
+                            log::warn!("{E_PLUGIN_CONFIG_PARSE}:{:?}:{e}", path);
                         }
                     }
                 }
@@ -363,7 +455,9 @@ impl PluginConfigLoader {
             serde_json::from_str(&content).map_err(|e| format!("{E_PLUGIN_CONFIG_PARSE}:{e}"))?;
 
         let override_key = format!("plugins.{}.enabled", config.name);
-        if let Some(enabled_override) = crate::core::config_manager::ConfigManager::get_bool(&override_key) {
+        if let Some(enabled_override) =
+            crate::core::config_manager::ConfigManager::get_bool(&override_key)
+        {
             config.enabled = enabled_override;
         }
 
@@ -372,6 +466,7 @@ impl PluginConfigLoader {
 }
 
 impl Default for PluginConfigLoader {
+    /// Default trait 实现，直接复用 new 构造器创建配置加载器。
     fn default() -> Self {
         Self::new()
     }
@@ -400,6 +495,8 @@ pub struct RunRouteCapability {
     pub is_fallback: bool,
 }
 
+/// 返回路由能力 priority 字段的默认值（10）。
+/// 路由能力按优先级从高到低排序，值越大越优先匹配。
 fn default_run_route_priority() -> u32 {
     10
 }
@@ -451,6 +548,9 @@ pub struct WorkspaceCommandCapability {
     pub workspace_commands: HashMap<String, Vec<String>>,
 }
 
+/// 将单个路由能力与命令关键字、参数进行匹配，命中时构造运行路由决策。
+/// 优先尝试参数前缀匹配（arg_prefix），随后尝试关键字精确匹配与正则匹配；
+/// 能力被禁用或为兜底路由时直接返回 None。
 fn match_run_route_capability(
     cap: &RunRouteCapability,
     keyword: &str,
@@ -511,6 +611,9 @@ fn match_run_route_capability(
     })
 }
 
+/// 返回内置的最小路由能力集合，仅含一个 generic_text 兜底路由。
+/// 业务路由规则必须由 config 下的 route.json 提供，此处兜底仅用于
+/// 配置缺失或损坏时避免硬失败。
 fn builtin_run_route_capabilities() -> Vec<RunRouteCapability> {
     // Keep built-ins minimal: route business rules must come from config/*.route.json.
     // This fallback only prevents hard failures when route config is missing/corrupted.
@@ -533,6 +636,8 @@ fn builtin_run_route_capabilities() -> Vec<RunRouteCapability> {
     }]
 }
 
+/// 从程序路径或命令名中提取路由匹配用的关键字。
+/// 去掉外层双引号、取文件名部分并转为小写，再剥离 .exe/.cmd/.bat/.com/.ps1 后缀。
 fn command_keyword_for_route(prog: &str) -> String {
     let file = std::path::Path::new(prog.trim_matches('"'))
         .file_name()
@@ -549,6 +654,9 @@ fn command_keyword_for_route(prog: &str) -> String {
     file
 }
 
+/// 将命令行文本拆分为参数序列，支持单引号、双引号与反斜杠转义。
+/// 引号未闭合时返回 None 表示无法解析；双引号内的反斜杠仅在
+/// 后随引号或反斜杠时作为转义符，避免误吞 Windows 路径分隔符。
 fn parse_command_line_tokens_for_route(line: &str) -> Option<Vec<String>> {
     #[derive(Clone, Copy)]
     enum QuoteMode {
@@ -618,10 +726,13 @@ fn parse_command_line_tokens_for_route(line: &str) -> Option<Vec<String>> {
     Some(tokens)
 }
 
+/// 判断索引 idx 之后是否还存在参数，用于带值选项是否应消费下一个参数。
 fn has_arg_after(args: &[String], idx: usize) -> bool {
     idx + 1 < args.len()
 }
 
+/// 判断参数 arg 是否为该工具声明为"需要独立取值"的选项。
+/// 依据 run_parse_hints 中 options_with_value 列表进行大小写不敏感匹配。
 fn is_option_with_value_for_tool(cap: &RunRouteCapability, tool_keyword: &str, arg: &str) -> bool {
     let lower = arg.to_ascii_lowercase();
     cap.run_parse_hints.get(tool_keyword).is_some_and(|hints| {
@@ -632,6 +743,8 @@ fn is_option_with_value_for_tool(cap: &RunRouteCapability, tool_keyword: &str, a
     })
 }
 
+/// 判断参数 arg 是否以"内联取值"形式携带值，例如 --flag=value。
+/// 除 --xxx=yyy 形态外，还匹配 run_parse_hints 中 inline_value_prefixes 声明的前缀。
 fn has_inline_option_value_for_tool(
     cap: &RunRouteCapability,
     tool_keyword: &str,
@@ -649,6 +762,9 @@ fn has_inline_option_value_for_tool(
     })
 }
 
+/// 在参数列表中定位第一个子命令的索引位置。
+/// 依次跳过分隔符 --、内联取值选项、带值选项及其取值、以及其余短选项，
+/// 未找到子命令时返回 None（如裸命令 `git` 无参数的情况）。
 fn find_subcommand_index_for_route(
     cap: &RunRouteCapability,
     tool_keyword: &str,
@@ -687,6 +803,8 @@ fn find_subcommand_index_for_route(
     }
 }
 
+/// 根据命令关键字与首个子命令解析 VCS 类命令的意图（如 status/log）。
+/// 意图映射来自 run_intents 配置，未显式映射的子命令统一归为 other。
 fn resolve_vcs_intent_for_route(
     cap: &RunRouteCapability,
     keyword: &str,
@@ -703,6 +821,9 @@ fn resolve_vcs_intent_for_route(
     )
 }
 
+/// 检查路由能力声明的参数前缀是否与当前命令匹配。
+/// 当工具关键字一致且子命令之后的前缀参数按序全部匹配时，
+/// 返回格式化的匹配描述字符串，否则返回 None。
 fn route_arg_prefix_matches(
     cap: &RunRouteCapability,
     keyword: &str,
@@ -733,6 +854,9 @@ fn route_arg_prefix_matches(
     None
 }
 
+/// 从程序名与参数列表解析 VCS 命令词序列。
+/// 先筛选出启用且属于 vcs 分组、关键字匹配的路由能力，
+/// 再定位首个子命令索引并返回其后的全部参数（转为小写）。
 fn parse_vcs_command_words_from_argv_with_caps(
     capabilities: &[RunRouteCapability],
     prog: &str,
@@ -765,13 +889,18 @@ pub fn parse_vcs_command_words_from_line(line: &str) -> Option<(String, Vec<Stri
         return None;
     }
     let args = tokens.iter().skip(1).cloned().collect::<Vec<_>>();
-    let config_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("config")
-        .join("plugins");
-    let caps = load_run_route_capabilities(Some(&config_dir));
-    parse_vcs_command_words_from_argv_with_caps(&caps, &tokens[0], &args)
+    let caps = ROUTE_CAPABILITIES_CACHE.get_or_init(|| {
+        let config_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+            .join("config")
+            .join("plugins");
+        load_run_route_capabilities(Some(&config_dir))
+    });
+    parse_vcs_command_words_from_argv_with_caps(caps, &tokens[0], &args)
 }
 
+/// 扫描配置目录下所有 *_route.json / *.route.json 文件并解析路由能力。
+/// 按优先级从高到低排序；目录为空或全部解析失败时回退到内置兜底路由，
+/// 并在结果中补充缺失的 fallback 能力。
 pub fn load_run_route_capabilities(config_dir: Option<&Path>) -> Vec<RunRouteCapability> {
     let mut capabilities = Vec::new();
 
@@ -790,11 +919,22 @@ pub fn load_run_route_capabilities(config_dir: Option<&Path>) -> Vec<RunRouteCap
             if !is_route_json {
                 continue;
             }
-            if let Ok(content) = fs::read_to_string(&path) {
-                if let Ok(cap) = serde_json::from_str::<RunRouteCapability>(&content) {
-                    if cap.enabled {
-                        capabilities.push(cap);
+            // P2-37：route 是活链路（15+ VCS 插件依赖）。此前双层 `if let Ok` 吞掉
+            // 读取失败与解析失败——坏 route 静默落 builtin 兜底、命令落错分组且无告警。
+            // 现对读取/解析失败显式 `log::warn!`，保留降级但让问题可被发现。
+            match fs::read_to_string(&path) {
+                Ok(content) => match serde_json::from_str::<RunRouteCapability>(&content) {
+                    Ok(cap) => {
+                        if cap.enabled {
+                            capabilities.push(cap);
+                        }
                     }
+                    Err(e) => {
+                        log::warn!("{E_PLUGIN_CONFIG_PARSE}:{:?}:{e}", path);
+                    }
+                },
+                Err(e) => {
+                    log::warn!("{E_PLUGIN_CONFIG_READ}:{:?}:{e}", path);
                 }
             }
         }
@@ -815,6 +955,8 @@ pub fn load_run_route_capabilities(config_dir: Option<&Path>) -> Vec<RunRouteCap
     capabilities
 }
 
+/// 加载各路由能力暴露的 skills 与 workspace_commands，转换为工作区命令能力列表。
+/// 仅保留启用、非兜底且至少声明了技能或工作区命令的路由。
 pub fn load_workspace_command_capabilities(
     config_dir: Option<&Path>,
 ) -> Vec<WorkspaceCommandCapability> {
@@ -831,6 +973,9 @@ pub fn load_workspace_command_capabilities(
         .collect()
 }
 
+/// 根据命令关键字与参数从路由能力列表中解析最终运行路由决策。
+/// 匹配顺序：先全局做参数前缀匹配，再做关键字/正则匹配，
+/// 最后回退到 fallback 路由；无任何兜底时使用内置 generic_text。
 pub fn resolve_run_route(
     capabilities: &[RunRouteCapability],
     prog: &str,
@@ -895,6 +1040,9 @@ pub fn resolve_run_route(
     }
 }
 
+/// 枚举给定命令可能命中的所有路由候选（供调试解释用途），并做去重。
+/// 先收集参数前缀匹配的候选，再收集关键字/正则匹配的候选，
+/// 两者皆空时补充兜底路由。
 pub fn explain_run_route_candidates(
     capabilities: &[RunRouteCapability],
     prog: &str,
@@ -971,6 +1119,9 @@ pub struct PluginSummary {
     pub skills: Vec<String>,
 }
 
+/// 汇总当前可用的插件能力摘要，分为 run_route 路由类与 filter 过滤类。
+/// 路由类取命令关键字与参数前缀作为技能列表；过滤类按名称排序，
+/// 均以 PluginSummary 形式返回供展示或调试。
 pub fn get_all_plugin_capabilities(config_dir: Option<&Path>) -> Vec<PluginSummary> {
     let mut summaries = Vec::new();
 
@@ -1024,6 +1175,8 @@ mod run_route_tests {
     use std::fs;
     use std::path::PathBuf;
 
+    /// 测试：load_run_route_capabilities 能从临时目录的 route.json 读取路由，
+    /// 且 resolve_run_route 能解析出正确的路由分组与意图。
     #[test]
     fn load_run_route_capabilities_reads_route_json() {
         let unique = format!(
@@ -1059,6 +1212,8 @@ mod run_route_tests {
         let _ = std::fs::remove_dir_all(dir);
     }
 
+    /// 测试：load_workspace_command_capabilities 能暴露路由配置中的
+    /// skills 与 workspace_commands 到工作区命令能力列表。
     #[test]
     fn load_workspace_command_capabilities_exposes_skills_and_commands() {
         let unique = format!(
@@ -1103,6 +1258,8 @@ mod run_route_tests {
         let _ = std::fs::remove_dir_all(dir);
     }
 
+    /// 测试：参数前缀路由优先于关键字路由。同一工具 az 下，
+    /// 以 pipelines 开头的命令命中 build 分组，以 repos 开头的命令命中 vcs 分组。
     #[test]
     fn resolve_run_route_prefers_arg_prefix_over_keyword_route() {
         let unique = format!(
@@ -1175,6 +1332,8 @@ mod run_route_tests {
         let _ = std::fs::remove_dir_all(dir);
     }
 
+    /// 测试：解析 git 命令时跳过 -C、--git-dir 等全局选项，
+    /// 正确定位子命令 log 并解析出意图。
     #[test]
     fn resolve_run_route_skips_git_global_options_before_subcommand() {
         let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -1197,6 +1356,8 @@ mod run_route_tests {
         assert_eq!(route.intent.as_deref(), Some("log"));
     }
 
+    /// 测试：svn/hg/p4/fossil/cvs/bzr/darcs/repo/gh/glab/az/bitbucket/gerrit
+    /// 等 VCS 工具的全局选项均被正确跳过，子命令与意图解析符合预期。
     #[test]
     fn resolve_run_route_skips_other_vcs_global_options_before_subcommand() {
         let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -1371,69 +1532,13 @@ mod run_route_tests {
         assert_eq!(gerrit_route.intent.as_deref(), Some("log"));
     }
 
-    fn tokenize_command_line(line: &str) -> Vec<String> {
-        #[derive(Clone, Copy)]
-        enum QuoteMode {
-            None,
-            Single,
-            Double,
-        }
-
-        let mut tokens = Vec::new();
-        let mut current = String::new();
-        let mut mode = QuoteMode::None;
-        let mut escaped = false;
-
-        for ch in line.chars() {
-            match mode {
-                QuoteMode::None => {
-                    if ch.is_whitespace() {
-                        if !current.is_empty() {
-                            tokens.push(std::mem::take(&mut current));
-                        }
-                    } else if ch == '\'' {
-                        mode = QuoteMode::Single;
-                    } else if ch == '"' {
-                        mode = QuoteMode::Double;
-                    } else {
-                        current.push(ch);
-                    }
-                }
-                QuoteMode::Single => {
-                    if ch == '\'' {
-                        mode = QuoteMode::None;
-                    } else {
-                        current.push(ch);
-                    }
-                }
-                QuoteMode::Double => {
-                    if escaped {
-                        current.push(ch);
-                        escaped = false;
-                    } else if ch == '\\' {
-                        escaped = true;
-                    } else if ch == '"' {
-                        mode = QuoteMode::None;
-                    } else {
-                        current.push(ch);
-                    }
-                }
-            }
-        }
-
-        if escaped {
-            current.push('\\');
-        }
-        if !current.is_empty() {
-            tokens.push(current);
-        }
-        tokens
-    }
-
+    /// 测试辅助函数：返回文本中第一个非空行（去空白后判断），无则返回 None。
     fn first_non_empty_line(text: &str) -> Option<&str> {
         text.lines().find(|line| !line.trim().is_empty())
     }
 
+    /// 测试：遍历 samples/vcs_*_plugin 下的日志样例，断言 vcs 路由配置覆盖了
+    /// 所有样例的工具关键字、工具别名族与子命令意图映射。
     #[test]
     fn vcs_route_config_covers_all_sample_command_heads() {
         let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -1480,7 +1585,15 @@ mod run_route_tests {
                     .unwrap_or_else(|_| panic!("read sample failed: {}", path.display()));
                 let first = first_non_empty_line(&content)
                     .unwrap_or_else(|| panic!("missing first command line: {}", path.display()));
-                let tokens = tokenize_command_line(first.trim());
+                // P2-39：契约覆盖断言必须走生产分词器（parse_command_line_tokens_for_route），
+                // 不得用行为不同的测试辅助版——否则「测试通过」不代表「生产解析正确」。
+                let tokens = parse_command_line_tokens_for_route(first.trim())
+                    .unwrap_or_else(|| {
+                        panic!(
+                            "production tokenizer rejected first command line: {}",
+                            path.display()
+                        )
+                    });
                 assert!(
                     !tokens.is_empty(),
                     "empty command tokens in {}",
@@ -1559,6 +1672,8 @@ mod run_route_tests {
         assert!(checked_cases > 0, "no vcs sample cases were checked");
     }
 
+    /// 测试：路由配置目录不存在时，load_run_route_capabilities 仅返回
+    /// 内置 generic_text 兜底路由，resolve_run_route 同样回退到该路由。
     #[test]
     fn load_run_route_capabilities_uses_minimal_generic_fallback_when_missing() {
         let unique = format!(
@@ -1583,6 +1698,8 @@ mod run_route_tests {
         assert!(route.is_fallback);
     }
 
+    /// 测试：遍历样例日志首行，断言 vcs 路由 JSON 完整覆盖所有工具关键字
+    /// 与子命令的意图映射，且所有首行均能被分词并定位子命令。
     #[test]
     fn vcs_route_json_covers_all_sample_first_line_subcommands() {
         let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
@@ -1695,6 +1812,8 @@ mod run_route_tests {
         );
     }
 
+    /// 测试：parse_vcs_command_words_from_line 能跳过 git/az 的全局选项，
+    /// 正确返回工具关键字与子命令词序列。
     #[test]
     fn parse_vcs_command_words_from_line_skips_global_options() {
         let parsed = parse_vcs_command_words_from_line(
@@ -1711,5 +1830,34 @@ mod run_route_tests {
         assert_eq!(parsed_az.0, "az");
         assert_eq!(parsed_az.1.first().map(String::as_str), Some("repos"));
         assert_eq!(parsed_az.1.get(1).map(String::as_str), Some("list"));
+    }
+}
+
+#[cfg(test)]
+mod plugin_config_file_tests {
+    use super::*;
+
+    /// 测试：is_plugin_config_file 只识别真正的插件配置 `.json`，
+    /// 路由配置（`*.route.json`）与其它扩展名一律跳过——防止目录扫描误解析告警。
+    #[test]
+    fn plugin_config_file_predicate_filters_route_files() {
+        // 合法插件配置：普通 .json 通过
+        assert!(PluginConfigLoader::is_plugin_config_file(Path::new(
+            "gcc_log.json"
+        )));
+        // 路由配置两族后缀均拒绝
+        assert!(!PluginConfigLoader::is_plugin_config_file(Path::new(
+            "vcs_plugin.route.json"
+        )));
+        assert!(!PluginConfigLoader::is_plugin_config_file(Path::new(
+            "ci_log.route.json"
+        )));
+        // 非 json 扩展名拒绝
+        assert!(!PluginConfigLoader::is_plugin_config_file(Path::new(
+            "gcc_log.toml"
+        )));
+        assert!(!PluginConfigLoader::is_plugin_config_file(Path::new(
+            "gcc_log.json.bak"
+        )));
     }
 }

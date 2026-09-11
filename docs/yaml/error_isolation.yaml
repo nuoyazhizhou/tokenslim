@@ -1,0 +1,145 @@
+module:
+  name: error_isolation
+  path: src/core/error_isolation
+  dependencies:
+    - thiserror = "1.0"
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{SafeExecutor, SafeExecutorConfig, ExecutionError};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::time::Duration;
+
+        /// 安全执行器配置
+        #[derive(Clone)]
+        pub struct SafeExecutorConfig {
+            pub default_timeout: Duration,
+            pub catch_panic: bool,
+        }
+
+        /// 安全执行器主结构
+        pub struct SafeExecutor {
+            config: SafeExecutorConfig,
+        }
+
+        /// 执行错误类型
+        #[derive(Debug, thiserror::Error)]
+        pub enum ExecutionError {
+            #[error("Plugin panicked")]
+            Panic,
+            #[error("Execution timed out after {0:?}")]
+            Timeout(Duration),
+            #[error("Invalid result")]
+            InvalidResult,
+            #[error("Other error: {0}")]
+            Other(String),
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use std::panic;
+        use std::thread;
+        use std::time::Duration;
+        use std::sync::mpsc;
+
+        impl SafeExecutor {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 SafeExecutor 实例
+            ///
+            /// # 参数
+            /// - `config`: 执行器配置
+            ///
+            /// # 返回值
+            /// - `Self`: SafeExecutor 实例
+            ///
+            /// MVP 优先级
+            pub fn new(config: SafeExecutorConfig) -> Self {
+                todo!()
+            }
+
+            /// 捕获 panic 执行闭包
+            ///
+            /// # 参数
+            /// - `f`: 要执行的闭包
+            ///
+            /// # 返回值
+            /// - `Result<R, ExecutionError>`: 成功返回结果，panic 时返回 Panic 错误
+            ///
+            /// MVP 优先级
+            pub fn catch_panic<F, R>(&self, f: F) -> Result<R, ExecutionError>
+            where
+                F: FnOnce() -> R + panic::UnwindSafe,
+            {
+                todo!()
+            }
+
+            /// 带超时的闭包执行
+            ///
+            /// # 参数
+            /// - `f`: 要执行的闭包（必须 Send + 'static）
+            /// - `timeout`: 超时时间
+            ///
+            /// # 返回值
+            /// - `Result<R, ExecutionError>`: 成功返回结果，超时返回 Timeout 错误
+            ///
+            /// MVP 优先级
+            pub fn with_timeout<F, R>(&self, f: F, timeout: Duration) -> Result<R, ExecutionError>
+            where
+                F: FnOnce() -> R + Send + 'static,
+                R: Send + 'static,
+            {
+                todo!()
+            }
+
+            /// 组合捕获 panic 和超时
+            ///
+            /// # 参数
+            /// - `f`: 要执行的闭包
+            /// - `timeout`: 超时时间（None 表示不设超时）
+            ///
+            /// # 返回值
+            /// - `Result<R, ExecutionError>`: 执行结果或错误
+            ///
+            /// MVP 优先级
+            pub fn execute<F, R>(&self, f: F, timeout: Option<Duration>) -> Result<R, ExecutionError>
+            where
+                F: FnOnce() -> R + Send + panic::UnwindSafe + 'static,
+                R: Send + 'static,
+            {
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+
+            /// 验证结果有效性
+            ///
+            /// # 参数
+            /// - `result`: 待验证的结果
+            /// - `validator`: 验证闭包
+            ///
+            /// # 返回值
+            /// - `Result<R, ExecutionError>`: 验证通过返回结果，否则 InvalidResult
+            ///
+            /// 未来优先级
+            pub fn validate<F, R, V>(&self, result: R, validator: V) -> Result<R, ExecutionError>
+            where
+                V: FnOnce(&R) -> bool,
+            {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

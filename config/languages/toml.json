@@ -8,19 +8,11 @@
     {
       "type": "any",
       "patterns": [
-        {"pattern_type": "contains", "pattern": "["},
-        {"pattern_type": "contains", "pattern": "]"},
+        {"pattern_type": "starts_with", "pattern": "["},
         {"pattern_type": "contains", "pattern": " = "},
-        {"pattern_type": "contains", "pattern": "#"},
+        {"pattern_type": "starts_with", "pattern": "#"},
         {"pattern_type": "contains", "pattern": "'''"},
-        {"pattern_type": "contains", "pattern": "\"\"\""},
-        {"pattern_type": "contains", "pattern": "true"},
-        {"pattern_type": "contains", "pattern": "false"},
-        {"pattern_type": "contains", "pattern": "null"},
-        {"pattern_type": "contains", "pattern": "inf"},
-        {"pattern_type": "contains", "pattern": "nan"},
-        {"pattern_type": "contains", "pattern": "Z\""},
-        {"pattern_type": "contains", "pattern": "+00:00"}
+        {"pattern_type": "contains", "pattern": "\"\"\""}
       ]
     }
   ]

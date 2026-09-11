@@ -14,6 +14,7 @@ use bumpalo::Bump;
 use std::borrow::Cow;
 
 impl BazelPlugin {
+    /// 创建 BazelPlugin 实例（名称 bazel，优先级 95）。
     pub fn new() -> Self {
         Self {
             name: "bazel",
@@ -23,14 +24,17 @@ impl BazelPlugin {
 }
 
 impl Plugin for BazelPlugin {
+    /// 返回插件名称 "bazel"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 95。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片是否含 bazel build/test 或分析/构建完成信息，命中返回 0.9 置信度。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let lower = slice.text.to_ascii_lowercase();
         contains_any(
@@ -45,6 +49,7 @@ impl Plugin for BazelPlugin {
         .then_some(0.9)
     }
 
+    /// 压缩切片：剥离 ANSI 码，压缩 bazel 日志为摘要行，保留错误信号并做 ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -63,11 +68,14 @@ impl Plugin for BazelPlugin {
         }
     }
 
+    /// 解压：将压缩文本中的字典 token 用词典还原。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         decompress_with_dict(compressed, dict)
     }
 }
 
+/// 核心压缩逻辑：提取版本/query 目标/分析信息/测试结果等关键行，
+/// 无压缩收益时回退原文；针对 version/query/sync/clean 场景输出单行摘要。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_bazel(text: &str) -> String {
     let mut lines = Vec::new();
@@ -104,9 +112,30 @@ fn compact_bazel(text: &str) -> String {
             return fallback_if_anchor_only(lines, text);
         }
     }
+    // 进入成功目标输出块（如 `Target //... up-to-date:`）后，连带保留紧随后续的
+    // 非空缩进产物路径行，避免零 action 构建丢失目标状态与产物位置（SAP-0071）。
+    let mut in_output_block = false;
     for line in text.lines() {
         let trimmed = line.trim();
         let lower = trimmed.to_ascii_lowercase();
+        let is_target_header = trimmed.starts_with("Target ")
+            && (trimmed.contains(" up-to-date") || trimmed.ends_with(" built"));
+        if is_target_header {
+            in_output_block = true;
+            lines.push(compact_spaces(trimmed));
+            continue;
+        }
+        if in_output_block {
+            if trimmed.is_empty() || lower.starts_with("info:") {
+                // 输出块到此结束；INFO 汇总行回落普通白名单，避免丢失耗时/完成信息。
+                in_output_block = false;
+            } else if line.starts_with(char::is_whitespace) {
+                lines.push(compact_spaces(trimmed));
+                continue;
+            } else {
+                continue;
+            }
+        }
         if lower.starts_with("info: analyzed")
             || lower.starts_with("info: found")
             || lower.starts_with("info: elapsed time")

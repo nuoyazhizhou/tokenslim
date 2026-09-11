@@ -4,15 +4,6 @@ use crate::core::compression::Token;
 use dashmap::{DashMap, DashSet};
 use std::collections::HashMap;
 
-/// 去重类型
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum DedupType {
-    Line,
-    StackFrame,
-    Path,
-    Pattern,
-}
-
 /// 去重结果
 #[derive(Debug, Clone)]
 pub struct DedupResult<'a> {
@@ -23,22 +14,39 @@ pub struct DedupResult<'a> {
 /// 去重配置
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct DedupConfig {
-    pub line_threshold: usize,
-    pub stack_frame_threshold: usize,
-    pub path_threshold: usize,
+    /// 模式去重参与门槛（P2-56 收口：仅此阈值被消费，两版引擎统一按
+    /// `pattern_threshold * 4` 计算最短参与长度；原 line/stack_frame/path
+    /// 三阈值零消费，属「假调参」死字段，已删除）。
     pub pattern_threshold: usize,
-    // TODO: fuzzy_threshold 目前未被使用，保留以备模糊去重功能实现
-    pub fuzzy_threshold: f32,
+    /// `seen_hashes` 分代上限（P2-09）：集合规模达到该值即整体清空重开一代，
+    /// 防止长驻进程（server / 长时间 `--stream`）随输入线性增长内存泄漏。
+    /// 正确性无损：已产出输出的 token 不受影响，代价仅是清空后旧行的重复
+    /// 发现需重新登记（重新走一次 add_macro）。
+    #[serde(default = "default_max_seen_hashes")]
+    pub max_seen_hashes: usize,
+    /// `global_cache` 容量上限（P2-09：原 Shared 版 200000 硬编码提为可配，
+    /// 单线程版同口径补上限）。达到上限后不再登记新条目，仅跳过。
+    #[serde(default = "default_max_cache_entries")]
+    pub max_cache_entries: usize,
+}
+
+/// 返回 `max_seen_hashes` 默认值（1_000_000）。
+fn default_max_seen_hashes() -> usize {
+    1_000_000
+}
+
+/// 返回 `max_cache_entries` 默认值（200_000，与旧 Shared 版硬编码一致）。
+fn default_max_cache_entries() -> usize {
+    200_000
 }
 
 impl Default for DedupConfig {
+    /// 返回去重默认配置：模式阈值 3，seen 分代上限 100 万，缓存上限 20 万。
     fn default() -> Self {
         Self {
-            line_threshold: 3,
-            stack_frame_threshold: 3,
-            path_threshold: 3,
             pattern_threshold: 3,
-            fuzzy_threshold: 0.9,
+            max_seen_hashes: default_max_seen_hashes(),
+            max_cache_entries: default_max_cache_entries(),
         }
     }
 }
@@ -48,9 +56,6 @@ pub struct DedupEngine {
     pub config: DedupConfig,
     pub(crate) global_cache: HashMap<u64, String>,
     pub(crate) seen_hashes: std::collections::HashSet<u64>,
-    // TODO: fuzzy_cache 目前未被使用，保留以备模糊去重功能实现
-    #[allow(dead_code)]
-    pub(crate) fuzzy_cache: HashMap<u64, (String, String)>,
 }
 
 /// 增强版 SharedDedupEngine (多线程共享)
@@ -58,7 +63,4 @@ pub struct SharedDedupEngine {
     pub config: DedupConfig,
     pub(crate) global_cache: DashMap<u64, String>,
     pub(crate) seen_hashes: DashSet<u64>,
-    // TODO: fuzzy_cache 目前未被使用，保留以备模糊去重功能实现
-    #[allow(dead_code)]
-    pub(crate) fuzzy_cache: DashMap<u64, (String, String)>,
 }

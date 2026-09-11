@@ -1,0 +1,1 @@
+- `src/core/log_reorderer`：在行归一化时复用提取工具，避免 noisy 前缀导致 JSON 归一化失败。

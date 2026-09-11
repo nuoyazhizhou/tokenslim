@@ -1,0 +1,6 @@
+============================= test session starts =============================
+collected 42 items
+test_math.py::test_add PASSED
+test_math.py::test_div FAILED
+assertion error: expected 4, actual 3
+=========================== 41 passed, 1 failed ===========================

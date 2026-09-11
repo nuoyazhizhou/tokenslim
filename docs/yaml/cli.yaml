@@ -1,0 +1,179 @@
+module:
+  name: cli
+  path: src/cli
+  dependencies:
+    - clap = { version = "4.0", features = ["derive"] }
+    - thiserror = "1.0"
+    - serde = { version = "1.0", features = ["derive"] }
+    - serde_json = "1.0"        # 用于配置文件解析
+    - toml = "0.5"               # 用于配置文件解析（可选）
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{CliArgs, CliMode, InputSource, OutputTarget, CliError};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::path::PathBuf;
+        use crate::core::compression_pipeline::PipelineError;
+
+        /// 命令行参数解析结果
+        #[derive(Debug)]
+        pub struct CliArgs {
+            pub mode: CliMode,
+            pub input: InputSource,
+            pub output: OutputTarget,
+            pub verbose: bool,
+            pub config: Option<PathBuf>,
+        }
+
+        /// 操作模式
+        #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+        pub enum CliMode {
+            Compress,
+            Decompress,
+        }
+
+        /// 输入源
+        #[derive(Debug)]
+        pub enum InputSource {
+            File(PathBuf),
+            Stdin,
+        }
+
+        /// 输出目标
+        #[derive(Debug)]
+        pub enum OutputTarget {
+            File(PathBuf),
+            Stdout,
+        }
+
+        /// 命令行错误类型
+        #[derive(Debug, thiserror::Error)]
+        pub enum CliError {
+            #[error("Invalid arguments: {0}")]
+            InvalidArgs(String),
+            #[error("IO error: {0}")]
+            Io(#[from] std::io::Error),
+            #[error("Compression error: {0}")]
+            Compression(String),
+            #[error("Decompression error: {0}")]
+            Decompression(String),
+            #[error("Config error: {0}")]
+            Config(String),
+            #[error("Pipeline error: {0}")]
+            Pipeline(#[from] PipelineError),
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use clap::Parser;
+        use std::io::{Read, Write};
+        use std::fs::File;
+        use std::path::Path;
+        use crate::core::compression_pipeline::{PipelineConfig, PipelineError};
+
+        /// 命令行参数定义（使用 clap 自动生成解析器）
+        #[derive(Parser)]
+        #[command(name = "ai-decompressor")]
+        #[command(about = "AI Input Decompression Engine - CLI", long_about = None)]
+        struct Cli {
+            /// 压缩模式（默认）
+            #[arg(short, long)]
+            compress: bool,
+
+            /// 解压缩模式
+            #[arg(short, long)]
+            decompress: bool,
+
+            /// 输入文件（未指定时从标准输入读取）
+            #[arg(short, long, value_name = "FILE")]
+            input: Option<PathBuf>,
+
+            /// 输出文件（未指定时输出到标准输出）
+            #[arg(short, long, value_name = "FILE")]
+            output: Option<PathBuf>,
+
+            /// 显示详细信息
+            #[arg(short, long)]
+            verbose: bool,
+
+            /// 配置文件（JSON/TOML）
+            #[arg(long, value_name = "FILE")]
+            config: Option<PathBuf>,
+        }
+
+        impl CliArgs {
+            // ========== MVP 函数 ==========
+
+            /// 解析命令行参数
+            ///
+            /// # 返回值
+            /// - `Result<CliArgs, CliError>`: 解析成功返回参数，失败返回错误
+            ///
+            /// MVP 优先级
+            pub fn parse_args() -> Result<Self, CliError> {
+                todo!()
+            }
+        }
+
+        /// 显示帮助信息
+        pub fn print_help() {
+            todo!()
+        }
+
+        /// 显示版本信息
+        pub fn print_version() {
+            todo!()
+        }
+
+        /// 加载配置文件
+        ///
+        /// # 参数
+        /// - `path`: 配置文件路径
+        ///
+        /// # 返回值
+        /// - `Result<PipelineConfig, CliError>`: 解析后的配置
+        ///
+        /// MVP 优先级
+        pub fn load_config(path: &Path) -> Result<PipelineConfig, CliError> {
+            todo!()
+        }
+
+        /// 运行压缩模式
+        ///
+        /// # 参数
+        /// - `args`: 命令行参数
+        ///
+        /// # 返回值
+        /// - `Result<(), CliError>`
+        ///
+        /// MVP 优先级
+        pub fn run_compress(args: &CliArgs) -> Result<(), CliError> {
+            todo!()
+        }
+
+        /// 运行解压缩模式
+        ///
+        /// # 参数
+        /// - `args`: 命令行参数
+        ///
+        /// # 返回值
+        /// - `Result<(), CliError>`
+        ///
+        /// MVP 优先级
+        pub fn run_decompress(args: &CliArgs) -> Result<(), CliError> {
+            todo!()
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

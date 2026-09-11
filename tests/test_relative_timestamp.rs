@@ -4,6 +4,8 @@
 
 use std::fs;
 
+/// 相对时间戳压缩测试入口：读取日志 → 提取基准时间戳 →
+/// 全部替换为 [T+偏移] 相对时间 → 输出对比与压缩文件。
 fn main() {
     println!("=== 相对时间戳压缩测试 ===\n");
 
@@ -48,7 +50,10 @@ fn main() {
     println!("压缩文件已保存到：tests/output/relative_timestamp.txt");
 }
 
-/// 提取第一个时间戳作为基准（返回毫秒数）
+/// 提取日志中第一个 ISO 时间戳文本作为相对基准（格式 [2026-...Z]）。
+///
+/// 返回时间戳字符串（不含方括号）；未找到符合格式的样本时返回空字符串，
+/// 调用方据此退化（基准为空时相对偏移计算仍可运行但语义失效）。
 fn extract_base_timestamp(content: &str) -> String {
     // 查找第一个 [2026-03-05T02:52:31.597Z] 格式的时间戳
     for line in content.lines() {
@@ -67,7 +72,10 @@ fn extract_base_timestamp(content: &str) -> String {
     String::new()
 }
 
-/// 解析 ISO 时间戳为毫秒数（从 Unix 纪元开始）
+/// 将 ISO 时间戳解析为简化的绝对毫秒数（非真实 Unix 纪元时间戳）。
+///
+/// 实现用 `year*366 + month*31 + day` 的近似日偏移保证跨天单调可比，
+/// 仅用于相对偏移计算；格式不合法时返回 0。
 fn parse_timestamp_to_ms(timestamp: &str) -> i64 {
     // 格式：2026-03-05T02:52:31.597Z
     let parts: Vec<&str> = timestamp.split('T').collect();

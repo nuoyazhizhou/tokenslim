@@ -2,6 +2,7 @@
 mod tests {
     use crate::plugins::vcs_git_plugin::methods::*;
 
+    /// 测试：遍历 git 样例生成 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_vcs_git_showcase_report() {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
@@ -52,7 +53,6 @@ mod tests {
             ("case_241", "git_clean_fd", "status"),
             ("case_246", "git_status_branch", "status"),
             ("case_247", "git_status_porcelain", "status"),
-            ("case_248", "git_status_short", "status"),
             ("case_249", "git_status_long", "status"),
             ("case_250", "git_status_ignored", "status"),
             ("case_251", "git_status_untracked_all", "status"),
@@ -64,7 +64,6 @@ mod tests {
             ("case_257", "git_diff_cached", "diff"),
             ("case_258", "git_diff_head", "diff"),
             ("case_259", "git_diff_stat", "diff"),
-            ("case_260", "git_diff_word_diff", "diff"),
             ("case_261", "git_diff_branches", "diff"),
             ("case_283", "git_diff_name_only", "diff"),
             ("case_284", "git_diff_name_status", "diff"),
@@ -124,41 +123,42 @@ mod tests {
             let original_bytes = raw.len();
 
             let command = file_base.to_string();
-            let compacted = if command == "git_status" || command.contains("status_") {
-                compact_git_status_for_ai(&raw)
-            } else if command.contains("checkout") {
-                compact_git_checkout_for_ai(&raw)
-            } else if command.contains("diff") {
-                compact_git_diff_for_ai(&raw)
-            } else if command.contains("show") && !command.contains("stash_show") {
-                compact_git_show_for_ai(&raw)
-            } else if command.contains("add") {
-                compact_git_add_for_ai(&raw)
-            } else if command.contains("stash") {
-                compact_git_stash_for_ai(&raw)
-            } else if command.contains("reset") {
-                compact_git_reset_for_ai(&raw)
-            } else if command.contains("switch") {
-                compact_git_switch_for_ai(&raw)
-            } else if command.contains("merge") || command.contains("merge_conflict") {
-                // 使用增强版本处理 merge conflict
-                compact_git_merge_enhanced(&raw)
-            } else if command.contains("restore") {
-                compact_git_restore_for_ai(&raw)
-            } else if command.contains("clean") {
-                compact_git_clean_for_ai(&raw)
-            } else if command.contains("rebase") || command.contains("rebase_interactive") {
-                // 使用增强版本处理 rebase interactive
-                compact_git_rebase_enhanced(&raw)
-            } else if command.contains("log")
-                || command.contains("log_graph")
-                || command.contains("reflog")
-            {
-                // 使用增强版本处理 log/graph/reflog
-                compact_git_log_enhanced(&raw)
-            } else {
-                compact_git_other_for_ai(&raw)
-            };
+            let compacted =
+                if command == "git_status" || command == "status" || command.contains("status_") {
+                    compact_git_status_for_ai(&raw)
+                } else if command.contains("checkout") {
+                    compact_git_checkout_for_ai(&raw)
+                } else if command.contains("diff") {
+                    compact_git_diff_for_ai(&raw)
+                } else if command.contains("show") && !command.contains("stash_show") {
+                    compact_git_show_for_ai(&raw)
+                } else if command.contains("add") {
+                    compact_git_add_for_ai(&raw)
+                } else if command.contains("stash") {
+                    compact_git_stash_for_ai(&raw)
+                } else if command.contains("reset") {
+                    compact_git_reset_for_ai(&raw)
+                } else if command.contains("switch") {
+                    compact_git_switch_for_ai(&raw)
+                } else if command.contains("merge") || command.contains("merge_conflict") {
+                    // 使用增强版本处理 merge conflict
+                    compact_git_merge_enhanced(&raw)
+                } else if command.contains("restore") {
+                    compact_git_restore_for_ai(&raw)
+                } else if command.contains("clean") {
+                    compact_git_clean_for_ai(&raw)
+                } else if command.contains("rebase") || command.contains("rebase_interactive") {
+                    // 使用增强版本处理 rebase interactive
+                    compact_git_rebase_enhanced(&raw)
+                } else if command.contains("log")
+                    || command.contains("log_graph")
+                    || command.contains("reflog")
+                {
+                    // 使用增强版本处理 log/graph/reflog
+                    compact_git_log_enhanced(&raw)
+                } else {
+                    compact_git_other_for_ai(&raw)
+                };
 
             let compact_lines = if compacted.is_empty() {
                 0

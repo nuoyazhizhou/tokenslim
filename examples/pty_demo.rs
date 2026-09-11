@@ -137,6 +137,8 @@ fn run_in_pty(prog: &str, args: &[&str], max_wait_secs: u64) -> Result<(Vec<u8>,
     Ok((collected, exit_code))
 }
 
+/// PoC 主入口：跑 4 个 pty 用例（git --version / cmd ver / git status / git log）
+/// + 2 个非 pty 对照组，输出 exit_code 与 stdout 判读 v0.4.0 portable-pty 可行性。
 fn main() {
     println!("=== TokenSlim v0.4.0 portable-pty PoC ===\n");
     println!("注: portable-pty 走 Windows CreateProcessW (不通过 bash), 只能用 PATH 里的命令");

@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use super::super::methods::*;
+    /// 测试：遍历 darcs 样例生成 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_vcs_darcs_showcase_report() {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");

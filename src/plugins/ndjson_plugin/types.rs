@@ -28,19 +28,23 @@ pub struct NdjsonConfig {
     pub show_test_output: bool,
 }
 
+/// go_test_mode 与 show_test_output 的 serde 默认值（true/false）。
 fn default_true() -> bool {
     true
 }
 
+/// show_test_output 的 serde 默认值（false）。
 fn default_false() -> bool {
     false
 }
 
+/// max_output_lines 的 serde 默认值（10）。
 fn default_max_output_lines() -> usize {
     10
 }
 
 impl Default for NdjsonConfig {
+    /// NdjsonConfig 默认值：Go test 模式开启、输出 10 行、不显示详细输出。
     fn default() -> Self {
         Self {
             go_test_mode: true,
@@ -54,7 +58,6 @@ impl Default for NdjsonConfig {
 pub struct NdjsonPlugin {
     pub(crate) name: &'static str,
     pub(crate) priority: u8,
-    pub(crate) ndjson_detect_pattern: Arc<Regex>,
     pub(crate) go_test_pattern: Arc<Regex>,
     pub config: NdjsonConfig,
 }
@@ -115,6 +118,7 @@ pub struct PackageInfo {
 }
 
 impl PackageInfo {
+    /// PackageInfo::new 创建空包聚合信息。
     pub fn new(name: String) -> Self {
         Self {
             name,

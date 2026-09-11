@@ -2,7 +2,7 @@
 //!
 //! # 模块概述
 //!
-//! 本模块实现了流式读取器的核心逻辑，支持内存映射 (mmap)、并行读取、自动识别编码和文件类型等功能。
+//! 本模块实现了流式读取器的核心逻辑，支持并行读取、自动识别编码和文件类型等功能。
 //!
 //! # 功能说明
 //!
@@ -14,85 +14,90 @@ use std::borrow::Cow;
 use std::fs;
 use std::io::Read;
 use std::path::Path;
-use sysinfo::{DiskKind, Disks, System};
+
+/// P2-22：mmap 读取路径已整体移除（read_inner 统一 `read_to_end` 整读到
+/// 自有缓冲）。原因：mmap 的经典 soundness 陷阱——映射建立后文件被外部截断
+/// （logrotate / truncate，本项目处理对象恰恰是活日志），访问「映射长度内但
+/// 已超出新文件尾」的页在 Windows/Linux 上都是不可捕获的 SIGSEGV；且日志为
+/// 顺序读，mmap 零拷贝收益本就有限。原 mmap 动态阈值计算（sysinfo 全量刷新，
+/// 曾为性能热点 P2-23）随路径一并移除。
+
+/// P1-08：文件头部样本的内容分类结果。
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ByteKind {
+    /// 纯 UTF-8（含 UTF-8 BOM）——整读入自有 Buffer
+    Utf8,
+    /// 二进制内容——保持原始字节，metadata 标记 Binary
+    Binary,
+    /// 非 UTF-8 文本 / UTF-16/32——需经 decode_with_fallback 转码
+    Transcode,
+}
 
 impl<'a> StreamReader<'a> {
     const MIN_PARALLEL_CHUNK_SIZE: usize = 256 * 1024;
     const MAX_PARALLEL_CHUNK_SIZE: usize = 5 * 1024 * 1024;
     const SEMANTIC_SCAN_MULTIPLIER: usize = 2;
 
-    /// 计算最优的内存映射 (mmap) 阈值。根据可用内存和磁盘速度动态决定何时开启大文件读取优化。
-    pub fn calculate_optimal_threshold() -> usize {
-        let mut sys = System::new_all();
-        sys.refresh_all();
-
-        let available_mem = sys.available_memory();
-
-        // 默认阈值 20MB
-        let mut threshold = 20 * 1024 * 1024;
-
-        // 如果可用内存大于 4GB，可以放宽到 100MB
-        if available_mem > 4 * 1024 * 1024 * 1024 {
-            threshold = 100 * 1024 * 1024;
-        }
-
-        // 检查磁盘类型
-        let disks = Disks::new_with_refreshed_list();
-        let mut has_ssd = false;
-        for disk in &disks {
-            if disk.kind() == DiskKind::SSD {
-                has_ssd = true;
-                break;
-            }
-        }
-
-        // 如果是 SSD，mmap 的收益更高，可以进一步降低阈值
-        if has_ssd {
-            threshold /= 2;
-        }
-
-        threshold
-    }
-
     /// 从文件创建 StreamReader。自动检测文件类型、编码、BOM 和操作系统来源。
+    ///
+    /// P1-08 修复：本方法此前把 `file_type`/`encoding`/`bom` 全部硬编码占位
+    /// （GBK/UTF-16 等编码文件经 `from_utf8_lossy` 不可逆损坏）。现在：
+    /// ① 先读 ≤8KB 头部样本做 BOM/二进制/UTF-8 有效性分类；② 非 UTF-8 文本
+    ///   转码为 UTF-8 后装入 Buffer，编码信息如实填入 metadata；③ 二进制文件
+    ///   标记 `FileType::Binary`。
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Self, StreamError> {
+        let _probe = ScopeProbe::new("stream_reader", "from_file");
         let path = path.as_ref();
         let metadata = fs::metadata(path)?;
         let file_size = metadata.len();
 
-        let threshold = Self::calculate_optimal_threshold();
         let file = fs::File::open(path)?;
 
-        let inner;
-        if file_size > threshold as u64 {
-            let mmap = unsafe { memmap2::Mmap::map(&file)? };
-            log_object_size(
-                "stream_reader",
-                "from_file.mmap",
-                "mapped_bytes",
-                mmap.len(),
-            );
-            inner = Inner::Mmap(mmap);
-        } else {
-            let mut buffer = Vec::new();
-            let mut file_clone = file.try_clone()?;
-            file_clone.read_to_end(&mut buffer)?;
-            log_object_size(
-                "stream_reader",
-                "from_file.buffer",
-                "buffer_bytes",
-                buffer.len(),
-            );
-            inner = Inner::Buffer(buffer);
-        }
+        // P1-08：头部样本检测（≤8KB）
+        let head = Self::read_head(&file, 8192);
+        let (kind, bom) = Self::classify_bytes(&head);
 
-        // 模拟元数据提取
+        let (inner, encoding, file_type) = match kind {
+            // 二进制：保持原始字节，交由上层按 metadata 处理
+            ByteKind::Binary => (
+                Self::read_inner(&file, "from_file")?,
+                CharsetEncoding::Unknown,
+                FileType::Binary,
+            ),
+            // 纯 UTF-8（含 UTF-8 BOM）：整读入自有缓冲
+            ByteKind::Utf8 => (
+                Self::read_inner(&file, "from_file")?,
+                CharsetEncoding::Utf8,
+                FileType::Text,
+            ),
+            // 非 UTF-8 文本 / UTF-16/32：全量读入并转码为 UTF-8
+            ByteKind::Transcode => {
+                let mut buffer = Vec::new();
+                let mut file_clone = file.try_clone()?;
+                file_clone.read_to_end(&mut buffer)?;
+                let (decoded, enc_name) =
+                    crate::core::encoding_fallback::decode_with_fallback(&buffer);
+                log_object_size(
+                    "stream_reader",
+                    "from_file.transcode",
+                    "decoded_bytes",
+                    decoded.len(),
+                );
+                let encoding = Self::encoding_from_name(&enc_name);
+                (
+                    Inner::Buffer(decoded.into_bytes()),
+                    encoding,
+                    FileType::Text,
+                )
+            }
+        };
+
         let file_metadata = FileMetadata {
             path: Some(path.to_path_buf()),
             size: file_size,
-            file_type: FileType::Text, // 简化处理
-            encoding: CharsetEncoding::Utf8,
-            bom: None,
+            file_type,
+            encoding,
+            bom,
             created: metadata.created().ok(),
             modified: metadata.modified().ok(),
             accessed: metadata.accessed().ok(),
@@ -108,64 +113,98 @@ impl<'a> StreamReader<'a> {
         })
     }
 
-    /// 从文件创建 StreamReader（带配置项）。
-    pub fn from_file_with_config<P: AsRef<Path>>(
-        path: P,
-        read_config: &StreamReadConfig,
-    ) -> Result<Self, StreamError> {
-        let _probe = ScopeProbe::new("stream_reader", "from_file_with_config");
-        let path = path.as_ref();
-        let file = fs::File::open(path)?;
-        let metadata = file.metadata()?;
-        let file_size = metadata.len();
-
-        let threshold = read_config
-            .mmap_threshold
-            .unwrap_or_else(Self::calculate_optimal_threshold);
-
-        let inner;
-        if file_size > threshold as u64 {
-            let mmap = unsafe { memmap2::Mmap::map(&file)? };
-            log_object_size(
-                "stream_reader",
-                "from_file_with_config.mmap",
-                "mapped_bytes",
-                mmap.len(),
-            );
-            inner = Inner::Mmap(mmap);
-        } else {
-            let prealloc = std::cmp::max(file_size as usize, read_config.buffer_size);
-            let mut buffer = Vec::with_capacity(prealloc);
-            let mut file_clone = file.try_clone()?;
-            file_clone.read_to_end(&mut buffer)?;
-            log_object_size(
-                "stream_reader",
-                "from_file_with_config.buffer",
-                "buffer_bytes",
-                buffer.len(),
-            );
-            inner = Inner::Buffer(buffer);
-        }
-
-        let file_metadata = FileMetadata {
-            path: Some(path.to_path_buf()),
-            size: file_size,
-            file_type: FileType::Text,
-            encoding: CharsetEncoding::Utf8,
-            bom: None,
-            created: metadata.created().ok(),
-            modified: metadata.modified().ok(),
-            accessed: metadata.accessed().ok(),
-            permissions: Some(metadata.permissions()),
-            owner: None,
-            fs_type: None,
-            origin_os: None,
+    /// 从文件句柄头部读取至多 `cap` 字节的样本（P1-08）。
+    /// 注意：`try_clone` 复制的句柄与原句柄**共享游标**，读完后必须 seek 回
+    /// 起点，否则后续 `read_inner` 将从文件中部甚至 EOF 开始。
+    fn read_head(file: &fs::File, cap: usize) -> Vec<u8> {
+        use std::io::{Seek, SeekFrom};
+        let mut preview = match file.try_clone() {
+            Ok(f) => f,
+            Err(_) => return Vec::new(),
         };
+        if preview.seek(SeekFrom::Start(0)).is_err() {
+            return Vec::new();
+        }
+        let mut head = Vec::with_capacity(cap);
+        let mut chunk = [0u8; 1024];
+        while head.len() < cap {
+            match preview.read(&mut chunk) {
+                Ok(0) => break,
+                Ok(n) => {
+                    let take = n.min(cap - head.len());
+                    head.extend_from_slice(&chunk[..take]);
+                }
+                Err(ref e) if e.kind() == std::io::ErrorKind::Interrupted => continue,
+                Err(_) => break,
+            }
+        }
+        let _ = preview.seek(SeekFrom::Start(0));
+        head
+    }
 
-        Ok(StreamReader {
-            inner,
-            metadata: Some(file_metadata),
-        })
+    /// P1-08：字节内容分类——纯 UTF-8 / 二进制 / 需转码（非 UTF-8 文本或 UTF-16/32）。
+    /// 返回 `(kind, bom)`。
+    fn classify_bytes(bytes: &[u8]) -> (ByteKind, Option<Bom>) {
+        let bom = Self::detect_bom(bytes);
+        if crate::core::encoding_fallback::is_probable_binary_bytes(bytes) {
+            return (ByteKind::Binary, bom);
+        }
+        match bom {
+            // UTF-16/32 BOM：交解码器直转
+            Some(Bom::Utf16Le) | Some(Bom::Utf16Be) | Some(Bom::Utf32Le) | Some(Bom::Utf32Be) => {
+                (ByteKind::Transcode, bom)
+            }
+            // UTF-8 BOM 或无 BOM：验证 UTF-8 有效性
+            Some(Bom::Utf8) | None => {
+                if std::str::from_utf8(bytes).is_ok() {
+                    (ByteKind::Utf8, bom)
+                } else {
+                    (ByteKind::Transcode, bom)
+                }
+            }
+        }
+    }
+
+    /// 整文件读取（P2-22：统一 `read_to_end` 到自有缓冲，不再走 mmap——
+    /// 映射期间文件被外部截断（logrotate/活日志）会触发不可捕获的 SIGSEGV，
+    /// 自有缓冲则天然是读入瞬间的快照，截断无影响）。
+    fn read_inner(file: &fs::File, scope: &str) -> Result<Inner<'static>, StreamError> {
+        let mut buffer = Vec::new();
+        let mut file_clone = file.try_clone()?;
+        file_clone.read_to_end(&mut buffer)?;
+        log_object_size(
+            "stream_reader",
+            &format!("{scope}.buffer"),
+            "buffer_bytes",
+            buffer.len(),
+        );
+        Ok(Inner::Buffer(buffer))
+    }
+
+    /// P1-08：`decode_with_fallback` 返回的编码名 → `CharsetEncoding` 枚举映射。
+    fn encoding_from_name(name: &str) -> CharsetEncoding {
+        match name.to_ascii_lowercase().as_str() {
+            "utf-8" => CharsetEncoding::Utf8,
+            "utf-16le" => CharsetEncoding::Utf16Le,
+            "utf-16be" => CharsetEncoding::Utf16Be,
+            "utf-32le" => CharsetEncoding::Utf32Le,
+            "utf-32be" => CharsetEncoding::Utf32Be,
+            "gbk" | "936" => CharsetEncoding::Gbk,
+            "gb18030" => CharsetEncoding::Gb2312,
+            "big5" => CharsetEncoding::Big5,
+            "shift_jis" | "windows-31j" | "cp932" => CharsetEncoding::ShiftJis,
+            "euc-kr" => CharsetEncoding::EucKr,
+            "cp949" => CharsetEncoding::Cp949,
+            "windows-1251" => CharsetEncoding::Windows1251,
+            "koi8-r" => CharsetEncoding::Koi8R,
+            "iso-8859-5" => CharsetEncoding::Iso8859_5,
+            "windows-1256" => CharsetEncoding::Windows1256,
+            "iso-8859-6" => CharsetEncoding::Iso8859_6,
+            "windows-1255" => CharsetEncoding::Windows1255,
+            "iso-8859-8" => CharsetEncoding::Iso8859_8,
+            "windows-1252" | "latin-1" | "iso-8859-1" => CharsetEncoding::Windows1252,
+            _ => CharsetEncoding::Unknown,
+        }
     }
 
     /// 从字符串直接创建 StreamReader。适用于处理已加载到内存的小文本或测试场景。
@@ -196,7 +235,6 @@ impl<'a> StreamReader<'a> {
     /// 获取原始字节切片。
     pub fn get_data(&self) -> &[u8] {
         match &self.inner {
-            Inner::Mmap(mmap) => mmap.as_ref(),
             Inner::Buffer(buffer) => buffer.as_slice(),
             Inner::Bytes(bytes) => bytes,
         }
@@ -217,7 +255,6 @@ impl<'a> StreamReader<'a> {
     /// 判断当前内容是否为纯文本。通过检测样本字节中是否包含 NULL 字符（0x00）来判断。
     pub fn is_text(&self) -> bool {
         match &self.inner {
-            Inner::Mmap(mmap) => !Self::detect_binary(mmap.as_ref()),
             Inner::Buffer(buffer) => !Self::detect_binary(buffer.as_slice()),
             Inner::Bytes(bytes) => !Self::detect_binary(bytes),
         }
@@ -228,7 +265,6 @@ impl<'a> StreamReader<'a> {
         let _probe =
             ScopeProbe::new("stream_reader", "iter_lines").add_field("source_size", self.size());
         let data = match &self.inner {
-            Inner::Mmap(mmap) => mmap.as_ref(),
             Inner::Buffer(buffer) => buffer.as_slice(),
             Inner::Bytes(bytes) => bytes,
         };
@@ -251,7 +287,6 @@ impl<'a> StreamReader<'a> {
         }
 
         let data = match &self.inner {
-            Inner::Mmap(mmap) => mmap.as_ref(),
             Inner::Buffer(buffer) => buffer.as_slice(),
             Inner::Bytes(bytes) => bytes,
         };
@@ -401,6 +436,9 @@ impl<'a> StreamReader<'a> {
     }
 }
 
+/// 从指定偏移起寻找下一行的起始位置：若偏移恰在换行符之后则原样返回，
+/// 否则向前搜索下一个
+///  并返回其后的位置；找不到则返回数据末尾。
 fn find_next_line_start(data: &[u8], from: usize) -> usize {
     if from == 0 {
         return 0;
@@ -420,6 +458,9 @@ fn find_next_line_start(data: &[u8], from: usize) -> usize {
     }
 }
 
+/// 从指定偏移起寻找当前行的结束位置：返回第一个
+///  的索引（不含换行符），
+/// 无换行符时返回数据末尾。
 fn find_line_end(data: &[u8], start: usize) -> usize {
     if start >= data.len() {
         return data.len();
@@ -432,6 +473,7 @@ fn find_line_end(data: &[u8], start: usize) -> usize {
     }
 }
 
+/// 去掉行尾的 \r 字符（CRLF 行尾），纯 LF 行原样返回。
 fn trim_cr(line: &[u8]) -> &[u8] {
     if line.last() == Some(&b'\r') {
         &line[..line.len().saturating_sub(1)]
@@ -440,6 +482,8 @@ fn trim_cr(line: &[u8]) -> &[u8] {
     }
 }
 
+/// 判断某行是否适合作为语义安全切分点：空行、以数字或 [ 开头的行、
+/// 以及非缩进（非空格/制表符开头）的行均可安全断开，缩进的续行不可断开。
 fn is_semantic_safe_break_line(line: &[u8]) -> bool {
     if line.is_empty() {
         return true;
@@ -453,6 +497,7 @@ fn is_semantic_safe_break_line(line: &[u8]) -> bool {
     first != b' ' && first != b'\t'
 }
 
+/// 判断 index 是否为 UTF-8 字符边界：位于开头/末尾或字节高位不为连续字节前缀时视为边界。
 fn is_utf8_boundary(data: &[u8], index: usize) -> bool {
     if index == 0 || index == data.len() {
         return true;

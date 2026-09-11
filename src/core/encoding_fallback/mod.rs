@@ -97,6 +97,7 @@ struct MojibakeRepairPass {
     next_likely_mojibake: bool,
 }
 
+/// 执行一轮乱码修复；先尝试 cp932/windows-31j 专用首轮修复，否则选择最佳重解释候选并验证其确实改善了文本（marker/replacement 下降或乱码启发式消失），返回下一轮文本与修复步骤名。
 fn run_mojibake_repair_pass(
     pass: usize,
     current: &str,
@@ -132,6 +133,7 @@ fn run_mojibake_repair_pass(
     })
 }
 
+/// 判断本轮修复是否应跳过；当文本既不像乱码、也无 CJK 乱码特征、且此前无任何清理步骤时返回 true（无需也无法继续修复）。
 fn should_skip_repair_pass(
     likely_mojibake: bool,
     cjk_mojibake_like: bool,
@@ -140,6 +142,7 @@ fn should_skip_repair_pass(
     !likely_mojibake && !cjk_mojibake_like && no_cleanup_steps
 }
 
+/// cp932/windows-31j 专用首轮修复；仅在第一轮且文本具 CJK 乱码特征时，将原文按 SHIFT_JIS 重新解释为 UTF-8，并确认结果不再含 CJK 乱码特征。
 fn try_cp932_repair_first_pass(cjk_mojibake_like: bool, pass: usize, text: &str) -> Option<String> {
     if !cjk_mojibake_like || pass != 1 {
         return None;
@@ -151,6 +154,7 @@ fn try_cp932_repair_first_pass(cjk_mojibake_like: bool, pass: usize, text: &str)
     None
 }
 
+/// 评估修复候选是否优于当前文本；比较解码评分、乱码标记数、替换字符数及乱码启发式状态，任一指标改善即视为改进。
 fn is_repair_candidate_improved(
     current: &str,
     next: &str,
@@ -164,12 +168,18 @@ fn is_repair_candidate_improved(
     let old_repl = replacement_marker_count(current);
     let new_repl = replacement_marker_count(next);
 
+    // 重解释若引入了更多替换字符（U+FFFD），说明把原本有效的字节流损坏了（如 GB18030 整段重编）
+    if new_repl > old_repl {
+        return false;
+    }
+
     new_markers < old_markers
         || new_repl < old_repl
         || new_score >= old_score + 4
         || (likely_mojibake && !next_mojibake)
 }
 
+/// 规范化展示用文本并返回所执行的清理步骤；依次剥离前导 BOM、将 CRLF/CR 归一为 LF、剥离行内 BOM、移除不可见控制字符，并在分数不下降时剥离 NUL。
 fn normalize_display_text(input: &str) -> (String, Vec<String>) {
     let mut text = input.to_string();
     let mut steps = Vec::<String>::new();
@@ -208,6 +218,7 @@ fn normalize_display_text(input: &str) -> (String, Vec<String>) {
     (text, steps)
 }
 
+/// 启发式判断字节流是否为二进制；排除已知 BOM 后，按样本中 NUL 与控制字符占比判定（带 UTF-16/UTF-32 无 BOM 的豁免），避免把 UTF-16/32 误判为二进制。
 pub fn is_probable_binary_bytes(bytes: &[u8]) -> bool {
     if bytes.is_empty() {
         return false;
@@ -238,6 +249,7 @@ pub fn is_probable_binary_bytes(bytes: &[u8]) -> bool {
     nul_ratio >= 0.20 || control_ratio >= 0.22
 }
 
+/// 评估修复置信度；对比修复前后的乱码标记、替换字符、NUL 与乱码启发式，结合步骤数给出 high/medium/low 等级及证据列表。
 pub fn evaluate_repair_confidence(
     original: &str,
     repaired: &str,
@@ -296,6 +308,7 @@ pub fn evaluate_repair_confidence(
     (confidence.to_string(), evidence)
 }
 
+/// 启发式判断文本是否为乱码；统计替换字符（U+FFFD）、典型乱码标记字符（Ã/Â/Ð 等）与可疑符号占比，综合判定。
 pub fn is_probable_mojibake_text(text: &str) -> bool {
     if text.is_empty() {
         return false;
@@ -330,6 +343,7 @@ pub fn is_probable_mojibake_text(text: &str) -> bool {
     marker >= 2 && marker_ratio >= 0.08
 }
 
+/// 统计文本中典型乱码标记字符（Ã/Â/Ð/Ñ/â 等 Latin-1→UTF-8 双重编码特征字符）的数量。
 fn mojibake_marker_count(text: &str) -> usize {
     text.chars()
         .filter(|ch| {
@@ -354,14 +368,17 @@ fn mojibake_marker_count(text: &str) -> usize {
         .count()
 }
 
+/// 统计文本中 Unicode 替换字符 U+FFFD 的数量。
 fn replacement_marker_count(text: &str) -> usize {
     text.chars().filter(|ch| *ch == '\u{fffd}').count()
 }
 
+/// 统计文本中 NUL（\0）字符的数量。
 fn nul_marker_count(text: &str) -> usize {
     text.chars().filter(|ch| *ch == '\0').count()
 }
 
+/// 返回用于乱码重解释的编码链；依次尝试 windows-1252/gbk/gb18030/shift_jis，并将 SHIFT_JIS 额外以 windows-31j(cp932) 名义再试一次。
 fn reinterpretation_chains() -> [(&'static Encoding, &'static str); 5] {
     [
         (WINDOWS_1252, "windows-1252->utf8"),
@@ -372,6 +389,7 @@ fn reinterpretation_chains() -> [(&'static Encoding, &'static str); 5] {
     ]
 }
 
+/// 遍历重解释编码链，对每个候选按解码评分与乱码特征变化计算增益，挑出增益最大的重解释结果（文本 + 标签）。
 fn best_reinterpretation_candidate(input: &str, likely_mojibake: bool) -> Option<(String, String)> {
     let old_score = score_decoded_text(input, false);
     let old_markers = mojibake_marker_count(input);
@@ -418,6 +436,7 @@ fn best_reinterpretation_candidate(input: &str, likely_mojibake: bool) -> Option
     best.map(|(next, label, _)| (next, label))
 }
 
+/// 计算一次重解释相较原文的增益分数；marker/replacement 下降、CJK 乱码特征消失、乱码启发式恢复均加分，结果取非负。
 fn reinterpretation_gain(
     old_score: i32,
     new_score: i32,
@@ -446,6 +465,7 @@ fn reinterpretation_gain(
     gain
 }
 
+/// 将文本按指定源编码重新编码回字节，再以 UTF-8 无损解码；若源编码无法表示原文（编码出错）则返回 None。
 fn try_reinterpret_as_utf8(text: &str, source_encoding: &'static Encoding) -> Option<String> {
     let (bytes, _, had_errors) = source_encoding.encode(text);
     if had_errors {
@@ -454,6 +474,7 @@ fn try_reinterpret_as_utf8(text: &str, source_encoding: &'static Encoding) -> Op
     Some(String::from_utf8_lossy(&bytes).into_owned())
 }
 
+/// 解码回退的核心实现；空输入直接返回 UTF-8，否则先尝试 BOM/UTF-16/UTF-32/纯 UTF-8 直接路径，再转入候选编码评分与混合解码。
 fn decode_with_fallback_internal(
     bytes: &[u8],
     preferred_hint: Option<&'static Encoding>,
@@ -470,6 +491,7 @@ fn decode_with_fallback_internal(
     decode_with_candidates_or_lossy(bytes, &candidates)
 }
 
+/// 尝试不依赖统计检测的直接 Unicode 解码路径；依次尝试 BOM 解码、无 BOM 的 UTF-16/UTF-32 解码，最后尝试纯 UTF-8。
 fn try_direct_unicode_decoding(bytes: &[u8]) -> Option<(String, &'static str)> {
     if let Some((decoded, enc_name)) = decode_by_bom(bytes) {
         return Some((decoded, enc_name));
@@ -486,6 +508,7 @@ fn try_direct_unicode_decoding(bytes: &[u8]) -> Option<(String, &'static str)> {
     None
 }
 
+/// 从候选编码中选出最佳单编码结果；若混合解码（按行/按块）能显著超过单编码，则返回 "mixed-auto" 结果。
 fn select_candidate_or_mixed_result(
     bytes: &[u8],
     candidates: &[DecodedCandidate],
@@ -500,6 +523,7 @@ fn select_candidate_or_mixed_result(
     None
 }
 
+/// 用候选编码解码字节；若无合适候选或全部失败，则退回 `from_utf8_lossy` 并标记为 "utf-8-lossy"。
 fn decode_with_candidates_or_lossy(
     bytes: &[u8],
     candidates: &[DecodedCandidate],
@@ -510,6 +534,7 @@ fn decode_with_candidates_or_lossy(
     (String::from_utf8_lossy(bytes).into_owned(), "utf-8-lossy")
 }
 
+/// 在单编码结果基础上尝试混合解码；按行与按块两种方式分别计算，仅当混合结果分数超过单编码阈值且确实切换了编码时才采用。
 fn try_promote_mixed_decode(
     bytes: &[u8],
     candidates: &[DecodedCandidate],
@@ -533,6 +558,7 @@ fn try_promote_mixed_decode(
     None
 }
 
+/// 用 chardetng 对字节流做统计编码检测，返回最可能的编码（猜测，不强制）。
 fn detect_statistical_encoding(bytes: &[u8]) -> Option<&'static Encoding> {
     let mut detector = EncodingDetector::new();
     detector.feed(bytes, true);
@@ -557,6 +583,7 @@ struct MixedDecodeResult {
     switched: bool,
 }
 
+/// 构建解码候选编码列表并按优先级赋分；依次纳入强制编码提示、统计检测结果、首选代码页、locale 提示与通用回退编码，且列表内去重。
 fn build_decode_candidates(
     bytes: &[u8],
     preferred_hint: Option<&'static Encoding>,
@@ -588,6 +615,7 @@ fn build_decode_candidates(
     candidates
 }
 
+/// 用各候选编码解码并评分（解码质量 + 来源加分），返回分数最高的单一解码结果。
 fn decode_best_candidate(bytes: &[u8], candidates: &[DecodedCandidate]) -> Option<DecodedResult> {
     let mut best: Option<DecodedResult> = None;
     for candidate in candidates {
@@ -609,6 +637,7 @@ fn decode_best_candidate(bytes: &[u8], candidates: &[DecodedCandidate]) -> Optio
     best
 }
 
+/// 按行混合解码；逐行挑选最佳候选编码，支持沿用上一行编码以降低切换，整段为空时退回默认编码；返回解码文本、总分与是否发生编码切换。
 fn decode_mixed_by_lines(
     bytes: &[u8],
     candidates: &[DecodedCandidate],
@@ -651,6 +680,7 @@ fn decode_mixed_by_lines(
     })
 }
 
+/// 按块混合解码；先按分隔符切分，不足一个块时退化为定长切分，逐块挑选最佳候选编码并累计分数与切换状态。
 fn decode_mixed_by_chunks(
     bytes: &[u8],
     candidates: &[DecodedCandidate],
@@ -698,6 +728,7 @@ fn decode_mixed_by_chunks(
     })
 }
 
+/// 为单个片段（行/块）挑选最佳候选编码；统计检测命中该编码时加权，并在分数接近时优先沿用上一片段的编码以保持一致性。
 fn decode_best_segment_candidate(
     segment: &[u8],
     candidates: &[DecodedCandidate],
@@ -743,6 +774,7 @@ fn decode_best_segment_candidate(
     }
 }
 
+/// 判断是否值得尝试混合解码；输入长度过小（<10）或过大（>1MB）时返回 false，避免无意义开销。
 fn should_try_mixed_decode(bytes: &[u8]) -> bool {
     if bytes.len() < 10 || bytes.len() > 1_000_000 {
         return false;
@@ -750,6 +782,7 @@ fn should_try_mixed_decode(bytes: &[u8]) -> bool {
     true
 }
 
+/// 将字节流按分隔符切分为片段；若分隔符不足（仅一个片段），退化使用 24 字节定长切分以便混合解码。
 fn split_chunk_segments(bytes: &[u8]) -> Vec<&[u8]> {
     let mut segments: Vec<&[u8]> = Vec::new();
     let mut start = 0usize;
@@ -774,6 +807,7 @@ fn split_chunk_segments(bytes: &[u8]) -> Vec<&[u8]> {
     segments
 }
 
+/// 将字节流按固定 chunk_size 切分为等长片段；输入为空或 chunk_size 为 0 时返回空。
 fn fixed_size_segments(bytes: &[u8], chunk_size: usize) -> Vec<&[u8]> {
     if chunk_size == 0 || bytes.is_empty() {
         return vec![];
@@ -788,6 +822,7 @@ fn fixed_size_segments(bytes: &[u8], chunk_size: usize) -> Vec<&[u8]> {
     out
 }
 
+/// 判断单个字节是否为混合解码的分隔符（空格/制表/回车换行/逗号/分号/竖线/斜杠/反斜杠/冒号/点）。
 fn is_chunk_delimiter(b: u8) -> bool {
     matches!(
         b,
@@ -795,6 +830,7 @@ fn is_chunk_delimiter(b: u8) -> bool {
     )
 }
 
+/// 读取 `TOKENSLIM_ENCODING_HINT` / `TOKENSLIM_FORCE_ENCODING` 环境变量，归一化后解析为强制编码提示（若有）。
 fn forced_encoding_hint() -> Option<&'static Encoding> {
     let raw = std::env::var("TOKENSLIM_ENCODING_HINT")
         .or_else(|_| std::env::var("TOKENSLIM_FORCE_ENCODING"))
@@ -809,6 +845,7 @@ fn forced_encoding_hint() -> Option<&'static Encoding> {
     Encoding::for_label(normalized.as_bytes())
 }
 
+/// 向候选编码列表追加一项；若列表中已存在相同编码则跳过，避免重复。
 fn push_unique_candidate(
     candidates: &mut Vec<DecodedCandidate>,
     enc: &'static Encoding,
@@ -820,6 +857,7 @@ fn push_unique_candidate(
     candidates.push(DecodedCandidate { enc, source_bonus });
 }
 
+/// 返回通用回退编码表（GB18030/GBK/BIG5/SHIFT_JIS/EUC_JP/EUC_KR 及多种 windows-125x/874/866），用于低优先级保底解码。
 fn common_fallback_encodings() -> &'static [&'static Encoding] {
     static COMMON: [&Encoding; 16] = [
         GB18030,
@@ -851,6 +889,7 @@ struct DecodedTextMetrics {
     non_ascii: i32,
 }
 
+/// 统计解码文本的质量指标：总长度、替换字符、控制字符、NUL、乱码标记与非 ASCII 字符计数。
 fn collect_decoded_text_metrics(text: &str) -> DecodedTextMetrics {
     let mut metrics = DecodedTextMetrics {
         total: 0,
@@ -883,6 +922,7 @@ fn collect_decoded_text_metrics(text: &str) -> DecodedTextMetrics {
     metrics
 }
 
+/// 给一段解码文本打分；可打印字符加分、替换/控制/NUL/乱码标记扣分，存在解码错误额外扣分，非 ASCII 轻微加分，用于比较解码质量。
 fn score_decoded_text(text: &str, had_errors: bool) -> i32 {
     if text.is_empty() {
         return -1000;
@@ -904,6 +944,7 @@ fn score_decoded_text(text: &str, had_errors: bool) -> i32 {
     score
 }
 
+/// 按字节序标记（BOM）解码；识别 UTF-32LE/BE（4 字节 BOM）与 UTF-16LE/BE（2 字节 BOM），解码成功后返回对应编码名。
 fn decode_by_bom(bytes: &[u8]) -> Option<(String, &'static str)> {
     if bytes.len() >= 4 {
         if bytes.starts_with(&[0xFF, 0xFE, 0x00, 0x00]) {
@@ -934,6 +975,7 @@ fn decode_by_bom(bytes: &[u8]) -> Option<(String, &'static str)> {
     None
 }
 
+/// 对无 BOM 的字节流做 UTF-16 嗅探解码；按奇偶字节 NUL 占比判断大端/小端倾向，解码成功且分数达标、质量校验通过时返回。
 fn decode_utf16_without_bom(bytes: &[u8]) -> Option<(String, &'static str)> {
     if bytes.len() < 4 || !bytes.len().is_multiple_of(2) {
         return None;
@@ -989,6 +1031,7 @@ fn decode_utf16_without_bom(bytes: &[u8]) -> Option<(String, &'static str)> {
     None
 }
 
+/// 对无 BOM 的字节流做 UTF-32 嗅探解码；按 4 字节模位置 NUL 占比判断大端/小端倾向，解码成功且质量校验通过时返回。
 fn decode_utf32_without_bom(bytes: &[u8]) -> Option<(String, &'static str)> {
     if bytes.len() < 8 || !bytes.len().is_multiple_of(4) {
         return None;
@@ -1030,6 +1073,7 @@ fn decode_utf32_without_bom(bytes: &[u8]) -> Option<(String, &'static str)> {
     None
 }
 
+/// 按指定端序将 UTF-32 字节解码为字符串；逐 4 字节转码并跳过 NUL，长度非 4 的倍数时返回 None。
 fn decode_utf32_endian(bytes: &[u8], little_endian: bool) -> Option<String> {
     if !bytes.len().is_multiple_of(4) {
         return None;
@@ -1050,6 +1094,7 @@ fn decode_utf32_endian(bytes: &[u8], little_endian: bool) -> Option<String> {
     Some(out)
 }
 
+/// 判断样本字节是否像无 BOM 的 UTF-16/UTF-32；分别按 2 字节与 4 字节模位置 NUL 占比判定（供二进制守卫豁免使用）。
 fn looks_like_utf16_or_utf32_without_bom(sample: &[u8]) -> bool {
     if sample.len() >= 8 && sample.len().is_multiple_of(4) {
         let mut z = [0usize; 4];
@@ -1100,6 +1145,7 @@ fn looks_like_utf16_or_utf32_without_bom(sample: &[u8]) -> bool {
     false
 }
 
+/// 移除不可见控制字符（零宽/方向格式化/BOM 等 Unicode 控制符及常规控制字符，保留换行/回车/制表/NUL），返回清理文本与移除计数。
 fn strip_invisible_control_chars(input: &str) -> (String, usize) {
     let mut out = String::with_capacity(input.len());
     let mut removed = 0usize;
@@ -1132,6 +1178,7 @@ fn strip_invisible_control_chars(input: &str) -> (String, usize) {
     (out, removed)
 }
 
+/// 判断文本是否含 CJK 乱码特征字符（繧/繝/縺 等 Shift_JIS→UTF-8 误转产生的典型字形），用于触发 cp932 修复与评分加成。
 fn contains_cjk_mojibake_signature(text: &str) -> bool {
     text.chars().any(|ch| {
         matches!(
@@ -1141,6 +1188,7 @@ fn contains_cjk_mojibake_signature(text: &str) -> bool {
     })
 }
 
+/// 校验 UTF-16 解码结果质量；采样统计可打印与控制字符比例，可打印比例足够高、控制比例足够低时视为有效解码。
 fn utf16_decode_quality_ok(decoded: &str) -> bool {
     if decoded.is_empty() {
         return false;
@@ -1166,6 +1214,7 @@ fn utf16_decode_quality_ok(decoded: &str) -> bool {
     printable_ratio >= 0.72 && control_ratio <= 0.12
 }
 
+/// 依据 `LANG`/`LC_ALL` 环境变量推断用户 locale 对应的提示编码（如 zh→GB18030、jp→SHIFT_JIS、ru→windows-1251 等），用于提升回退优先级。
 fn locale_hint_encoding() -> Option<&'static Encoding> {
     let locale = std::env::var("LANG")
         .or_else(|_| std::env::var("LC_ALL"))
@@ -1225,6 +1274,7 @@ fn locale_hint_encoding() -> Option<&'static Encoding> {
     }
 }
 
+/// 探测系统首选代码页；优先读 `CHCP` 环境变量，Windows 下再尝试执行 `chcp` 命令解析活动代码页编号。
 fn detect_preferred_codepage() -> Option<String> {
     if let Ok(cp_env) = std::env::var("CHCP") {
         if let Some(cp) = extract_codepage(&cp_env) {
@@ -1245,6 +1295,7 @@ fn detect_preferred_codepage() -> Option<String> {
     None
 }
 
+/// 从字符串中提取代码页编号；扫描连续 ASCII 数字（长度 3–6）并返回最后一个匹配（适配 "Active code page: 936" 等输出）。
 fn extract_codepage(s: &str) -> Option<String> {
     let mut best: Option<String> = None;
     let mut buf = String::new();
@@ -1264,6 +1315,7 @@ fn extract_codepage(s: &str) -> Option<String> {
     best
 }
 
+/// 归一化代码页键名；去除 `windows-`/`windows`/`cp`/`ibm` 前缀并小写，便于统一映射到编码常量。
 fn normalize_codepage_key(cp: &str) -> String {
     let key = cp.trim().to_ascii_lowercase();
     if let Some(rest) = key.strip_prefix("windows-") {
@@ -1287,6 +1339,7 @@ fn normalize_codepage_key(cp: &str) -> String {
     key
 }
 
+/// 将代码页键（含数字编号与别名，如 936/utf-8/cp1252/windows-1251）映射到对应的 `encoding_rs` 静态编码常量；未知返回 None。
 fn codepage_to_encoding(cp: &str) -> Option<&'static Encoding> {
     let key = normalize_codepage_key(cp);
     match key.as_str() {
@@ -1313,10 +1366,100 @@ fn codepage_to_encoding(cp: &str) -> Option<&'static Encoding> {
     }
 }
 
+/// 判断给定编码名是否可**字节级可逆回写**。
+///
+/// P1-08 解压侧源编码回写的前置判据：压缩入口 [`decode_with_fallback`] 返回的编码名
+/// 并非全部可逆，本函数把不可逆的三类显式钉死，避免解压侧产出「看似还原、实则失真」的字节。
+///
+/// - `"utf-8"`：恒等，可逆；
+/// - `"utf-8-lossy"`：压缩入口已走 `from_utf8_lossy`，原始字节被 U+FFFD 覆盖，**不可恢复**；
+/// - `"mixed-auto"`：输入为混合编码（按行/按块分别解码），单一编码回写必然失真；
+/// - `"UTF-32LE"` / `"UTF-32BE"`：`encoding_rs` 无 UTF-32 编码器，无法回写；
+/// - 其余（GBK/Big5/windows-1252/Shift_JIS/EUC-*/UTF-16 等）：按 `encoding_rs` 是否识别该
+///   label 判定。
+///
+/// 契约：本函数返回 `true` 不代表回写一定成功（还可能存在无法表示的字符），
+/// 最终以 [`encode_to_source_encoding`] 是否返回 `Some` 为准。
+pub fn is_roundtrip_safe(encoding_name: &str) -> bool {
+    match encoding_name {
+        // 压缩入口未产生任何字节替换，UTF-8 文本即原始字节。
+        "utf-8" => true,
+        // UTF-16 由本模块手工回写（encoding_rs 的 UTF-16 输出编码退化为 UTF-8，不可用），
+        // 故不依赖 for_label 判定，显式列出四种形态。
+        "UTF-16LE" | "UTF-16BE" | "UTF-16LE(no-bom)" | "UTF-16BE(no-bom)" => true,
+        // 有损解码：原始字节信息已丢失。
+        "utf-8-lossy" => false,
+        // 混合编码提升：单一回写无法还原分段差异。
+        "mixed-auto" => false,
+        // encoding_rs 仅提供 UTF-8/UTF-16 与大量 legacy 单/双字节编码器，无 UTF-32。
+        "UTF-32LE" | "UTF-32BE" | "UTF-32LE(no-bom)" | "UTF-32BE(no-bom)" => false,
+        _ => Encoding::for_label(encoding_name.as_bytes()).is_some(),
+    }
+}
+
+/// 按源编码名把 UTF-8 文本重新编码为原始字节，用于解压侧字节级 round-trip 回写。
+///
+/// 返回 `None` 的三种情形（**均不产出部分结果**，宁可让调用方显式报错）：
+/// 1. [`is_roundtrip_safe`] 判定为否（有损/混合/无编码器）；
+/// 2. `encoding_rs` 无法识别该编码名；
+/// 3. 存在目标编码无法表示的字符（`had_unmappable`）——回写会丢字符，属假可逆。
+///
+/// BOM 语义：`encoding_rs` 的 UTF-16 编码器会自行前置 BOM。本函数按解码名的大小写来源
+/// 区分原始是否带 BOM——小写 `"utf-16le"`/`"utf-16be"` 来自**无 BOM 探测**路径
+/// （`decode_utf16_without_bom`），回写时剥掉该 BOM；大写 `"UTF-16LE"`/`"UTF-16BE"`
+/// 来自 BOM 路径，保留。
+pub fn encode_to_source_encoding(text: &str, encoding_name: &str) -> Option<Vec<u8>> {
+    if !is_roundtrip_safe(encoding_name) {
+        return None;
+    }
+    if encoding_name.eq_ignore_ascii_case("utf-8") {
+        return Some(text.as_bytes().to_vec());
+    }
+
+    // UTF-16 必须自行按码元序列化：`encoding_rs` 遵循 HTML 规范，UTF-16 的**输出**编码
+    // 退化为 UTF-8（实测 `UTF_16LE.encode("中文")` 产出 e4 b8 ad e6 96 87，即 UTF-8 字节），
+    // 交给 encoding_rs 回写会得到 UTF-8 而非原始字节，属假可逆。
+    match encoding_name {
+        // 大写名来自 BOM 解码路径 → 原始含 BOM → 回写补 BOM。
+        "UTF-16LE" => {
+            let mut out = Vec::with_capacity(2 + text.len() * 2);
+            out.extend_from_slice(&[0xFF, 0xFE]);
+            out.extend(text.encode_utf16().flat_map(u16::to_le_bytes));
+            return Some(out);
+        }
+        "UTF-16BE" => {
+            let mut out = Vec::with_capacity(2 + text.len() * 2);
+            out.extend_from_slice(&[0xFE, 0xFF]);
+            out.extend(text.encode_utf16().flat_map(u16::to_be_bytes));
+            return Some(out);
+        }
+        // 无 BOM 探测路径（`(no-bom)` 后缀名与兼容的小写 label）→ 原始不含 BOM → 回写不补 BOM。
+        "UTF-16LE(no-bom)" | "utf-16le" => {
+            return Some(text.encode_utf16().flat_map(u16::to_le_bytes).collect());
+        }
+        "UTF-16BE(no-bom)" | "utf-16be" => {
+            return Some(text.encode_utf16().flat_map(u16::to_be_bytes).collect());
+        }
+        _ => {}
+    }
+
+    let encoding = Encoding::for_label(encoding_name.as_bytes())?;
+    let (bytes, _actual_encoding, had_unmappable) = encoding.encode(text);
+    if had_unmappable {
+        return None;
+    }
+
+    Some(bytes.into_owned())
+}
+
 #[cfg(test)]
 mod tests {
+    // 测试 fixture 中刻意的 mojibake 字符串（UTF-8 中文被误读为 Latin-1）含软连字符 U+00AD,
+    // 属不可见字符，clippy 默认 deny；此处按测试意图允许该 lint。
+    #![allow(clippy::invisible_characters)]
     use super::*;
 
+    /// 验证 UTF-8 字节（含中文）可被 `decode_with_fallback` 正确解码且编码标记为 "utf-8"。
     #[test]
     fn test_utf8_decodes_correctly() {
         let utf8_bytes = b"Hello, \xe4\xb8\x96\xe7\x95\x8c!"; // "Hello, 世界!"
@@ -1325,6 +1468,7 @@ mod tests {
         assert!(decoded.contains("世界"));
     }
 
+    /// 验证纯 ASCII 字节被解码为 "utf-8" 且内容无损。
     #[test]
     fn test_ascii_decodes_as_utf8() {
         let ascii_bytes = b"Hello World";
@@ -1333,6 +1477,7 @@ mod tests {
         assert_eq!(decoded, "Hello World");
     }
 
+    /// 验证非法 UTF-8 的 GBK 字节能通过代码页/启发式/chardet 路径解码出中文，且编码标记非 "utf-8"。
     #[test]
     fn test_invalid_utf8_falls_back() {
         // GBK encoded bytes for "中文" (not valid UTF-8)
@@ -1344,6 +1489,7 @@ mod tests {
         assert_ne!(enc, "utf-8");
     }
 
+    /// 验证 `extract_codepage` 能从 "Active code page: 936" 与 "65001" 提取代码页，对纯非数字 "abc" 返回 None。
     #[test]
     fn test_extract_codepage() {
         assert_eq!(
@@ -1354,6 +1500,33 @@ mod tests {
         assert_eq!(extract_codepage("abc"), None);
     }
 
+    /// 契约测试：`best_reinterpretation_candidate` 能识别并还原「UTF-8 中文被误读为 windows-1252」的乱码文本，
+    /// 对正常 ASCII 文本返回 None（不误改），对空输入返回 None。
+    #[test]
+    fn best_reinterpretation_candidate_recovers_cp1252_mojibake_only() {
+        // 用 windows-1252 解码 "世界" 的原始 UTF-8 字节 e4 b8 96 e7 95 8c，
+        // 构造出真实的 cp1252 乱码字符串，保证重解释能 round-trip 还原。
+        let world_utf8 = "世界";
+        let mojibake = WINDOWS_1252.decode(world_utf8.as_bytes()).0;
+        assert!(mojibake != "世界", "乱码应与原文不同");
+        let recovered = best_reinterpretation_candidate(&mojibake, true);
+        assert!(
+            recovered.is_some(),
+            "windows-1252 乱码应被识别并还原: {mojibake:?}"
+        );
+        if let Some((text, _label)) = recovered {
+            assert_eq!(text, "世界", "乱码应还原为正确中文");
+        }
+
+        // 正常 ASCII 文本不应被改写（返回 None 表示无需重解释）。
+        let normal = best_reinterpretation_candidate("hello world", false);
+        assert!(normal.is_none(), "正常 ASCII 文本不应触发重解释");
+
+        // 空输入不产生候选。
+        assert!(best_reinterpretation_candidate("", false).is_none());
+    }
+
+    /// 验证带 BOM 的 UTF-16LE 字节被正确解码为 "UTF-16LE" 与 "Hi"。
     #[test]
     fn test_utf16le_bom_decodes_correctly() {
         let bytes = [0xFF, 0xFE, 0x48, 0x00, 0x69, 0x00];
@@ -1362,6 +1535,7 @@ mod tests {
         assert_eq!(decoded, "Hi");
     }
 
+    /// 验证无 BOM 的 UTF-16LE 字节被嗅探解码为 "UTF-16LE(no-bom)" 与 "Hi!"。
     #[test]
     fn test_utf16le_without_bom_decodes_correctly() {
         let bytes = [0x48, 0x00, 0x69, 0x00, 0x21, 0x00];
@@ -1370,6 +1544,7 @@ mod tests {
         assert_eq!(decoded, "Hi!");
     }
 
+    /// 验证无 BOM 的 UTF-16BE 字节被嗅探解码为 "UTF-16BE(no-bom)" 与 "Hi!"。
     #[test]
     fn test_utf16be_without_bom_decodes_correctly() {
         let bytes = [0x00, 0x48, 0x00, 0x69, 0x00, 0x21];
@@ -1378,6 +1553,7 @@ mod tests {
         assert_eq!(decoded, "Hi!");
     }
 
+    /// 验证带 BOM 的 UTF-32LE 字节被正确解码为 "UTF-32LE" 与 "Hi"。
     #[test]
     fn test_utf32le_bom_decodes_correctly() {
         let bytes = [
@@ -1388,6 +1564,7 @@ mod tests {
         assert_eq!(decoded, "Hi");
     }
 
+    /// 验证无 BOM 的 UTF-32BE 字节被嗅探解码为 "UTF-32BE(no-bom)" 与 "Hi"。
     #[test]
     fn test_utf32be_without_bom_decodes_correctly() {
         let bytes = [0x00, 0x00, 0x00, 0x48, 0x00, 0x00, 0x00, 0x69];
@@ -1396,6 +1573,7 @@ mod tests {
         assert_eq!(decoded, "Hi");
     }
 
+    /// 验证代码页 1251 能将字节正确解码为俄文 "Привет" 且无解码错误。
     #[test]
     fn test_cp1251_explicit_decode_to_russian() {
         let cp1251_bytes = [0xCF, 0xF0, 0xE8, 0xE2, 0xE5, 0xF2];
@@ -1405,6 +1583,7 @@ mod tests {
         assert_eq!(decoded, "Привет");
     }
 
+    /// 验证 `codepage_to_encoding` 对 1251/1256/874/866/cp1252/windows-1251/ibm866/1200/1201 等多种键名均映射到正确的编码名。
     #[test]
     fn test_codepage_mapping_extended() {
         assert_eq!(
@@ -1463,6 +1642,7 @@ mod tests {
         );
     }
 
+    /// 验证 `write_utf8` 写入文件不带 BOM 且内容与原文一致（可被 UTF-8 正确读回）。
     #[test]
     fn test_write_utf8_no_bom() {
         let dir = std::env::temp_dir().join("tokenslim-utf8-test");
@@ -1479,6 +1659,7 @@ mod tests {
         std::fs::remove_dir_all(&dir).ok();
     }
 
+    /// 验证 `write_utf8` 会剥离内容中的前导 BOM 后再写入。
     #[test]
     fn test_write_utf8_strips_bom() {
         let dir = std::env::temp_dir().join("tokenslim-bom-strip-test");
@@ -1494,6 +1675,7 @@ mod tests {
         std::fs::remove_dir_all(&dir).ok();
     }
 
+    /// 验证 `write_utf8_bom` 写入文件以 UTF-8 BOM 开头且 BOM 后内容为合法 UTF-8。
     #[test]
     fn test_write_utf8_bom_adds_bom() {
         let dir = std::env::temp_dir().join("tokenslim-bom-test");
@@ -1510,6 +1692,7 @@ mod tests {
         std::fs::remove_dir_all(&dir).ok();
     }
 
+    /// 验证 GBK 行与 CP1251 行混合（带换行）的字节能被解码为非空，且编码结果落在 mixed-auto/GBK/GB18030/windows-1251 之一。
     #[test]
     fn test_mixed_encoding_lines_decode_correctly() {
         // line1: GBK "中文\n", line2: CP1251 "Привет\n"
@@ -1526,6 +1709,7 @@ mod tests {
         );
     }
 
+    /// 验证无换行的 GBK/CP1251 混合字节能被解码为非空，编码结果落在允许集合内。
     #[test]
     fn test_mixed_encoding_without_newline_decode_correctly() {
         // token1: GBK "中文", token2: CP1251 "Привет", separated by spaces.
@@ -1542,6 +1726,7 @@ mod tests {
         );
     }
 
+    /// 验证过小输入（"abc"）下 `try_promote_mixed_decode` 返回 None（不尝试混合解码）。
     #[test]
     fn test_try_promote_mixed_decode_skips_small_payload() {
         let bytes = b"abc";
@@ -1551,6 +1736,7 @@ mod tests {
         assert!(promoted.is_none());
     }
 
+    /// 验证阿拉伯文经 1256 编码后，用 1256 强制提示能经 `decode_with_fallback_internal` 无损解码回原文。
     #[test]
     fn test_cp1256_arabic_decode_with_hint() {
         let expected = "مرحبا";
@@ -1562,6 +1748,7 @@ mod tests {
         assert_eq!(used_enc.to_ascii_lowercase(), "windows-1256");
     }
 
+    /// 验证希伯来文经 1255 编码后，用 1255 强制提示能无损解码回原文。
     #[test]
     fn test_cp1255_hebrew_decode_with_hint() {
         let expected = "שלום";
@@ -1573,6 +1760,7 @@ mod tests {
         assert_eq!(used_enc.to_ascii_lowercase(), "windows-1255");
     }
 
+    /// 验证泰文经 874 编码后，用 874 强制提示能无损解码回原文。
     #[test]
     fn test_cp874_thai_decode_with_hint() {
         let expected = "สวัสดี";
@@ -1584,6 +1772,7 @@ mod tests {
         assert_eq!(used_enc.to_ascii_lowercase(), "windows-874");
     }
 
+    /// 验证越南文经 1258 编码后，用 1258 强制提示能无损解码回原文（结果允许 windows-1258 或 mixed-auto）。
     #[test]
     fn test_cp1258_vietnamese_decode_with_hint() {
         let expected = "Xin chào Tôi";
@@ -1598,6 +1787,7 @@ mod tests {
         );
     }
 
+    /// 验证无候选编码时 `decode_with_candidates_or_lossy` 回退为 "utf-8-lossy" 且结果非空。
     #[test]
     fn test_decode_with_candidates_or_lossy_prefers_lossy_when_no_candidate_selected() {
         let bytes = [0xFFu8, 0xFEu8, 0x41u8];
@@ -1606,6 +1796,54 @@ mod tests {
         assert!(!decoded.0.is_empty());
     }
 
+    /// 验证 `push_unique_candidate` 对重复编码去重：相同编码第二次入列被忽略。
+    /// 契约：同一编码在候选列表中只出现一次，保证后续候选遍历不会重复解码同一编码。
+    #[test]
+    fn test_push_unique_candidate_dedups_identical_encoding() {
+        let mut candidates: Vec<DecodedCandidate> = Vec::new();
+        push_unique_candidate(&mut candidates, WINDOWS_1252, 80);
+        push_unique_candidate(&mut candidates, WINDOWS_1252, 20);
+        assert_eq!(candidates.len(), 1);
+        assert_eq!(candidates[0].enc, WINDOWS_1252);
+        // 首次入列附带的 source_bonus 保留，重复以同编码再入不改写。
+        assert_eq!(candidates[0].source_bonus, 80);
+    }
+
+    /// 验证 `push_unique_candidate` 对不同编码依次追加，不互相覆盖。
+    /// 契约：去重仅针对编码属性，不同编码必须全部保留且保持入列顺序。
+    #[test]
+    fn test_push_unique_candidate_appends_distinct_encodings_in_order() {
+        let mut candidates: Vec<DecodedCandidate> = Vec::new();
+        push_unique_candidate(&mut candidates, UTF_8, 80);
+        push_unique_candidate(&mut candidates, WINDOWS_1252, 60);
+        push_unique_candidate(&mut candidates, GBK, 20);
+        assert_eq!(candidates.len(), 3);
+        assert_eq!(candidates[0].enc, UTF_8);
+        assert_eq!(candidates[1].enc, WINDOWS_1252);
+        assert_eq!(candidates[2].enc, GBK);
+    }
+
+    /// 验证 `build_decode_candidates` 将强制编码提示（preferred_hint）提升到候选列表首位。
+    /// 契约：显式 hint 是最高优先线索（source_bonus=80），必须排在所有自动检测候选之前。
+    #[test]
+    fn test_build_decode_candidates_prioritizes_preferred_hint_first() {
+        let candidates = build_decode_candidates(&[], Some(WINDOWS_1252));
+        assert!(!candidates.is_empty());
+        assert_eq!(candidates[0].enc, WINDOWS_1252);
+        assert_eq!(candidates[0].source_bonus, 80);
+    }
+
+    /// 验证 `build_decode_candidates` 无 hint 时仍生成非空候选列表。
+    /// 契约：即使没有强制编码提示，也必须兜底产生统计检测加上通用回退编码构成的候选集，避免解码路径空跑。
+    #[test]
+    fn test_build_decode_candidates_returns_fallbacks_without_hint() {
+        let candidates = build_decode_candidates(&[], None);
+        assert!(!candidates.is_empty());
+        // 通用回退表固定包含 GBK，无 hint 且非空输入路径下应出现。
+        assert!(candidates.iter().any(|c| c.enc == GBK));
+    }
+
+    /// 验证 `collect_decoded_text_metrics` 对 "A\u{0}Ã\n" 正确统计总字符数、NUL、控制字符、非 ASCII 与乱码标记。
     #[test]
     fn test_collect_decoded_text_metrics_counts_control_and_markers() {
         let m = collect_decoded_text_metrics("A\u{0}Ã\n");
@@ -1616,18 +1854,21 @@ mod tests {
         assert!(m.mojibake_markers >= 1);
     }
 
+    /// 验证典型乱码串被 `is_probable_mojibake_text` 判定为乱码。
     #[test]
     fn test_detects_probable_mojibake_text() {
         let mojibake = "Ã¤Â¸Â­Ã¦â€“â€¡";
         assert!(is_probable_mojibake_text(mojibake));
     }
 
+    /// 验证正常多语言文本（中文/俄文/英文）不被误判为乱码。
     #[test]
     fn test_non_mojibake_text_not_flagged() {
         let normal = "中文 Привет Hello";
         assert!(!is_probable_mojibake_text(normal));
     }
 
+    /// 验证 `repair_text_for_display` 能将 windows-1252→UTF-8 乱码链修复为 "中文"。
     #[test]
     fn test_repair_text_for_display_fixes_mojibake_chain() {
         let broken = "Ã¤Â¸Â­Ã¦â€“â€¡";
@@ -1636,6 +1877,7 @@ mod tests {
         assert!(!steps.is_empty());
     }
 
+    /// 验证 `repair_text_for_display` 能将 SHIFT_JIS 误转串修复回原文 "日本"，且步骤含 shift_jis/cp932 标签。
     #[test]
     fn test_repair_text_for_display_fixes_cp932_chain() {
         let original = "日本";
@@ -1649,6 +1891,7 @@ mod tests {
             .any(|s| { s.contains("shift_jis->utf8") || s.contains("windows-31j(cp932)->utf8") }));
     }
 
+    /// 验证 `should_skip_repair_pass` 的跳过判定：无信号且无步骤时跳过，任一信号存在则不跳过。
     #[test]
     fn test_should_skip_repair_pass_when_no_signal_and_no_steps() {
         assert!(should_skip_repair_pass(false, false, true));
@@ -1657,18 +1900,21 @@ mod tests {
         assert!(!should_skip_repair_pass(false, false, false));
     }
 
+    /// 验证跳过条件触发时 `run_mojibake_repair_pass` 返回 None。
     #[test]
     fn test_run_mojibake_repair_pass_returns_none_when_skip_triggered() {
         let pass = run_mojibake_repair_pass(1, "normal text", false, false, true);
         assert!(pass.is_none());
     }
 
+    /// 验证 `reinterpretation_gain` 在 marker/replacement 下降且 CJK 特征消失时给出高增益（≥30）。
     #[test]
     fn test_reinterpretation_gain_prefers_marker_and_replacement_drop() {
         let gain = reinterpretation_gain(10, 12, 4, 1, 3, 1, true, "中文", true, false);
         assert!(gain >= 30, "gain={gain}");
     }
 
+    /// 验证 `decode_and_repair_for_display` 能剥离前导 BOM 并将 CRLF 归一为 LF。
     #[test]
     fn test_decode_and_repair_strips_bom_and_normalizes_newline() {
         let bytes = [0xEF, 0xBB, 0xBF, b'a', b'\r', b'\n', b'b'];
@@ -1678,6 +1924,7 @@ mod tests {
         assert!(steps.iter().any(|s| s == "normalize-crlf"));
     }
 
+    /// 验证 `repair_text_for_display` 能剥离行内 BOM 与 NUL 并归一 CR 为 LF。
     #[test]
     fn test_repair_text_for_display_strips_inline_bom_and_nul() {
         let input = "a\u{feff}\0b\r";
@@ -1688,6 +1935,7 @@ mod tests {
         assert!(steps.iter().any(|s| s == "normalize-cr"));
     }
 
+    /// 验证 `repair_text_for_display` 能移除不可见控制字符（零宽/方向符）。
     #[test]
     fn test_repair_text_for_display_strips_invisible_controls() {
         let input = "A\u{200B}\u{202E}B";
@@ -1698,6 +1946,7 @@ mod tests {
             .any(|s| s.starts_with("strip-invisible-controls:")));
     }
 
+    /// 验证 `normalize_display_text` 能正确提取前导 BOM 剥离、CRLF/CR 归一、行内 BOM、不可见控制字符与 NUL 等清理步骤。
     #[test]
     fn test_normalize_display_text_extracts_basic_cleanup_steps() {
         let input = "\u{feff}a\r\nb\u{feff}\0\u{200b}c\r";
@@ -1713,6 +1962,7 @@ mod tests {
         assert!(steps.iter().any(|s| s == "strip-nul"));
     }
 
+    /// 验证 `try_direct_unicode_decoding` 对合法 UTF-8 字节直接返回 "utf-8" 且内容正确。
     #[test]
     fn test_try_direct_unicode_decoding_prefers_utf8_path() {
         let bytes = "Hello, 世界".as_bytes();
@@ -1721,18 +1971,21 @@ mod tests {
         assert_eq!(decoded, "Hello, 世界");
     }
 
+    /// 验证 `is_probable_binary_bytes` 能将 ELF 类二进制样本判定为二进制。
     #[test]
     fn test_binary_guard_detects_binary_like_bytes() {
         let bytes = [0x7F, b'E', b'L', b'F', 0x00, 0x01, 0x02, 0x00, 0x03];
         assert!(is_probable_binary_bytes(&bytes));
     }
 
+    /// 验证 `is_probable_binary_bytes` 不会把无 BOM 的 UTF-16 文本误判为二进制。
     #[test]
     fn test_binary_guard_does_not_misclassify_utf16_text() {
         let bytes = [0x48, 0x00, 0x69, 0x00, 0x21, 0x00];
         assert!(!is_probable_binary_bytes(&bytes));
     }
 
+    /// 验证 `decode_and_repair_for_display` 对二进制载荷跳过修复，并记录 "binary-guard-skip-repair" 步骤。
     #[test]
     fn test_decode_and_repair_skips_binary_payload() {
         let bytes = [0x7F, b'E', b'L', b'F', 0x00, 0x01, 0x02, 0x00, 0x03];
@@ -1740,6 +1993,7 @@ mod tests {
         assert!(steps.iter().any(|s| s == "binary-guard-skip-repair"));
     }
 
+    /// 验证乱码标记下降时 `evaluate_repair_confidence` 给出 "high" 等级且证据含 mojibake-markers。
     #[test]
     fn test_evaluate_repair_confidence_high_when_markers_drop() {
         let original = "Ã¤Â¸Â­Ã¦â€“â€¡";
@@ -1750,6 +2004,7 @@ mod tests {
         assert!(evidence.iter().any(|x| x.contains("mojibake-markers")));
     }
 
+    /// 验证原文未变且无步骤时 `evaluate_repair_confidence` 给出 "low" 等级且证据含 content-changed=false。
     #[test]
     fn test_evaluate_repair_confidence_low_when_unchanged() {
         let original = "normal text";
@@ -1758,5 +2013,116 @@ mod tests {
         let (level, evidence) = evaluate_repair_confidence(original, repaired, &steps);
         assert_eq!(level, "low");
         assert!(evidence.iter().any(|x| x.contains("content-changed=false")));
+    }
+
+    /// 契约测试：`score_decoded_text` 对空串给最低分；干净文本为正分；
+    /// 替换符 U+FFFD 会扣重分；had_errors 带固定罚分；含非 ASCII 获小幅加成。
+    #[test]
+    fn test_score_decoded_text_contract() {
+        assert_eq!(score_decoded_text("", false), -1000, "空串应给最低分");
+
+        let clean = score_decoded_text("hello world and some more padding", false);
+        assert!(clean > 0, "干净文本应为正分，实际 {clean}");
+
+        let with_replacement = score_decoded_text("a\u{fffd}b\u{fffd}c", false);
+        assert!(
+            with_replacement < clean,
+            "含 U+FFFD 替换符文本分数应显著低于干净文本"
+        );
+
+        let no_error = score_decoded_text("normal text content", false);
+        let with_error = score_decoded_text("normal text content", true);
+        assert!(
+            with_error < no_error,
+            "had_errors 应施加罚分（all={no_error} vs {with_error}）"
+        );
+
+        let ascii = score_decoded_text("plain ascii", false);
+        let unicode = score_decoded_text("世界 peace", false);
+        assert!(unicode > ascii, "含非 ASCII 应获得小幅加成");
+    }
+
+    /// P1-08：`is_roundtrip_safe` 必须把三类不可逆编码钉死，并识别可逆编码。
+    #[test]
+    fn p1_08_is_roundtrip_safe_marks_irreversible_names() {
+        assert!(is_roundtrip_safe("utf-8"), "utf-8 恒等应可逆");
+        assert!(is_roundtrip_safe("GBK"), "GBK 应可逆");
+        assert!(is_roundtrip_safe("Big5"), "Big5 应可逆");
+        assert!(is_roundtrip_safe("windows-1252"), "windows-1252 应可逆");
+        assert!(is_roundtrip_safe("UTF-16LE"), "UTF-16LE 应可逆");
+        assert!(
+            is_roundtrip_safe("UTF-16LE(no-bom)"),
+            "无 BOM UTF-16LE 应可逆"
+        );
+        assert!(!is_roundtrip_safe("UTF-32LE(no-bom)"), "UTF-32 无编码器");
+        // 三类不可逆：有损替换 / 混合编码 / 无编码器
+        assert!(!is_roundtrip_safe("utf-8-lossy"), "有损解码不可逆");
+        assert!(!is_roundtrip_safe("mixed-auto"), "混合编码不可逆");
+        assert!(!is_roundtrip_safe("UTF-32LE"), "UTF-32 无编码器");
+        assert!(!is_roundtrip_safe("UTF-32BE"), "UTF-32 无编码器");
+    }
+
+    /// P1-08：legacy 单/双字节编码回写必须与 `encoding_rs` 编码输出逐字节一致。
+    #[test]
+    fn p1_08_encode_to_source_encoding_restores_legacy_bytes() {
+        let text = "2026-09-10 12:00:00 [ERROR] db connect failed\n";
+        for enc in [GBK, BIG5, WINDOWS_1252, SHIFT_JIS] {
+            let (bytes, _, unmappable) = enc.encode(text);
+            assert!(!unmappable, "{} 应能表示纯 ASCII 测试文本", enc.name());
+            let restored = encode_to_source_encoding(text, enc.name())
+                .unwrap_or_else(|| panic!("{} 回写应成功", enc.name()));
+            assert_eq!(
+                restored,
+                bytes.as_ref(),
+                "{} 回写字节应与编码输出逐字节一致",
+                enc.name()
+            );
+        }
+    }
+
+    /// P1-08：存在无法表示的字符时**拒绝回写**——宁可报错也不产出丢字符的假可逆字节。
+    #[test]
+    fn p1_08_encode_to_source_encoding_rejects_unmappable_chars() {
+        assert!(
+            encode_to_source_encoding("数据库连接失败", "windows-1252").is_none(),
+            "中文在 windows-1252 不可表示，应拒绝回写"
+        );
+        assert!(
+            encode_to_source_encoding("deploy 🚀 done", "GBK").is_none(),
+            "emoji 在 GBK 不可表示，应拒绝回写"
+        );
+        assert!(
+            encode_to_source_encoding("any text", "utf-8-lossy").is_none(),
+            "不可逆编码名应一律拒绝回写"
+        );
+    }
+
+    /// P1-08：UTF-16 BOM 语义定性——带 BOM 输入回写保留 BOM，无 BOM 输入回写不补 BOM。
+    /// 本测试同时实证 `encoding_rs` 的 UTF-16 编码器是否自动前置 BOM。
+    #[test]
+    fn p1_08_encode_to_source_encoding_utf16_bom_semantics() {
+        let text = "中文 mixed ascii log line\n";
+        // 手工构造 UTF-16LE 样本：`encoding_rs` 的 UTF-16 输出编码按规范退化为 UTF-8，
+        // 不能用其 `encode` 造 UTF-16 字节（实测产出 e4 b8 ad…，即 UTF-8）。
+        let units: Vec<u8> = text.encode_utf16().flat_map(u16::to_le_bytes).collect();
+        let with_bom: Vec<u8> = [0xFF, 0xFE].iter().copied().chain(units.clone()).collect();
+
+        // 有 BOM：decode 走 BOM 路径，回写应逐字节还原（含 BOM）
+        let (decoded, enc) = decode_with_fallback(&with_bom);
+        assert_eq!(enc, UTF_16LE.name(), "带 BOM UTF-16LE 应命中 BOM 解码路径");
+        let restored =
+            encode_to_source_encoding(&decoded, enc).unwrap_or_else(|| panic!("带 BOM 回写应成功"));
+        assert_eq!(restored, with_bom, "带 BOM 输入回写应逐字节一致");
+
+        // 无 BOM：decode 走探测路径（小写名），回写不得补 BOM
+        let nobom = &units;
+        let (decoded_nb, enc_nb) = decode_with_fallback(nobom);
+        assert_eq!(
+            enc_nb, "UTF-16LE(no-bom)",
+            "无 BOM UTF-16LE 应命中无 BOM 探测路径"
+        );
+        let restored_nb = encode_to_source_encoding(&decoded_nb, enc_nb)
+            .unwrap_or_else(|| panic!("无 BOM 回写应成功"));
+        assert_eq!(restored_nb, *nobom, "无 BOM 输入回写不应额外补 BOM");
     }
 }

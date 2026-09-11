@@ -12,6 +12,6 @@
 
 mod methods;
 mod types;
-pub use types::{DedupConfig, DedupEngine, DedupResult, DedupType, SharedDedupEngine};
+pub use types::{DedupConfig, DedupEngine, DedupResult, SharedDedupEngine};
 #[cfg(test)]
 mod test;

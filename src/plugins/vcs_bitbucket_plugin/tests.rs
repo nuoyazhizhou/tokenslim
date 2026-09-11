@@ -4,12 +4,14 @@ use std::path::{Path, PathBuf};
 // ============================================================================
 // 样板辅助
 // ============================================================================
+/// 测试辅助：返回样例目录路径。
 fn sample_dir() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("samples")
         .join("vcs_bitbucket_plugin")
 }
 
+/// 测试辅助：读取指定 bitbucket 样例文件。
 fn read_case(case_name: &str) -> String {
     let file_path = sample_dir().join(format!("{case_name}.log"));
     std::fs::read_to_string(&file_path)
@@ -19,6 +21,7 @@ fn read_case(case_name: &str) -> String {
 // ============================================================================
 // Case 113: pr list — 命令锚点 + 表头消除 + 行列符号化
 // ============================================================================
+/// 测试：pr list 样例（case 113）数据行被压缩为 #ID ST: OW: 格式。
 #[test]
 fn test_pr_list_case_113() {
     let raw = read_case("case_113_bitbucket_pr_list");
@@ -55,6 +58,7 @@ fn test_pr_list_case_113() {
 // ============================================================================
 // Case 114: pr view — 命令锚点 + K-V 扁平化 + DESC 保留
 // ============================================================================
+/// 测试：pr view 样例（case 114）K-V 被扁平化。
 #[test]
 fn test_pr_view_case_114() {
     let raw = read_case("case_114_bitbucket_pr_view");
@@ -99,6 +103,7 @@ fn test_pr_view_case_114() {
 // ============================================================================
 // Case 207: pr create — 命令锚点 + URL 消除 + SRC 映射
 // ============================================================================
+/// 测试：pr create 样例（case 207）Source 映射为 SRC:。
 #[test]
 fn test_pr_create_case_207() {
     let raw = read_case("case_207_bitbucket_pr_create");
@@ -129,6 +134,7 @@ fn test_pr_create_case_207() {
 // ============================================================================
 // Case 208: issue list — 命令锚点 + 表头消除 + 行列符号化
 // ============================================================================
+/// 测试：issue list 样例（case 208）数据行被压缩。
 #[test]
 fn test_issue_list_case_208() {
     let raw = read_case("case_208_bitbucket_issue_list");
@@ -162,6 +168,7 @@ fn test_issue_list_case_208() {
 // ============================================================================
 // Case 213: pr list(spacing) — 大量空格与长标题仍可稳定压缩
 // ============================================================================
+/// 测试：含间距变体的 pr list 样例（case 213）被正确处理。
 #[test]
 fn test_pr_list_case_213_spacing() {
     let raw = read_case("case_213_bitbucket_pr_list_spacing");
@@ -184,6 +191,7 @@ fn test_pr_list_case_213_spacing() {
 // ============================================================================
 // Case 214: pr view(multiline desc) — 多行描述应合并为单行 DESC
 // ============================================================================
+/// 测试：多行描述的 pr view 样例（case 214）被合并为 DESC 行。
 #[test]
 fn test_pr_view_case_214_multiline_desc() {
     let raw = read_case("case_214_bitbucket_pr_view_multiline_desc");
@@ -212,6 +220,7 @@ fn test_pr_view_case_214_multiline_desc() {
 // ============================================================================
 // Case 215: issue list(resolved) — RESOLVED 状态应被识别
 // ============================================================================
+/// 测试：含 resolved 状态的 issue list 样例（case 215）被正确处理。
 #[test]
 fn test_issue_list_case_215_resolved() {
     let raw = read_case("case_215_bitbucket_issue_list_resolved");
@@ -234,6 +243,7 @@ fn test_issue_list_case_215_resolved() {
 // ============================================================================
 // Case 216: generic(alert) — 通用路径应保留错误并移除 URL 噪音
 // ============================================================================
+/// 测试：通用错误样例（case 216）映射警报。
 #[test]
 fn test_generic_case_216_alert() {
     let raw = read_case("case_216_bitbucket_generic_alert");
@@ -256,6 +266,7 @@ fn test_generic_case_216_alert() {
 // ============================================================================
 // Case 222: pr list(relative time) — CREATED 非绝对日期也应可解析
 // ============================================================================
+/// 测试：含相对时间的 pr list 样例（case 222）被正确处理。
 #[test]
 fn test_pr_list_case_222_relative_time() {
     let raw = read_case("case_222_bitbucket_pr_list_relative_time");
@@ -278,6 +289,7 @@ fn test_pr_list_case_222_relative_time() {
 // ============================================================================
 // 短输入回退
 // ============================================================================
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let raw = "bitbucket help";
@@ -288,6 +300,7 @@ fn test_short_input_fallback() {
 // ============================================================================
 // 噪音检测
 // ============================================================================
+/// 测试：bitbucket 噪音行检测。
 #[test]
 fn test_bb_noise_detection() {
     // 这些是 bitbucket 通用噪音
@@ -308,6 +321,7 @@ fn test_bb_noise_detection() {
 // ============================================================================
 // 异常映射
 // ============================================================================
+/// 测试：bitbucket 警报行映射。
 #[test]
 fn test_bb_alert_mapping() {
     assert!(super::methods::map_bb_alert("CONFLICT: merge conflict").is_some());

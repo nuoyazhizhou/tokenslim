@@ -1,0 +1,5 @@
+git blame -L 1,4 src/plugins/vcs_git_plugin/parser.rs
+03d06505 (nuoyazhizhou 2026-04-25 10:19:00 +0800  1)
+03d06505 (nuoyazhizhou 2026-04-25 10:19:00 +0800  2)
+03d06505 (nuoyazhizhou 2026-04-25 10:19:00 +0800  3) // --- IR 通用定义 (内联隔离) ---
+03d06505 (nuoyazhizhou 2026-04-25 10:19:00 +0800  4) #[derive(Debug, PartialEq, Eq)]

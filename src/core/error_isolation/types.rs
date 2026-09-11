@@ -15,6 +15,7 @@ pub struct SafeExecutorConfig {
 }
 
 impl Default for SafeExecutorConfig {
+    /// 为 `SafeExecutorConfig` 提供默认配置：默认超时 1000ms，并开启 panic 捕获。
     fn default() -> Self {
         Self {
             default_timeout: Duration::from_millis(1000),

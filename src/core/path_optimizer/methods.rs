@@ -19,6 +19,7 @@ pub enum PathDictionaryPreset {
 }
 
 impl PathDictionaryPreset {
+    /// 将 `PathDictionaryPreset` 编码为 `u8`：Conservative=0、Balanced=1、Aggressive=2。
     fn as_u8(self) -> u8 {
         match self {
             PathDictionaryPreset::Conservative => 0,
@@ -27,6 +28,7 @@ impl PathDictionaryPreset {
         }
     }
 
+    /// 由 `u8` 解码 `PathDictionaryPreset`：0→Conservative、2→Aggressive，其余值（含 1）兜底为 Balanced。
     fn from_u8(v: u8) -> Self {
         match v {
             0 => PathDictionaryPreset::Conservative,
@@ -49,6 +51,7 @@ pub struct PathDictionaryOptions {
 }
 
 impl Default for PathDictionaryOptions {
+    /// `PathDictionaryOptions` 的默认配置：启用、一级/嵌套最小出现次数均为 2、开启嵌套别名，各项解析成本取 0 或 1。
     fn default() -> Self {
         Self {
             enabled: true,
@@ -63,6 +66,7 @@ impl Default for PathDictionaryOptions {
     }
 }
 
+/// 按预置档位生成路径字典选项：Conservative 关闭嵌套别名并抬高解析成本，Aggressive 将 nested_parse_cost 降为 0 以更激进地压缩。
 pub fn options_from_preset(preset: PathDictionaryPreset) -> PathDictionaryOptions {
     match preset {
         PathDictionaryPreset::Conservative => PathDictionaryOptions {
@@ -101,6 +105,7 @@ pub fn options_from_preset(preset: PathDictionaryPreset) -> PathDictionaryOption
 static PATH_DICTIONARY_OPTIONS: std::sync::LazyLock<RwLock<PathDictionaryOptions>> =
     std::sync::LazyLock::new(|| RwLock::new(options_from_preset(PathDictionaryPreset::Balanced)));
 
+/// 在指定 preset 作用域内运行闭包，并通过 ResetGuard 在作用域结束时恢复先前的 PRESET 原子量与全局选项，避免测试/调用之间相互串扰。
 pub fn run_with_path_dictionary_preset<T>(
     preset: PathDictionaryPreset,
     f: impl FnOnce() -> T,
@@ -111,6 +116,7 @@ pub fn run_with_path_dictionary_preset<T>(
 
     struct ResetGuard(u8, PathDictionaryOptions);
     impl Drop for ResetGuard {
+        /// ResetGuard 析构实现：作用域退出时恢复调用前的 PRESET 原子量与路径字典选项，确保 `run_with_path_dictionary_preset` 的临时配置不泄漏到外部。
         fn drop(&mut self) {
             PATH_DICTIONARY_PRESET.store(self.0, Ordering::SeqCst);
             set_current_path_dictionary_options(self.1.clone());
@@ -121,6 +127,7 @@ pub fn run_with_path_dictionary_preset<T>(
     f()
 }
 
+/// 读取当前全局路径字典选项；RwLock 读锁失败时回退到 PRESET 原子量并据此重建默认选项。
 pub fn current_path_dictionary_options() -> PathDictionaryOptions {
     PATH_DICTIONARY_OPTIONS
         .read()
@@ -132,12 +139,14 @@ pub fn current_path_dictionary_options() -> PathDictionaryOptions {
         })
 }
 
+/// 写入全局路径字典选项，仅当 RwLock 写锁可获取时生效。
 pub fn set_current_path_dictionary_options(options: PathDictionaryOptions) {
     if let Ok(mut g) = PATH_DICTIONARY_OPTIONS.write() {
         *g = options;
     }
 }
 
+/// 在指定 `PathDictionaryOptions` 作用域内运行闭包，结束（ResetGuard 析构）时恢复原选项。
 pub fn run_with_path_dictionary_options<T>(
     options: PathDictionaryOptions,
     f: impl FnOnce() -> T,
@@ -146,6 +155,7 @@ pub fn run_with_path_dictionary_options<T>(
 
     struct ResetGuard(PathDictionaryOptions);
     impl Drop for ResetGuard {
+        /// `ResetGuard` 的析构逻辑：离开作用域时将 `PathDictionaryOptions` 恢复为进入前保存的值，实现路径词典选项的 RAII 自动复位。
         fn drop(&mut self) {
             set_current_path_dictionary_options(self.0.clone());
         }
@@ -216,6 +226,7 @@ struct PathDictionaryOptionsOverride {
     min_footer_token_uses: Option<usize>,
 }
 
+/// 将 TOML 覆盖结构逐字段应用到基础选项，仅对 `Some` 字段覆盖、忽略 `None`。
 fn apply_path_override(base: &mut PathDictionaryOptions, ov: &PathDictionaryOptionsOverride) {
     if let Some(v) = ov.enabled {
         base.enabled = v;
@@ -243,12 +254,14 @@ fn apply_path_override(base: &mut PathDictionaryOptions, ov: &PathDictionaryOpti
     }
 }
 
+/// 解析 token_optimizer TOML 文本，成功则返回根结构内的 `token_optimizer` 表，解析失败返回 `None`。
 fn parse_token_optimizer_toml(content: &str) -> Option<TokenOptimizerToml> {
     toml::from_str::<TokenOptimizerTomlRoot>(content)
         .ok()
         .and_then(|root| root.token_optimizer)
 }
 
+/// 按当前预置档位取出对应 `presets.<fast|balanced|ai>.paths` 的覆盖项（Conservative→fast、Balanced→balanced、Aggressive→ai）。
 fn preset_override<'a>(
     presets: &'a TokenOptimizerPresetsToml,
     preset: PathDictionaryPreset,
@@ -260,6 +273,11 @@ fn preset_override<'a>(
     }
 }
 
+/// 依次读取内置配置文件（plugins.toml、.tokenslim.toml）与显式配置，按 顶层 → scopes → presets[preset] 的优先级叠加覆盖，解析出最终路径字典选项。
+///
+/// P3-57：`plugins.toml` 路径锚定统一配置基准（`PluginConfigLoader::resolve_config_dir`），
+/// `.tokenslim.toml` 走 `config_manager::local_config_path` 向上搜索项目根，
+/// 不再依赖 CWD 相对路径——换目录运行时 token_optimizer 配置静默失效。
 pub fn resolve_path_dictionary_options_from_files(
     preset: PathDictionaryPreset,
     explicit_config: Option<&Path>,
@@ -267,9 +285,12 @@ pub fn resolve_path_dictionary_options_from_files(
     let mut options = options_from_preset(preset);
 
     let mut files: Vec<PathBuf> = vec![
-        PathBuf::from("config/plugins.toml"),
-        PathBuf::from(".tokenslim.toml"),
+        crate::core::plugin_config_loader::PluginConfigLoader::resolve_config_dir()
+            .join("plugins.toml"),
     ];
+    if let Some(local) = crate::core::config_manager::local_config_path() {
+        files.push(local);
+    }
     if let Some(p) = explicit_config {
         files.push(p.to_path_buf());
     }
@@ -314,6 +335,7 @@ struct VcsPathOccurrence {
     suffix: String,
 }
 
+/// 提取 `$P` 后数字部分作为 `usize`，无数字回退 `usize::MAX`，用于 token 序号排序。
 fn token_key_as_num(token: &str) -> usize {
     token
         .strip_prefix("$P")
@@ -321,10 +343,12 @@ fn token_key_as_num(token: &str) -> usize {
         .unwrap_or(usize::MAX)
 }
 
+/// 估算文本 token 数：按 `(字符数 + 3) / 4` 近似（约每 4 字符 1 token）。
 fn estimate_tokens(text: &str) -> isize {
     ((text.chars().count() + 3) / 4) as isize
 }
 
+/// 按 token 长度（长优先）与序号（大优先）降序排定替换顺序，再逐个边界安全地替换正文中的路径 token，避免短 token 误伤长 token。
 fn replace_all_path_tokens(body: &str, mappings: &[(String, String)]) -> String {
     let mut out = body.to_string();
     let mut sorted: Vec<(String, String)> = mappings.to_vec();
@@ -339,6 +363,7 @@ fn replace_all_path_tokens(body: &str, mappings: &[(String, String)]) -> String 
     out
 }
 
+/// 解析 VCS 状态行：先处理 `?? ` 前缀，再依次尝试两字符/三字符 marker，最后回退为普通路径行，返回 `(marker, path, suffix)`。
 fn parse_vcs_path_line(line: &str) -> Option<(String, String, String)> {
     if line.starts_with("?? ") {
         return split_path_with_suffix("?? ", &line[3..]);
@@ -362,6 +387,7 @@ fn parse_vcs_path_line(line: &str) -> Option<(String, String, String)> {
     None
 }
 
+/// 判断并提取普通路径行：跳过 commit/Author/Date/diff 等头部，要求含 `/` 或 `\` 或以 `.` 开头且不含空格。
 fn parse_plain_path_line(line: &str) -> Option<String> {
     let trimmed = line.trim();
     if trimmed.is_empty() {
@@ -393,6 +419,7 @@ fn parse_plain_path_line(line: &str) -> Option<String> {
     None
 }
 
+/// 按行尾空格后的 ` (...)` 拆分路径与后缀（如 `path (renamed)`），返回 `(marker, path, suffix)`；无后缀则 suffix 为空。
 fn split_path_with_suffix(marker: &str, rest: &str) -> Option<(String, String, String)> {
     let trimmed = rest.trim();
     if trimmed.is_empty() {
@@ -412,6 +439,7 @@ fn split_path_with_suffix(marker: &str, rest: &str) -> Option<(String, String, S
     Some((marker.to_string(), trimmed.to_string(), String::new()))
 }
 
+/// 由路径生成各级父目录前缀候选：忽略末尾 `/`、保留前导斜杠，路径段数不足 2 时返回空（如 `/a/b/c` → `/a`、`/a/b`）。
 fn generate_prefix_candidates(path: &str) -> Vec<String> {
     if path.contains(" -> ") {
         return Vec::new();
@@ -439,6 +467,7 @@ fn generate_prefix_candidates(path: &str) -> Vec<String> {
     out
 }
 
+/// 迭代折叠只被单一字典条目引用的路径 token 锚点：将其在引用方展开为字面量后删除该死锚点，直到无变化为止。
 fn simplify_dead_anchors(dictionary_entries: &mut Vec<(String, String)>, body: &str) {
     loop {
         let mut changed = false;
@@ -474,6 +503,7 @@ fn simplify_dead_anchors(dictionary_entries: &mut Vec<(String, String)>, body: &
     }
 }
 
+/// 统计正文中 `$P<数字>` 路径 token 的出现次数，仅统计其后紧跟 token 边界（非字母数字/_/-）的完整出现。
 fn collect_path_token_counts(text: &str) -> HashMap<String, usize> {
     let bytes = text.as_bytes();
     let mut i = 0usize;
@@ -499,6 +529,7 @@ fn collect_path_token_counts(text: &str) -> HashMap<String, usize> {
     counts
 }
 
+/// 基于默认选项，将字典引擎中达到最小出现次数的高频路径 token 以 `paths:` 页脚追加到渲染文本并优化。
 pub fn append_optimized_inline_path_dictionary(
     rendered: &str,
     dict_engine: &DictionaryEngine,
@@ -510,6 +541,7 @@ pub fn append_optimized_inline_path_dictionary(
     )
 }
 
+/// 同 `append_optimized_inline_path_dictionary`，但允许显式指定 `PathDictionaryOptions`（控制最小出现次数、嵌套别名等）。
 pub fn append_optimized_inline_path_dictionary_with_options(
     rendered: &str,
     dict_engine: &DictionaryEngine,
@@ -560,10 +592,12 @@ pub fn append_optimized_inline_path_dictionary_with_options(
     optimize_path_dictionary_blocks_with_options(&out, options)
 }
 
+/// 使用默认选项优化文本中的 `paths:` 字典块（合并重复、压缩路径、生成别名）。
 pub fn optimize_path_dictionary_blocks(formatted: &str) -> String {
     optimize_path_dictionary_blocks_with_options(formatted, &PathDictionaryOptions::default())
 }
 
+/// 核心优化流程：解析 `paths:` 映射 → 展开 token → 基于贪心前缀收益选择压缩路径 → 生成嵌套别名 → 简化死锚点 → 重写 `paths:` 页脚。
 pub fn optimize_path_dictionary_blocks_with_options(
     formatted: &str,
     options: &PathDictionaryOptions,
@@ -877,6 +911,7 @@ mod tests {
     use crate::core::dictionary_engine::DictionaryEngine;
     use std::fs;
 
+    /// 测试：验证优化会合并跨行 `$P1/*` 出现、过滤不划算的 `$P10` 单例，并最终仅保留一个 `paths:` 块。
     #[test]
     fn merges_and_filters_unprofitable_tokens() {
         let input = "changes:\nM $P1/issues.md\nM $P1/learnings.md\nM $P1/notes.md\nM $P1/plan.md\nM $P10/single.md\npaths: $P1=.sisyphus/notepads/REFACTORING_PLAN_V6.2\npaths: $P10=.tokenslim-context.md\n";
@@ -887,6 +922,7 @@ mod tests {
         assert!(!out.contains("$P10/single.md"));
     }
 
+    /// 测试：验证在重优化前会先展开嵌套源 token（如 `$P2=$P1/REFACTORING_PLAN`），不会残留 `$P1=$P1/...` 结构。
     #[test]
     fn expands_nested_source_tokens_before_reoptimization() {
         let input =
@@ -896,6 +932,7 @@ mod tests {
         assert!(out.contains("REFACTORING_PLAN"));
     }
 
+    /// 测试：验证优化会跨 changes/untracked 等不同区块合并 `paths:` 块为单一块。
     #[test]
     fn merges_paths_blocks_across_sections() {
         let input = "branch: master\nchanges:\nM $P1/issues.md\nM $P1/learnings.md\npaths: $P1=.sisyphus/notepads/REFACTORING_PLAN_V6.2\nuntracked:\n?? $P2/path_optimizer/\n?? $P2/init_command/\npaths: $P2=src/core\n";
@@ -907,6 +944,7 @@ mod tests {
         assert!(out.contains("init_command/"));
     }
 
+    /// 测试：验证对普通日志路径行（形如 `$P1/...` 历史行）也能构建嵌套别名或保持 `=$P` 形式。
     #[test]
     fn supports_nested_alias_for_plain_log_path_lines() {
         let input = "18f4bb5 feat: test\n$P1/doctor_workspace/methods.rs\n$P1/doctor_workspace/mod.rs\n$P1/doctor_workspace/types.rs\npaths: $P1=src/core\n";
@@ -927,6 +965,7 @@ mod tests {
         );
     }
 
+    /// 测试：验证仅被单处引用的嵌套锚点（如 `$P2=$P1/...`）会被扁平化为字面量、不再保留死锚点结构。
     #[test]
     fn flattens_single_use_dead_anchor_in_footer() {
         let input = "changes:\nM $P2/issues.md\nM $P2/learnings.md\npaths: $P1=.sisyphus/notepads; $P2=$P1/REFACTORING_PLAN_V6.2\n";
@@ -937,6 +976,7 @@ mod tests {
         assert!(out.contains("REFACTORING_PLAN_V6.2"));
     }
 
+    /// 测试：验证不会把字面量中类似 token 的段（如 `$P1-notes` 中的 `-notes`）误判为别名边界。
     #[test]
     fn does_not_treat_literal_token_like_segments_as_aliases() {
         let input =
@@ -947,6 +987,7 @@ mod tests {
         assert!(!out.contains("docs/design-notes/REFACTORING_PLAN"));
     }
 
+    /// 测试：验证盈亏平衡的前缀（仅 2 处出现、收益恰为 0）仍被保留在 `paths:` 中。
     #[test]
     fn keeps_break_even_prefix() {
         let input = "changes:\nM $P1/a.md\nM $P1/b.md\npaths: $P1=docs/design\n";
@@ -954,6 +995,7 @@ mod tests {
         assert!(out.contains("paths: $P1=docs/design"));
     }
 
+    /// 测试：验证 `generate_prefix_candidates` 保留绝对路径根（如 `/usr/local/bin` → `/usr`、`/usr/local`；`//depot/...` → `//depot`、`//depot/main`）。
     #[test]
     fn generate_prefix_candidates_preserves_absolute_roots() {
         assert_eq!(
@@ -966,6 +1008,7 @@ mod tests {
         );
     }
 
+    /// 测试：验证深层绝对前缀（收益为正）被保留，且不会把绝对路径错误地拆成 `$P1/...` 拼接形式。
     #[test]
     fn keeps_profitable_deep_absolute_prefix() {
         let input = "changes:\nM $P1/a.rs\nM $P1/b.rs\nM $P1/c.rs\npaths: $P1=//depot/main/src/plugins/vcs_plugin\n";
@@ -984,6 +1027,7 @@ mod tests {
         );
     }
 
+    /// 测试：验证在关闭嵌套别名时，多个 `//depot/main/...` 路径会被归并到共享根 `$P1=//depot/main` 下。
     #[test]
     fn groups_absolute_p4_paths_under_shared_root() {
         let input = "changes:\nM $P1/main.rs\nM $P2/helper.rs\nM $P3/app.json\npaths: $P1=//depot/main/src; $P2=//depot/main/src/utils; $P3=//depot/main/config\n";
@@ -999,6 +1043,7 @@ mod tests {
         assert!(out.contains("M $P1/config/app.json"), "out={}", out);
     }
 
+    /// 测试：验证 `append_optimized_inline_path_dictionary` 会生成单一 `paths:` 页脚并保留原始路径文件名（如 `vcs_plugin.md`）。
     #[test]
     fn appends_single_paths_footer_and_optimizes() {
         let mut dict = DictionaryEngine::new();
@@ -1013,6 +1058,7 @@ mod tests {
         assert!(out.contains("vcs_plugin.md"));
     }
 
+    /// 测试：验证页脚尊重 `min_footer_token_uses`，出现次数不足时完全不生成 `paths:` 页脚。
     #[test]
     fn footer_respects_min_token_occurrences() {
         let mut dict = DictionaryEngine::new();
@@ -1029,6 +1075,7 @@ mod tests {
         assert_eq!(out.matches("paths:").count(), 0);
     }
 
+    /// 测试：验证关闭嵌套别名时仍会生成单一 `paths:` 块（仅不生成二级别名）。
     #[test]
     fn can_disable_nested_aliases() {
         let input = "changes:\nM $P1/a.md\nM $P1/b.md\nM $P1/c.md\npaths: $P1=docs/design\n";
@@ -1040,6 +1087,7 @@ mod tests {
         assert_eq!(out.matches("paths:").count(), 1);
     }
 
+    /// 测试：验证 `run_with_path_dictionary_preset` 在作用域内切换选项、作用域结束后正确恢复原选项（不串扰）。
     #[test]
     fn shared_preset_scope_overrides_and_restores() {
         let default_opts = current_path_dictionary_options();
@@ -1055,6 +1103,7 @@ mod tests {
         assert_eq!(restored.min_footer_token_uses, 2);
     }
 
+    /// 测试：验证显式 TOML 配置（scopes + presets[ai]）会按优先级覆盖 preset 选项，包括 `min_footer_token_uses`、`enable_nested_aliases`、`nested_parse_cost`。
     #[test]
     fn explicit_token_optimizer_config_overrides_preset() {
         let mut cfg_path = std::env::temp_dir();

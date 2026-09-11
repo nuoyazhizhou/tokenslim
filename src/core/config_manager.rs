@@ -3,11 +3,11 @@
 //! 实现全局与本地项目配置的 Get/Set/Unset/Reset 操作，并支持环境变量覆盖。
 //! 修改配置时会通过 `toml_edit` 保留文件原有的注释与格式。
 
+use lazy_static::lazy_static;
 use std::collections::HashMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 use toml_edit::{DocumentMut, Item, Value};
-use lazy_static::lazy_static;
 
 use crate::core::plugin_config_loader::PluginConfigLoader;
 
@@ -23,7 +23,6 @@ lazy_static! {
         m.insert("compression.ai_export", "false");
         m.insert("compression.preset", "balanced");
         m.insert("encoding.force_utf8", "true");
-        m.insert("plugins.plugin_chain", "true");
         m.insert("token_optimizer.enabled", "true");
         m
     };
@@ -48,12 +47,15 @@ pub enum SchemaType {
 /// 获取配置项的 Schema 类型
 pub fn get_schema_type(key: &str) -> Result<SchemaType, String> {
     match key {
+        "debug.audit.enabled" => Ok(SchemaType::Bool),
+        "debug.audit.path" => Ok(SchemaType::String),
         "general.preset" | "compression.preset" => Ok(SchemaType::String),
-        "general.project_type" | "general.framework" | "general.package_manager" => Ok(SchemaType::String),
+        "general.project_type" | "general.framework" | "general.package_manager" => {
+            Ok(SchemaType::String)
+        }
         "compression.reorder"
         | "compression.ai_export"
         | "encoding.force_utf8"
-        | "plugins.plugin_chain"
         | "token_optimizer.enabled" => Ok(SchemaType::Bool),
         _ if key.starts_with("plugins.") && key.ends_with(".enabled") => {
             let parts: Vec<&str> = key.split('.').collect();
@@ -78,9 +80,24 @@ fn is_valid_plugin(name: &str) -> bool {
     if !config_dir.exists() {
         // Fallback 支持内置的插件名称以防配置目录不存在
         let builtins = [
-            "shell", "access_log", "data_struct", "vcs", "build", "error_trace",
-            "git", "cargo", "npm", "go", "python", "docker", "maven", "gradle",
-            "pytest", "jest", "webpack", "tsc"
+            "shell",
+            "access_log",
+            "data_struct",
+            "vcs",
+            "build",
+            "error_trace",
+            "git",
+            "cargo",
+            "npm",
+            "go",
+            "python",
+            "docker",
+            "maven",
+            "gradle",
+            "pytest",
+            "jest",
+            "webpack",
+            "tsc",
         ];
         return builtins.contains(&name);
     }
@@ -288,7 +305,9 @@ fn set_nested_value(
                 if !table.contains_key(part) {
                     table.insert(part, Item::Table(toml_edit::Table::new()));
                 }
-                current = table.get_mut(part).ok_or_else(|| "无法在 TOML 中定位表项".to_string())?;
+                current = table
+                    .get_mut(part)
+                    .ok_or_else(|| "无法在 TOML 中定位表项".to_string())?;
             } else {
                 return Err(format!("路径组件 '{}' 不是合法的 Table", part));
             }
@@ -368,6 +387,16 @@ impl ConfigManager {
         // 4. 加载环境变量覆盖
         apply_env_overrides(&mut config);
 
+        // P2-66：debug.audit 两键仅作默认值填充（entry 语义），不再无条件覆盖——
+        // 否则 env/全局/本地任何来源设置的值都会被抹掉，`config get` 永显 false。
+        // 运行时审计仍只读本地配置（workspace_debug_audit_path），此处仅保证合并视图如实。
+        config
+            .entry("debug.audit.enabled".to_string())
+            .or_insert_with(|| "false".to_string());
+        config
+            .entry("debug.audit.path".to_string())
+            .or_insert_with(|| ".tokenslim/audit/compression.jsonl".to_string());
+
         config
     }
 
@@ -420,8 +449,12 @@ impl ConfigManager {
     /// 在指定作用域内删除配置项
     pub fn unset_value(scope: ConfigScope, key: &str) -> Result<bool, String> {
         let path = match scope {
-            ConfigScope::Global => global_config_path().ok_or_else(|| "无法获取全局配置路径".to_string())?,
-            ConfigScope::Local => local_config_path().ok_or_else(|| "无法获取本地配置路径".to_string())?,
+            ConfigScope::Global => {
+                global_config_path().ok_or_else(|| "无法获取全局配置路径".to_string())?
+            }
+            ConfigScope::Local => {
+                local_config_path().ok_or_else(|| "无法获取本地配置路径".to_string())?
+            }
         };
 
         if !path.exists() {
@@ -442,8 +475,12 @@ impl ConfigManager {
     /// 清空并重置指定作用域的配置文件
     pub fn reset(scope: ConfigScope) -> Result<(), String> {
         let path = match scope {
-            ConfigScope::Global => global_config_path().ok_or_else(|| "无法获取全局配置路径".to_string())?,
-            ConfigScope::Local => local_config_path().ok_or_else(|| "无法获取本地配置路径".to_string())?,
+            ConfigScope::Global => {
+                global_config_path().ok_or_else(|| "无法获取全局配置路径".to_string())?
+            }
+            ConfigScope::Local => {
+                local_config_path().ok_or_else(|| "无法获取本地配置路径".to_string())?
+            }
         };
 
         if path.exists() {
@@ -454,18 +491,42 @@ impl ConfigManager {
     }
 }
 
+impl ConfigManager {
+    /// 从当前工作区最近的 `.tokenslim.toml` 读取值，不合并全局或环境配置。
+    /// 适用于审计、保留期等必须由项目所有者显式决定的本地行为。
+    pub fn get_local_value(key: &str) -> Option<String> {
+        let path = local_config_path()?;
+        let content = fs::read_to_string(path).ok()?;
+        parse_toml_to_flat_map(&content).ok()?.get(key).cloned()
+    }
+
+    /// 获取当前工作区的布尔配置；配置不存在或不是布尔值时返回 `None`。
+    pub fn get_local_bool(key: &str) -> Option<bool> {
+        Self::get_local_value(key).and_then(|value| value.parse::<bool>().ok())
+    }
+
+    /// 返回当前工作区最近的项目配置路径，用于解析相对路径配置。
+    pub fn local_project_config_path() -> Option<PathBuf> {
+        local_config_path()
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    /// 校验契约：合法值应通过校验（preset=fast、reorder/audit.enabled=true、audit.path 合法），非法值应报错（preset=unknown、reorder/enabled=yes 布尔严格）
     #[test]
     fn test_schema_validation() {
         assert!(validate_value("general.preset", "fast").is_ok());
         assert!(validate_value("general.preset", "unknown").is_err());
         assert!(validate_value("compression.reorder", "true").is_ok());
         assert!(validate_value("compression.reorder", "yes").is_err());
+        assert!(validate_value("debug.audit.enabled", "true").is_ok());
+        assert!(validate_value("debug.audit.enabled", "yes").is_err());
+        assert!(validate_value("debug.audit.path", ".tokenslim/audit/compression.jsonl").is_ok());
     }
 
+    /// 保真契约：TOML 编辑（set_nested_value 改 preset、新增 ai_export）应保留注释与段落格式，仅改动目标键
     #[test]
     fn test_toml_edit_preserves_formatting() {
         let temp_dir = std::env::temp_dir();

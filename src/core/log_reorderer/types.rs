@@ -14,6 +14,7 @@ pub struct ReorderConfig {
 }
 
 impl Default for ReorderConfig {
+    /// 返回日志重排序默认配置：默认关闭、最大缓冲 10 万行、开启上下文粘连与确定性排序。
     fn default() -> Self {
         Self {
             enabled: false,

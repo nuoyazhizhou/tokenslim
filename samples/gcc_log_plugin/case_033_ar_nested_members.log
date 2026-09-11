@@ -1,0 +1,8 @@
+ar -t librender.a
+
+core/render/context.o
+core/render/mesh.o
+core/render/shader.o
+core/scene/camera.o
+utils/math/vector.o
+core/render/material.o

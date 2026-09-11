@@ -9,21 +9,26 @@ use crate::core::text_slicer::Slice;
 use crate::core::utils::json::extract_json_object;
 use bumpalo::Bump;
 use regex::Regex;
-use std::any::Any;
 use std::borrow::Cow;
 use std::sync::Arc;
+use std::sync::OnceLock;
+
+/// P3-127 家族：`decompress` 每次调用重建 `(\$[MP]\d+)`，提升为进程级
+/// `OnceLock` 预编译（对照 `infra_tools_common.rs` 范式）。
+static RESTORE_TOKEN_RE: OnceLock<Regex> = OnceLock::new();
 
 impl JsonPlugin {
+    /// 创建 JsonPlugin 实例（名称 json，优先级 146），预编译键名与 JSON 检测正则。
     pub fn new() -> Self {
         Self {
             name: "json",
             priority: 146,
-            key_pattern: Arc::new(Regex::new(r#""([^"]+)":\s*"#).unwrap()),
             json_detect_pattern: Arc::new(Regex::new(r#"[\{\[]\s*"[^"]+"\s*:"#).unwrap()),
             config: JsonConfig::default(),
         }
     }
 
+    /// 递归压缩 JSON 值：对象键按配置字典化，超长字符串值用路径字典 token 替换。
     fn compress_json_value_recursive(
         &self,
         val: serde_json::Value,
@@ -62,13 +67,16 @@ impl JsonPlugin {
 }
 
 impl Plugin for JsonPlugin {
+    /// 返回插件名称 "json"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 146。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：完整 JSON 对象/数组得 1.0，括号平衡的嵌入对象 0.85，正则形态 0.8。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.trim();
         if (text.starts_with('{') && text.ends_with('}'))
@@ -85,6 +93,7 @@ impl Plugin for JsonPlugin {
         None
     }
 
+    /// 压缩切片：解析 JSON（含从噪声中提取），递归压缩后加 $JSON| 前缀，ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -120,9 +129,10 @@ impl Plugin for JsonPlugin {
         }
     }
 
+    /// 解压：剥离 $JSON| 前缀，将 $M/$P token 用词典还原为原始 JSON。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         if let Some(payload) = compressed.strip_prefix("$JSON|") {
-            let pattern = Regex::new(r"(\$[MP]\d+)").unwrap();
+            let pattern = RESTORE_TOKEN_RE.get_or_init(|| Regex::new(r"(\$[MP]\d+)").unwrap());
             let restored = pattern
                 .replace_all(payload, |caps: &regex::Captures| {
                     let token = caps.get(1).unwrap().as_str();
@@ -138,22 +148,14 @@ impl Plugin for JsonPlugin {
         }
         compressed.to_string()
     }
-
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<JsonConfig>() {
-            self.config = c.clone();
-            return Ok(());
-        }
-        Err("Invalid config".to_string())
-    }
 }
 
 impl Clone for JsonPlugin {
+    /// 克隆插件实例：复制名称、优先级、正则与配置。
     fn clone(&self) -> Self {
         Self {
             name: self.name,
             priority: self.priority,
-            key_pattern: self.key_pattern.clone(),
             json_detect_pattern: self.json_detect_pattern.clone(),
             config: self.config.clone(),
         }

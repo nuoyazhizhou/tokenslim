@@ -39,6 +39,8 @@ struct Args {
     shorten_paths: bool,
 }
 
+/// 缩写文本中的长绝对路径：匹配 Windows/Unix 路径，当长度超过 40 且至少 4 段时
+/// 折叠为 `.../倒数3段` 形式，防止 diff 工具换行。
 fn shorten_paths_in_text(text: &str) -> String {
     lazy_static::lazy_static! {
         static ref PATH_RE: Regex = Regex::new(r"(?:[a-zA-Z]:\\|[/.])[\w\.\-\+_~=@#]+(?:[/\\][\w\.\-\+_~=@#]+)+").unwrap();
@@ -47,9 +49,7 @@ fn shorten_paths_in_text(text: &str) -> String {
     PATH_RE
         .replace_all(text, |caps: &regex::Captures| {
             let path = caps.get(0).unwrap().as_str();
-            if path.len() > 40
-                && (path.starts_with('/') || path.starts_with("C:\\") || path.starts_with("D:\\"))
-            {
+            if path.len() > 40 && (path.starts_with('/') || path.as_bytes().get(1) == Some(&b':')) {
                 let parts: Vec<&str> = path
                     .split(|c| c == '/' || c == '\\')
                     .filter(|s| !s.is_empty())
@@ -64,6 +64,8 @@ fn shorten_paths_in_text(text: &str) -> String {
         .to_string()
 }
 
+/// 程序入口：解析命令行参数，读取输入(文件或标准输入)，按配置对每行做归一化/路径缩写，
+/// 经 LogReorderer 重排乱序日志后写回文件或标准输出。
 fn main() {
     let args = Args::parse();
 

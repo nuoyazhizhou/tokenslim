@@ -1,0 +1,18 @@
+[flask]
+DEBUG = false
+SECRET_KEY = change-me-in-production
+HOST = 0.0.0.0
+PORT = 8000
+
+[app]
+modules = auth
+modules = billing
+static_folder = static
+
+[database]
+engine = sqlite
+path = /var/lib/app/app.db
+
+[logging]
+level = INFO
+file = /var/log/app/app.log

@@ -1,0 +1,202 @@
+module:
+  name: metrics
+  path: src/core/metrics
+  dependencies:
+    - chrono = "0.4"
+    - thiserror = "1.0"
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{MetricsCollector, MetricsConfig, MetricsSnapshot, ModuleTiming, PluginStats, ErrorLog};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::collections::HashMap;
+        use std::time::Duration;
+        use chrono::{DateTime, Utc};
+
+        /// 单个插件的统计信息
+        #[derive(Debug, Clone, Default)]
+        pub struct PluginStats {
+            pub detect_calls: usize,
+            pub compress_calls: usize,
+            pub decompress_calls: usize,
+            pub total_detect_time: Duration,
+            pub total_compress_time: Duration,
+            pub total_decompress_time: Duration,
+            pub panic_count: usize,
+            pub timeout_count: usize,
+            pub fallback_count: usize,
+        }
+
+        /// 模块级耗时统计
+        #[derive(Debug, Clone, Default)]
+        pub struct ModuleTiming {
+            pub stream_reader: Duration,
+            pub text_slicer: Duration,
+            pub content_analyzer: Duration,
+            pub plugin_dispatcher: Duration,
+            pub dictionary_engine: Duration,
+            pub dedup_engine: Duration,
+            pub compression_pipeline: Duration,
+            pub rehydration_pipeline: Duration,
+        }
+
+        /// 错误日志条目
+        #[derive(Debug, Clone)]
+        pub struct ErrorLog {
+            pub timestamp: DateTime<Utc>,
+            pub module: String,
+            pub plugin: Option<String>,
+            pub error_type: String,
+            pub message: String,
+            pub slice_id: Option<u64>,
+        }
+
+        /// 最终指标快照
+        #[derive(Debug, Clone)]
+        pub struct MetricsSnapshot {
+            pub total_input_size: usize,
+            pub total_output_size: usize,
+            pub compression_ratio: f32,
+            pub slice_count: usize,
+            pub processing_time: Duration,
+            pub module_timings: ModuleTiming,
+            pub plugin_stats: HashMap<String, PluginStats>,
+            pub errors: Vec<ErrorLog>,
+        }
+
+        /// 指标收集器配置
+        #[derive(Clone)]
+        pub struct MetricsConfig {
+            pub enable_module_timing: bool,
+            pub enable_plugin_stats: bool,
+            pub enable_error_logging: bool,
+            pub max_error_logs: usize,
+        }
+
+        /// 指标收集器主结构
+        pub struct MetricsCollector {
+            pub(crate) config: MetricsConfig,
+            pub(crate) start_time: Option<std::time::Instant>,
+            pub(crate) total_input_size: usize,
+            pub(crate) total_output_size: usize,
+            pub(crate) slice_count: usize,
+            pub(crate) module_timings: ModuleTiming,
+            pub(crate) module_timings_current: HashMap<String, std::time::Instant>,
+            pub(crate) plugin_stats: HashMap<String, PluginStats>,
+            pub(crate) errors: Vec<ErrorLog>,
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use std::collections::HashMap;
+        use std::time::{Duration, Instant};
+        use chrono::Utc;
+
+        impl MetricsCollector {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 MetricsCollector 实例
+            ///
+            /// # 参数
+            /// - `config`: 收集器配置
+            ///
+            /// # 返回值
+            /// - `Self`: MetricsCollector 实例
+            ///
+            /// MVP 优先级
+            pub fn new(config: MetricsConfig) -> Self {
+                todo!()
+            }
+
+            /// 设置总体输入大小
+            pub fn set_input_size(&mut self, size: usize) {
+                todo!()
+            }
+
+            /// 设置总体输出大小
+            pub fn set_output_size(&mut self, size: usize) {
+                todo!()
+            }
+
+            /// 增加切片计数
+            pub fn add_slice_count(&mut self, count: usize) {
+                todo!()
+            }
+
+            /// 开始模块计时
+            ///
+            /// # 参数
+            /// - `module_name`: 模块名称（应使用常量）
+            pub fn start_module(&mut self, module_name: &str) {
+                todo!()
+            }
+
+            /// 结束模块计时
+            ///
+            /// # 参数
+            /// - `module_name`: 模块名称
+            pub fn end_module(&mut self, module_name: &str) {
+                todo!()
+            }
+
+            /// 记录插件 detect 调用耗时
+            pub fn record_plugin_detect(&mut self, plugin_name: &str, duration: Duration) {
+                todo!()
+            }
+
+            /// 记录插件 compress 调用耗时
+            pub fn record_plugin_compress(&mut self, plugin_name: &str, duration: Duration) {
+                todo!()
+            }
+
+            /// 记录插件 decompress 调用耗时
+            pub fn record_plugin_decompress(&mut self, plugin_name: &str, duration: Duration) {
+                todo!()
+            }
+
+            /// 增加插件 panic 计数
+            pub fn inc_plugin_panic(&mut self, plugin_name: &str) {
+                todo!()
+            }
+
+            /// 增加插件超时计数
+            pub fn inc_plugin_timeout(&mut self, plugin_name: &str) {
+                todo!()
+            }
+
+            /// 增加插件 fallback 计数
+            pub fn inc_plugin_fallback(&mut self, plugin_name: &str) {
+                todo!()
+            }
+
+            /// 记录错误日志
+            pub fn log_error(&mut self, error: ErrorLog) {
+                todo!()
+            }
+
+            /// 生成指标快照
+            pub fn snapshot(&self) -> MetricsSnapshot {
+                todo!()
+            }
+
+            /// 重置收集器
+            pub fn reset(&mut self) {
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

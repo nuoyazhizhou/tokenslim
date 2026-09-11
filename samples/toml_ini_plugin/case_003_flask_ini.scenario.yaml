@@ -1,0 +1,15 @@
+scenario: '一个 Flask 应用的 INI 配置，含 flask / app / database / logging 段。'
+target_capability: 'INI 配置段与键值结构保留与紧凑归一化'
+expected_keep: '[flask] DEBUG: false, PORT: 8000，[database] engine: sqlite'
+expected_compress: '[app] 重复键(modules)与段间冗余空白紧凑化'
+source: 'manual'
+generated_at: '2026-09-04T04:08:44Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '1b496b99c4927b4e2379857ca98165279df08d384429c7bc86f243055b97f58c'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:11:13.482849'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

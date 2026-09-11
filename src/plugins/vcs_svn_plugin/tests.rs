@@ -1,20 +1,16 @@
 use super::methods::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 // ============================================================================
 // 测试基础设施 — 文件驱动（法则：严禁 Hardcode）
 // ============================================================================
 
-fn sample_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("samples")
-        .join("vcs_svn_plugin")
-}
 
-/// 从 samples/vcs_svn_plugin/<name>.log 读取测试用例
+fn sample_dir() -> PathBuf {
+    crate::plugins::test_utils::vcs_sample_dir("vcs_svn_plugin")
+}
 fn read_case(name: &str) -> String {
-    let p = sample_dir().join(format!("{}.log", name));
-    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("读取样本失败 {}: {}", p.display(), e))
+    crate::plugins::test_utils::vcs_read_case("vcs_svn_plugin", name)
 }
 
 /// 【红线断言】输出的第一行必须等于输入的第一行（命令锚点保护）
@@ -32,6 +28,7 @@ fn assert_anchor_preserved(case_name: &str, output: &str) {
 // ============================================================================
 // Case 01: svn status — 状态码映射正确性 + 锚点保护
 // ============================================================================
+/// 测试：svn status 样例（case 01）状态映射。
 #[test]
 fn test_case_01_svn_status() {
     let output = compact_svn_status_for_ai(&read_case("case_01_svn_status"));
@@ -62,6 +59,7 @@ fn test_case_01_svn_status() {
 // ============================================================================
 // Case 03: svn log — 头部 + 描述保留 + 锚点保护
 // ============================================================================
+/// 测试：svn log 样例（case 03）压缩。
 #[test]
 fn test_case_03_svn_log() {
     let output = compact_svn_log_for_ai(&read_case("case_03_svn_log"));
@@ -87,6 +85,7 @@ fn test_case_03_svn_log() {
 // ============================================================================
 // Case 71: svn commit — 动作符号化 + 锚点保护
 // ============================================================================
+/// 测试：svn commit 样例（case 71）压缩。
 #[test]
 fn test_case_71_svn_commit() {
     let output = compact_svn_commit_for_ai(&read_case("case_71_svn_commit"));
@@ -99,19 +98,21 @@ fn test_case_71_svn_commit() {
 // ============================================================================
 // Case 07: svn info — 键值保留 + 锚点保护
 // ============================================================================
+/// 测试：svn info 样例（case 07）压缩。
 #[test]
 fn test_case_07_svn_info() {
     let output = compact_svn_info_for_ai(&read_case("case_07_svn_info"));
     assert_anchor_preserved("case_07_svn_info", &output);
-    assert!(
-        output.contains("Path:") || output.contains("Revision:") || !output.is_empty(),
-        "info 输出应包含字段"
-    );
+    // P3-203：删除恒真第三支 `|| !output.is_empty()`。原 `Path:`/`Revision:` 锚点已随
+    // 输出格式演化（[Path]/Rev:）失配，被恒真分支掩盖至今——按真实输出锚定。
+    assert!(output.contains("[Path]"), "info [Path] 字段应保留: {output}");
+    assert!(output.contains("Rev:"), "info Rev: 字段应保留: {output}");
 }
 
 // ============================================================================
 // Case 02: svn diff — DIFF: 头部压缩 + 分隔线过滤
 // ============================================================================
+/// 测试：svn diff 样例（case 02）压缩。
 #[test]
 fn test_case_02_svn_diff() {
     let output = compact_svn_diff_for_ai(&read_case("case_02_svn_diff"));
@@ -127,6 +128,7 @@ fn test_case_02_svn_diff() {
 // ============================================================================
 // Case 70: svn update — revision 规范化 + 状态映射
 // ============================================================================
+/// 测试：svn update 样例（case 70）压缩。
 #[test]
 fn test_case_70_svn_update() {
     let output = compact_svn_status_for_ai(&read_case("case_70_svn_update"));
@@ -137,6 +139,7 @@ fn test_case_70_svn_update() {
 // ============================================================================
 // Case 178: svn propset — 压缩率检查（不应膨胀）
 // ============================================================================
+/// 测试：svn propset 样例（case 178）压缩。
 #[test]
 fn test_case_178_svn_propset_compression() {
     let raw = read_case("case_178_svn_propset");
@@ -150,25 +153,34 @@ fn test_case_178_svn_propset_compression() {
 // ============================================================================
 // Case 77: svn revert — 状态映射
 // ============================================================================
+/// 测试：svn revert 样例（case 77）压缩。
 #[test]
 fn test_case_77_svn_revert() {
     let output = compact_svn_status_for_ai(&read_case("case_77_svn_revert"));
     assert_anchor_preserved("case_77_svn_revert", &output);
+    // P3-203：`|| contains("src/")` 近恒真（命令锚点已含 src/）。真实输出为 R 状态映射
+    // 行（非 Reverted 字样），按完整状态行锚定。
     assert!(
-        output.contains("Reverted") || output.contains("src/"),
-        "revert 路径应保留"
+        output.contains("R src/main.rs"),
+        "revert 首条 R 状态行应保留: {output}"
+    );
+    assert!(
+        output.contains("R config/app.json"),
+        "revert 次条 R 状态行应保留: {output}"
     );
 }
 
 // ============================================================================
 // 极短输入回退测试
 // ============================================================================
+/// 测试：短输入不崩溃。
 #[test]
 fn test_short_input_no_crash() {
     let output = compact_svn_status_for_ai("svn help");
     assert!(output.starts_with("svn help"), "短输入应原样返回");
 }
 
+/// 测试：svn 命令行检测。
 #[test]
 fn test_svn_command_line_detection() {
     assert!(is_svn_command_line("svn status"));
@@ -297,8 +309,9 @@ fn test_case_320_annotate_compression_does_not_expand() {
 /// 边界测试：少量文件的 update 不应折叠
 #[test]
 fn test_update_below_threshold_not_folded() {
-    let raw = "svn update\nUpdating '.':\nU    file1.txt\nU    file2.txt\nAt revision 123.\n";
-    let c = compact_svn_update_enhanced(raw);
+    // P3-202：手写 mock 物理化为 samples 测试专用样本。
+    let raw = read_case("test_svn_update_few_files");
+    let c = compact_svn_update_enhanced(&raw);
 
     // 少于 10 个文件，不应折叠
     assert!(!c.contains("[UPDATE]"), "少于阈值时不应添加摘要");
@@ -308,8 +321,9 @@ fn test_update_below_threshold_not_folded() {
 /// 边界测试：少量行的 annotate 不应折叠
 #[test]
 fn test_annotate_below_threshold_not_folded() {
-    let raw = "svn annotate file.txt\n   123   alice   line1\n   124   bob   line2\n";
-    let c = compact_svn_annotate_enhanced(raw);
+    // P3-202：手写 mock 物理化为 samples 测试专用样本。
+    let raw = read_case("test_svn_annotate_few_lines");
+    let c = compact_svn_annotate_enhanced(&raw);
 
     // 少于 20 行，不应折叠
     assert!(!c.contains("[ANNOTATE]"), "少于阈值时不应添加摘要");

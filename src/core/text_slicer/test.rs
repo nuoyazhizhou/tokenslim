@@ -13,12 +13,14 @@ mod tests {
     use std::borrow::Cow;
     use std::sync::Arc;
 
+    /// 测试辅助：以默认配置与新建字典管理器构造 TextSlicer。
     fn setup_slicer() -> TextSlicer {
         let config = SlicerConfig::default();
         let dict_manager = Arc::new(DictionaryManager::new());
         TextSlicer::with_dict_manager(config, dict_manager)
     }
 
+    /// 测试：新建 slicer 的 next_id 初始为 1 且段落缓冲区为空。
     #[test]
     fn test_new() {
         let slicer = setup_slicer();
@@ -27,6 +29,7 @@ mod tests {
         assert!(slicer.paragraph_buffer.is_empty());
     }
 
+    /// 测试：slice_line 产出单行 Slice，字段正确且 id 递增。
     #[test]
     fn test_slice_line() {
         let slicer = setup_slicer();
@@ -60,6 +63,7 @@ mod tests {
         assert_eq!(slice2.id, 2);
     }
 
+    /// 测试：连续非空行累积为段落，空行触发段落冲刷输出。
     #[test]
     fn test_slice_paragraph() {
         let mut slicer = setup_slicer();
@@ -97,6 +101,7 @@ mod tests {
         assert_eq!(slice.line_end, 2);
     }
 
+    /// 测试：flush 冲刷未完成段落，重复 flush 返回空。
     #[test]
     fn test_flush() {
         let mut slicer = setup_slicer();
@@ -131,6 +136,7 @@ mod tests {
         assert!(slices2.is_empty());
     }
 
+    /// 测试：缓冲区为空时输入空行直接产出单行空 Slice。
     #[test]
     fn test_empty_line_handling() {
         let mut slicer = setup_slicer();
@@ -150,6 +156,7 @@ mod tests {
         assert_eq!(slice.line_end, 1);
     }
 
+    /// 测试：段落模式下不跳过空行时，空行分隔被保留（补回换行）。
     #[test]
     fn test_push_slices_preserve_usage_blank_separators_when_not_skipping() {
         let config = SlicerConfig {
@@ -190,6 +197,7 @@ mod tests {
         );
     }
 
+    /// 测试：段落模式下不跳过空行时，连续空行被完整保留。
     #[test]
     fn test_push_slices_preserve_consecutive_blank_lines_when_not_skipping() {
         let config = SlicerConfig {

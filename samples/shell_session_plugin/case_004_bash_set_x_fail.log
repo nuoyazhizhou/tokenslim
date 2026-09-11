@@ -1,3 +1,4 @@
+user@ubuntu:~$ set -x
 + echo 'Starting build'
 Starting build
 + gcc -o main main.c

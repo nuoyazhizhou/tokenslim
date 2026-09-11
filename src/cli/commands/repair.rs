@@ -23,7 +23,7 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::io::{self, IsTerminal, Read};
 
-
+/// 由输入路径派生默认修复输出路径：保留父目录与扩展名，在文件名中插入 .repaired. 段。
 pub(crate) fn default_repair_output_path_from_input_arg(input_arg: &str) -> String {
     let path = std::path::Path::new(input_arg);
     let parent = path.parent().unwrap_or(std::path::Path::new("."));
@@ -39,7 +39,7 @@ pub(crate) fn default_repair_output_path_from_input_arg(input_arg: &str) -> Stri
     parent.join(file_name).to_string_lossy().to_string()
 }
 
-
+/// 由输入路径派生默认备份路径：在原文件名后追加 .bak，保留父目录。
 pub(crate) fn default_backup_output_path(input: &std::path::Path) -> std::path::PathBuf {
     let parent = input.parent().unwrap_or(std::path::Path::new("."));
     let file_name = input
@@ -50,12 +50,12 @@ pub(crate) fn default_backup_output_path(input: &std::path::Path) -> std::path::
     parent.join(file_name)
 }
 
-
+/// 归一化匹配路径：将 Windows 反斜杠统一为正斜杠，以便后续大小写无关的 glob 比较。
 pub(crate) fn normalize_match_path(path: &str) -> String {
     path.replace('\\', "/")
 }
 
-
+/// 通配符匹配：支持 * 与 ? 的简单 glob，对 pattern 与 text 做路径归一化后按字节回溯匹配。
 pub(crate) fn wildcard_match(pattern: &str, text: &str) -> bool {
     let p = normalize_match_path(pattern).to_ascii_lowercase();
     let t = normalize_match_path(text).to_ascii_lowercase();
@@ -88,7 +88,8 @@ pub(crate) fn wildcard_match(pattern: &str, text: &str) -> bool {
     pi == p.len()
 }
 
-
+/// 判断某文件是否应被 repair：先按 include(为空则全部命中) 过滤，再剔除 exclude，
+/// 两者均支持相对路径与文件名的通配匹配。
 pub(crate) fn should_repair_path(
     root: &std::path::Path,
     path: &std::path::Path,
@@ -118,7 +119,6 @@ pub(crate) fn should_repair_path(
         .any(|pat| wildcard_match(pat, &rel_s) || wildcard_match(pat, &file_s))
 }
 
-
 #[derive(Debug, Clone)]
 pub(crate) struct RepairOutcome {
     pub(crate) path: std::path::PathBuf,
@@ -133,7 +133,6 @@ pub(crate) struct RepairOutcome {
     pub(crate) skipped: bool,
     pub(crate) reason: String,
 }
-
 
 #[derive(Debug, Clone, Serialize)]
 pub(crate) struct RepairJsonRecord {
@@ -150,7 +149,6 @@ pub(crate) struct RepairJsonRecord {
     pub(crate) evidence: Vec<String>,
 }
 
-
 #[derive(Debug, Clone, Serialize)]
 pub(crate) struct RepairJsonSummary {
     pub(crate) changed: usize,
@@ -158,7 +156,6 @@ pub(crate) struct RepairJsonSummary {
     pub(crate) skipped: usize,
     pub(crate) failures: usize,
 }
-
 
 #[derive(Debug, Clone, Serialize)]
 pub(crate) struct RepairJsonReport {
@@ -173,7 +170,8 @@ pub(crate) struct RepairJsonReport {
     pub(crate) stdout_payload: Option<String>,
 }
 
-
+/// 归类修复策略：依据 skipped/changed/steps/confidence/detected_enc 判定策略名
+/// (如 manual_review、reencode_recover_high、no_change、cleanup_only 等)。
 pub(crate) fn classify_repair_strategy(
     detected_enc: &str,
     steps: &[String],
@@ -185,6 +183,10 @@ pub(crate) fn classify_repair_strategy(
     if skipped {
         if reason == "binary-guard" {
             return "manual_review_binary_guard".to_string();
+        }
+        if reason == "manual_review_low_confidence" {
+            // P2-83：低置信度修复禁止写盘，标记人工复核
+            return "manual_review_low_confidence".to_string();
         }
         return "manual_review_skipped".to_string();
     }
@@ -212,7 +214,7 @@ pub(crate) fn classify_repair_strategy(
     "cleanup_or_reencode_general".to_string()
 }
 
-
+/// 将 RepairOutcome 转换为可序列化的 RepairJsonRecord(status/编码/策略/步骤/证据等)。
 pub(crate) fn to_repair_json_record(outcome: &RepairOutcome) -> RepairJsonRecord {
     RepairJsonRecord {
         path: outcome.path.display().to_string(),
@@ -235,7 +237,7 @@ pub(crate) fn to_repair_json_record(outcome: &RepairOutcome) -> RepairJsonRecord
     }
 }
 
-
+/// 递归收集目录下所有普通文件路径(跳过符号链接)，结果追加到 out 向量。
 pub(crate) fn collect_repair_targets(
     root: &std::path::Path,
     out: &mut Vec<std::path::PathBuf>,
@@ -257,7 +259,8 @@ pub(crate) fn collect_repair_targets(
     Ok(())
 }
 
-
+/// 执行单文件修复：读取字节，若疑似二进制则走 binary-guard 跳过；
+/// 否则计算修复结果并按 inplace/output/backup/dry-run 条件写回。
 pub(crate) fn run_single_repair(
     input_path: &std::path::Path,
     target_path: Option<&std::path::Path>,
@@ -270,6 +273,30 @@ pub(crate) fn run_single_repair(
     }
 
     let result = compute_single_repair_result(&bytes);
+    // P2-83 数据安全双门：
+    // ① `--inplace` 覆写原文件前强制创建 `.bak` 备份（由 opt-in 改为 opt-out）——
+    //    mojibake 修复链本质是不可逆转换（GBK→UTF-8 重编码 + 乱码字符替换），误判时原内容丢失。
+    // ② 低置信度（confidence=="low"）**且修复实际改动了内容**时跳过持久化，标记
+    //    manual_review_low_confidence 交人工复核——不可逆替换证据不足正是「误判丢内容」
+    //    的风险面；注意 confidence=="low" 同时覆盖「无改动」情形（score 0），那是
+    //    重编码主功能的正常路径，不在此门内（其安全网由 ① 的强制备份兜住）。
+    //    stdout 预览（target=None）与 dry-run 不受限。
+    let inplace = target_path == Some(input_path);
+    let create_backup = create_backup || inplace;
+    if result.confidence == "low" && result.changed && target_path.is_some() {
+        let mut outcome = build_single_repair_outcome(input_path, result);
+        outcome.skipped = true;
+        outcome.reason = "manual_review_low_confidence".to_string();
+        outcome.strategy = classify_repair_strategy(
+            &outcome.detected_enc,
+            &outcome.steps,
+            outcome.changed,
+            true,
+            "manual_review_low_confidence",
+            "low",
+        );
+        return Ok(outcome);
+    }
     persist_repaired_text(
         input_path,
         target_path,
@@ -280,7 +307,6 @@ pub(crate) fn run_single_repair(
     Ok(build_single_repair_outcome(input_path, result))
 }
 
-
 pub(crate) struct SingleRepairResult {
     detected_enc: String,
     repaired: String,
@@ -290,7 +316,8 @@ pub(crate) struct SingleRepairResult {
     changed: bool,
 }
 
-
+/// 计算单文件修复结果：解码回退、显示修复、评估置信度与证据，
+/// 返回检测编码/修复文本/步骤/是否变更等字段。
 pub(crate) fn compute_single_repair_result(bytes: &[u8]) -> SingleRepairResult {
     let (decoded, detected_enc) = crate::core::encoding_fallback::decode_with_fallback(bytes);
     let (repaired, steps) = crate::core::encoding_fallback::repair_text_for_display(&decoded);
@@ -307,7 +334,7 @@ pub(crate) fn compute_single_repair_result(bytes: &[u8]) -> SingleRepairResult {
     }
 }
 
-
+/// 由 SingleRepairResult 构造 RepairOutcome：汇总修复链(reair_chain)、归类策略与证据文本。
 pub(crate) fn build_single_repair_outcome(
     input_path: &std::path::Path,
     result: SingleRepairResult,
@@ -341,7 +368,7 @@ pub(crate) fn build_single_repair_outcome(
     }
 }
 
-
+/// 构造二进制文件的修复结果(跳过)：标记为 binary/skipped，策略为 binary-guard 的人工复核。
 pub(crate) fn build_binary_guard_outcome(input_path: &std::path::Path) -> RepairOutcome {
     let steps = vec!["binary-guard-skip-repair".to_string()];
     let evidence_items = vec!["binary-guard=true".to_string()];
@@ -360,7 +387,7 @@ pub(crate) fn build_binary_guard_outcome(input_path: &std::path::Path) -> Repair
     }
 }
 
-
+/// 持久化修复文本：按 --inplace/--backup/--output 与非 dry-run 条件写回修复结果或创建备份副本。
 pub(crate) fn persist_repaired_text(
     input_path: &std::path::Path,
     target_path: Option<&std::path::Path>,
@@ -380,7 +407,7 @@ pub(crate) fn persist_repaired_text(
     Ok(())
 }
 
-
+/// 校验 repair-file 请求参数：--backup 必须与 --inplace 同用；目录模式要求 --inplace 且不支持 output 文件。
 pub(crate) fn validate_repair_file_request(
     input_path: &std::path::Path,
     args: &CliArgs,
@@ -407,7 +434,7 @@ pub(crate) fn validate_repair_file_request(
     Ok(())
 }
 
-
+/// 解析单文件修复的目标路径<'a>：--inplace 指向原文件，否则取 --output 文件；stdout 时返回 None(直接打印)。
 pub(crate) fn resolve_single_repair_target<'a>(
     input_path: &'a std::path::Path,
     args: &'a CliArgs,
@@ -421,7 +448,7 @@ pub(crate) fn resolve_single_repair_target<'a>(
     }
 }
 
-
+/// repair-file 子命令入口：校验输入为文件(禁止空 stdin)，目录则走目录模式，否则走单文件模式。
 pub(crate) fn run_repair_file_command(args: &CliArgs) -> Result<(), CliError> {
     let json_mode = matches!(args.output_format, OutputFormat::Json);
     let input_path = match &args.input {
@@ -441,7 +468,8 @@ pub(crate) fn run_repair_file_command(args: &CliArgs) -> Result<(), CliError> {
     run_repair_file_single_mode(args, input_path, json_mode)
 }
 
-
+/// 目录模式修复：递归收集文件、按 include/exclude 过滤，逐文件修复并统计 changed/unchanged/skipped/failures，
+/// 可选择 JSON 报告；存在失败时返回 Config 错误。
 pub(crate) fn run_repair_file_directory_mode(
     args: &CliArgs,
     input_path: &std::path::Path,
@@ -558,7 +586,8 @@ pub(crate) fn run_repair_file_directory_mode(
     Ok(())
 }
 
-
+/// 单文件模式修复：先按过滤器判断是否跳过，再解析目标并修复，
+/// 按 json/plain 输出诊断信息或修复文本(无 output 时直接打印)。
 pub(crate) fn run_repair_file_single_mode(
     args: &CliArgs,
     input_path: &std::path::Path,
@@ -641,8 +670,11 @@ pub(crate) fn run_repair_file_single_mode(
     Ok(())
 }
 
-
-pub(crate) fn should_skip_single_repair_by_filters(args: &CliArgs, input_path: &std::path::Path) -> bool {
+/// 判断单文件是否因 include/exclude 过滤器而跳过：两者皆空则不跳过，否则复用 should_repair_path 判定。
+pub(crate) fn should_skip_single_repair_by_filters(
+    args: &CliArgs,
+    input_path: &std::path::Path,
+) -> bool {
     if args.include.is_empty() && args.exclude.is_empty() {
         return false;
     }
@@ -654,7 +686,7 @@ pub(crate) fn should_skip_single_repair_by_filters(args: &CliArgs, input_path: &
     )
 }
 
-
+/// 构造因 include/exclude 过滤被跳过时的 RepairOutcome：标记 skipped 与原因 include-exclude-filter。
 pub(crate) fn build_include_exclude_skipped_outcome(input_path: &std::path::Path) -> RepairOutcome {
     RepairOutcome {
         path: input_path.to_path_buf(),
@@ -671,7 +703,8 @@ pub(crate) fn build_include_exclude_skipped_outcome(input_path: &std::path::Path
     }
 }
 
-
+/// 构造单文件模式的 RepairJsonReport：按 skipped/changed/unchanged 计入汇总，
+/// 封装单条记录与可选的 stdout 负载。
 pub(crate) fn build_single_mode_json_report(
     args: &CliArgs,
     input_path: &std::path::Path,
@@ -703,7 +736,7 @@ pub(crate) fn build_single_mode_json_report(
     }
 }
 
-
+/// 生成并输出单文件模式 JSON 报告：将 RepairJsonReport 序列化后漂亮打印到标准输出。
 pub(crate) fn emit_single_mode_json_report(
     args: &CliArgs,
     input_path: &std::path::Path,
@@ -716,3 +749,91 @@ pub(crate) fn emit_single_mode_json_report(
     Ok(())
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    /// 在系统临时目录下创建唯一子目录，返回其路径（测试结束由调用方清理）。
+    fn temp_test_dir(tag: &str) -> PathBuf {
+        let dir = std::env::temp_dir().join(format!(
+            "tokenslim_repair_test_{}_{}",
+            tag,
+            std::process::id()
+        ));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).expect("create temp dir");
+        dir
+    }
+
+    /// P2-83 回归（强制备份门）：--inplace 覆写原文件前必须自动创建 .bak，
+    /// 即使用户未显式传 --backup——mojibake 修复链是不可逆转换，覆写无备份
+    /// 意味着误判时原文件内容丢失且无回退。
+    #[test]
+    fn inplace_overwrite_creates_backup_even_without_backup_flag() {
+        let dir = temp_test_dir("backup");
+        let file = dir.join("sample.txt");
+        std::fs::write(&file, "hello world\nsecond line\n").expect("write sample");
+
+        // create_backup=false 模拟未传 --backup
+        let outcome = run_single_repair(&file, Some(&file), false, false).expect("repair ok");
+        assert!(!outcome.skipped, "高置信度无改动文件不应被跳过");
+
+        let backup = default_backup_output_path(&file);
+        assert!(backup.exists(), "inplace 覆写前必须自动创建备份 {backup:?}");
+        let backup_content = std::fs::read(&backup).expect("read backup");
+        assert_eq!(
+            String::from_utf8_lossy(&backup_content),
+            "hello world\nsecond line\n",
+            "备份必须是覆写前的原始字节"
+        );
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// P2-83 回归（低置信度门）：confidence=="low" 且修复实际改动内容时，
+    /// 不得持久化（文件不被写回），结果标记 manual_review_low_confidence。
+    /// 夹具：CRLF 归一步骤必然产生 changed + steps，但正文是不可修复的疑似
+    /// 乱码字符——markers 不下降且修复后仍可疑（still-suspicious -1），
+    /// score = 1(steps) + 1(changed) - 1 = 1 → low。
+    #[test]
+    fn low_confidence_changed_repair_is_not_persisted() {
+        let dir = temp_test_dir("lowconf");
+        let file = dir.join("lowconf.txt");
+        std::fs::write(&file, "\u{c2}\u{c2}\u{c2}\r\n\u{c2}\u{c2}\u{c2}\r\n")
+            .expect("write sample");
+        let before = std::fs::read(&file).expect("read before");
+
+        let outcome = run_single_repair(&file, Some(&file), false, false).expect("repair ok");
+
+        let after = std::fs::read(&file).expect("read after");
+        assert_eq!(before, after, "低置信度修复不得写回文件（P2-83 核心缺陷）");
+        assert!(outcome.skipped, "结果应标记 skipped");
+        assert_eq!(
+            outcome.reason, "manual_review_low_confidence",
+            "跳过原因应为 manual_review_low_confidence"
+        );
+        assert_eq!(
+            outcome.strategy, "manual_review_low_confidence",
+            "策略分类应为 manual_review_low_confidence"
+        );
+
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    /// classify_repair_strategy 对 manual_review_low_confidence 原因的映射。
+    #[test]
+    fn classify_marks_manual_review_low_confidence() {
+        assert_eq!(
+            classify_repair_strategy(
+                "utf-8",
+                &["normalize-crlf".to_string()],
+                true,
+                true,
+                "manual_review_low_confidence",
+                "low"
+            ),
+            "manual_review_low_confidence"
+        );
+    }
+}

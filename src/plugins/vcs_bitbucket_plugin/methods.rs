@@ -1,69 +1,35 @@
 #![allow(dead_code)]
 //! Bitbucket 压缩方法 — Compression Protocol V1
-use super::parser::*;
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
-
-// ============================================================================
-// 遗留 parser 集成（保留兼容性）
-// ============================================================================
-#[tracing::instrument(level = "debug", skip_all)]
-pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
-    match parser.parse(raw) {
-        Some(doc) => render_bb_doc(&doc),
-        None => raw.to_string(),
-    }
-}
-
-fn render_bb_doc(doc: &VcsDocument) -> String {
-    let mut lines = Vec::new();
-    for rec in &doc.records {
-        lines.push(render_bb_record(rec));
-    }
-    lines.join("\n")
-}
-
-fn render_bb_record(rec: &VcsRecord) -> String {
-    match rec {
-        VcsRecord::Section(s) => format!("[{}]", s),
-        VcsRecord::Commit(c) => format!("#{}", c),
-        VcsRecord::Subject(s) => s.clone(),
-        VcsRecord::Author(a) => format!("@{}", a),
-        VcsRecord::Date(d) => d.clone(),
-        VcsRecord::Stat(s) => s.clone(),
-        VcsRecord::Raw(r) => r.clone(),
-        VcsRecord::File { status, path } => {
-            if let Some(st) = status {
-                format!("{} {}", st, path)
-            } else {
-                path.clone()
-            }
-        }
-        VcsRecord::LabeledFile { label, path } => format!("[{}] {}", label, path),
-        _ => rec.to_string(),
-    }
-}
 
 // ============================================================================
 // 公开 API
 // ============================================================================
+/// bitbucket 日志的 AI 压缩入口：委托 compact_bb_dispatch 处理。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bitbucket_log_for_ai(raw: &str) -> String {
     compact_bb_dispatch(raw)
 }
 
+/// bitbucket 其他输出的 AI 压缩入口：委托 compact_bb_dispatch 处理。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_bitbucket_other_for_ai(raw: &str) -> String {
     compact_bb_dispatch(raw)
 }
 
+/// 判断是否为 bitbucket 命令块：首个非空行以 bitbucket 命令头开头。
 #[tracing::instrument(level = "debug", skip_all)]
-pub fn is_bitbucket_log_block(_: &str) -> bool {
-    true
+pub fn is_bitbucket_log_block(text: &str) -> bool {
+    text.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim_start().starts_with("bitbucket "))
+        .unwrap_or(false)
 }
 
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：剥离 ANSI，按首行命令分派到 pr list/view/create 与 issue list 专用压缩，否则走通用。
 fn compact_bb_dispatch(raw: &str) -> String {
     let cleaned = crate::core::utils::strip_ansi(raw);
 
@@ -100,6 +66,7 @@ fn compact_bb_dispatch(raw: &str) -> String {
 // ============================================================================
 // Case 113: pr list — 保留锚点，移除表头，行列压缩
 // ============================================================================
+/// 压缩 bitbucket pr list 输出：保留锚点，跳过表头/分隔线，数据行压缩为 #ID ST: OW: 格式。
 fn compact_bb_pr_list(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -185,6 +152,7 @@ fn parse_pr_row(line: &str) -> Option<String> {
 // ============================================================================
 // Case 114: pr view — 保留锚点，扁平化 K-V，DESC 单独行
 // ============================================================================
+/// 压缩 bitbucket pr view 输出：K-V 扁平化（ST/OW/RV/BR），Description 单独 DESC 行。
 fn compact_bb_pr_view(raw: &str) -> String {
     let mut out = Vec::new();
     let mut meta_parts: Vec<String> = Vec::new();
@@ -222,6 +190,11 @@ fn compact_bb_pr_view(raw: &str) -> String {
         if trimmed == "Description:" {
             in_desc = true;
             continue;
+        }
+        if in_desc && is_bb_desc_boundary(trimmed) {
+            // P3-193：旧实现进入描述段后无边界检测，Description 之后的 Diff/Commits/
+            // Approvals 等整段全部吸入 DESC。识别 section 头边界即退出描述段。
+            in_desc = false;
         }
         if in_desc {
             desc_lines.push(trimmed.to_string());
@@ -283,6 +256,7 @@ fn compact_bb_view_kv(line: &str) -> Option<String> {
 // ============================================================================
 // Case 207: pr create — 保留锚点，URL 消除，SRC 映射
 // ============================================================================
+/// 压缩 bitbucket pr create 输出：URL 消除，Source 映射为 SRC:，Created PR 保留。
 fn compact_bb_pr_create(raw: &str) -> String {
     let mut out = Vec::new();
 
@@ -324,6 +298,7 @@ fn compact_bb_pr_create(raw: &str) -> String {
 // ============================================================================
 // Case 208: issue list — 保留锚点，移除表头，行列压缩
 // ============================================================================
+/// 压缩 bitbucket issue list 输出：跳过表头，数据行压缩为 #ID ST: OW: PRI: 格式。
 fn compact_bb_issue_list(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -394,6 +369,7 @@ fn parse_issue_row(line: &str) -> Option<String> {
 // ============================================================================
 // 通用噪音过滤与 fallback
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤分隔线/表头/噪音/URL，异常状态映射为 ! 前缀。
 fn compact_bb_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -466,6 +442,21 @@ fn is_bb_view_noise(line: &str) -> bool {
         || lower.starts_with("updated:")
         || lower.starts_with("participants:")
         || lower.starts_with("comments:")
+}
+
+/// P3-193：PR view Description 段的边界检测（对齐 glab `is_glab_desc_boundary`）。
+/// bitbucket PR view 在 Description 之后通常还有 Diff/Commits/Approvals/Changes 等
+/// section 头；识别到这些边界即退出描述段，避免后续段落被全部吸入 DESC。
+fn is_bb_desc_boundary(line: &str) -> bool {
+    let lower = line.to_ascii_lowercase();
+    lower == "diff"
+        || lower == "commits"
+        || lower == "approvals"
+        || lower == "comments"
+        || lower == "tasks"
+        || lower == "checklist"
+        || lower == "changes:"
+        || lower == "reviewers:"
 }
 
 /// Bitbucket 通用噪音检测

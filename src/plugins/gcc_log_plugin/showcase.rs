@@ -46,6 +46,7 @@ mod tests {
             .collect::<String>()
     }
 
+    /// 测试：生成 gcc_log 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_gcc_log_showcase_report() {
         let plugin = GccLogPlugin::new();
@@ -91,6 +92,40 @@ mod tests {
                 "ci",
             ),
             ("case_024_ctest_timeout.log", "CTest timeout", "ctest"),
+            // binutils 分析输出扩展（gcc_log 感知压缩 nm/size/objdump 节表）
+            ("case_025_nm_symbols.log", "nm 符号表", "nm"),
+            ("case_026_size_sections.log", "size 各节大小", "size"),
+            (
+                "case_027_objdump_sections.log",
+                "objdump/readelf 节表",
+                "objdump",
+            ),
+            (
+                "case_028_nm_dynamic_symbols.log",
+                "nm 动态符号·版本尾",
+                "nm",
+            ),
+            ("case_029_readelf_sections.log", "readelf 节表", "readelf"),
+            ("case_030_ar_members.log", "ar 归档成员清单", "ar"),
+            ("case_031_objdump_symbols.log", "objdump 符号表", "objdump"),
+            ("case_032_objdump_disasm.log", "objdump 反汇编", "objdump"),
+            ("case_033_ar_nested_members.log", "ar 嵌套路径成员", "ar"),
+            (
+                "case_034_objdump_relocations.log",
+                "objdump 重定位表",
+                "objdump",
+            ),
+            (
+                "case_035_ar_create_verbose.log",
+                "ar 创建归档 verbose",
+                "ar",
+            ),
+            // P2-19：诊断块折叠边界——git graph 竖线行不得被无状态形状匹配误伤
+            (
+                "case_036_mixed_diag_and_graph.log",
+                "诊断折叠+git graph 竖线",
+                "make",
+            ),
         ];
 
         let mut all_output = String::new();

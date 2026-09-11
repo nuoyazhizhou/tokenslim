@@ -1,4 +1,5 @@
 impl VcsPlugin {
+    /// 创建 VcsPlugin 实例（名称 vcs，优先级 150，默认配置与白名单）。
     pub fn new() -> Self {
         let mut plugin = Self {
             name: "vcs",
@@ -12,6 +13,7 @@ impl VcsPlugin {
         plugin
     }
 
+    /// 尝试从 cwd 的 config 目录加载外部 vcs_plugin 配置（json/toml）。
     fn try_load_external_config(&mut self) {
         if let Ok(cwd) = std::env::current_dir() {
             let repo_candidates = vec![
@@ -40,6 +42,7 @@ impl VcsPlugin {
         }
     }
 
+    /// 应用分层配置中第一个有效的覆盖。
     fn apply_first_valid_in_layer(&mut self, candidates: &[PathBuf], layer: &str) {
         let mut found_any = false;
         for path in candidates {
@@ -75,12 +78,14 @@ impl VcsPlugin {
         }
     }
 
+    /// 读取覆盖配置文件。
     fn read_override_file(&self, path: &Path) -> Result<VcsOverrideConfig, String> {
         let content = std::fs::read_to_string(path)
             .map_err(|e| format!("E_VCS_OVERRIDE_READ:{}:{e}", path.display()))?;
         parse_override_from_path(path, &content)
     }
 
+    /// 应用配置覆盖到插件。
     pub(crate) fn apply_overrides(&mut self, override_config: VcsOverrideConfig) {
         if override_config.replace_command_whitelists {
             self.command_whitelists.clear();
@@ -125,6 +130,7 @@ impl VcsPlugin {
         }
     }
 
+    /// 按文本特征分类 VCS 工具（显式命令优先，再按签名匹配）。
     fn classify_tool(&self, text: &str) -> Option<VcsTool> {
         let lower = text.to_ascii_lowercase();
         // 显式命令优先：若首行可解析为 VCS 命令，直接按命令工具归类。
@@ -138,7 +144,18 @@ impl VcsPlugin {
 
         // Prioritize Git structural signatures before generic "@@ -" style diff checks
         // used by SVN/HG, otherwise git show/diff can be misrouted.
-        if is_git_show_block(text) || is_git_log_block(text) || lower.contains("diff --git ") {
+        // 云端 CLI 命令头（gh/glab/az/bitbucket/repo/gerrit）同样归类 Git 家族，
+        // 供分派表按工具关键词二次路由到各自专用压缩器（方案 A 接线）。
+        if is_git_show_block(text)
+            || is_git_log_block(text)
+            || lower.contains("diff --git ")
+            || gh_methods::is_gh_log_block(text)
+            || glab_methods::is_glab_log_block(text)
+            || az_methods::is_az_log_block(text)
+            || bitbucket_methods::is_bitbucket_log_block(text)
+            || repo_methods::is_repo_log_block(text)
+            || gerrit_methods::is_gerrit_log_block(text)
+        {
             return Some(VcsTool::Git);
         }
 
@@ -262,6 +279,7 @@ impl VcsPlugin {
         best.map(|(tool, _)| tool)
     }
 
+    /// 重写文本行中的路径为字典 token。
     fn rewrite_line_with_paths(&self, line: &str, dict_engine: &mut DictionaryEngine) -> String {
         if !self.config.dictionaryize_paths {
             return line.to_string();
@@ -324,6 +342,7 @@ impl VcsPlugin {
     }
 }
 
+/// 判断是否含非 VCS 显式命令头。
 fn has_non_vcs_explicit_command_head(text: &str) -> bool {
     let first = first_non_empty_line(text);
     if first.is_empty() {
@@ -340,14 +359,17 @@ fn has_non_vcs_explicit_command_head(text: &str) -> bool {
 }
 
 impl Plugin for VcsPlugin {
+    /// 返回插件名称 "vcs"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 150。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：AI 压缩模式下直接命中；否则按工具特征与命令头判断，返回置信度。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
         let lower = text.to_ascii_lowercase();
@@ -363,6 +385,23 @@ impl Plugin for VcsPlugin {
         }
         if tool == VcsTool::Git && is_git_log_block(text) {
             return Some(0.95);
+        }
+        // 云端 CLI 命令头特判：gh/glab/az/bitbucket/repo/gerrit 输出以命令头开头，
+        // 给予与 git log 相当的置信度，避免非 AI 模式下被 smart_path 等插件抢走路由。
+        if tool == VcsTool::Git
+            && (gh_methods::is_gh_log_block(text)
+                || glab_methods::is_glab_log_block(text)
+                || az_methods::is_az_log_block(text)
+                || bitbucket_methods::is_bitbucket_log_block(text)
+                || repo_methods::is_repo_log_block(text)
+                || gerrit_methods::is_gerrit_log_block(text))
+        {
+            return Some(0.95);
+        }
+        // SVN 显式命令块给予高分特判：svn info --xml 等输出文本以 XML 结构为主，
+        // 通用评分会被 smart_path/xml_html 抢走路由，故按子命令块显式给高分。
+        if tool == VcsTool::Svn && is_svn_info_block(text) {
+            return Some(0.99);
         }
 
         let mut score = 0.45;
@@ -385,6 +424,7 @@ impl Plugin for VcsPlugin {
         Some(score.min(0.95))
     }
 
+    /// 压缩切片：按工具与意图分派到各微插件/通用压缩，ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -766,23 +806,14 @@ impl Plugin for VcsPlugin {
         }
     }
 
+    /// 解压：原文透传（由核心引擎统一还原 token）。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
     }
 
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<VcsConfig>() {
-            self.config = c.clone();
-            return Ok(());
-        }
-        if let Some(c) = config.downcast_ref::<VcsOverrideConfig>() {
-            self.apply_overrides(c.clone());
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
-    }
 }
 
+/// 判断是否为装饰行（如 
 fn is_decorative_line(line: &str) -> bool {
     let trimmed = line.trim();
     if trimmed.len() >= 10 {
@@ -797,6 +828,7 @@ fn is_decorative_line(line: &str) -> bool {
     }
 }
 
+/// 判断是否为 git 网络进度行（remote: counting/writing objects 等）。
 fn is_git_network_progress_line(line: &str) -> bool {
     let lower = line.trim().to_ascii_lowercase();
     let lower = lower.strip_prefix("remote: ").unwrap_or(&lower).trim();
@@ -810,6 +842,7 @@ fn is_git_network_progress_line(line: &str) -> bool {
         || (lower.starts_with("total ") && lower.contains("delta") && lower.contains("reused"))
 }
 
+/// 选择更短的行（原行 vs 候选压缩行）。
 fn prefer_shorter_line<'a>(original: &'a str, candidate: String) -> String {
     if candidate.len() < original.len() {
         candidate
@@ -818,6 +851,7 @@ fn prefer_shorter_line<'a>(original: &'a str, candidate: String) -> String {
     }
 }
 
+/// 压缩常见 VCS 确认行（如 "Already up to date."）。
 fn compact_common_vcs_ack_line(line: &str) -> String {
     // Keep explicit command lines intact so command intent stays stable.
     if infer_tool_from_explicit_command(line).is_some() {

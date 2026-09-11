@@ -7,3 +7,6 @@
 
 pub mod methods;
 pub use methods::*;
+
+#[cfg(test)]
+mod test;

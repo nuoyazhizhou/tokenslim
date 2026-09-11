@@ -8,6 +8,7 @@ mod tests {
     use crate::plugins::smart_path_plugin::SmartPathPlugin;
     use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/smart_path_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,7 +18,9 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &SmartPathPlugin, text: &str) -> String {
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本；
+    /// 同时返回压缩过程中产生的路径字典快照 JSON（`$Pn` 路径映射），供审计侧通道携带。
+    fn compress_text(plugin: &SmartPathPlugin, text: &str) -> (String, String) {
         let slice = Slice {
             id: 1,
             text: Cow::Borrowed(text),
@@ -32,16 +35,31 @@ mod tests {
         let mut dedup = DedupEngine::new(DedupConfig::default());
         let arena = bumpalo::Bump::new();
         let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
+        let compacted = result
             .tokens
             .iter()
             .filter_map(|t| match t {
                 Token::Text(s) => Some(s.as_ref()),
                 _ => None,
             })
-            .collect::<String>()
+            .collect::<String>();
+        // 路径/目录 token 用 BTreeMap 保证序列化序稳定，便于审计报告可复现。
+        // 路径压缩会把目录前缀登记为 `$P/$D` token，映射存于快照 paths/directories。
+        let snap = dict.snapshot();
+        let mut merged: std::collections::HashMap<String, String> =
+            std::collections::HashMap::new();
+        merged.extend(snap.paths.iter().map(|(k, v)| (k.clone(), v.clone())));
+        merged.extend(snap.directories.iter().map(|(k, v)| (k.clone(), v.clone())));
+        let dict_json = if merged.is_empty() {
+            String::new()
+        } else {
+            let btree: std::collections::BTreeMap<String, String> = merged.into_iter().collect();
+            serde_json::to_string(&btree).unwrap_or_default()
+        };
+        (compacted, dict_json)
     }
 
+    /// 测试：遍历样例生成 smart_path 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_smart_path_showcase_report() {
         let plugin = SmartPathPlugin::new();
@@ -81,12 +99,12 @@ mod tests {
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
             let compacted = compress_text(&plugin, &raw);
-            let compact_lines = if compacted.is_empty() {
+            let compact_lines = if compacted.0.is_empty() {
                 0
             } else {
-                compacted.lines().count()
+                compacted.0.lines().count()
             };
-            let compact_bytes = compacted.len();
+            let compact_bytes = compacted.0.len();
             let compression_ratio = if original_bytes > 0 {
                 (1.0 - compact_bytes as f64 / original_bytes as f64) * 100.0
             } else {
@@ -112,8 +130,18 @@ mod tests {
             all_output.push_str("-- Compact Output (full) --\n");
             all_output.push_str(&"-".repeat(80));
             all_output.push_str("\n");
-            all_output.push_str(&compacted);
+            all_output.push_str(&compacted.0);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 字典侧通道：仅在压缩产生 `$P/$D` 路径 token 时携带 token->原文 映射，
+            // 供审计产物隔离到 compact.txt 后仍可逆解析，不改变上方 compact 段内容（哈希不变）。
+            if !compacted.1.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push_str("\n");
+                all_output.push_str(&compacted.1);
                 all_output.push('\n');
             }
         }

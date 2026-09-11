@@ -1,0 +1,15 @@
+scenario: '对可执行文件 a.out 运行 nm 列出全部符号，输出含全局函数/数据符号、局部符号与未定义符号。'
+target_capability: 'binutils nm 符号表压缩（去地址 + 局部符号类型汇总）'
+expected_keep: 'U printf'
+expected_compress: '00000000004004a9 T main'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '4d6e90e952f63a1286c049094ffd9137f419367f62cbef450800e97bf4654165'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

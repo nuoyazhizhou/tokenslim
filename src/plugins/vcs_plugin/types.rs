@@ -14,6 +14,7 @@ pub enum VcsTool {
 }
 
 impl VcsTool {
+    /// VcsTool::from_key：按关键词解析 VCS 工具枚举。
     pub fn from_key(key: &str) -> Option<Self> {
         match key.trim().to_ascii_lowercase().as_str() {
             "git" => Some(VcsTool::Git),
@@ -30,6 +31,7 @@ impl VcsTool {
 }
 
 impl VcsTool {
+    /// VcsTool::as_str：将工具枚举转换为字符串。
     pub fn as_str(&self) -> &'static str {
         match self {
             VcsTool::Git => "git",
@@ -238,15 +240,18 @@ pub struct VcsConfig {
     pub max_blank_lines: usize,
 }
 
+/// serde 默认值：true。
 fn default_true() -> bool {
     true
 }
 
+/// serde 默认值：最大空行数。
 fn default_max_blank_lines() -> usize {
     1
 }
 
 impl Default for VcsConfig {
+    /// 默认配置实现。
     fn default() -> Self {
         Self {
             dictionaryize_paths: true,
@@ -277,6 +282,7 @@ pub struct VcsOverrideConfig {
     pub replace_signatures: bool,
 }
 
+/// 返回默认命令白名单映射。
 pub fn default_command_whitelists() -> HashMap<VcsTool, Vec<String>> {
     VCS_COMMAND_WHITELISTS
         .iter()
@@ -289,6 +295,7 @@ pub fn default_command_whitelists() -> HashMap<VcsTool, Vec<String>> {
         .collect()
 }
 
+/// 返回默认签名映射。
 pub fn default_signatures() -> HashMap<VcsTool, Vec<String>> {
     VCS_SIGNATURES
         .iter()

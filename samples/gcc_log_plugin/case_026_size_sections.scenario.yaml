@@ -1,0 +1,15 @@
+scenario: '对 a.out 及其依赖对象文件运行 size 命令，列出各文件的 text/data/bss/dec/hex 各节大小。'
+target_capability: 'binutils size 节大小压缩（去冗余 hex 列，保留关键数值）'
+expected_keep: 'a.out'
+expected_compress: 'text    data     bss     dec     hex filename'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '3fc4a1a57c6e9fec7a2f7dfb70d6458fb87c58718884ea2d7dd40c4b8304c43b'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

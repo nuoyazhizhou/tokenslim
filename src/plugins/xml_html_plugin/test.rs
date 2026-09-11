@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::test_utils::*;
     use crate::plugins::xml_html_plugin::types::XmlHtmlPlugin;
 
+    /// 验证简单 XML 样本能被 `detect` 命中且置信度高于 0.5。
     #[test]
     fn detects_simple_xml_sample() {
         let plugin = XmlHtmlPlugin::new();
@@ -16,6 +17,7 @@ mod tests {
         assert!(score.unwrap() > 0.5);
     }
 
+    /// 验证简单 HTML 样本能被 `detect` 命中。
     #[test]
     fn detects_simple_html_sample() {
         let plugin = XmlHtmlPlugin::new();
@@ -25,6 +27,7 @@ mod tests {
             .is_some());
     }
 
+    /// 验证复杂 XML 样本压缩后不得显著扩张。
     #[test]
     fn compresses_complex_xml_sample_without_expansion() {
         let plugin = XmlHtmlPlugin::new();

@@ -1,9 +1,9 @@
 //! cli export 子命令
 
-use crate::cli::common::*;
 use crate::cli::commands::run::{
     build_run_command_anchor, load_run_routes, plugins_for_run_command,
 };
+use crate::cli::common::*;
 use crate::cli::get_plugins;
 use crate::cli::types::*;
 use crate::core::compression::{CompressionMetadata, CompressionOutput, Token};
@@ -27,7 +27,6 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::io::{self, IsTerminal, Read};
 
-
 /// 获取 VCS 意图（兼容旧代码的 Option 签名）
 #[derive(Debug, Clone, Default)]
 pub(crate) struct PluginCapabilityEvidence {
@@ -42,7 +41,7 @@ pub(crate) struct PluginCapabilityEvidence {
     pub(crate) detect_patterns: Vec<String>,
 }
 
-
+/// 返回插件能力索引文件(plugin_capability_index.json)的绝对路径(位于 CARGO_MANIFEST_DIR/docs/audit)。
 pub(crate) fn capability_index_path() -> std::path::PathBuf {
     std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"))
         .join("docs")
@@ -50,12 +49,12 @@ pub(crate) fn capability_index_path() -> std::path::PathBuf {
         .join("plugin_capability_index.json")
 }
 
-
+/// 从 JSON Value 取 u64 字段，缺失或非数字时返回 0。
 pub(crate) fn json_u64(value: &serde_json::Value, key: &str) -> u64 {
     value.get(key).and_then(|v| v.as_u64()).unwrap_or(0)
 }
 
-
+/// 从 JSON Value 取字符串字段，缺失时返回空串。
 pub(crate) fn json_string(value: &serde_json::Value, key: &str) -> String {
     value
         .get(key)
@@ -64,7 +63,7 @@ pub(crate) fn json_string(value: &serde_json::Value, key: &str) -> String {
         .to_string()
 }
 
-
+/// 解析插件的 detect_patterns 字段：取数组前 5 个字符串，缺失则返回空。
 pub(crate) fn parse_detect_patterns(value: &serde_json::Value) -> Vec<String> {
     value
         .get("detect_patterns")
@@ -79,7 +78,7 @@ pub(crate) fn parse_detect_patterns(value: &serde_json::Value) -> Vec<String> {
         .unwrap_or_default()
 }
 
-
+/// 在插件 JSON 数组中按名称查找指定插件条目<'a>。
 pub(crate) fn find_plugin_entry<'a>(
     plugins: &'a [serde_json::Value],
     plugin_name: &str,
@@ -92,8 +91,10 @@ pub(crate) fn find_plugin_entry<'a>(
     })
 }
 
-
-pub(crate) fn parse_plugin_capability_evidence(plugin: &serde_json::Value) -> PluginCapabilityEvidence {
+/// 将单个插件 JSON 解析为 PluginCapabilityEvidence 结构(描述/标签/路由/样本数/检测模式等)。
+pub(crate) fn parse_plugin_capability_evidence(
+    plugin: &serde_json::Value,
+) -> PluginCapabilityEvidence {
     PluginCapabilityEvidence {
         description: json_string(plugin, "description"),
         tags: json_string(plugin, "capability_tags"),
@@ -107,8 +108,10 @@ pub(crate) fn parse_plugin_capability_evidence(plugin: &serde_json::Value) -> Pl
     }
 }
 
-
-pub(crate) fn load_plugin_capability_evidence(plugin_name: &str) -> Option<PluginCapabilityEvidence> {
+/// 从能力索引加载指定插件名的 PluginCapabilityEvidence(文件缺失或插件不存在返回 None)。
+pub(crate) fn load_plugin_capability_evidence(
+    plugin_name: &str,
+) -> Option<PluginCapabilityEvidence> {
     let bytes = std::fs::read(capability_index_path()).ok()?;
     let content = decode_capability_index_text(&bytes);
     let root: serde_json::Value = serde_json::from_str(&content).ok()?;
@@ -117,7 +120,7 @@ pub(crate) fn load_plugin_capability_evidence(plugin_name: &str) -> Option<Plugi
     Some(parse_plugin_capability_evidence(plugin))
 }
 
-
+/// 解码能力索引文本：处理 UTF-16 LE/BE BOM 与 UTF-8(含 BOM) 的字节流为字符串。
 pub(crate) fn decode_capability_index_text(bytes: &[u8]) -> String {
     if bytes.starts_with(&[0xFF, 0xFE]) {
         let units = bytes[2..]
@@ -142,7 +145,7 @@ pub(crate) fn decode_capability_index_text(bytes: &[u8]) -> String {
         .to_string()
 }
 
-
+/// 清理解释字段：去除回车/换行，将管道符替换为斜杠并裁剪首尾空白。
 pub(crate) fn sanitize_explain_field(value: &str) -> String {
     value
         .replace('\r', " ")
@@ -152,7 +155,7 @@ pub(crate) fn sanitize_explain_field(value: &str) -> String {
         .to_string()
 }
 
-
+/// 将解释报告按行解析为 key=value 对列表。
 pub(crate) fn parse_explain_report_pairs(report: &str) -> Vec<(String, String)> {
     report
         .lines()
@@ -163,8 +166,10 @@ pub(crate) fn parse_explain_report_pairs(report: &str) -> Vec<(String, String)> 
         .collect()
 }
 
-
-pub(crate) fn parse_explain_pipe_attributes(value: &str) -> serde_json::Map<String, serde_json::Value> {
+/// 解析管道分隔属性文本：支持 = 与 : 的 key=value 映射，首段无符号则记为 primary。
+pub(crate) fn parse_explain_pipe_attributes(
+    value: &str,
+) -> serde_json::Map<String, serde_json::Value> {
     let mut attrs = serde_json::Map::new();
     let mut parts = value.split('|');
     if let Some(first) = parts.next() {
@@ -204,15 +209,17 @@ pub(crate) fn parse_explain_pipe_attributes(value: &str) -> serde_json::Map<Stri
     attrs
 }
 
-
+/// 解析 alternative 键中的序号：剥离 alternative_ 前缀取数字，要求 >0。
 pub(crate) fn parse_explain_alternative_index(key: &str) -> Option<usize> {
     let suffix = key.strip_prefix("alternative_")?;
     let index_part = suffix.split('_').next()?;
     index_part.parse::<usize>().ok().filter(|idx| *idx > 0)
 }
 
-
-pub(crate) fn parse_capability_line_to_json(raw: &str) -> serde_json::Map<String, serde_json::Value> {
+/// 将管道属性文本转为 JSON Map：将 primary 段映射为 description 字段。
+pub(crate) fn parse_capability_line_to_json(
+    raw: &str,
+) -> serde_json::Map<String, serde_json::Value> {
     let mut attrs = parse_explain_pipe_attributes(raw);
     if let Some(primary) = attrs.remove("primary") {
         attrs.insert("description".to_string(), primary);
@@ -220,7 +227,7 @@ pub(crate) fn parse_capability_line_to_json(raw: &str) -> serde_json::Map<String
     attrs
 }
 
-
+/// 返回解释报告必需的字段名清单(输入类型/选中插件/决策/置信度/理由/候选等)。
 pub(crate) fn explain_required_fields() -> &'static [&'static str] {
     &[
         "input_kind",
@@ -237,7 +244,7 @@ pub(crate) fn explain_required_fields() -> &'static [&'static str] {
     ]
 }
 
-
+/// 从字段 Map 中取字符串字段，缺失时返回给定的默认值。
 pub(crate) fn explain_field_str<'a>(
     fields: &'a serde_json::Map<String, serde_json::Value>,
     key: &str,
@@ -246,7 +253,7 @@ pub(crate) fn explain_field_str<'a>(
     fields.get(key).and_then(|v| v.as_str()).unwrap_or(default)
 }
 
-
+/// 构选 selected 小节：输出选中插件、why、capability 与 declared_patterns 字段。
 pub(crate) fn build_selected_section(
     fields: &serde_json::Map<String, serde_json::Value>,
 ) -> serde_json::Map<String, serde_json::Value> {
@@ -279,7 +286,7 @@ pub(crate) fn build_selected_section(
     selected
 }
 
-
+/// 构建 alternatives 小节：遍历 pairs，为每个排名条目构造 entry 并排序后返回。
 pub(crate) fn build_alternatives_section(
     pairs: &[(String, String)],
     fields: &serde_json::Map<String, serde_json::Value>,
@@ -294,7 +301,7 @@ pub(crate) fn build_alternatives_section(
     alternatives
 }
 
-
+/// 构建单条 alternative 条目：解析管道属性、注入 rank/key/raw，附插件名与能力证据后返回 JSON。
 pub(crate) fn build_alternative_entry(
     key: &str,
     raw: &str,
@@ -330,7 +337,7 @@ pub(crate) fn build_alternative_entry(
     Some(serde_json::Value::Object(alt))
 }
 
-
+/// 按 rank 升序排序 alternative 条目，使推荐列表稳定有序。
 pub(crate) fn sort_alternative_entries(entries: &mut [serde_json::Value]) {
     entries.sort_by(|a, b| {
         let a_rank = a.get("rank").and_then(|v| v.as_u64()).unwrap_or(u64::MAX);
@@ -339,7 +346,7 @@ pub(crate) fn sort_alternative_entries(entries: &mut [serde_json::Value]) {
     });
 }
 
-
+/// 判断 key 是否属于 alternative 排名条目：以 alternative_ 开头且非顶层 alternatives/capability/declared_patterns。
 pub(crate) fn is_alternative_rank_entry_key(key: &str) -> bool {
     if !key.starts_with("alternative_") || key == "alternatives" {
         return false;
@@ -347,7 +354,7 @@ pub(crate) fn is_alternative_rank_entry_key(key: &str) -> bool {
     !key.ends_with("_capability") && !key.ends_with("_declared_patterns")
 }
 
-
+/// 为某 alternative 附加其 capability 与 declared_patterns(按 alternative_{i} 键从 fields 取)。
 pub(crate) fn attach_alternative_capability_and_patterns(
     alt: &mut serde_json::Map<String, serde_json::Value>,
     fields: &serde_json::Map<String, serde_json::Value>,
@@ -369,7 +376,7 @@ pub(crate) fn attach_alternative_capability_and_patterns(
     }
 }
 
-
+/// 构建推荐小节：汇总 primary/confidence/action/alternatives 与 confidence_gap 来源等字段。
 pub(crate) fn build_recommendation_section(
     fields: &serde_json::Map<String, serde_json::Value>,
 ) -> serde_json::Value {
@@ -385,7 +392,7 @@ pub(crate) fn build_recommendation_section(
     })
 }
 
-
+/// 校验解释报告契约：检查必需字段是否齐全，返回 (是否通过, 缺失字段列表)。
 pub(crate) fn build_explain_contract(
     fields: &serde_json::Map<String, serde_json::Value>,
 ) -> (bool, Vec<serde_json::Value>) {
@@ -398,7 +405,7 @@ pub(crate) fn build_explain_contract(
     (missing_required_fields.is_empty(), missing_required_fields)
 }
 
-
+/// 收集解释字段：解析报告为 key=value 对，并构建字段名到值的 Map 返回。
 pub(crate) fn collect_explain_fields(
     report: &str,
 ) -> (
@@ -413,7 +420,7 @@ pub(crate) fn collect_explain_fields(
     (pairs, fields)
 }
 
-
+/// 构建解释报告的 JSON 值：组装 selected/alternatives/recommendation/contract 与所有字段。
 pub(crate) fn build_explain_report_json_value(
     pairs: &[(String, String)],
     fields: &serde_json::Map<String, serde_json::Value>,
@@ -441,7 +448,7 @@ pub(crate) fn build_explain_report_json_value(
     })
 }
 
-
+/// 将解释报告渲染为美化 JSON 字符串(失败时返回 Serialization 错误)。
 pub(crate) fn render_explain_report_json(report: &str) -> Result<String, CliError> {
     let (pairs, fields) = collect_explain_fields(report);
     let value = build_explain_report_json_value(&pairs, &fields);
@@ -449,7 +456,7 @@ pub(crate) fn render_explain_report_json(report: &str) -> Result<String, CliErro
     serde_json::to_string_pretty(&value).map_err(CliError::Serialization)
 }
 
-
+/// 将解释报告渲染为 Markdown：按 BTreeMap 输出输入类型/选中插件/推荐/证据/候选等小节。
 pub(crate) fn render_explain_report_markdown(report: &str) -> String {
     let pairs = parse_explain_report_pairs(report);
     let mut map = std::collections::BTreeMap::new();
@@ -565,7 +572,7 @@ pub(crate) fn render_explain_report_markdown(report: &str) -> String {
     out
 }
 
-
+/// 按输出格式渲染解释报告：text 原样返回、markdown 结构化、json 走 JSON 构建。
 pub(crate) fn render_explain_report_by_format(
     report: &str,
     format: &OutputFormat,
@@ -577,7 +584,7 @@ pub(crate) fn render_explain_report_by_format(
     }
 }
 
-
+/// 向输出追加某插件的能力证据行：加载 capability 索引，写出 description/tags/route/样本数/检测模式等。
 pub(crate) fn render_capability_evidence_line(prefix: &str, plugin_name: &str, out: &mut String) {
     if let Some(evidence) = load_plugin_capability_evidence(plugin_name) {
         out.push_str(&format!(
@@ -612,7 +619,7 @@ pub(crate) fn render_capability_evidence_line(prefix: &str, plugin_name: &str, o
     }
 }
 
-
+/// 解析插件解释命令行：支持单/双引号与反斜杠转义的分词，引号未闭合或转义残留则返回 None。
 pub(crate) fn parse_plugin_explain_command_line(line: &str) -> Option<Vec<String>> {
     #[derive(Clone, Copy)]
     enum QuoteMode {
@@ -649,8 +656,16 @@ pub(crate) fn parse_plugin_explain_command_line(line: &str) -> Option<Vec<String
                 }
             }
             QuoteMode::Double => {
+                // P3-175：双引号内转义白名单——仅 `\"` 与 `\\` 视为转义；
+                // 其余字符前的反斜杠（如 Windows 盘符路径 `C:\git\work`）保持字面，
+                // 避免把路径分隔符吞掉导致 explain 路由解析失真。
                 if escaped {
-                    current.push(ch);
+                    if ch == '"' || ch == '\\' {
+                        current.push(ch);
+                    } else {
+                        current.push('\\');
+                        current.push(ch);
+                    }
                     escaped = false;
                 } else if ch == '\\' {
                     escaped = true;
@@ -675,7 +690,7 @@ pub(crate) fn parse_plugin_explain_command_line(line: &str) -> Option<Vec<String
     (!tokens.is_empty()).then_some(tokens)
 }
 
-
+/// 依据路由是否 fallback 与匹配方式，返回命令推荐的置信度(high/medium/low)。
 pub(crate) fn explain_recommendation_confidence_for_command(
     route_fallback: bool,
     matched_by: &str,
@@ -689,7 +704,6 @@ pub(crate) fn explain_recommendation_confidence_for_command(
     }
 }
 
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct CommandRouteRecommendation {
     pub(crate) retry_plugin: String,
@@ -702,7 +716,7 @@ pub(crate) struct CommandRouteRecommendation {
     pub(crate) recommendation_reason: String,
 }
 
-
+/// 构建命令路由推荐：依据路由是否 fallback 推导 retry_plugin/fallback_decision/置信度/action 与 reason。
 pub(crate) fn build_command_route_recommendation(
     route: &plugin_config_loader::RunRouteDecision,
     alternatives: &[&plugin_config_loader::RunRouteDecision],
@@ -782,7 +796,7 @@ pub(crate) fn build_command_route_recommendation(
     }
 }
 
-
+/// 向输出追加命令 alternatives 报告：逐候选写出 alternative_N/路由组/匹配方式/能力证据行。
 pub(crate) fn append_command_alternatives_report(
     out: &mut String,
     alternatives: &[&plugin_config_loader::RunRouteDecision],
@@ -810,7 +824,6 @@ pub(crate) fn append_command_alternatives_report(
     }
 }
 
-
 pub(crate) struct CommandExplainContext {
     prog: String,
     cmd_args: Vec<String>,
@@ -819,12 +832,12 @@ pub(crate) struct CommandExplainContext {
     chain: String,
 }
 
-
+/// 返回无效命令行时的兜底解释报告(固定 plugin_selection 文本)。
 pub(crate) fn invalid_command_explain_report() -> String {
     "plugin_selection\ninput_kind=command\nselected_plugin=none\nreason=invalid_command_line\nalternatives=0\n".to_string()
 }
 
-
+/// 构建命令解释上下文：解析命令行令牌、解析运行路由与候选、构造插件候选链与 alternatives。
 pub(crate) fn build_command_explain_context(command_line: &str) -> Option<CommandExplainContext> {
     let tokens = parse_plugin_explain_command_line(command_line)?;
     let prog = tokens[0].clone();
@@ -854,7 +867,8 @@ pub(crate) fn build_command_explain_context(command_line: &str) -> Option<Comman
     })
 }
 
-
+/// 渲染命令式插件选择报告：输出 command/selected_plugin/why/confidence_gap 等字段，
+/// 附带候选链与 replay/输出格式提示。
 pub(crate) fn render_command_plugin_selection_report(
     command_line: &str,
     args: &CliArgs,
@@ -950,7 +964,8 @@ pub(crate) fn render_command_plugin_selection_report(
     out
 }
 
-
+/// 为命令行为生成插件选择解释：解析命令行定位路由，必要时回退到 invalid 报告，
+/// 再渲染命令式插件选择报告。
 pub(crate) fn explain_plugin_for_command_line(command_line: &str, args: &CliArgs) -> String {
     let Some(context) = build_command_explain_context(command_line) else {
         return invalid_command_explain_report();
@@ -958,7 +973,7 @@ pub(crate) fn explain_plugin_for_command_line(command_line: &str, args: &CliArgs
     render_command_plugin_selection_report(command_line, args, &context)
 }
 
-
+/// 判断某插件名是否为可重试的解释候选：排除 ansi_cleaner/generic_text 等基础插件。
 pub(crate) fn is_retryable_explain_plugin(name: &str) -> bool {
     !matches!(
         name,
@@ -968,10 +983,8 @@ pub(crate) fn is_retryable_explain_plugin(name: &str) -> bool {
             | "smart_code"
             | "smart_path"
             | "static_rule"
-            | "template_driven"
     )
 }
-
 
 #[derive(Debug, Clone, PartialEq)]
 pub(crate) struct LogExplainRecommendation {
@@ -989,14 +1002,18 @@ pub(crate) struct LogExplainRecommendation {
     pub(crate) fallback_note: Option<String>,
 }
 
-
+/// 收集日志切片上的插件检测器打分：调用各插件 detect，过滤 score>0.1，
+/// 按分数降序、优先级、名称排序后返回 (插件名, 优先级, 分数)。
 pub(crate) fn collect_log_detections(slice: &Slice<'_>) -> Vec<(String, u8, f32)> {
+    let trace = std::env::var("TOKENSLIM_REPLAY_TRACE").is_ok();
     let mut detections = get_plugins()
         .into_iter()
         .filter_map(|plugin| {
-            plugin
-                .detect(slice)
-                .filter(|score| *score > 0.1)
+            let r = plugin.detect(slice);
+            if trace {
+                eprintln!("[detect] {} -> {:?}", plugin.name(), r);
+            }
+            r.filter(|score| *score > 0.1)
                 .map(|score| (plugin.name().to_string(), plugin.priority(), score))
         })
         .collect::<Vec<_>>();
@@ -1009,7 +1026,8 @@ pub(crate) fn collect_log_detections(slice: &Slice<'_>) -> Vec<(String, u8, f32)
     detections
 }
 
-
+/// 构建日志解释推荐：取最高分检测器为 selected，其余为 alternatives，
+/// 依据分数差与阈值判定 fallback/retry 决策、置信度与 action。
 pub(crate) fn build_log_explain_recommendation(
     detections: &[(String, u8, f32)],
     fallback_gap_threshold: f32,
@@ -1116,7 +1134,8 @@ pub(crate) fn build_log_explain_recommendation(
     }
 }
 
-
+/// 为日志文本生成插件选择解释报告：构造 Slice、收集检测器打分、构建日志推荐，
+/// 输出 selected/alternatives/confidence_gap 等字段及 replay 模板提示。
 pub(crate) fn explain_plugin_for_log_text(text: &str, fallback_gap_threshold: f32) -> String {
     let slice = Slice {
         id: 1,
@@ -1130,7 +1149,38 @@ pub(crate) fn explain_plugin_for_log_text(text: &str, fallback_gap_threshold: f3
     };
 
     let detections = collect_log_detections(&slice);
-    let recommendation = build_log_explain_recommendation(&detections, fallback_gap_threshold);
+    let mut recommendation = build_log_explain_recommendation(&detections, fallback_gap_threshold);
+
+    // 命令锚点对齐真实路由：若首行是命中的命令行（且非兜底路由），镜像 run 模式
+    // 的命令锚点路由（压缩协议法则 0）——以锚点选中的插件为最终 selected。
+    // 否则纯内容打分会把含 CRLF 行尾的日志误判给 noise_filter 等内容无关插件。
+    let anchor = text
+        .lines()
+        .find(|l| !l.trim().is_empty())
+        .and_then(|first| build_command_explain_context(first.trim()))
+        .filter(|ctx| !ctx.route.is_fallback)
+        .map(|ctx| {
+            (
+                ctx.route.plugin_name.clone(),
+                ctx.route.route_group.clone(),
+                format!(
+                    "command_anchor|route_group:{}|tool:{}|matched_by:{}",
+                    ctx.route.route_group, ctx.route.command_keyword, ctx.route.matched_by
+                ),
+            )
+        });
+
+    if let Some((ap, _rgroup, _why)) = &anchor {
+        let content_top = recommendation.selected.0.clone();
+        let prio = get_plugins()
+            .into_iter()
+            .find(|p| p.name() == *ap)
+            .map(|p| p.priority())
+            .unwrap_or(0);
+        recommendation.selected = (ap.clone(), prio, 1.0);
+        recommendation.recommendation_reason =
+            format!("command_anchor_aligned|route:{ap}|priority:{prio}|content_top:{content_top}");
+    }
 
     let mut out = String::new();
     out.push_str("plugin_selection\n");
@@ -1138,10 +1188,16 @@ pub(crate) fn explain_plugin_for_log_text(text: &str, fallback_gap_threshold: f3
     out.push_str(&format!("line_count={}\n", text.lines().count()));
     out.push_str(&format!("byte_count={}\n", text.len()));
     out.push_str(&format!("selected_plugin={}\n", recommendation.selected.0));
-    out.push_str(&format!(
-        "why=content_detector_score:{:.3}|plugin_priority:{}|candidate_rank:1\n",
-        recommendation.selected.2, recommendation.selected.1
-    ));
+    if let Some((_, _, why)) = &anchor {
+        out.push_str("selection_source=command_anchor\n");
+        out.push_str(&format!("why={}\n", why));
+    } else {
+        out.push_str("selection_source=content_detector\n");
+        out.push_str(&format!(
+            "why=content_detector_score:{:.3}|plugin_priority:{}|candidate_rank:1\n",
+            recommendation.selected.2, recommendation.selected.1
+        ));
+    }
     render_capability_evidence_line("selected", &recommendation.selected.0, &mut out);
     out.push_str(&format!(
         "fallback_decision={}\n",
@@ -1213,7 +1269,7 @@ pub(crate) fn explain_plugin_for_log_text(text: &str, fallback_gap_threshold: f3
     out
 }
 
-
+/// 写出 replay 用例模板：依据 input_kind 生成 replay 命令与结构化模板文件(含输入/输出/审计笔记)。
 pub(crate) fn write_explain_replay_template(
     path: &std::path::Path,
     input_kind: &str,
@@ -1258,7 +1314,7 @@ decision: pass | needs_route_fix | needs_detector_fix | waived\n\n\
     std::fs::write(path, template).map_err(CliError::Io)
 }
 
-
+/// 读取 explain 输入文本：文件按字节读取为文本；标准输入且为终端(非管道)则报错要求提供输入。
 pub(crate) fn read_explain_input_text(input: &InputSource) -> Result<String, CliError> {
     match input {
         InputSource::File(path) => {
@@ -1278,7 +1334,8 @@ pub(crate) fn read_explain_input_text(input: &InputSource) -> Result<String, Cli
     }
 }
 
-
+/// 处理 discover 子命令：打开默认 tracker，发现可过滤的命令组并统计潜在 token 节省，
+/// 分 filterable/no_filter/already_filtered 三类打印结果。
 pub(crate) fn handle_discover_action(args: &CliArgs) -> Result<bool, CliError> {
     let tracker =
         crate::core::tracking::Tracker::open_default().map_err(|e| CliError::Config(e))?;
@@ -1315,6 +1372,10 @@ pub(crate) fn handle_discover_action(args: &CliArgs) -> Result<bool, CliError> {
             }
             if let Some(saved) = group.estimated_tokens_saved {
                 println!("{}", t1("discover_estimated_savings_tokens", saved));
+            } else {
+                // P2-45：该组无真实 token 元数据（DeepSeek/Claude 解析未补采到 usage），
+                // 诚实标注无法估算，而非打印误导性的恒 0 节省。
+                println!("{}", t("discover_estimated_unavailable"));
             }
             println!();
         }
@@ -1333,6 +1394,9 @@ pub(crate) fn handle_discover_action(args: &CliArgs) -> Result<bool, CliError> {
             );
             if let Some(saved) = group.estimated_tokens_saved {
                 println!("{}", t1("discover_estimated_savings_tokens_default", saved));
+            } else {
+                // P2-45：无 token 元数据的组不产出估算值，诚实标注无法估算。
+                println!("{}", t("discover_estimated_unavailable"));
             }
             println!();
         }
@@ -1354,7 +1418,8 @@ pub(crate) fn handle_discover_action(args: &CliArgs) -> Result<bool, CliError> {
     Ok(true)
 }
 
-
+/// 处理 explain-plugin 子命令：按 --explain-command 或输入文本生成插件选择报告，
+/// 可选写 replay 模板，并按 text/markdown/json 格式输出到文件或标准输出。
 pub(crate) fn handle_explain_plugin_action(args: &CliArgs) -> Result<bool, CliError> {
     let (mut raw_report, input_kind, replay_input) =
         if let Some(command_line) = args.explain_command.as_deref() {
@@ -1388,3 +1453,220 @@ pub(crate) fn handle_explain_plugin_action(args: &CliArgs) -> Result<bool, CliEr
     Ok(true)
 }
 
+// ---------------------------------------------------------------------------
+// 插件选择前瞻回放（方案 1：插件选择能力实战化 —— 全量 frozen 样本前瞻比对）
+// ---------------------------------------------------------------------------
+//
+// 目的：把「插件选择」从一个不可度量的黑盒变成一个可度量的门禁。
+// 做法：遍历 samples/<plugin>/case_* 全部真实样本，逐条通过运行时的
+// `explain_plugin_for_log_text`（与打包/压缩共用同一套选择逻辑，含命令锚点
+// 对齐）回放选择结果，与样本所属插件文件夹比对，输出失配清单。
+//
+// 门禁语义（不脆弱、可长期守住）：
+//   1) 命令锚定的内容样本绝不允许被清理类插件（noise_filter/generic_text/
+//      ansi_cleaner 等）抢占 —— 这正是修复前 CRLF 行尾导致 VCS 合并日志被
+//      noise_filter 抢占的回归类。
+//   2) 其余内容重叠导致的「归属插件 != 选中插件」列为信息性失配，写进报告，
+//      供人工/LLM 复盘，但不断言（60+ 插件内容检测天然重叠）。
+// 跨切面插件目录（noise/ansi/generic/smart/static/template、encoding_fallback、
+// explain_plugin 展示样本）不参与严格归属比对，仅统计。
+
+/// 插件选择前瞻回放的统计结果，供测试与报告消费。
+#[derive(Debug, Default)]
+pub(crate) struct PluginSelectionReplayStats {
+    /// 参与比对的样本总数（非跨切面目录）。
+    pub(crate) strict_owner_total: usize,
+    /// 归属插件与选中插件一致的样本数。
+    pub(crate) strict_owner_match: usize,
+    /// 命令锚定且命中非兜底路由的样本数。
+    pub(crate) command_anchored: usize,
+    /// 序列化冲突插件目录（noise/ansi/generic 等跨切面插件）下被跳过的样本数。
+    pub(crate) rollup_excluded: usize,
+    /// 干净路由被清理类插件抢占的门禁违规清单（本应恒为空）。
+    pub(crate) cleanup_steal_violations: Vec<String>,
+    /// 信息性完整失配清单（归属插件 != 选中插件）。
+    pub(crate) mismatches: Vec<String>,
+}
+
+/// 跨切面/不可严格归属的样本地目录：这些插件的样本是给压缩链路做兜底/清理的，
+/// 输入往往是通用文本，不保证内容检测把「归属文件夹」当成首选插件。
+fn is_replay_rollup_dir(dir: &str) -> bool {
+    matches!(
+        dir,
+        "noise_filter_plugin"
+            | "ansi_cleaner_plugin"
+            | "generic_text_plugin"
+            | "smart_code_plugin"
+            | "smart_path_plugin"
+            | "static_rule_plugin"
+            | "template_driven_plugin"
+            | "encoding_fallback"
+            | "explain_plugin"
+    )
+}
+
+/// 解析 explain 文本报告的 selected_plugin 字段值。
+fn replay_selected_plugin(report: &str) -> &str {
+    report
+        .lines()
+        .find_map(|l| l.strip_prefix("selected_plugin="))
+        .unwrap_or("generic_text")
+}
+
+/// 全量 frozen 样本插件选择前瞻回放：遍历 samples/ 逐样本运行运行时的选择逻辑，
+/// 产出 markdown 报告文本与统计结果。
+pub(crate) fn plugin_selection_replay_report() -> (String, PluginSelectionReplayStats) {
+    let mut stats = PluginSelectionReplayStats::default();
+    let samples_root = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("samples");
+
+    let mut rows: Vec<String> = Vec::new();
+
+    let Ok(dir_iter) = std::fs::read_dir(&samples_root) else {
+        return (
+            "# Plugin Selection Forward Replay Report\n\n- error: samples dir unreadable\n"
+                .to_string(),
+            stats,
+        );
+    };
+    for entry in dir_iter.flatten() {
+        let dir_name = entry.file_name().to_string_lossy().into_owned();
+        let dir_path = entry.path();
+        if !dir_path.is_dir() {
+            continue;
+        }
+        // 归属插件名：samples/<dir>/ 目录名去掉 `_plugin` 后缀；无后缀目录
+        // （encoding_fallback/explain_plugin）由 is_replay_rollup_dir 直接排除。
+        let owner = dir_name
+            .strip_suffix("_plugin")
+            .map(ToString::to_string)
+            .unwrap_or_default();
+        let rollup = is_replay_rollup_dir(&dir_name);
+
+        let Ok(case_iter) = std::fs::read_dir(&dir_path) else {
+            continue;
+        };
+        for case_entry in case_iter.flatten() {
+            let file_name = case_entry.file_name().to_string_lossy().into_owned();
+            let case_path = case_entry.path();
+            if !case_entry.file_type().map(|t| t.is_file()).unwrap_or(false)
+                || !file_name.starts_with("case_")
+                || file_name.contains(".scenario.yaml")
+            {
+                continue;
+            }
+            let text = std::fs::read_to_string(&case_path)
+                .unwrap_or_default()
+                .replace('\r', ""); // 统一 CRLF，避免 CRLF 行尾干扰基线裁剪
+                                    // 样本可读性保护：读失败即跳过（如二进制/编码未识别文件）。
+            if text.is_empty() && case_path.metadata().map(|m| m.len() > 0).unwrap_or(false) {
+                continue;
+            }
+
+            if rollup {
+                stats.rollup_excluded += 1;
+                rows.push(format!(
+                    "| `{owner}(rolled)` | `{file_name}` | - | skip | rollup_dir |"
+                ));
+                continue;
+            }
+
+            stats.strict_owner_total += 1;
+            eprintln!("[replay] {dir_name}/{file_name} len={}", text.len());
+            let report = explain_plugin_for_log_text(&text, 0.15);
+            let selected = replay_selected_plugin(&report);
+            let owner = owner.as_str();
+            let matched = selected == owner;
+
+            // 命令锚点核对：首行若是命中非兜底路由的命令，则选中插件被命令锚点
+            // 强制对齐到路由插件。此分支是「清理类插件抢占」回归的门禁位。
+            let anchor_plugin = text
+                .lines()
+                .find(|l| !l.trim().is_empty())
+                .and_then(|first| build_command_explain_context(first.trim()))
+                .filter(|ctx| !ctx.route.is_fallback)
+                .map(|ctx| ctx.route.plugin_name.clone());
+
+            if let Some(anchor) = &anchor_plugin {
+                stats.command_anchored += 1;
+                // 清理类插件无法成为命令路由；若锚定后 selected 反而落到清理类
+                // 插件，说明命令锚点对齐失效——这是最严重的误判回归。
+                let is_cleanup = matches!(
+                    selected,
+                    "noise_filter" | "ansi_cleaner" | "generic_text" | "smart_code" | "smart_path"
+                );
+                if is_cleanup || (anchor.as_str() != selected && &*selected != owner) {
+                    stats.cleanup_steal_violations.push(format!(
+                        "samples/{dir_name}/{file_name}: owner={owner} anchor={anchor} selected={selected}"
+                    ));
+                }
+            }
+
+            if matched {
+                stats.strict_owner_match += 1;
+                rows.push(format!(
+                    "| `{owner}` | `{file_name}` | `{selected}` | match | - |"
+                ));
+            } else {
+                let note = if let Some(a) = &anchor_plugin {
+                    format!("anchor_route:{a}")
+                } else {
+                    "content_overlap".to_string()
+                };
+                stats.mismatches.push(format!(
+                    "samples/{dir_name}/{file_name}: owner={owner} selected={selected} note={note}"
+                ));
+                rows.push(format!(
+                    "| `{owner}` | `{file_name}` | `{selected}` | mismatch | {note} |"
+                ));
+            }
+        }
+    }
+
+    let match_rate = if stats.strict_owner_total > 0 {
+        stats.strict_owner_match as f64 / stats.strict_owner_total as f64
+    } else {
+        0.0
+    };
+    let mut md = String::new();
+    md.push_str("# Plugin Selection Forward Replay Report\n\n");
+    md.push_str(&format!(
+        "- strict_owner_total: {}\n",
+        stats.strict_owner_total
+    ));
+    md.push_str(&format!(
+        "- strict_owner_match: {}\n",
+        stats.strict_owner_match
+    ));
+    md.push_str(&format!("- strict_owner_match_rate: {:.3}\n", match_rate));
+    md.push_str(&format!("- command_anchored: {}\n", stats.command_anchored));
+    md.push_str(&format!("- rollup_excluded: {}\n", stats.rollup_excluded));
+    md.push_str(&format!(
+        "- cleanup_steal_violations: {}\n",
+        stats.cleanup_steal_violations.len()
+    ));
+    md.push_str(&format!("- mismatch_count: {}\n", stats.mismatches.len()));
+    md.push('\n');
+    md.push_str("## Mismatch List\n\n");
+    if stats.mismatches.is_empty() {
+        md.push_str("- none\n");
+    } else {
+        for m in &stats.mismatches {
+            md.push_str(&format!("- {m}\n"));
+        }
+    }
+    md.push_str("\n## Cleanup Steal Violations\n\n");
+    if stats.cleanup_steal_violations.is_empty() {
+        md.push_str("- none\n");
+    } else {
+        for v in &stats.cleanup_steal_violations {
+            md.push_str(&format!("- {v}\n"));
+        }
+    }
+    md.push_str("\n## Per-Sample Detail\n\n");
+    md.push_str("| owning | sample | selected | verdict | note |\n|---|---|---|---|---|\n");
+    for r in &rows {
+        md.push_str(&format!("{r}\n"));
+    }
+
+    (md, stats)
+}

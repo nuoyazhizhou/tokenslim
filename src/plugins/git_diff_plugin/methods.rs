@@ -12,7 +12,7 @@ use regex::Regex;
 use std::borrow::Cow;
 
 static DIFF_HEADER_RE: Lazy<Regex> =
-    Lazy::new(|| Regex::new(r"^diff --git a/(?P<old>.*) b/(?P<new>.*)").unwrap());
+    Lazy::new(|| Regex::new(r"^diff --git a/(?P<old>.*?) b/(?P<new>.*)").unwrap());
 static HUNK_HEADER_RE: Lazy<Regex> =
     Lazy::new(|| Regex::new(r"^@@ -(?P<os>\d+),(?P<ol>\d+) \+(?P<ns>\d+),(?P<nl>\d+) @@").unwrap());
 
@@ -28,13 +28,16 @@ impl GitDiffPlugin {
 }
 
 impl Plugin for GitDiffPlugin {
+    /// 返回插件标识名（来自实例字段 `self.name`）。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级（来自实例字段 `self.priority`）。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 依据 `diff --git`、`--- a/`、`+++ b/` 与 hunk 头正则累计置信度，超过阈值 0.4 即命中。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
         let mut score: f32 = 0.0;
@@ -59,6 +62,7 @@ impl Plugin for GitDiffPlugin {
         }
     }
 
+    /// 逐行压缩 git diff：保留头部与路径前缀，折叠 hunk 正文噪声，返回压缩结果。
     #[tracing::instrument(level = "debug", skip_all)]
     fn compress<'a>(
         &self,
@@ -175,15 +179,8 @@ impl Plugin for GitDiffPlugin {
         }
     }
 
+    /// 解压占位实现：git diff 压缩为可逆文本重写，直接返回原串。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
-    }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<GitDiffConfig>() {
-            self.config = c.clone();
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
     }
 }

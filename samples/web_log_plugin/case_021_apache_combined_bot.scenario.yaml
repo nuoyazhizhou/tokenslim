@@ -9,7 +9,7 @@ generated_at: '2026-06-09T08:05:15Z'
 audit:
   content_hash: '28b6aed7bbe8b9ed5f2f4a5fd5cc1eef6c8f61056adf33791c344b4d900907a2'
   final_status: 'valid'
-  llm_invoked: true
-  llm_verified_at: '2026-06-10T07:45:32.891290'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:12:43.007102'
   last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

@@ -14,6 +14,7 @@ import urllib.error
 import pathlib
 import tempfile
 from datetime import datetime
+from typing import Dict  # noqa: F401 - 注解求值需要（PEP 649 前版本急切求值）
 
 # audit_llm_common：LLM 调用 + 提示词加载 公共模块（fix #29）
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -84,6 +85,9 @@ PROFILE_GROUPS = {
         "ansi_cleaner", "generic_text", "noise_filter", "smart_path",
         "static_rule", "template_driven",
     },
+    "directory-listing": {
+        "ls_listing",
+    },
     "shell-command": {
         "shell_command", "shell", "cmd", "powershell", "bash", "zsh", "fish", "shell_session",
     },
@@ -117,7 +121,16 @@ def atomic_write_json(path, obj):
             f.write("\n")
             f.flush()
             os.fsync(f.fileno())
-        os.replace(tmp_path, path)
+        # Windows 下杀软实时扫描可能瞬时占用目标文件导致 os.replace 抛 WinError 5（PermissionError）。
+        # 用短退避重试，将瞬态文件锁转换为可自愈写入（最小侵入，不改写数据语义）。
+        for attempt in range(5):
+            try:
+                os.replace(tmp_path, path)
+                return
+            except PermissionError:
+                if attempt == 4:
+                    raise
+                time.sleep(0.15)
     except Exception:
         try:
             os.unlink(tmp_path)
@@ -447,6 +460,12 @@ Compare Original and Compact. Return JSON only.
 [Compressed (Compact) Log]
 {case["compact_text"]}
 """
+    # 字典侧通道（dictside）：当 compact 含可逆字典 token（$PKn/$Pn 等）时，附上 token-resolved 全文，
+    # 让 LLM 能还原 token 而非误判为 undefined placeholder。
+    dictionary = case.get("dictionary") or {}
+    resolved = resolve_compact_tokens(case["compact_text"], dictionary) if dictionary else ""
+    if resolved and resolved != case["compact_text"]:
+        prompt += f"\n[Compressed (Compact) Log - token-resolved via dictionary]\n{resolved}\n"
     try:
         res = call_llm(env, prompt, tactical_rules)
         return res.get("pass", False), res.get("failures", []), res.get("explanation", "")
@@ -536,6 +555,10 @@ def parse_report(path):
                 break
             if re.match(r'^-{20,}$', lines[k]) and (k + 1) < len(lines) and re.match(r'^Case\s+case_[A-Za-z0-9_]+\s+-', lines[k+1]):
                 break
+            # 字典侧通道段（dictside）：compact 段到此处为止，其后的 -- Dictionary (full) --
+            # 是随报告携带的 token->原文 映射，不应计入 compact_text（保持哈希不变）。
+            if lines[k].startswith("-- Dictionary (full) --"):
+                break
             k += 1
             
         compact_end = k - 1
@@ -552,7 +575,37 @@ def parse_report(path):
             if not (line.startswith("[SKIP] ") and "file not found or empty:" in line)
         ]
         compact_text = "\n".join(compact_slice)
-        
+
+        # 解析字典侧通道段（dictside）：compact 段之后可选的 -- Dictionary (full) -- JSON。
+        d_start = compact_end + 1
+        while d_start < len(lines) and re.match(r'^-{20,}$', lines[d_start]):
+            d_start += 1
+        dictionary = {}
+        if d_start < len(lines) and lines[d_start].startswith("-- Dictionary (full) --"):
+            d_start += 1
+            if d_start < len(lines) and re.match(r'^-{20,}$', lines[d_start]):
+                d_start += 1
+            d_lines = []
+            while d_start < len(lines):
+                if re.match(r'^Case\s+case_[A-Za-z0-9_]+\s+-', lines[d_start]):
+                    break
+                if re.match(r'^-{20,}$', lines[d_start]):
+                    break
+                # 空样例触发的 [SKIP] 属于紧随其后的被跳过 case，不属于当前 case 的
+                # dictionary 映射；若混入会导致 json.loads 失败，字典被丢弃（dict.json 缺失）。
+                if lines[d_start].startswith("[SKIP] "):
+                    break
+                d_lines.append(lines[d_start])
+                d_start += 1
+            dict_text = "\n".join(d_lines)
+            if dict_text.strip():
+                try:
+                    parsed = json.loads(dict_text)
+                    if isinstance(parsed, dict):
+                        dictionary = parsed
+                except Exception:
+                    dictionary = {}
+
         cases.append({
             "case_id": case_id,
             "case_file": case_file,
@@ -563,9 +616,10 @@ def parse_report(path):
             "compression_pct": ratio,
             "original_text": orig_text,
             "compact_text": compact_text,
+            "dictionary": dictionary,
             "compact_hash": sha256_hex(compact_text)
         })
-        i = k
+        i = d_start
         
     def get_case_num(c):
         id_str = c["case_id"].replace("case_", "")
@@ -694,6 +748,22 @@ def add_missing_empty_sample_rows(plugin_name, rows):
         print(f"empty_sample_case={row['case_id']}")
     return sorted(rows + added, key=lambda c: c["case_id"])
 
+def resolve_compact_tokens(text, dictionary):
+    """还原压缩可逆 token：`$S|N` -> N 空格；`$PKn/$Pn/$Mn/$Dn/$Cn/$FLn` 按 dictionary 映射还原。
+
+    这是 Compression Protocol V1 可逆 token 协议的 Python 侧镜像，用于审计产物
+    （compact.txt）隔离后仍能还原语义，避免可逆 token 被误判为 undefined placeholder（dictside）。
+    """
+    if not text:
+        return text
+    # $S|N 空白压缩是自描述的，无需字典
+    resolved = re.sub(r"\$S\|(\d+)", lambda m: " " * int(m.group(1)), text)
+    if dictionary:
+        def _sub(token):
+            return dictionary.get(token, token)
+        resolved = re.sub(r"\$(?:PK|P|M|D|C|FL)\d+", lambda m: _sub(m.group(0)), resolved)
+    return resolved
+
 def export_case(c, base_dir):
     case_dir = os.path.join(base_dir, c["case_id"])
     ensure_dir(case_dir)
@@ -701,21 +771,37 @@ def export_case(c, base_dir):
         f.write(c["original_text"])
     with open(os.path.join(case_dir, "compact.txt"), "w", encoding="utf-8") as f:
         f.write(c["compact_text"])
-        
-    summary = {
-        "case_id": c["case_id"],
-        "case_file": c["case_file"],
-        "original_lines": c["original_lines"],
-        "original_bytes": c["original_bytes"],
-        "compact_lines": c["compact_lines"],
-        "compact_bytes": c["compact_bytes"],
-        "compression_pct": c["compression_pct"],
-        "compact_hash": c["compact_hash"],
-        "semantic_gate_pass": c.get("semantic_gate_pass", True),
-        "semantic_gate_failures": c.get("semantic_gate_failures", "")
-    }
-    with open(os.path.join(case_dir, "summary.json"), "w", encoding="utf-8") as f:
-        json.dump(summary, f, indent=4)
+
+    # 字典侧通道（dictside）：把 token->原文 映射落盘为 dict.json，
+    # 并把已还原全文写入 compact_resolved.txt，供审计产物隔离后仍能可逆判读。
+    dictionary = c.get("dictionary") or {}
+    resolved = resolve_compact_tokens(c["compact_text"], dictionary)
+    if dictionary:
+        with open(os.path.join(case_dir, "dict.json"), "w", encoding="utf-8") as f:
+            json.dump(dictionary, f, indent=2, ensure_ascii=False)
+    with open(os.path.join(case_dir, "compact_resolved.txt"), "w", encoding="utf-8") as f:
+        f.write(resolved)
+
+def export_dictside_only(c, base_dir):
+    """定向补导出：只落盘 dict.json + compact_resolved.txt 两个未跟踪派生物。
+
+    用于 dictside 补导出场景（SAP-DICT-BACKFILL），严格不触碰
+    original.txt / compact.txt / summary.json / audit_state.json 等已跟踪台账，
+    避免重导出引起的 EOL / 台账字段漂移污染工作区。compact 文本与已提交产物
+    保持一致，因此 compact_hash / 冻结语义完全不受影响。
+    """
+    case_dir = os.path.join(base_dir, c["case_id"])
+    ensure_dir(case_dir)
+    dictionary = c.get("dictionary") or {}
+    resolved = resolve_compact_tokens(c["compact_text"], dictionary)
+    if dictionary:
+        with open(os.path.join(case_dir, "dict.json"), "w", encoding="utf-8") as f:
+            json.dump(dictionary, f, indent=2, ensure_ascii=False)
+    with open(os.path.join(case_dir, "compact_resolved.txt"), "w", encoding="utf-8") as f:
+        f.write(resolved)
+
+    # 注意：不写 summary.json。summary.json 是 tracked 台账，dictside 定向补导出
+    # 场景下必须保持其原样，避免重导出引起的字段漂移污染工作区。
 
 def save_state(state_file, track, state_map):
     state_list = sorted(list(state_map.values()), key=lambda x: x["case_id"])
@@ -779,6 +865,7 @@ def main():
     parser.add_argument("--fail-on-regression", action="store_true")
     parser.add_argument("--fail-on-frozen-change", action="store_true")
     parser.add_argument("--export-cases", action="store_true")
+    parser.add_argument("--dictside-only", action="store_true")
     parser.add_argument("--case-id", default="")
     parser.add_argument("--case-out-dir", default="")
     parser.add_argument("--freeze-file", default="")
@@ -798,6 +885,7 @@ def main():
     parser.add_argument("--FailOnRegression", dest="fail_on_regression", action="store_true")
     parser.add_argument("--FailOnFrozenChange", dest="fail_on_frozen_change", action="store_true")
     parser.add_argument("--ExportCases", dest="export_cases", action="store_true")
+    parser.add_argument("--DictsideOnly", dest="dictside_only", action="store_true")
     parser.add_argument("--CaseId", dest="case_id")
     parser.add_argument("--CaseOutDir", dest="case_out_dir")
     parser.add_argument("--FreezeFile", dest="freeze_file")
@@ -864,6 +952,25 @@ def main():
             print(f"showcase_missing_case={m}")
         print(f"ERROR: Showcase missing failed: {len(alignment['showcase_missing_list'])} case(s) are orphaned/unaligned.", file=sys.stderr)
         sys.exit(5)
+
+    # dictside-only 分支（SAP-DICT-BACKFILL）：纯定向补导出 dict.json + compact_resolved.txt
+    # 两个未跟踪派生物。必须在任何台账写入（state/frozen/snapshot/json/csv/diff）之前
+    # 完成导出并返回，保证完全不触碰 tracked 台账（original/compact/summary/audit_state），
+    # 避免重导出引起的 EOL / 字段漂移污染工作区。compact 文本与已提交产物一致，因此
+    # compact_hash / 冻结语义完全不受影响。
+    if args.dictside_only:
+        targets = rows
+        if args.case_id:
+            target = next((c for c in rows if c["case_id"] == args.case_id), None)
+            if not target:
+                raise ValueError(f"Case not found: {args.case_id}")
+            targets = [target]
+        for c in targets:
+            export_dictside_only(c, case_out_dir)
+        if args.case_id:
+            print(f"case_exported={args.case_id}")
+            print(f"case_dir={os.path.join(case_out_dir, args.case_id)}")
+        return 0
 
     # Read environment
     env = parse_env()
@@ -1036,7 +1143,7 @@ def main():
     csv_path = os.path.join(out_dir, f"{track}.{version}.csv")
     diff_md_path = os.path.join(out_dir, f"{track}.{version}.diff.md")
     
-    with open(json_path, "w", encoding="utf-8") as f:
+    with open(json_path, "w", encoding="utf-8", newline="\n") as f:
         json.dump(snapshot, f, indent=4)
         
     with open(csv_path, "w", encoding="utf-8", newline="") as f:
@@ -1102,14 +1209,14 @@ def main():
                 md.append(f"| {r['case_id']} | {r['prev']:.1f}% | {r['curr']:.1f}% | +{r['delta']:.1f}% |")
             md.append("")
             
-        with open(diff_md_path, "w", encoding="utf-8") as f:
+        with open(diff_md_path, "w", encoding="utf-8", newline="\n") as f:
             f.write("\n".join(md))
             
-    # Export cases if requested
+    # Export cases if requested（--dictside-only 纯定向补导出已在上方早退分支处理）
     if args.export_cases:
         for c in rows:
             export_case(c, case_out_dir)
-            
+
     if args.case_id:
         target = next((c for c in rows if c["case_id"] == args.case_id), None)
         if not target:
@@ -1117,7 +1224,7 @@ def main():
         export_case(target, case_out_dir)
         print(f"case_exported={args.case_id}")
         print(f"case_dir={os.path.join(case_out_dir, args.case_id)}")
-        
+
     # Freezing case logic
     if args.freeze_case:
         target = next((c for c in rows if c["case_id"] == args.freeze_case), None)

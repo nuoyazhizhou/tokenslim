@@ -90,6 +90,7 @@ fn is_svn_narrative_noise(t: &str) -> bool {
 // 公开 API（法则 0 锚点守卫已集成）
 // ============================================================================
 
+/// 压缩 svn status 输出：按子命令分派 update/cleanup/export/revert/resolve，锚点守卫 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_status_for_ai(raw: &str) -> String {
     match svn_subcommand_from_raw(raw).as_deref().unwrap_or_default() {
@@ -113,11 +114,13 @@ pub fn compact_svn_status_for_ai(raw: &str) -> String {
     }
 }
 
+/// 压缩 svn diff 输出：SvnDiffParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_diff_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&SvnDiffParser, raw))
 }
 
+/// 压缩 svn log 输出：SvnLogParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_log_for_ai(raw: &str) -> String {
     // 检测是否为 merge 命令
@@ -130,6 +133,7 @@ pub fn compact_svn_log_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&SvnLogParser, raw))
 }
 
+/// 压缩 svn commit 输出：SvnCommitParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_commit_for_ai(raw: &str) -> String {
     anchor_guard(raw, || {
@@ -172,6 +176,7 @@ pub fn compact_svn_commit_for_ai(raw: &str) -> String {
     })
 }
 
+/// 压缩 svn blame 输出：SvnBlameParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_blame_for_ai(raw: &str) -> String {
     // compress_annotate 已经包含命令锚点，不需要 anchor_guard
@@ -179,16 +184,19 @@ pub fn compact_svn_blame_for_ai(raw: &str) -> String {
     crate::core::utils::roi::prefer_non_expanding(raw, enhanced)
 }
 
+/// 压缩 svn list 输出：SvnListParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_list_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&SvnListParser, raw))
 }
 
+/// 压缩 svn prop 输出：SvnPropParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_prop_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&SvnPropParser, raw))
 }
 
+/// 压缩 svn info 输出：SvnInfoParser 解析 + 锚点守卫。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_svn_info_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&SvnInfoParser, raw))
@@ -198,7 +206,9 @@ pub fn compact_svn_info_for_ai(raw: &str) -> String {
 // 检测函数（用于 core_logic 分派）
 // ============================================================================
 
+/// 判断是否为 svn blame 块（blame 子命令或 blame 行特征）。
 pub fn is_svn_blame_block(text: &str) -> bool {
+    /// 判断行是否形如 svn blame 行（修订号 + 作者 + 日期 + 代码）。
     fn looks_like_svn_blame_line(line: &str) -> bool {
         let trimmed = line.trim_start();
         if trimmed.is_empty() {
@@ -214,7 +224,9 @@ pub fn is_svn_blame_block(text: &str) -> bool {
     svn_command_is(text, &["blame"]) || text.lines().any(looks_like_svn_blame_line)
 }
 
+/// 判断是否为 svn list 块（list 子命令或 list 条目特征）。
 pub fn is_svn_list_block(text: &str) -> bool {
+    /// 判断行是否为 svn list 条目（大小 + 日期 + 路径）。
     fn looks_like_svn_list_entry(line: &str) -> bool {
         let trimmed = line.trim();
         if trimmed.is_empty() {
@@ -232,6 +244,7 @@ pub fn is_svn_list_block(text: &str) -> bool {
     svn_command_is(text, &["list"]) || text.lines().any(looks_like_svn_list_entry)
 }
 
+/// 判断是否为 svn prop 块（propget/proplist 子命令）。
 pub fn is_svn_prop_block(text: &str) -> bool {
     svn_command_is(text, &["propget", "proplist"])
         || text
@@ -239,6 +252,7 @@ pub fn is_svn_prop_block(text: &str) -> bool {
             .any(|line| line.trim_start().starts_with("Properties on "))
 }
 
+/// 判断是否为 svn info 块（info 子命令或 info 键值特征）。
 pub fn is_svn_info_block(text: &str) -> bool {
     svn_command_is(text, &["info"])
         || ["Path: ", "URL: ", "Relative URL: ", "Repository Root: "]
@@ -274,11 +288,22 @@ pub fn is_svn_log_block(text: &str) -> bool {
 // other 分派
 // ============================================================================
 
+/// svn 其他输出入口：优先按首行子命令精确分派，命令行缺失（管道输入）时退回行特征启发式。
+/// 启发式阶段将 list 判定置于 blame 之前：svn list 的 "-  " 无修订号占位行（首 token 为 "-"）
+/// 会命中 blame 的 `revision == "-"` 特征，若先判 blame 会把 list 样例误路由到 blame 解析器，
+/// 导致日期行无法解析而整体透传、压缩比骤降。
 pub fn compact_svn_other_for_ai(raw: &str) -> String {
-    if is_svn_blame_block(raw) {
-        compact_svn_blame_for_ai(raw)
-    } else if is_svn_list_block(raw) {
+    match svn_subcommand_from_raw(raw).as_deref() {
+        Some("blame") | Some("annotate") => return compact_svn_blame_for_ai(raw),
+        Some("list") => return compact_svn_list_for_ai(raw),
+        Some("propget") | Some("proplist") => return compact_svn_prop_for_ai(raw),
+        Some("info") => return compact_svn_info_for_ai(raw),
+        _ => {}
+    }
+    if is_svn_list_block(raw) {
         compact_svn_list_for_ai(raw)
+    } else if is_svn_blame_block(raw) {
+        compact_svn_blame_for_ai(raw)
     } else if is_svn_prop_block(raw) {
         compact_svn_prop_for_ai(raw)
     } else if is_svn_info_block(raw) {
@@ -302,6 +327,7 @@ fn svn_subcommand_from_raw(raw: &str) -> Option<String> {
     words.first().cloned()
 }
 
+/// 判断命令是否为指定 svn 子命令。
 fn svn_command_is(raw: &str, expected: &[&str]) -> bool {
     let Some(sub) = svn_subcommand_from_raw(raw) else {
         return false;

@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::test_utils::*;
     use crate::plugins::xcode_log_plugin::XcodeLogPlugin;
 
+    /// 验证 Xcode 编译日志样本能被 `detect` 命中。
     #[test]
     fn detects_xcode_case() {
         let plugin = XcodeLogPlugin::new();
@@ -14,6 +15,7 @@ mod tests {
         assert!(plugin.detect(&make_log_slice(&raw)).is_some());
     }
 
+    /// 验证 Xcode 探针样本压缩产出 `$XC|PROBE|` 标记。
     #[test]
     fn compresses_probe_case() {
         let plugin = XcodeLogPlugin::new();

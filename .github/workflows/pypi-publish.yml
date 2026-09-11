@@ -62,3 +62,32 @@ jobs:
         with:
           packages-dir: dist
           skip-existing: true
+
+  publish-sdk:
+    name: Publish tokenslim-client Python SDK to PyPI
+    needs: [publish]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install build dependencies
+        run: pip install build
+
+      - name: Build Python SDK
+        working-directory: sdk/python
+        run: python -m build
+
+      - name: Publish tokenslim-client to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: sdk/python/dist
+          skip-existing: true
+

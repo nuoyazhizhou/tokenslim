@@ -1,18 +1,17 @@
 # Sample Case Quality Report - vcs_git_plugin
 
-- generated_at: 2026-06-24T17:49:20.087199
-- version: 20260624-174915
-- physical_samples: 88
-- registered_in_showcase: 88
-- duplicate_groups: 3
-- llm_invoked: 0 / 88
+- generated_at: 2026-09-11T14:26:05.938032
+- version: 20260911-142556
+- physical_samples: 86
+- registered_in_showcase: 86
+- duplicate_groups: 0
+- llm_invoked: 0 / 86
 
 ## Status Distribution
 
 | status | count | human-readable meaning |
 | --- | ---: | --- |
-| valid | 85 | case 与 showcase title 一致，无 lint/LLM 阻断，可直接进 case_fixtures；含 dispatch_chain_confirmed 时表示二段路由已确认 |
-| duplicate | 3 | 与同 plugin 另一 case 内容重复 |
+| valid | 86 | case 与 showcase title 一致，无 lint/LLM 阻断，可直接进 case_fixtures；含 dispatch_chain_confirmed 时表示二段路由已确认 |
 
 ## Realism Audit Summary
 
@@ -34,9 +33,7 @@
 
 ## Duplicate Groups
 
-- primary: `case_247_git_status_porcelain`  →  duplicates: `case_248_git_status_short`
-- primary: `case_249_git_status_long`  →  duplicates: `case_250_git_status_ignored`
-- primary: `case_258_git_diff_head`  →  duplicates: `case_260_git_diff_word_diff`
+None
 
 ## Recommended Missing Cases
 
@@ -69,10 +66,9 @@ All target families are already covered.
 | case_241_git_clean_fd | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_246_git_status_branch | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_247_git_status_porcelain | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
-| case_248_git_status_short | duplicate | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_249_git_status_long | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_24_git_diff | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
-| case_250_git_status_ignored | duplicate | Y | ? | `-` | N | N | `-` |`-` |✓ |
+| case_250_git_status_ignored | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_251_git_status_untracked_all | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_252_git_log_oneline_n20 | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_253_git_log_stat | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
@@ -83,7 +79,6 @@ All target families are already covered.
 | case_258_git_diff_head | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_259_git_diff_stat | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_25_git_log | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
-| case_260_git_diff_word_diff | duplicate | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_261_git_diff_branches | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_26_git_show | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
 | case_283_git_diff_name_only | valid | Y | ? | `-` | N | N | `-` |`-` |✓ |
@@ -136,11 +131,7 @@ All target families are already covered.
 
 ## Hard-Block List (must fix before `audit_case_metrics.py`)
 
-| case_id | status | explanation | fix_hint |
-| --- | --- | --- | --- |
-| case_248_git_status_short | duplicate | 与 `case_247_git_status_porcelain` 内容重复，应合并或删除次要副本 | 删除本 case，或在 showcase 中合并到 `case_247_git_status_porcelain` |
-| case_250_git_status_ignored | duplicate | 与 `case_249_git_status_long` 内容重复，应合并或删除次要副本 | 删除本 case，或在 showcase 中合并到 `case_249_git_status_long` |
-| case_260_git_diff_word_diff | duplicate | 与 `case_258_git_diff_head` 内容重复，应合并或删除次要副本 | 删除本 case，或在 showcase 中合并到 `case_258_git_diff_head` |
+None
 
 ## Sidecar Field Mismatch (expected_keep / expected_compress not in case content)
 

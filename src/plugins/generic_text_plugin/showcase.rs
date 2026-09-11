@@ -8,6 +8,7 @@ mod tests {
     use crate::plugins::generic_text_plugin::GenericTextPlugin;
     use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/generic_text_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,6 +18,7 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本。
     fn compress_text(plugin: &GenericTextPlugin, text: &str) -> String {
         let slice = Slice {
             id: 1,
@@ -42,6 +44,7 @@ mod tests {
             .collect::<String>()
     }
 
+    /// 测试：遍历样例生成 generic_text 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_generic_text_showcase_report() {
         let plugin = GenericTextPlugin::new();
@@ -58,6 +61,9 @@ mod tests {
             ("case_010_mixed_formatting.log", "混合格式"),
             ("case_011_no_compress.log", "不压缩场景"),
             ("case_012_special_chars.log", "特殊字符"),
+            ("case_013_repeated_lines.log", "重复行收敛"),
+            ("case_014_timestamp_poll.log", "时间戳归一"),
+            ("case_015_noise_progress.log", "装饰性进度"),
         ];
 
         let mut all_output = String::new();

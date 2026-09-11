@@ -1,19 +1,17 @@
 use super::methods::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 fn sample_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("samples")
-        .join("vcs_fossil_plugin")
+    crate::plugins::test_utils::vcs_sample_dir("vcs_fossil_plugin")
 }
 fn read_case(c: &str) -> String {
-    let p = sample_dir().join(format!("{c}.log"));
-    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("读取样本失败 {}: {e}", p.display()))
+    crate::plugins::test_utils::vcs_read_case("vcs_fossil_plugin", c)
 }
 
 // ============================================================================
 // Case 29: status — 命令锚点 + 状态码 M: 映射
 // ============================================================================
+/// 测试：fossil status 样例（case 29）状态映射。
 #[test]
 fn test_status_case_29() {
     let c = compact_fossil_status_for_ai(&read_case("case_29_fossil_status"));
@@ -38,6 +36,7 @@ fn test_status_case_29() {
 // ============================================================================
 // Case 152: changes — 状态码 M/A/D 映射 + 锚点
 // ============================================================================
+/// 测试：fossil changes 样例（case 152）状态映射。
 #[test]
 fn test_changes_case_152() {
     let c = compact_fossil_status_for_ai(&read_case("case_152_fossil_changes"));
@@ -50,6 +49,7 @@ fn test_changes_case_152() {
 // ============================================================================
 // Case 104: timeline — 作者/哈希符号化
 // ============================================================================
+/// 测试：fossil timeline 样例（case 104）提交符号化。
 #[test]
 fn test_timeline_case_104() {
     let c = compact_fossil_log_for_ai(&read_case("case_104_fossil_timeline"));
@@ -64,6 +64,7 @@ fn test_timeline_case_104() {
 // ============================================================================
 // Case 153: undo — 抹除废话，REVERT:
 // ============================================================================
+/// 测试：fossil undo 样例（case 153）REVERT 映射。
 #[test]
 fn test_undo_case_153() {
     let c = compact_fossil_log_for_ai(&read_case("case_153_fossil_undo"));
@@ -75,6 +76,7 @@ fn test_undo_case_153() {
 // ============================================================================
 // Case 196: sync — 抹除 Done. 和 Sync with...
 // ============================================================================
+/// 测试：fossil sync 样例（case 196）仅保留 Pull/Push。
 #[test]
 fn test_sync_case_196() {
     let c = compact_fossil_log_for_ai(&read_case("case_196_fossil_sync"));
@@ -88,12 +90,14 @@ fn test_sync_case_196() {
 // ============================================================================
 // 短输入回退 + 报警检测
 // ============================================================================
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let c = compact_fossil_log_for_ai("fossil help");
     assert_eq!(c, "fossil help");
 }
 
+/// 测试：fossil 警报行映射。
 #[test]
 fn test_fossil_alert_mapping() {
     assert!(super::methods::map_fossil_alert("CONFLICT src/file.rs").is_some());

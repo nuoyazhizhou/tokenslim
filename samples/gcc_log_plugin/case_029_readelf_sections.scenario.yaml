@@ -1,0 +1,15 @@
+scenario: '对 a.out 及各依赖对象文件运行 readelf -S 查看节表，输出含节索引、名称、类型、地址、偏移、Size 等列。'
+target_capability: 'binutils readelf -S 节表压缩（保留节名与 Size，折叠地址/偏移/对齐列）'
+expected_keep: '.text'
+expected_compress: 'Section Headers:'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '78fe8225be8e6e98e810c5494e0407175697202dd513d20f7a07963a35cab7ec'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

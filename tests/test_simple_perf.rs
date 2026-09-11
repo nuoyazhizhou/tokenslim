@@ -3,6 +3,7 @@
 use std::fs;
 use std::time::Instant;
 
+/// 简单性能测试入口：对比逐行读取与一次性读取同一文件的速度与吞吐量。
 fn main() {
     println!("=== 简单性能测试 ===\n");
 
@@ -35,6 +36,7 @@ fn main() {
     );
 }
 
+/// 逐行读取文件并累计每行字节长度（模拟逐行处理开销）。
 fn read_line_by_line(file_path: &str) -> usize {
     let content = fs::read_to_string(file_path).expect("读取失败");
     let mut count = 0;
@@ -44,6 +46,7 @@ fn read_line_by_line(file_path: &str) -> usize {
     count
 }
 
+/// 一次性读取整个文件并返回字节数（对比基准）。
 fn read_all_at_once(file_path: &str) -> usize {
     let content = fs::read(file_path).expect("读取失败");
     content.len()

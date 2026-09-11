@@ -1,0 +1,15 @@
+scenario: '对 libmath.a 运行 ar -t 查看归档成员清单，输出仅包含各 .o 成员文件名。'
+target_capability: 'binutils ar -t 归档成员清单压缩（折叠为 $AR 计数+扩展名分组摘要）'
+expected_keep: 'members'
+expected_compress: 'add.o'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: '474da9ea3a06fc22821dcc07a857c4346faf88f6b8ab469e6e769e9832c72243'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

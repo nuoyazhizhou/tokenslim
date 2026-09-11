@@ -1,43 +1,12 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-pub enum DictType {
-    Path,
-    Package,
-    Macro,
-    File,
-    Directory,
-    Flag,
-    Custom(String),
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct SemanticAliasRule {
-    pub name: String,
-    pub pattern: String,
-    pub target_types: Vec<DictType>,
-}
-
 use crate::core::dictionary_manager::DictionaryManager;
 use std::sync::Arc;
 
-#[allow(dead_code)]
+/// 字典引擎：本身不缓存任何词表，所有登记/查询/snapshot 一律委托
+/// `DictionaryManager`（P3-01/P3-86：原 12 个本地映射字段均为死字段，已删除）。
 pub struct DictionaryEngine {
-    pub(crate) paths: HashMap<String, String>,
-    pub(crate) packages: HashMap<String, String>,
-    pub(crate) macros: HashMap<String, String>,
-    pub(crate) files: HashMap<String, String>,
-    pub(crate) directories: HashMap<String, String>,
-    pub(crate) flags: HashMap<String, String>,
-    pub(crate) custom: HashMap<String, HashMap<String, String>>,
-    pub(crate) custom_prefixes: HashMap<String, String>,
-    pub(crate) next_ids: HashMap<DictType, usize>,
-    #[allow(dead_code)]
-    pub(crate) path_hierarchy_enabled: bool,
-    pub(crate) semantic_aliases: HashMap<String, String>,
-    #[allow(dead_code)]
-    pub(crate) alias_rules: Vec<SemanticAliasRule>,
     pub(crate) manager: Option<Arc<DictionaryManager>>,
 }
 
@@ -64,6 +33,7 @@ pub struct HierarchicalNode {
 }
 
 impl HierarchicalNode {
+    /// 构造一个空的层级节点：以给定名称初始化，token 与 alias 为 None，无子节点，且默认标记为非必要（is_essential=false）。
     #[allow(dead_code)]
     pub fn new(name: &str) -> Self {
         Self {
@@ -93,6 +63,7 @@ pub struct PathHierarchyConfig {
 
 #[allow(dead_code)]
 impl Default for PathHierarchyConfig {
+    /// 提供路径层级压缩的默认调优参数：目录最小长度 15、最小出现次数 2、最多保留前缀数 10；作为路径分层化策略的基线配置。
     fn default() -> Self {
         Self {
             min_dir_length: 15,

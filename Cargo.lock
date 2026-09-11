@@ -1150,16 +1150,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "68ab91017fe16c622486840e4c83c9a37afeff978bd239b5293d61ece587de66"
 
 [[package]]
-name = "libloading"
-version = "0.9.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "754ca22de805bb5744484a5b151a9e1a8e837d5dc232c2d7d8c2e3492edc8b60"
-dependencies = [
- "cfg-if",
- "windows-link",
-]
-
-[[package]]
 name = "libsqlite3-sys"
 version = "0.32.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1494,14 +1484,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51bae2ac328883f7acdfea3d66a7c35751187f870bc81f94563733a154d7a670"
 dependencies = [
  "plotters-backend",
-]
-
-[[package]]
-name = "plugin-interface"
-version = "0.5.0"
-dependencies = [
- "serde",
- "serde_json",
 ]
 
 [[package]]
@@ -2427,7 +2409,7 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 
 [[package]]
 name = "tokenslim"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "aho-corasick",
  "axum",
@@ -2441,7 +2423,6 @@ dependencies = [
  "env_logger",
  "jsonwebtoken",
  "lazy_static",
- "libloading",
  "log",
  "md5",
  "memchr",
@@ -2449,7 +2430,6 @@ dependencies = [
  "mime_guess",
  "notify",
  "once_cell",
- "plugin-interface",
  "portable-pty",
  "quick-xml",
  "rayon",
@@ -2460,6 +2440,7 @@ dependencies = [
  "serde",
  "serde_json",
  "serde_yaml",
+ "sha2",
  "sys-locale",
  "sysinfo",
  "thiserror 2.0.18",
@@ -2477,7 +2458,7 @@ dependencies = [
 
 [[package]]
 name = "tokenslim-py"
-version = "0.5.0"
+version = "0.5.1"
 dependencies = [
  "pyo3",
  "serde_json",

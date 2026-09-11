@@ -4,17 +4,13 @@ use serde::{Deserialize, Serialize};
 /// Markdown 插件配置
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MarkdownConfig {
-    pub extract_links: bool,
-    pub extract_images: bool,
     pub remove_comments: bool,
 }
 
 impl Default for MarkdownConfig {
-    /// 提供该插件类型的默认配置实现。
+    /// 构造 MarkdownConfig 默认配置：移除注释开启。
     fn default() -> Self {
         MarkdownConfig {
-            extract_links: true,
-            extract_images: true,
             remove_comments: true,
         }
     }

@@ -8,13 +8,21 @@ use bumpalo::Bump;
 use regex::Regex;
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::sync::OnceLock;
+
+/// P3-155（P3-127 家族扩展）：`extract_size_kb` 每资产行与 `compress` 主循环内每行
+/// 重建 hash 正则、`normalize` 重建 hash/time。提升为进程级 `OnceLock` 预编译
+/// （对照 `infra_tools_common.rs` 范式）。
+static SIZE_RE: OnceLock<Regex> = OnceLock::new();
+static HASH_RE: OnceLock<Regex> = OnceLock::new();
+static TIME_RE: OnceLock<Regex> = OnceLock::new();
 
 impl WebpackVitePlugin {
+    /// 创建插件实例：初始化名称(webpack_vite)与优先级(82)。
     pub fn new() -> Self {
         Self {
             name: "webpack_vite",
             priority: 82,
-            config: WebpackViteConfig::default(),
         }
     }
 
@@ -50,7 +58,7 @@ impl WebpackVitePlugin {
     #[tracing::instrument(level = "debug", skip_all)]
     fn extract_size_kb(line: &str) -> Option<f64> {
         // 匹配 "125.4 KiB" 或 "1.2 MiB"
-        let size_re = Regex::new(r"(\d+\.?\d*)\s*(KiB|MiB|kB|MB)").ok()?;
+        let size_re = SIZE_RE.get_or_init(|| Regex::new(r"(\d+\.?\d*)\s*(KiB|MiB|kB|MB)").unwrap());
         if let Some(caps) = size_re.captures(line) {
             let value: f64 = caps.get(1)?.as_str().parse().ok()?;
             let unit = caps.get(2)?.as_str();
@@ -76,6 +84,7 @@ struct ErrorClassifier {
 }
 
 impl ErrorClassifier {
+    /// 创建空的错误分类器：初始化错误/警告集合与类型计数表。
     fn new() -> Self {
         Self {
             errors: Vec::new(),
@@ -157,13 +166,16 @@ impl ErrorClassifier {
 }
 
 impl Plugin for WebpackVitePlugin {
+    /// 返回插件名称标识 "webpack_vite"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级(82)，用于压缩调度排序。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测切片文本是否属于 Webpack/Vite 构建日志，按 Vite 特征、Webpack 特征或通用资产列表特征返回置信度 0.0~0.9。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
 
@@ -193,6 +205,7 @@ impl Plugin for WebpackVitePlugin {
         None
     }
 
+    /// 压缩 Webpack/Vite 构建日志：过滤噪音行、折叠 HMR/警告/资产/模块族群、提取哈希入字典，并经 ROI 门控输出。
     #[tracing::instrument(level = "debug", skip_all)]
     fn compress<'a>(
         &self,
@@ -396,7 +409,7 @@ impl Plugin for WebpackVitePlugin {
 
             // 提取哈希并存入字典
             let mut processed_line = line.to_string();
-            let hash_re = Regex::new(r"\b[0-9a-f]{20,}\b").unwrap();
+            let hash_re = HASH_RE.get_or_init(|| Regex::new(r"\b[0-9a-f]{20,}\b").unwrap());
             processed_line = hash_re
                 .replace_all(&processed_line, |caps: &regex::Captures| {
                     dict_engine.add_macro(caps.get(0).unwrap().as_str())
@@ -424,39 +437,32 @@ impl Plugin for WebpackVitePlugin {
         }
     }
 
+    /// 解压 Webpack/Vite 日志：本插件为无损透传，直接返回原字符串。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
     }
 
+    /// 归一化文本：将构建哈希替换为 [HASH]、构建耗时替换为 [TIME]，以便去重。
     fn normalize(&self, text: &str) -> String {
         let mut result = text.to_string();
         // 抹除构建哈希
-        let hash_re = Regex::new(r"\b[0-9a-f]{20,}\b").unwrap();
+        let hash_re = HASH_RE.get_or_init(|| Regex::new(r"\b[0-9a-f]{20,}\b").unwrap());
         result = hash_re.replace_all(&result, "[HASH]").to_string();
 
         // 抹除构建耗时
-        let time_re = Regex::new(r"\d+ms|\d+\.\d+s").unwrap();
+        let time_re = TIME_RE.get_or_init(|| Regex::new(r"\d+ms|\d+\.\d+s").unwrap());
         result = time_re.replace_all(&result, "[TIME]").to_string();
 
         result
     }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<WebpackViteConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
-    }
 }
 
 impl Clone for WebpackVitePlugin {
+    /// 返回克隆的插件实例：复制名称与优先级。
     fn clone(&self) -> Self {
         Self {
             name: self.name,
             priority: self.priority,
-            config: self.config.clone(),
         }
     }
 }

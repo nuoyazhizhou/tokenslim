@@ -1,9 +1,9 @@
 {
-    "generated_at": "2026-06-24T17:56:01.050197",
-    "plugin_count": 63,
-    "audited_plugin_count": 0,
-    "frozen_plugin_count": 0,
-    "coverage_gap_count": 59,
+    "generated_at": "2026-09-11T14:37:02.839519",
+    "plugin_count": 66,
+    "audited_plugin_count": 60,
+    "frozen_plugin_count": 60,
+    "coverage_gap_count": 2,
     "source": {
         "config_dir": "config/plugins",
         "samples_dir": "samples",
@@ -30,13 +30,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 44,
+            "sample_cases": 22,
             "showcase_cases": 22,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 22,
+            "frozen_cases": 22,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\android_gradle\\android_gradle.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\android_gradle_plugin\\android_gradle_plugin.latest.json"
         },
         {
             "name": "ansi_cleaner",
@@ -59,13 +59,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\ansi_cleaner\\ansi_cleaner.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\ansi_cleaner_plugin\\ansi_cleaner_plugin.latest.json"
         },
         {
             "name": "ansible",
@@ -91,13 +91,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\ansible\\ansible.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\ansible_plugin\\ansible_plugin.latest.json"
         },
         {
             "name": "artifact_summary",
@@ -143,13 +143,40 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
+            "audit_cases": 12,
+            "frozen_cases": 12,
+            "auditing_cases": 0,
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\artifact_summary_plugin\\artifact_summary_plugin.latest.json"
+        },
+        {
+            "name": "backfill",
+            "config_path": "",
+            "source_path": "src/plugins\\backfill_plugin",
+            "has_config": false,
+            "has_source": false,
+            "enabled": true,
+            "priority": 0,
+            "description": "",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 0,
+            "showcase_cases": 0,
             "audit_cases": 0,
             "frozen_cases": 0,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\artifact_summary\\artifact_summary.latest.json"
+            "coverage_status": "unknown",
+            "latest_json": "docs/audit\\backfill_plugin\\backfill_plugin.latest.json"
         },
         {
             "name": "bazel",
@@ -171,13 +198,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\bazel\\bazel.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\bazel_plugin\\bazel_plugin.latest.json"
         },
         {
             "name": "ci_log",
@@ -248,13 +275,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 88,
+            "sample_cases": 44,
             "showcase_cases": 44,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 44,
+            "frozen_cases": 44,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\ci_log\\ci_log.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\ci_log_plugin\\ci_log_plugin.latest.json"
         },
         {
             "name": "cloud_log",
@@ -309,13 +336,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 104,
+            "sample_cases": 52,
             "showcase_cases": 52,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 52,
+            "frozen_cases": 52,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\cloud_log\\cloud_log.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\cloud_log_plugin\\cloud_log_plugin.latest.json"
         },
         {
             "name": "cloudformation",
@@ -346,13 +373,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\cloudformation\\cloudformation.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\cloudformation_plugin\\cloudformation_plugin.latest.json"
         },
         {
             "name": "db_log",
@@ -391,13 +418,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 44,
+            "sample_cases": 22,
             "showcase_cases": 22,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 22,
+            "frozen_cases": 22,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\db_log\\db_log.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\db_log_plugin\\db_log_plugin.latest.json"
         },
         {
             "name": "dotnet",
@@ -418,13 +445,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\dotnet\\dotnet.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\dotnet_plugin\\dotnet_plugin.latest.json"
         },
         {
             "name": "encoding_fallback",
@@ -445,13 +472,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 20,
+            "sample_cases": 11,
             "showcase_cases": 0,
             "audit_cases": 0,
             "frozen_cases": 0,
             "auditing_cases": 0,
             "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\encoding_fallback\\encoding_fallback.latest.json"
+            "latest_json": "docs/audit\\encoding_fallback_plugin\\encoding_fallback_plugin.latest.json"
         },
         {
             "name": "explain",
@@ -472,13 +499,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 2,
+            "sample_cases": 1,
             "showcase_cases": 0,
             "audit_cases": 0,
             "frozen_cases": 0,
             "auditing_cases": 0,
             "coverage_status": "meta",
-            "latest_json": "docs/audit\\explain\\explain.latest.json"
+            "latest_json": "docs/audit\\explain_plugin\\explain_plugin.latest.json"
         },
         {
             "name": "gcc_log",
@@ -488,7 +515,7 @@
             "has_source": true,
             "enabled": true,
             "priority": 200,
-            "description": "GCC/Clang \u7f16\u8bd1\u65e5\u5fd7\u8131\u6c34",
+            "description": "GCC/Clang \u7f16\u8bd1\u65e5\u5fd7\u8131\u6c34\uff0c\u542b nm/readelf/size/objdump \u7b26\u53f7\u00b7\u8282\u8868\u00b7\u53cd\u6c47\u7f16\u00b7\u91cd\u5b9a\u4f4d\u548c ar \u5f52\u6863\u6210\u5458/\u521b\u5efa\u7b49 binutils \u5de5\u5177\u8f93\u51fa\u538b\u7f29\u3002",
             "capability_tags": [
                 "build_log"
             ],
@@ -499,15 +526,36 @@
                 "^\\[\\d{4}-\\d{2}-\\d{2}T"
             ],
             "semantic_dimensions": [],
-            "coverage_claims": [],
+            "coverage_claims": [
+                {
+                    "name": "binutils_nm",
+                    "covered": true
+                },
+                {
+                    "name": "binutils_readelf",
+                    "covered": true
+                },
+                {
+                    "name": "binutils_size",
+                    "covered": true
+                },
+                {
+                    "name": "binutils_objdump",
+                    "covered": true
+                },
+                {
+                    "name": "binutils_ar",
+                    "covered": true
+                }
+            ],
             "coverage_warnings": [],
-            "sample_cases": 48,
-            "showcase_cases": 24,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 36,
+            "showcase_cases": 36,
+            "audit_cases": 36,
+            "frozen_cases": 36,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\gcc_log\\gcc_log.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\gcc_log_plugin\\gcc_log_plugin.latest.json"
         },
         {
             "name": "generic_text",
@@ -528,13 +576,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
-            "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 15,
+            "showcase_cases": 15,
+            "audit_cases": 15,
+            "frozen_cases": 15,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\generic_text\\generic_text.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\generic_text_plugin\\generic_text_plugin.latest.json"
         },
         {
             "name": "git_diff",
@@ -555,13 +603,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\git_diff\\git_diff.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\git_diff_plugin\\git_diff_plugin.latest.json"
         },
         {
             "name": "helm",
@@ -587,13 +635,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\helm\\helm.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\helm_plugin\\helm_plugin.latest.json"
         },
         {
             "name": "java_stack",
@@ -614,13 +662,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 32,
+            "sample_cases": 16,
             "showcase_cases": 16,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 16,
+            "frozen_cases": 16,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\java_stack\\java_stack.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\java_stack_plugin\\java_stack_plugin.latest.json"
         },
         {
             "name": "json",
@@ -649,13 +697,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\json\\json.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\json_plugin\\json_plugin.latest.json"
         },
         {
             "name": "kubernetes_docker",
@@ -676,13 +724,47 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 48,
+            "sample_cases": 24,
             "showcase_cases": 24,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 24,
+            "frozen_cases": 24,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\kubernetes_docker\\kubernetes_docker.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\kubernetes_docker_plugin\\kubernetes_docker_plugin.latest.json"
+        },
+        {
+            "name": "ls_listing",
+            "config_path": "config\\plugins\\ls_listing.json",
+            "source_path": "src/plugins\\ls_listing_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 165,
+            "description": "columnar directory listing compaction (aws s3 ls / ls -l family)",
+            "capability_tags": [
+                "cloud_log"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [
+                "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\s+\\d+\\s+\\S"
+            ],
+            "semantic_dimensions": [],
+            "coverage_claims": [
+                {
+                    "name": "aws",
+                    "covered": true
+                }
+            ],
+            "coverage_warnings": [],
+            "sample_cases": 1,
+            "showcase_cases": 1,
+            "audit_cases": 1,
+            "frozen_cases": 1,
+            "auditing_cases": 0,
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\ls_listing_plugin\\ls_listing_plugin.latest.json"
         },
         {
             "name": "markdown",
@@ -703,13 +785,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\markdown\\markdown.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\markdown_plugin\\markdown_plugin.latest.json"
         },
         {
             "name": "maven",
@@ -730,13 +812,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 32,
-            "showcase_cases": 16,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 15,
+            "showcase_cases": 15,
+            "audit_cases": 15,
+            "frozen_cases": 15,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\maven\\maven.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\maven_plugin\\maven_plugin.latest.json"
         },
         {
             "name": "minify_code",
@@ -765,7 +847,7 @@
             "frozen_cases": 0,
             "auditing_cases": 0,
             "coverage_status": "disabled_config",
-            "latest_json": "docs/audit\\minify_code\\minify_code.latest.json"
+            "latest_json": "docs/audit\\minify_code_plugin\\minify_code_plugin.latest.json"
         },
         {
             "name": "ndjson",
@@ -791,13 +873,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\ndjson\\ndjson.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\ndjson_plugin\\ndjson_plugin.latest.json"
         },
         {
             "name": "node_error",
@@ -818,13 +900,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\node_error\\node_error.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\node_error_plugin\\node_error_plugin.latest.json"
         },
         {
             "name": "nodejs",
@@ -834,24 +916,31 @@
             "has_source": true,
             "enabled": true,
             "priority": 180,
-            "description": "Node.js \u65e5\u5fd7\u8131\u6c34",
+            "description": "Node.js \u65e5\u5fd7\u8131\u6c34\uff0c\u542b npm/yarn/pnpm install\u3001tsc\u3001eslint\u3001webpack\u3001jest\u3001vitest \u6d4b\u8bd5\u8f93\u51fa\u6298\u53e0\u3002",
             "capability_tags": [
-                "stack_trace"
+                "stack_trace",
+                "test_log",
+                "web_log"
             ],
             "route_group": "",
             "route_keywords": [],
             "route_arg_prefixes": [],
             "detect_patterns": [],
             "semantic_dimensions": [],
-            "coverage_claims": [],
+            "coverage_claims": [
+                {
+                    "name": "nodejs_vitest",
+                    "covered": true
+                }
+            ],
             "coverage_warnings": [],
-            "sample_cases": 46,
-            "showcase_cases": 23,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 25,
+            "showcase_cases": 25,
+            "audit_cases": 25,
+            "frozen_cases": 25,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\nodejs\\nodejs.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\nodejs_plugin\\nodejs_plugin.latest.json"
         },
         {
             "name": "noise_filter",
@@ -872,40 +961,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\noise_filter\\noise_filter.latest.json"
-        },
-        {
-            "name": "npm",
-            "config_path": "",
-            "source_path": "src/plugins\\npm_plugin",
-            "has_config": false,
-            "has_source": false,
-            "enabled": true,
-            "priority": 0,
-            "description": "",
-            "capability_tags": [
-                "general"
-            ],
-            "route_group": "",
-            "route_keywords": [],
-            "route_arg_prefixes": [],
-            "detect_patterns": [],
-            "semantic_dimensions": [],
-            "coverage_claims": [],
-            "coverage_warnings": [],
-            "sample_cases": 0,
-            "showcase_cases": 0,
-            "audit_cases": 0,
-            "frozen_cases": 0,
-            "auditing_cases": 0,
-            "coverage_status": "unknown",
-            "latest_json": "docs/audit\\npm\\npm.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\noise_filter_plugin\\noise_filter_plugin.latest.json"
         },
         {
             "name": "php_ruby",
@@ -926,13 +988,40 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
+            "audit_cases": 12,
+            "frozen_cases": 12,
+            "auditing_cases": 0,
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\php_ruby_plugin\\php_ruby_plugin.latest.json"
+        },
+        {
+            "name": "privacy",
+            "config_path": "config\\plugins\\privacy.json",
+            "source_path": "src/plugins\\privacy_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 0,
+            "description": "\u5728\u5176\u4ed6\u538b\u7f29\u63d2\u4ef6\u4e4b\u524d\u5355\u5411\u66ff\u6362\u9ad8\u7f6e\u4fe1\u5ea6\u51ed\u8bc1\uff0c\u9632\u6b62\u654f\u611f\u503c\u5916\u53d1\u7ed9 AI\u3002",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 0,
+            "showcase_cases": 0,
             "audit_cases": 0,
             "frozen_cases": 0,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\php_ruby\\php_ruby.latest.json"
+            "coverage_status": "source_only",
+            "latest_json": "docs/audit\\privacy_plugin\\privacy_plugin.latest.json"
         },
         {
             "name": "protobuf",
@@ -953,13 +1042,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\protobuf\\protobuf.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\protobuf_plugin\\protobuf_plugin.latest.json"
         },
         {
             "name": "pulumi",
@@ -985,13 +1074,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\pulumi\\pulumi.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\pulumi_plugin\\pulumi_plugin.latest.json"
         },
         {
             "name": "pytest",
@@ -1017,13 +1106,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 36,
+            "sample_cases": 18,
             "showcase_cases": 18,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 18,
+            "frozen_cases": 18,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\pytest\\pytest.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\pytest_plugin\\pytest_plugin.latest.json"
         },
         {
             "name": "python_traceback",
@@ -1044,13 +1133,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 32,
+            "sample_cases": 16,
             "showcase_cases": 16,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 16,
+            "frozen_cases": 16,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\python_traceback\\python_traceback.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\python_traceback_plugin\\python_traceback_plugin.latest.json"
         },
         {
             "name": "rust_go",
@@ -1071,13 +1160,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 36,
-            "showcase_cases": 18,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 20,
+            "showcase_cases": 20,
+            "audit_cases": 20,
+            "frozen_cases": 20,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\rust_go\\rust_go.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\rust_go_plugin\\rust_go_plugin.latest.json"
         },
         {
             "name": "shell_session",
@@ -1098,13 +1187,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 160,
+            "sample_cases": 80,
             "showcase_cases": 80,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 80,
+            "frozen_cases": 80,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\shell_session\\shell_session.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\shell_session_plugin\\shell_session_plugin.latest.json"
         },
         {
             "name": "smart_code",
@@ -1127,13 +1216,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\smart_code\\smart_code.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\smart_code_plugin\\smart_code_plugin.latest.json"
         },
         {
             "name": "smart_path",
@@ -1154,13 +1243,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\smart_path\\smart_path.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\smart_path_plugin\\smart_path_plugin.latest.json"
         },
         {
             "name": "spring_boot",
@@ -1181,13 +1270,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 30,
+            "sample_cases": 15,
             "showcase_cases": 15,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 15,
+            "frozen_cases": 15,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\spring_boot\\spring_boot.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\spring_boot_plugin\\spring_boot_plugin.latest.json"
         },
         {
             "name": "sql",
@@ -1208,13 +1297,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\sql\\sql.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\sql_plugin\\sql_plugin.latest.json"
         },
         {
             "name": "static_rule",
@@ -1235,13 +1324,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\static_rule\\static_rule.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\static_rule_plugin\\static_rule_plugin.latest.json"
         },
         {
             "name": "syslog",
@@ -1264,13 +1353,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\syslog\\syslog.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\syslog_plugin\\syslog_plugin.latest.json"
         },
         {
             "name": "template_driven",
@@ -1291,13 +1380,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\template_driven\\template_driven.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\template_driven_plugin\\template_driven_plugin.latest.json"
         },
         {
             "name": "terraform",
@@ -1323,13 +1412,40 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\terraform\\terraform.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\terraform_plugin\\terraform_plugin.latest.json"
+        },
+        {
+            "name": "toml_ini",
+            "config_path": "config\\plugins\\toml_ini.json",
+            "source_path": "src/plugins\\toml_ini_plugin",
+            "has_config": true,
+            "has_source": true,
+            "enabled": true,
+            "priority": 145,
+            "description": "TOML/INI \u914d\u7f6e\u7ed3\u6784\u538b\u7f29",
+            "capability_tags": [
+                "general"
+            ],
+            "route_group": "",
+            "route_keywords": [],
+            "route_arg_prefixes": [],
+            "detect_patterns": [],
+            "semantic_dimensions": [],
+            "coverage_claims": [],
+            "coverage_warnings": [],
+            "sample_cases": 3,
+            "showcase_cases": 3,
+            "audit_cases": 3,
+            "frozen_cases": 3,
+            "auditing_cases": 0,
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\toml_ini_plugin\\toml_ini_plugin.latest.json"
         },
         {
             "name": "unity_unreal",
@@ -1350,13 +1466,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 30,
+            "sample_cases": 15,
             "showcase_cases": 15,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 15,
+            "frozen_cases": 15,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\unity_unreal\\unity_unreal.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\unity_unreal_plugin\\unity_unreal_plugin.latest.json"
         },
         {
             "name": "vcs",
@@ -1398,7 +1514,7 @@
             "frozen_cases": 0,
             "auditing_cases": 0,
             "coverage_status": "orchestrator",
-            "latest_json": "docs/audit\\vcs\\vcs.latest.json"
+            "latest_json": "docs/audit\\vcs_plugin\\vcs_plugin.latest.json"
         },
         {
             "name": "vcs_az",
@@ -1424,13 +1540,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 18,
+            "sample_cases": 9,
             "showcase_cases": 9,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 9,
+            "frozen_cases": 9,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_az\\vcs_az.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_az_plugin\\vcs_az_plugin.latest.json"
         },
         {
             "name": "vcs_bitbucket",
@@ -1451,13 +1567,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 18,
+            "sample_cases": 9,
             "showcase_cases": 9,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 9,
+            "frozen_cases": 9,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_bitbucket\\vcs_bitbucket.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_bitbucket_plugin\\vcs_bitbucket_plugin.latest.json"
         },
         {
             "name": "vcs_bzr",
@@ -1478,13 +1594,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 26,
+            "sample_cases": 13,
             "showcase_cases": 13,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 13,
+            "frozen_cases": 13,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_bzr\\vcs_bzr.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_bzr_plugin\\vcs_bzr_plugin.latest.json"
         },
         {
             "name": "vcs_cvs",
@@ -1505,13 +1621,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 28,
+            "sample_cases": 14,
             "showcase_cases": 14,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 14,
+            "frozen_cases": 14,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_cvs\\vcs_cvs.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_cvs_plugin\\vcs_cvs_plugin.latest.json"
         },
         {
             "name": "vcs_darcs",
@@ -1532,13 +1648,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 20,
+            "sample_cases": 10,
             "showcase_cases": 10,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 10,
+            "frozen_cases": 10,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_darcs\\vcs_darcs.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_darcs_plugin\\vcs_darcs_plugin.latest.json"
         },
         {
             "name": "vcs_fossil",
@@ -1559,13 +1675,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 20,
+            "sample_cases": 10,
             "showcase_cases": 10,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 10,
+            "frozen_cases": 10,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_fossil\\vcs_fossil.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_fossil_plugin\\vcs_fossil_plugin.latest.json"
         },
         {
             "name": "vcs_gerrit",
@@ -1586,13 +1702,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 18,
+            "sample_cases": 9,
             "showcase_cases": 9,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 9,
+            "frozen_cases": 9,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_gerrit\\vcs_gerrit.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_gerrit_plugin\\vcs_gerrit_plugin.latest.json"
         },
         {
             "name": "vcs_gh",
@@ -1613,13 +1729,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 40,
+            "sample_cases": 20,
             "showcase_cases": 20,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 20,
+            "frozen_cases": 20,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_gh\\vcs_gh.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_gh_plugin\\vcs_gh_plugin.latest.json"
         },
         {
             "name": "vcs_git",
@@ -1640,13 +1756,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 176,
-            "showcase_cases": 88,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 86,
+            "showcase_cases": 86,
+            "audit_cases": 86,
+            "frozen_cases": 86,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_git\\vcs_git.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_git_plugin\\vcs_git_plugin.latest.json"
         },
         {
             "name": "vcs_glab",
@@ -1674,13 +1790,13 @@
             "coverage_warnings": [
                 "declared_without_case_evidence:gitlab"
             ],
-            "sample_cases": 14,
+            "sample_cases": 7,
             "showcase_cases": 7,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 7,
+            "frozen_cases": 7,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_glab\\vcs_glab.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_glab_plugin\\vcs_glab_plugin.latest.json"
         },
         {
             "name": "vcs_hg",
@@ -1701,13 +1817,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 98,
-            "showcase_cases": 49,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 48,
+            "showcase_cases": 48,
+            "audit_cases": 48,
+            "frozen_cases": 48,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_hg\\vcs_hg.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_hg_plugin\\vcs_hg_plugin.latest.json"
         },
         {
             "name": "vcs_p4",
@@ -1728,13 +1844,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 88,
+            "sample_cases": 44,
             "showcase_cases": 44,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 44,
+            "frozen_cases": 44,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_p4\\vcs_p4.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_p4_plugin\\vcs_p4_plugin.latest.json"
         },
         {
             "name": "vcs_repo",
@@ -1755,13 +1871,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 22,
+            "sample_cases": 11,
             "showcase_cases": 11,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 11,
+            "frozen_cases": 11,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_repo\\vcs_repo.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_repo_plugin\\vcs_repo_plugin.latest.json"
         },
         {
             "name": "vcs_svn",
@@ -1782,13 +1898,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 108,
+            "sample_cases": 54,
             "showcase_cases": 54,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 54,
+            "frozen_cases": 54,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\vcs_svn\\vcs_svn.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\vcs_svn_plugin\\vcs_svn_plugin.latest.json"
         },
         {
             "name": "web_log",
@@ -1867,13 +1983,13 @@
                 }
             ],
             "coverage_warnings": [],
-            "sample_cases": 96,
+            "sample_cases": 48,
             "showcase_cases": 48,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 48,
+            "frozen_cases": 48,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\web_log\\web_log.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\web_log_plugin\\web_log_plugin.latest.json"
         },
         {
             "name": "webpack_vite",
@@ -1894,13 +2010,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\webpack_vite\\webpack_vite.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\webpack_vite_plugin\\webpack_vite_plugin.latest.json"
         },
         {
             "name": "xcode_log",
@@ -1921,13 +2037,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
-            "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "sample_cases": 11,
+            "showcase_cases": 11,
+            "audit_cases": 11,
+            "frozen_cases": 11,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\xcode_log\\xcode_log.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\xcode_log_plugin\\xcode_log_plugin.latest.json"
         },
         {
             "name": "xml_html",
@@ -1951,13 +2067,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 24,
+            "sample_cases": 12,
             "showcase_cases": 12,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 12,
+            "frozen_cases": 12,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\xml_html\\xml_html.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\xml_html_plugin\\xml_html_plugin.latest.json"
         },
         {
             "name": "yaml",
@@ -1981,13 +2097,13 @@
             "semantic_dimensions": [],
             "coverage_claims": [],
             "coverage_warnings": [],
-            "sample_cases": 28,
+            "sample_cases": 14,
             "showcase_cases": 14,
-            "audit_cases": 0,
-            "frozen_cases": 0,
+            "audit_cases": 14,
+            "frozen_cases": 14,
             "auditing_cases": 0,
-            "coverage_status": "missing_audit",
-            "latest_json": "docs/audit\\yaml\\yaml.latest.json"
+            "coverage_status": "frozen",
+            "latest_json": "docs/audit\\yaml_plugin\\yaml_plugin.latest.json"
         }
     ]
 }

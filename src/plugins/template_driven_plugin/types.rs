@@ -20,6 +20,5 @@ pub struct TemplateConfig {
 pub struct TemplateDrivenPlugin {
     pub(crate) name: &'static str,
     pub(crate) priority: u8,
-    pub(crate) config: TemplateConfig,
     pub(crate) compiled_rules: Vec<(Regex, TemplateRule)>,
 }

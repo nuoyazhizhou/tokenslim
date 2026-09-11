@@ -4,6 +4,7 @@
 //! 参考: TOKF `other/tokf/crates/tokf-cli/src/gain.rs` + `gain_render/`
 
 use super::tracker::Tracker;
+use crate::utils::i18n::{t, t1};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -19,8 +20,13 @@ struct ConfigRoot {
     pricing: Option<PricingConfig>,
 }
 
+/// 从配置目录的 plugins.toml 读取定价配置；文件缺失或解析失败时返回默认空配置。
+/// P3-52/P3-57：路径锚定统一配置基准（`PluginConfigLoader::resolve_config_dir`），
+/// 不再依赖 CWD 相对路径——换目录运行时定价配置静默失效。
 fn load_pricing_config() -> PricingConfig {
-    let toml_str = fs::read_to_string("config/plugins.toml").unwrap_or_default();
+    let pricing_path = crate::core::plugin_config_loader::PluginConfigLoader::resolve_config_dir()
+        .join("plugins.toml");
+    let toml_str = fs::read_to_string(pricing_path).unwrap_or_default();
     let root: ConfigRoot = toml::from_str(&toml_str).unwrap_or_default();
     root.pricing.unwrap_or_default()
 }
@@ -79,16 +85,16 @@ pub fn format_bytes(n: u64) -> String {
 pub fn render_gain_report_summary() -> String {
     let tracker = match Tracker::open_default() {
         Ok(t) => t,
-        Err(e) => return format!("无法打开追踪数据库: {e}"),
+        Err(e) => return t1("tracking_open_failed", e),
     };
 
     let summary = match tracker.get_summary() {
         Ok(s) => s,
-        Err(e) => return format!("查询统计失败: {e}"),
+        Err(e) => return t1("gain_report_query_stats_failed", e),
     };
 
     if summary.total_commands == 0 {
-        return "尚未记录任何压缩执行。运行 `tokenslim run <command>` 开始节省 Token！".to_string();
+        return t("gain_report_no_records").to_string();
     }
 
     let tokens_saved = summary.tokens_saved;
@@ -104,34 +110,53 @@ pub fn render_gain_report_summary() -> String {
     });
 
     let mut out = format!(
-        "TokenSlim 累计节省报告\n\
+        "{}\n\
          ========================\n\
          \n\
-         使用统计:\n\
-           总执行次数:        {}\n\
-           输入 Token:        {}\n\
-           输出 Token:        {}\n\
-           节省 Token:        {}\n\
-           总体压缩率:        {:.1}%\n\
+         {}\n\
+         {}\n\
+         {}\n\
+         {}\n\
+         {}\n\
+         {}\n\
          \n\
-         价值估算:\n\
-           节省 Token 总数:   {} tokens\n",
-        format_num(summary.total_commands),
-        format_tokens(summary.total_input_tokens),
-        format_tokens(summary.total_output_tokens),
-        format_tokens(tokens_saved),
-        ratio,
-        format_num(tokens_saved)
+         {}\n\
+         {}\n",
+        t("gain_report_title_summary"),
+        t("gain_report_usage_stats"),
+        t1(
+            "gain_report_usage_total_commands",
+            format_num(summary.total_commands)
+        ),
+        t1(
+            "gain_report_usage_input_tokens",
+            format_tokens(summary.total_input_tokens)
+        ),
+        t1(
+            "gain_report_usage_output_tokens",
+            format_tokens(summary.total_output_tokens)
+        ),
+        t1("gain_report_usage_saved_tokens", format_tokens(tokens_saved)),
+        t1("gain_report_usage_ratio", format!("{:.1}", ratio)),
+        t("gain_report_value_estimate"),
+        t1(
+            "gain_report_value_total_saved",
+            format_num(tokens_saved)
+        ),
     );
 
-    let default_model = pricing_config.default.unwrap_or_else(|| "claude-4.8".to_string());
-    
+    let default_model = pricing_config
+        .default
+        .unwrap_or_else(|| "claude-4.8".to_string());
+
     // Default model first, then the rest
     if let Some(&price) = models.get(&default_model) {
         let estimated_usd = (tokens_saved as f64 / 1_000_000.0) * price;
         out.push_str(&format!(
             "           {:<16} ${:.2} USD (${:.2}/1M)\n",
-            format!("{}:", default_model), estimated_usd, price
+            format!("{}:", default_model),
+            estimated_usd,
+            price
         ));
     }
 
@@ -142,11 +167,13 @@ pub fn render_gain_report_summary() -> String {
         let estimated_usd = (tokens_saved as f64 / 1_000_000.0) * price;
         out.push_str(&format!(
             "           {:<16} ${:.2} USD (${:.2}/1M)\n",
-            format!("{}:", model), estimated_usd, price
+            format!("{}:", model),
+            estimated_usd,
+            price
         ));
     }
 
-    out.push_str("\n         * 价值按 config/plugins.toml 中的配置估算\n");
+    out.push_str(&format!("\n         {}\n", t("gain_report_pricing_note")));
     out
 }
 
@@ -154,19 +181,19 @@ pub fn render_gain_report_summary() -> String {
 pub fn render_gain_report_daily(days: i64) -> String {
     let tracker = match Tracker::open_default() {
         Ok(t) => t,
-        Err(e) => return format!("无法打开追踪数据库: {e}"),
+        Err(e) => return t1("tracking_open_failed", e),
     };
 
     let daily = match tracker.get_daily(days) {
         Ok(d) => d,
-        Err(e) => return format!("查询按日统计失败: {e}"),
+        Err(e) => return t1("gain_report_query_daily_failed", e),
     };
 
     if daily.is_empty() {
-        return format!("最近 {days} 天无记录。");
+        return t1("gain_report_no_daily_records", days);
     }
 
-    let mut out = format!("TokenSlim 按日统计 (最近 {days} 天)\n");
+    let mut out = format!("{}\n", t1("gain_report_title_daily", days));
     out.push_str("========================================\n\n");
 
     for d in &daily {
@@ -186,19 +213,19 @@ pub fn render_gain_report_daily(days: i64) -> String {
 pub fn render_gain_report_by_filter() -> String {
     let tracker = match Tracker::open_default() {
         Ok(t) => t,
-        Err(e) => return format!("无法打开追踪数据库: {e}"),
+        Err(e) => return t1("tracking_open_failed", e),
     };
 
     let filters = match tracker.get_by_filter() {
         Ok(f) => f,
-        Err(e) => return format!("查询按过滤器统计失败: {e}"),
+        Err(e) => return t1("gain_report_query_filter_failed", e),
     };
 
     if filters.is_empty() {
-        return "无过滤器记录。".to_string();
+        return t("gain_report_no_filter_records").to_string();
     }
 
-    let mut out = String::from("TokenSlim 按过滤器统计\n");
+    let mut out = format!("{}\n", t("gain_report_title_by_filter"));
     out.push_str("========================\n\n");
 
     for f in &filters {
@@ -239,59 +266,70 @@ pub fn render_gain_by_filter_json() -> Result<String, String> {
 mod tests {
     use super::*;
 
+    /// 测试：0 格式化为 "0"。
     #[test]
     fn test_format_num_zero() {
         assert_eq!(format_num(0), "0");
     }
 
+    /// 测试：三位数以内不插入分隔符。
     #[test]
     fn test_format_num_small() {
         assert_eq!(format_num(999), "999");
     }
 
+    /// 测试：1000 格式化为千分位 "1,000"。
     #[test]
     fn test_format_num_thousand() {
         assert_eq!(format_num(1000), "1,000");
     }
 
+    /// 测试：大数 84320 格式化为 "84,320"。
     #[test]
     fn test_format_num_large() {
         assert_eq!(format_num(84320), "84,320");
     }
 
+    /// 测试：负数 -73080 格式化为 "-73,080"。
     #[test]
     fn test_format_num_negative() {
         assert_eq!(format_num(-73080), "-73,080");
     }
 
+    /// 测试：百万级数字 1234567 格式化为 "1,234,567"。
     #[test]
     fn test_format_num_million() {
         assert_eq!(format_num(1_234_567), "1,234,567");
     }
 
+    /// 测试：小于 1000 的 token 数原样输出。
     #[test]
     fn test_format_tokens_small() {
         assert_eq!(format_tokens(0), "0");
         assert_eq!(format_tokens(500), "500");
     }
 
+    /// 测试：1000 及以上格式化为 K 后缀（保留 1 位小数）。
     #[test]
     fn test_format_tokens_k() {
         assert_eq!(format_tokens(1_000), "1.0K");
         assert_eq!(format_tokens(59_234), "59.2K");
     }
 
+    /// 测试：100 万及以上格式化为 M 后缀。
     #[test]
     fn test_format_tokens_m() {
         assert_eq!(format_tokens(1_000_000), "1.0M");
         assert_eq!(format_tokens(1_234_567), "1.2M");
     }
 
+    /// 测试：负数 token 数带负号并格式化为 K 后缀。
     #[test]
     fn test_format_tokens_negative() {
         assert_eq!(format_tokens(-1000), "-1.0K");
     }
 
+    /// 测试：小于 1024 字节原样输出 B。
     #[test]
     fn test_format_bytes_b() {
         assert_eq!(format_bytes(0), "0 B");
@@ -299,17 +337,20 @@ mod tests {
         assert_eq!(format_bytes(1023), "1023 B");
     }
 
+    /// 测试：1024 字节格式化为 KB（保留 2 位小数）。
     #[test]
     fn test_format_bytes_kb() {
         assert_eq!(format_bytes(1024), "1.00 KB");
         assert_eq!(format_bytes(2048), "2.00 KB");
     }
 
+    /// 测试：1MB 字节格式化为 MB。
     #[test]
     fn test_format_bytes_mb() {
         assert_eq!(format_bytes(1_048_576), "1.00 MB");
     }
 
+    /// 测试：1GB 字节格式化为 GB。
     #[test]
     fn test_format_bytes_gb() {
         assert_eq!(format_bytes(1_073_741_824), "1.00 GB");

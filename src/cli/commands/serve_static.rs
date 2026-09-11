@@ -2,10 +2,10 @@
 //! 所有 Rust 注释必须使用中文
 
 use crate::cli::types::{CliArgs, CliError};
+use axum::Router;
 use std::net::SocketAddr;
 use std::path::PathBuf;
 use tower_http::services::ServeDir;
-use axum::Router;
 
 /// 跨平台打开默认浏览器，确保零依赖
 fn open_browser(url: &str) {
@@ -14,21 +14,26 @@ fn open_browser(url: &str) {
             .args(["/c", "start", "", url])
             .status()
     } else if cfg!(target_os = "macos") {
-        std::process::Command::new("open")
-            .arg(url)
-            .status()
+        std::process::Command::new("open").arg(url).status()
     } else {
-        std::process::Command::new("xdg-open")
-            .arg(url)
-            .status()
+        std::process::Command::new("xdg-open").arg(url).status()
     };
-    
+
     if let Err(e) = status {
         log::warn!("自动打开浏览器失败: {}", e);
     }
 }
 
-/// 启动静态文件托管服务
+/// 启动静态文件托管服务（基于 axum + tower_http::ServeDir）。
+///
+/// 主要流程（与函数内编号注释对应）：
+/// 1. 确定并解析托管目录（默认当前目录 `.`，校验存在且为目录）；
+/// 2. 解析绑定地址（IP 默认 `127.0.0.1`，端口默认 `8080`），构造 `SocketAddr`；
+/// 3. 用 `Router::fallback_service(ServeDir)` 挂载静态目录，使所有请求都回退到文件服务；
+/// 4. 自建 Tokio 多线程运行时 `block_on` 启动 axum，监听端口并输出彩色引导日志；
+/// 5. 若 `--open` 则调用 `open_browser` 跨平台打开默认浏览器；
+/// 6. 监听 Ctrl+C 做优雅退出（`with_graceful_shutdown`）。
+/// 绑定失败或目录非法时返回 `CliError::InvalidArgs`。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn handle_serve_static_command(args: &CliArgs) -> Result<(), CliError> {
     // 1. 确定服务的静态目录，默认为当前目录 "."
@@ -38,8 +43,7 @@ pub fn handle_serve_static_command(args: &CliArgs) -> Result<(), CliError> {
         .unwrap_or_else(|| PathBuf::from("."));
 
     // 尝试获取绝对路径
-    let abs_dir = std::fs::canonicalize(&serve_dir)
-        .unwrap_or_else(|_| serve_dir.clone());
+    let abs_dir = std::fs::canonicalize(&serve_dir).unwrap_or_else(|_| serve_dir.clone());
 
     if !abs_dir.exists() {
         return Err(CliError::InvalidArgs(format!(
@@ -63,11 +67,9 @@ pub fn handle_serve_static_command(args: &CliArgs) -> Result<(), CliError> {
     let port = args.serve_port.unwrap_or(8080);
 
     let socket_str = format!("{}:{}", bind_ip, port);
-    let addr: SocketAddr = socket_str.parse().map_err(|e| {
-        CliError::InvalidArgs(format!(
-            "无效的绑定地址 '{socket_str}': {e}"
-        ))
-    })?;
+    let addr: SocketAddr = socket_str
+        .parse()
+        .map_err(|e| CliError::InvalidArgs(format!("无效的绑定地址 '{socket_str}': {e}")))?;
 
     // 3. 构建静态文件服务路由，将 fallback 指向 ServeDir 以托管全部请求
     let app = Router::new().fallback_service(ServeDir::new(&abs_dir));
@@ -89,7 +91,7 @@ pub fn handle_serve_static_command(args: &CliArgs) -> Result<(), CliError> {
         // 构造提示的 URL
         let actual_addr = listener.local_addr().unwrap_or(addr);
         let port = actual_addr.port();
-        
+
         let local_url = if actual_addr.ip().is_unspecified() {
             format!("http://127.0.0.1:{}/", port)
         } else {
@@ -101,18 +103,21 @@ pub fn handle_serve_static_command(args: &CliArgs) -> Result<(), CliError> {
         println!("\x1b[33m------------------------------------------------\x1b[0m");
         println!("📂 \x1b[1m托管目录:\x1b[0m {}", abs_dir.display());
         println!("🌐 \x1b[1m本地访问:\x1b[0m \x1b[4;32m{}\x1b[0m", local_url);
-        
+
         if actual_addr.ip().is_unspecified() {
             // 在 Linux 上尝试获取局域网 IP 以方便外部设备调试
             if let Ok(hostname_out) = std::process::Command::new("hostname").arg("-I").output() {
                 let ip_str = String::from_utf8_lossy(&hostname_out.stdout);
                 let ips: Vec<&str> = ip_str.split_whitespace().collect();
                 for ip in ips {
-                    println!("🌐 \x1b[1m局域网访问:\x1b[0m \x1b[4;32mhttp://{}:{}/\x1b[0m", ip, port);
+                    println!(
+                        "🌐 \x1b[1m局域网访问:\x1b[0m \x1b[4;32mhttp://{}:{}/\x1b[0m",
+                        ip, port
+                    );
                 }
             }
         }
-        
+
         println!("\x1b[33m------------------------------------------------\x1b[0m");
         println!("💡 按 \x1b[1;31mCtrl+C\x1b[0m 平滑关闭服务...");
 

@@ -1,2 +1,4 @@
 p4 passwd alice
+Enter new password: xxxx
+Re-enter new password: xxxx
 Password updated.

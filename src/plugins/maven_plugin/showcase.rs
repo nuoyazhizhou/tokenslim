@@ -20,13 +20,13 @@ mod tests {
         ("case_009_special_chars.log", "特殊字符"),
         ("case_010_mixed.log", "混合场景"),
         ("case_011_no_compress.log", "不压缩场景"),
-        ("case_012_long.log", "长输出"),
         ("case_013_javac_warnings.log", "Javac 警告/错误"),
         ("case_014_junit_tests.log", "JUnit 测试输出"),
         ("case_015_dependencies.log", "依赖下载"),
         ("case_016_build_summary.log", "构建摘要"),
     ];
 
+    /// 测试辅助：读取 samples/maven_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -36,6 +36,7 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本。
     fn compress_text(plugin: &MavenPlugin, text: &str) -> String {
         let slice = Slice {
             id: 1,
@@ -61,6 +62,7 @@ mod tests {
             .collect::<String>()
     }
 
+    /// 测试：遍历样例生成 maven 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_maven_showcase_report() {
         let plugin = MavenPlugin::new();
@@ -132,6 +134,7 @@ mod tests {
         .unwrap();
     }
 
+    /// 测试：showcase 目录保持增强用例（防回归）。
     #[test]
     fn showcase_catalog_keeps_enhancement_cases() {
         let case_ids: Vec<&str> = SHOWCASE_CASES

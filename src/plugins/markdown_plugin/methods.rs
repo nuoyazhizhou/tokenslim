@@ -97,9 +97,11 @@ impl Plugin for MarkdownPlugin {
     /// 对文本进行归一化处理（用于日志比对）。消除时间戳、随机 Hash、乱序参数等 Diff 噪音。
     fn normalize(&self, text: &str) -> String {
         let mut result = text.to_string();
-        // 抹除 Markdown 链接中的查询参数
-        let link_re = regex::Regex::new(r"(\[.*?\]\(.*?)\?.*?\)(.*?)").unwrap();
-        result = link_re.replace_all(&result, "$1?...)$2").to_string();
+        // Q81 处置：原 `(.*?)\?` 会越过链接继续向后找 `?`（. 不匹配换行但可跨 `)`），
+        // 无 query 的链接遇到行内靠后的 `?` 时会把整段误吞为 query。改为限定在 URL 内、
+        // 遇 `)` 或空白即止，仅剥离紧随链接 URL 的 `?query` 部分。
+        let link_re = regex::Regex::new(r"(\[[^\]\n]*\]\([^)\s]*)\?[^)\n]*\)").unwrap();
+        result = link_re.replace_all(&result, "$1?...)").to_string();
 
         result
     }
@@ -107,14 +109,5 @@ impl Plugin for MarkdownPlugin {
     /// 执行反向的还原逻辑。利用字典引擎中存储的上下文，将压缩后的 Token 流重新展开为完整、人类可读的原始文本。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
-    }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<MarkdownConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
     }
 }

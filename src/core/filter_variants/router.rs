@@ -1,27 +1,9 @@
 use std::path::Path;
 
-use super::detector::{detect_args, detect_file, detect_output};
-use super::types::{VariantConfig, VariantDetect, VariantFilter};
+use super::detector::detect_file;
+use super::types::VariantFilter;
 
-pub fn resolve_variant(
-    configs: &[VariantConfig],
-    cwd: &Path,
-    args: &[String],
-    output: &str,
-) -> Option<String> {
-    for cfg in configs {
-        let matched = match &cfg.detect {
-            VariantDetect::File { exists } => detect_file(cwd, exists),
-            VariantDetect::ArgsPattern { pattern } => detect_args(args, pattern),
-            VariantDetect::OutputPattern { pattern } => detect_output(output, pattern),
-        };
-        if matched {
-            return Some(cfg.filter.clone());
-        }
-    }
-    None
-}
-
+/// 解析 npm test 调用的测试框架变体：检测 vitest/jest/mocha 配置文件存在性并返回对应过滤器。
 pub fn resolve_npm_test_variant(cwd: &Path, prog: &str, args: &[String]) -> Option<VariantFilter> {
     let prog_lc = prog.to_ascii_lowercase();
     if prog_lc != "npm" && prog_lc != "npm.cmd" {
@@ -58,6 +40,7 @@ pub fn resolve_npm_test_variant(cwd: &Path, prog: &str, args: &[String]) -> Opti
 mod tests {
     use super::*;
 
+    /// 验证 `resolve_npm_test_variant` 在临时目录写入 vitest 配置后能正确识别 Vitest 变体。
     #[test]
     fn detects_vitest_variant_by_file() {
         let unique = format!(

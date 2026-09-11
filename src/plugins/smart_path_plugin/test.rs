@@ -6,6 +6,7 @@ mod tests {
     use crate::core::text_slicer::SliceType;
     use crate::plugins::smart_path_plugin::SmartPathPlugin;
     use crate::plugins::test_utils::*;
+    /// 测试：含路径的样例被识别。
     #[test]
     fn detects_sample_with_paths() {
         let plugin = SmartPathPlugin::new();
@@ -13,6 +14,7 @@ mod tests {
         assert!(plugin.detect(&make_log_slice(&raw)).is_some());
     }
 
+    /// 测试：多路径样例压缩后不扩张。
     #[test]
     fn compresses_multiple_paths_without_expansion() {
         let plugin = SmartPathPlugin::new();
@@ -26,6 +28,7 @@ mod tests {
         );
     }
 
+    /// 测试：Windows 路径样例被压缩。
     #[test]
     fn compresses_windows_path_sample() {
         let plugin = SmartPathPlugin::new();

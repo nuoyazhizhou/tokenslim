@@ -18,6 +18,7 @@ pub fn compress_depot_paths(text: &str) -> String {
     compressor.extract_and_compress_from_text(text)
 }
 
+/// 用 VcsParser 解析文本并渲染记录；空记录返回原文。
 pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
     if let Some(doc) = parser.parse(raw) {
         let out: String = doc.records.iter().map(|r| format!("{}\n", r)).collect();
@@ -31,6 +32,7 @@ pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
         raw.to_string()
     }
 }
+/// 成本门控：输出比原文短才采用，否则回退原文。
 fn cost_gate(raw: &str, output: String) -> String {
     if output.len() < raw.len() {
         output
@@ -39,6 +41,7 @@ fn cost_gate(raw: &str, output: String) -> String {
     }
 }
 
+/// 锚点守卫：强制在输出开头保留首行命令锚点。
 fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
     let anchor = raw
         .lines()
@@ -57,10 +60,12 @@ fn anchor_guard(raw: &str, f: impl FnOnce() -> String) -> String {
     format!("{}\n{}", anchor, body.trim_start())
 }
 
+/// 判断是否为 p4 叙述噪音行（change created/submitted/sync completed 等）。
 fn is_p4_narrative_noise(t: &str) -> bool {
     let l = t.to_ascii_lowercase();
-    l.starts_with("change ") && (l.contains("created.") || l.contains("submitted."))
-        || l.contains("shelve change") && l.contains("created.")
+    // 显式分组确认意图（&& 优先级高于 ||），避免后续维护误读（Q31 处置）
+    (l.starts_with("change ") && (l.contains("created.") || l.contains("submitted.")))
+        || (l.contains("shelve change") && l.contains("created."))
         || l.contains("unshelved change")
         || l == "sync completed."
         || l.starts_with("affected files")
@@ -88,48 +93,63 @@ pub fn is_p4_command_line(line: &str) -> bool {
     t.starts_with("p4 ") && t.len() > 3 && !t[3..].trim_start().is_empty()
 }
 
+/// 压缩 p4 opened 输出：锚点守卫 + opened 行解析为状态码:路径。
 pub fn compact_p4_opened_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_opened(raw))
 }
+/// 压缩 p4 describe 输出：锚点守卫 + describe 解析（Change 头符号化 + diff 保留）。
 pub fn compact_p4_describe_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_describe(raw))
 }
+/// 压缩 p4 fstat 输出：锚点守卫 + fstat 属性拍扁为单行。
 pub fn compact_p4_fstat_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_fstat(raw))
 }
+/// 压缩 p4 where 输出：P4WhereParser 解析 + 锚点守卫。
 pub fn compact_p4_where_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&P4WhereParser, raw))
 }
+/// 压缩 p4 info 输出：P4InfoParser 解析 + 锚点守卫。
 pub fn compact_p4_info_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&P4InfoParser, raw))
 }
+/// 压缩 p4 sync 输出：锚点守卫 + sync 行解析。
 pub fn compact_p4_sync_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_sync(raw))
 }
+/// 压缩 p4 submit 输出：锚点守卫 + submit 命令解析。
 pub fn compact_p4_submit_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_submit_cmd(raw))
 }
+/// 压缩 p4 shelve 输出：锚点守卫 + 复用 submit 命令解析。
 pub fn compact_p4_shelve_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_submit_cmd(raw))
 }
+/// 压缩 p4 unshelve 输出：P4UnshelveParser 解析 + 锚点守卫。
 pub fn compact_p4_unshelve_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&P4UnshelveParser, raw))
 }
+/// 压缩 p4 resolve 输出：P4ResolveParser 解析 + 锚点守卫。
 pub fn compact_p4_resolve_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&P4ResolveParser, raw))
 }
+/// 压缩 p4 revert 输出：P4RevertParser 解析 + 锚点守卫。
 pub fn compact_p4_revert_for_ai(raw: &str) -> String {
     anchor_guard(raw, || process_parser(&P4RevertParser, raw))
 }
+/// 压缩 p4 edit 输出：简单状态解析 + 锚点守卫。
 pub fn compact_p4_edit_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_simple_status(raw))
 }
+/// 压缩 p4 add 输出：简单状态解析 + 锚点守卫。
 pub fn compact_p4_add_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_simple_status(raw))
 }
+/// 压缩 p4 delete 输出：简单状态解析 + 锚点守卫。
 pub fn compact_p4_delete_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_simple_status(raw))
 }
+/// 压缩 p4 labels 输出：解析标签行并压缩时间戳，成本门控。
 pub fn compact_p4_labels_for_ai(raw: &str) -> String {
     anchor_guard(raw, || {
         let base = process_parser(&P4LabelsParser, raw);
@@ -160,39 +180,50 @@ pub fn compact_p4_labels_for_ai(raw: &str) -> String {
         cost_gate(raw, out)
     })
 }
+/// 压缩 p4 dirs 输出：解析目录行并提取公共根前缀。
 pub fn compact_p4_dirs_for_ai(raw: &str) -> String {
     anchor_guard(raw, || {
         let b = process_parser(&P4DirsParser, raw);
         maybe_factor_p4_dirs_root(b)
     })
 }
+/// 压缩 p4 changes 输出：Change 头符号化为 CH/CR/OW/ST/CM 单行。
 pub fn compact_p4_changes_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_changes(raw))
 }
+/// 压缩 p4 filelog 输出：filelog 行解析。
 pub fn compact_p4_filelog_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_filelog(raw))
 }
+/// 压缩 p4 files 输出：files 行解析。
 pub fn compact_p4_files_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_files(raw))
 }
+/// 压缩 p4 move 输出：move 行解析（path -> path）。
 pub fn compact_p4_move_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_move_cmd(raw))
 }
+/// 压缩 p4 copy 输出：copy 行解析（path -> path）。
 pub fn compact_p4_copy_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_copy_cmd(raw))
 }
+/// 压缩 p4 integrate 输出：复用 copy 解析（格式相同）。
 pub fn compact_p4_integrate_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_copy_cmd(raw)) // integrate 与 copy 格式相同: path -> path
 }
+/// 压缩 p4 users 输出：users 行解析。
 pub fn compact_p4_users_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_users(raw))
 }
+/// 压缩 p4 workspaces 输出：workspaces 行解析。
 pub fn compact_p4_workspaces_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_workspaces(raw))
 }
+/// 压缩 p4 depot 输出：depot 行解析。
 pub fn compact_p4_depot_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_depot(raw))
 }
+/// 压缩 p4 context diff 输出：上下文 diff 压缩。
 pub fn compact_p4_context_diff_for_ai(raw: &str) -> String {
     anchor_guard(raw, || compact_p4_context_diff(raw))
 }
@@ -200,6 +231,7 @@ pub fn compact_p4_context_diff_for_ai(raw: &str) -> String {
 // ============================================================================
 // handlers
 // ============================================================================
+/// 压缩 p4 describe 正文：Change 头符号化、depot 路径动作映射、diff 块保留。
 fn compact_p4_describe(raw: &str) -> String {
     let mut out = Vec::new();
     let mut current_cm: Option<String> = None; // 当前在收集的 CM: 行
@@ -321,6 +353,7 @@ fn compact_p4_describe(raw: &str) -> String {
     }
 }
 
+/// 压缩 p4 opened 正文：剥离省略号前缀，解析路径与动作映射为状态码。
 fn compact_p4_opened(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -377,6 +410,7 @@ fn compact_p4_opened(raw: &str) -> String {
     }
 }
 
+/// 从行中检测 opened 动作（delete→D/add→A/move→R/其他→M）。
 fn detect_p4_opened_action_from_line(line: &str) -> &'static str {
     let lower = line.to_ascii_lowercase();
     if lower.contains("delete") || lower.contains("deleted") {
@@ -390,6 +424,7 @@ fn detect_p4_opened_action_from_line(line: &str) -> &'static str {
     }
 }
 
+/// 按动词后缀（move/rename/edit/add/delete/integrate）映射路径与状态码。
 fn compact_p4_opened_path_action(input: &str) -> String {
     let actions: &[(&str, &str)] = &[
         ("move/rename", "R"),
@@ -412,6 +447,7 @@ fn compact_p4_opened_path_action(input: &str) -> String {
     path.to_string()
 }
 
+/// 压缩简单状态行（edit/add/delete 的 "path - opened for X" 格式）。
 fn compact_p4_simple_status(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -448,6 +484,7 @@ fn compact_p4_simple_status(raw: &str) -> String {
     }
 }
 
+/// 压缩 p4 changes 正文：Change 头解析并拼接 CM 续行。
 fn compact_p4_changes(raw: &str) -> String {
     let mut out = Vec::new();
     let mut current_entry: Option<String> = None;
@@ -580,6 +617,7 @@ fn skip_time_token(s: &str) -> &str {
     s
 }
 
+/// 从 args 中提取 "on DATE" 字段（去除 / 分隔符并跳过时间戳）。
 fn extract_change_field_by(args: &str) -> (String, String) {
     let args = args.trim();
     let (after, preceding) = if let Some(a) = args.strip_prefix("by ") {
@@ -610,6 +648,7 @@ fn extract_change_field_by(args: &str) -> (String, String) {
     (user, remainder)
 }
 
+/// 从 args 中提取 "by USER" 字段（兼容 @workspace 后缀）。
 fn extract_change_meta(args: &str) -> (String, String) {
     // 保留旧函数签名以供其他调用方使用
     extract_change_meta_strict(args)
@@ -667,6 +706,7 @@ fn extract_change_meta_strict(args: &str) -> (String, String) {
     (status, desc)
 }
 
+/// 缩写 fstat 键名（depotFile→DF、headAction→ACT 等，冗余键丢弃）。
 fn abbreviate_fstat_key(key: &str) -> Option<&str> {
     match key {
         "depotFile" => Some("DF"),
@@ -801,6 +841,7 @@ fn flush_fstat_block(
     }
 }
 
+/// 压缩 p4 filelog 正文。
 fn compact_p4_filelog(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -855,6 +896,7 @@ fn compact_p4_filelog(raw: &str) -> String {
     }
 }
 
+/// 压缩 p4 submit 正文。
 fn compact_p4_submit_cmd(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -864,6 +906,21 @@ fn compact_p4_submit_cmd(raw: &str) -> String {
         }
         if t.starts_with("p4 ") {
             continue;
+        }
+        // 提交成功确认行 "Change <n> submitted." 携带关键变更号，符号化为 SUB:<id>，
+        // 不能作为叙述噪音丢弃（否则 LLM 无法得知本次 submit 产出的 changelist 号）。
+        // "Change <n> created." 是提交前的中转状态，仍按噪音过滤。
+        let lower = t.to_ascii_lowercase();
+        if lower.starts_with("change ") && lower.ends_with(" submitted.") {
+            let id = t["Change ".len()..]
+                .split_whitespace()
+                .next()
+                .unwrap_or("")
+                .to_string();
+            if !id.is_empty() {
+                out.push(format!("SUB:{}", id));
+                continue;
+            }
         }
         if is_p4_narrative_noise(t) {
             continue;
@@ -1151,12 +1208,14 @@ fn compact_p4_context_diff(raw: &str) -> String {
         if t.is_empty() || t.starts_with("p4 ") {
             continue;
         }
-        // 丢弃 Context Diff 分隔符: ***************
+        // 丢弃 Context Diff 纯分隔符行（全为 *）：它不携带语义，仅起视觉分区作用。
         if t.chars().all(|c| c == '*') && t.len() >= 5 {
             continue;
         }
-        // 丢弃 Context Diff hunk 头: *** N,M ****
+        // Context Diff hunk 头 "*** N,M ****"：行号区间 N-M 是决策信息（标识改动落在
+        // 哪些行段），必须保留（法则 P4-3 语义保真）。否则只能看到 +/- 行却不知改动位置。
         if t.starts_with("*** ") && t.ends_with(" ****") {
+            out.push(t.to_string());
             continue;
         }
         out.push(t.to_string());
@@ -1168,6 +1227,7 @@ fn compact_p4_context_diff(raw: &str) -> String {
     }
 }
 
+/// 压缩 p4 diff 头行（
 fn compact_p4_diff_head(line: &str) -> Option<String> {
     let t = line.trim();
     // 标准 diff: "==== //path#N (text) ===="
@@ -1188,11 +1248,12 @@ fn compact_p4_diff_head(line: &str) -> Option<String> {
         return None;
     }
     // diff2: "==== //path1#N - //path2#M"（无尾缀 ====）
+    // 修订号 #N/#M 标识参与对比的文件版本，属于决策信息，必须保留（法则 P4-3 语义保真）。
     if t.starts_with("==== ") {
         let inner = t[5..].trim();
         if let Some((left, right)) = inner.split_once(" - ") {
-            let left = left.trim().split('#').next().unwrap_or(left).trim();
-            let right = right.trim().split('#').next().unwrap_or(right).trim();
+            let left = left.trim();
+            let right = right.trim();
             if left.starts_with("//") && right.starts_with("//") {
                 return Some(format!("DIFF2:{} - {}", left, right));
             }
@@ -1209,6 +1270,97 @@ fn compact_p4_diff_head(line: &str) -> Option<String> {
 // ============================================================================
 // 分发逻辑
 // ============================================================================
+/// p4 branch / p4 label 实体压缩（专用，替代通用回退）：
+/// 结构均为 `Branch|Label <name> <date> '<desc>'` + `View: <depot 路径>`。
+/// - 日期 `YYYY/MM/DD` 符号化为 8 位 `YYYYMMDD`（与 describe CR: 日期风格一致）
+/// - 头行首标 `BR:` / `LB:` 作为实体指纹，便于下游区分命令来源
+/// - View 行前缀缩为 `V:`，路径交给字典压缩提取公共 depot 前缀
+/// - 分支名 / 描述 / View 路径全量保留（分支语义决策所需，对应 scenario expected_keep）
+#[tracing::instrument(level = "debug", skip_all)]
+pub fn compact_p4_branch_label_for_ai(raw: &str) -> String {
+    anchor_guard(raw, || {
+        let mut out = Vec::new();
+        for line in raw.lines() {
+            let t = line.trim();
+            if t.is_empty() {
+                continue;
+            }
+            if t.starts_with("p4 ") {
+                out.push(t.to_string());
+                continue;
+            }
+            if let Some(rest) = t
+                .strip_prefix("Branch ")
+                .or_else(|| t.strip_prefix("Label "))
+            {
+                let head = if t.starts_with("Branch ") { "BR" } else { "LB" };
+                let words: Vec<&str> = rest.split_whitespace().collect();
+                // words = [name, date, desc...]；日期符号化为 8 位
+                if words.len() >= 2 {
+                    let date = words[1].replace('/', "");
+                    let mut parts = vec![format!("{}:{}", head, words[0]), date];
+                    if words.len() > 2 {
+                        parts.push(words[2..].join(" "));
+                    }
+                    out.push(parts.join(" "));
+                } else {
+                    out.push(format!("{}:{}", head, rest));
+                }
+                continue;
+            }
+            if let Some(view) = t.strip_prefix("View:") {
+                out.push(format!("V:{}", compress_depot_paths(view.trim())));
+                continue;
+            }
+            out.push(t.to_string());
+        }
+        if out.is_empty() {
+            raw.to_string()
+        } else {
+            out.join("\n")
+        }
+    })
+}
+/// p4 tag 压缩：将冗长确认行 `Tag <name> marked on <N> files.` 符号化为 `TAG:<name> N:<count>`。
+/// tag 名与受影响文件条数是决策信息，必须保留（法则 P4-3 语义保真）。
+#[tracing::instrument(level = "debug", skip_all)]
+pub fn compact_p4_tag_for_ai(raw: &str) -> String {
+    anchor_guard(raw, || {
+        let mut out = Vec::new();
+        for line in raw.lines() {
+            let t = line.trim();
+            if t.is_empty() {
+                continue;
+            }
+            if t.starts_with("p4 ") {
+                continue;
+            }
+            // 精简确认行: "Tag v1.0.0 marked on 50 files." → "TAG:v1.0.0 N:50"
+            if let Some(rest) = t.strip_prefix("Tag ") {
+                if let Some(mid) = rest.find(" marked on ") {
+                    let name = rest[..mid].trim();
+                    let tail = rest[mid + " marked on ".len()..].trim();
+                    let count = tail
+                        .split_whitespace()
+                        .next()
+                        .unwrap_or("")
+                        .trim_end_matches('.');
+                    if !name.is_empty() && !count.is_empty() {
+                        out.push(format!("TAG:{} N:{}", name, count));
+                        continue;
+                    }
+                }
+            }
+            out.push(t.to_string());
+        }
+        if out.is_empty() {
+            raw.to_string()
+        } else {
+            out.join("\n")
+        }
+    })
+}
+/// p4 other 家族压缩入口：按块类型分派。
 pub fn compact_p4_other_for_ai(raw: &str) -> String {
     if is_p4_fstat_block(raw) {
         return compact_p4_fstat_for_ai(raw);
@@ -1264,8 +1416,17 @@ pub fn compact_p4_other_for_ai(raw: &str) -> String {
     if is_p4_delete_block(raw) {
         return compact_p4_delete_for_ai(raw);
     }
+    // branch / label 实体输出近乎最小元数据，走专用压缩：日期符号化 + View 路径字典化
+    if is_p4_branch_block(raw) || is_p4_label_block(raw) {
+        return compact_p4_branch_label_for_ai(raw);
+    }
+    // tag 确认行冗长（"Tag <name> marked on <N> files."），走专用符号化压缩
+    if is_p4_tag_block(raw) {
+        return compact_p4_tag_for_ai(raw);
+    }
     compact_p4_generic(raw)
 }
+/// p4 log 家族压缩入口：按块类型分派。
 pub fn compact_p4_log_family_for_ai(raw: &str) -> String {
     if is_p4_labels_block(raw) {
         return compact_p4_labels_for_ai(raw);
@@ -1273,11 +1434,21 @@ pub fn compact_p4_log_family_for_ai(raw: &str) -> String {
     if is_p4_shelve_block(raw) {
         return compact_p4_shelve_for_ai(raw);
     }
+    if is_p4_unshelve_block(raw) {
+        return compact_p4_unshelve_for_ai(raw);
+    }
     if is_p4_filelog_block(raw) {
         return compact_p4_filelog_for_ai(raw);
     }
+    // 法则：p4 submit 输出以 "Change <n> submitted." 结尾（变更号是本次提交的关键产物），
+    // 需走提交专用压缩以保留变更号。仅当首行命令确实为 "submit" 时路由——changes 输出
+    // 虽可能含 "*submitted*" 状态串，但首行命令是 changes，不可误判为 submit。
+    if p4_subcommand_is(raw, &["submit"]) {
+        return compact_p4_submit_for_ai(raw);
+    }
     compact_p4_changes_for_ai(raw)
 }
+/// p4 status 压缩入口。
 pub fn compact_p4_status_for_ai(raw: &str) -> String {
     if is_p4_opened_block(raw) {
         return compact_p4_opened_for_ai(raw);
@@ -1305,6 +1476,7 @@ pub fn compact_p4_status_for_ai(raw: &str) -> String {
     }
     compact_p4_generic(raw)
 }
+/// p4 通用压缩：保留锚点，过滤噪音，警报映射。
 fn compact_p4_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -1334,9 +1506,19 @@ fn compact_p4_generic(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 判断是否为 p4 branch 实体命令（区别于复数 branches 列表）。
+pub fn is_p4_branch_block(text: &str) -> bool {
+    p4_subcommand_is(text, &["branch"])
+}
+/// 判断是否为 p4 label 实体命令（区别于复数 labels 列表）。
+pub fn is_p4_label_block(text: &str) -> bool {
+    p4_subcommand_is(text, &["label"])
+}
+
 // ============================================================================
 // is_p4_* 检测
 // ============================================================================
+/// 判断是否为 p4 opened 块。
 pub fn is_p4_opened_block(text: &str) -> bool {
     p4_subcommand_is(text, &["opened"])
         || text.lines().any(|line| {
@@ -1346,12 +1528,14 @@ pub fn is_p4_opened_block(text: &str) -> bool {
                 && (t.contains(" edit ") || t.contains(" add ") || t.contains(" delete "))
         })
 }
+/// 判断是否为 p4 describe 块。
 pub fn is_p4_describe_block(text: &str) -> bool {
     p4_subcommand_is(text, &["describe"])
         || text
             .lines()
             .any(|line| line.trim().starts_with("Change ") && line.contains("by"))
 }
+/// 判断是否为 p4 changes 块。
 pub fn is_p4_changes_block(text: &str) -> bool {
     p4_subcommand_is(text, &["changes"])
         || text.lines().any(|line| {
@@ -1359,30 +1543,36 @@ pub fn is_p4_changes_block(text: &str) -> bool {
             t.starts_with("Change ") && t.contains(" on ") && t.contains(" by ")
         })
 }
+/// 判断是否为 p4 fstat 块。
 pub fn is_p4_fstat_block(text: &str) -> bool {
     p4_subcommand_is(text, &["fstat"])
         || text
             .lines()
             .any(|line| line.trim().starts_with("... depotFile"))
 }
+/// 判断是否为 p4 where 块。
 pub fn is_p4_where_block(text: &str) -> bool {
     p4_subcommand_is(text, &["where"])
 }
+/// 判断是否为 p4 info 块。
 pub fn is_p4_info_block(text: &str) -> bool {
     p4_subcommand_is(text, &["info"])
         || ["User name:", "Client name:", "Server address:"]
             .iter()
             .any(|p| text.lines().any(|l| l.trim_start().starts_with(p)))
 }
+/// 判断是否为 p4 labels 块。
 pub fn is_p4_labels_block(text: &str) -> bool {
     p4_subcommand_is(text, &["labels"])
         || text
             .lines()
             .any(|line| line.trim().starts_with("Label ") && line.contains("by"))
 }
+/// 判断是否为 p4 dirs 块。
 pub fn is_p4_dirs_block(text: &str) -> bool {
     p4_subcommand_is(text, &["dirs"])
 }
+/// 判断是否为 p4 sync 块。
 pub fn is_p4_sync_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     p4_subcommand_is(text, &["sync"])
@@ -1392,15 +1582,27 @@ pub fn is_p4_sync_block(text: &str) -> bool {
             t.ends_with(" - updated") || t.ends_with(" - added") || t.ends_with(" - deleted")
         })
 }
+/// 判断是否为 p4 submit 块。
 pub fn is_p4_submit_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     p4_subcommand_is(text, &["submit"])
         || (lower.contains("change ") && lower.contains("submitted"))
 }
+/// 判断是否为 p4 shelve 块。
 pub fn is_p4_shelve_block(text: &str) -> bool {
     let lower = text.to_ascii_lowercase();
     p4_subcommand_is(text, &["shelve"]) || lower.contains("shelve change")
 }
+/// 判断是否为 p4 unshelve 块。
+/// 注意：`shelve change`/`shelve change` 判定会误伤 unshelve，故单独列出，
+/// 避免 unshelve 被当作 shelve 处理而丢失变更号。
+pub fn is_p4_unshelve_block(text: &str) -> bool {
+    let lower = text.to_ascii_lowercase();
+    p4_subcommand_is(text, &["unshelve"])
+        || lower.contains("unshelved change")
+        || lower.contains("unshelve of change")
+}
+/// 判断是否为 p4 filelog 块。
 pub fn is_p4_filelog_block(text: &str) -> bool {
     p4_subcommand_is(text, &["filelog"])
         || text.lines().any(|line| {
@@ -1408,6 +1610,7 @@ pub fn is_p4_filelog_block(text: &str) -> bool {
             t.starts_with("... #") && t.contains(" change ")
         })
 }
+/// 判断是否为 p4 resolve 块。
 pub fn is_p4_resolve_block(text: &str) -> bool {
     p4_subcommand_is(text, &["resolve"])
         || text.lines().any(|line| {
@@ -1418,30 +1621,35 @@ pub fn is_p4_resolve_block(text: &str) -> bool {
                     .is_some_and(|tok| tok.starts_with("//"))
         })
 }
+/// 判断是否为 p4 revert 块。
 pub fn is_p4_revert_block(text: &str) -> bool {
     p4_subcommand_is(text, &["revert"])
         || text
             .lines()
             .any(|line| line.trim().ends_with(" - reverted"))
 }
+/// 判断是否为 p4 edit 块。
 pub fn is_p4_edit_block(text: &str) -> bool {
     p4_subcommand_is(text, &["edit"])
         || text
             .lines()
             .any(|line| line.trim().ends_with(" - opened for edit"))
 }
+/// 判断是否为 p4 add 块。
 pub fn is_p4_add_block(text: &str) -> bool {
     p4_subcommand_is(text, &["add"])
         || text
             .lines()
             .any(|line| line.trim().ends_with(" - added for add"))
 }
+/// 判断是否为 p4 delete 块。
 pub fn is_p4_delete_block(text: &str) -> bool {
     p4_subcommand_is(text, &["delete"])
         || text
             .lines()
             .any(|line| line.trim().ends_with(" - deleted for delete"))
 }
+/// 判断是否为 p4 files 块。
 pub fn is_p4_files_block(text: &str) -> bool {
     p4_subcommand_is(text, &["files"])
         || text.lines().any(|line| {
@@ -1449,6 +1657,7 @@ pub fn is_p4_files_block(text: &str) -> bool {
             t.starts_with("//") && t.contains('#') && t.contains(" - ")
         })
 }
+/// 判断是否为 p4 move 块。
 pub fn is_p4_move_block(text: &str) -> bool {
     p4_subcommand_is(text, &["move"])
         || text.lines().any(|line| {
@@ -1456,6 +1665,7 @@ pub fn is_p4_move_block(text: &str) -> bool {
             t.contains(" - moved from ")
         })
 }
+/// 判断是否为 p4 copy 块。
 pub fn is_p4_copy_block(text: &str) -> bool {
     p4_subcommand_is(text, &["copy"])
         || text.lines().any(|line| {
@@ -1464,17 +1674,29 @@ pub fn is_p4_copy_block(text: &str) -> bool {
             t.starts_with("//") && t.contains(" -> ")
         })
 }
+/// 判断是否为 p4 integrate 块。
 pub fn is_p4_integrate_block(text: &str) -> bool {
     p4_subcommand_is(text, &["integrate"])
 }
+/// 判断是否为 p4 users 块。
 pub fn is_p4_users_block(text: &str) -> bool {
     p4_subcommand_is(text, &["users"])
 }
+/// 判断是否为 p4 workspaces 块。
 pub fn is_p4_workspaces_block(text: &str) -> bool {
     p4_subcommand_is(text, &["workspaces"])
 }
+/// 判断是否为 p4 depot 块。
 pub fn is_p4_depot_block(text: &str) -> bool {
     p4_subcommand_is(text, &["depot"])
+}
+/// 判断是否为 p4 tag 块。
+pub fn is_p4_tag_block(text: &str) -> bool {
+    p4_subcommand_is(text, &["tag"])
+        || text.lines().any(|l| {
+            let t = l.trim();
+            t.starts_with("Tag ") && t.contains(" marked on ")
+        })
 }
 /// 检测 Context Diff 格式（p4 diff -dc 族）：包含 *************** 分隔符
 pub fn is_p4_context_diff_block(text: &str) -> bool {
@@ -1504,6 +1726,7 @@ fn p4_subcommand_is(raw: &str, expected: &[&str]) -> bool {
     expected.iter().any(|cmd| *cmd == sub)
 }
 
+/// 提取 p4 dirs 输出的公共根前缀并替换为 "root: " 行。
 fn maybe_factor_p4_dirs_root(text: String) -> String {
     let lines: Vec<&str> = text.lines().collect();
     if lines.len() < 2 {
@@ -1559,6 +1782,7 @@ fn maybe_factor_p4_dirs_root(text: String) -> String {
         text
     }
 }
+/// 计算两个字符串的公共前缀。
 fn common_prefix_str(a: &str, b: &str) -> String {
     let mut o = String::new();
     for (ca, cb) in a.chars().zip(b.chars()) {

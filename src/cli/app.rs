@@ -4,8 +4,8 @@ use crate::cli::commands::{
     benchmark::handle_verify_rule_action,
     compress::run_compress_mode,
     config::{
-        check_hooks_status, detect_shell, handle_gain_action, handle_inject_action,
-        install_hooks, parse_optional_hook_shell, uninstall_hooks,
+        check_hooks_status, detect_shell, handle_gain_action, handle_inject_action, install_hooks,
+        parse_optional_hook_shell, uninstall_hooks,
     },
     decompress::run_decompress_mode,
     doctor::{
@@ -39,8 +39,13 @@ use serde::Serialize;
 use serde_json::{json, Value};
 use std::borrow::Cow;
 use std::io::{self, IsTerminal, Read};
+use std::path::PathBuf;
 
-
+/// 在 argv 中定位首个「位置参数（非选项）」的索引，作为子命令起始位置。
+///
+/// 从索引 1 开始向后扫描：遇到以 `-` 开头的选项时，仅放行 `--dry-run` / `-v` / `--verbose`
+/// 并跳过；其余选项（如未知 flag）视为无有效子命令，返回 None；遇到首个非选项参数则返回其索引。
+/// 若扫描到末尾仍未找到位置参数，返回 None。
 pub(crate) fn find_cmd_index(args: &[String]) -> Option<usize> {
     let mut cmd_index = 1;
     while cmd_index < args.len() {
@@ -59,7 +64,9 @@ pub(crate) fn find_cmd_index(args: &[String]) -> Option<usize> {
     None
 }
 
-
+/// 若 argv 以显式 `run` 子命令开头，提取其后的参数作为运行命令。
+///
+/// 复用 `find_cmd_index` 定位子命令位置；命中 `run` 时返回其后切片，否则返回 None。
 pub(crate) fn maybe_parse_run_subcommand_from_argv(args: &[String]) -> Option<Vec<String>> {
     let cmd_index = find_cmd_index(args)?;
 
@@ -70,7 +77,10 @@ pub(crate) fn maybe_parse_run_subcommand_from_argv(args: &[String]) -> Option<Ve
     None
 }
 
-
+/// 判断给定字符串是否为 tokenslim 的内置子命令名。
+///
+/// 不区分大小写，覆盖 run/compress/decompress/init/workspace/encoding/rule/
+/// env/gain/explain-plugin/plugins/repair-file/doctor/hooks/config/serve-static/feature 等。
 pub(crate) fn is_tokenslim_builtin_command(cmd: &str) -> bool {
     matches!(
         cmd.to_ascii_lowercase().as_str(),
@@ -94,10 +104,13 @@ pub(crate) fn is_tokenslim_builtin_command(cmd: &str) -> bool {
             | "config"
             | "serve-static"
             | "serve_static"
+            | "feature"
     )
 }
 
-
+/// 当 argv 未显式写 `run` 但首个位置参数不是内置命令时，将其整体当作隐式运行命令。
+///
+/// 复用 `find_cmd_index` 与 `is_tokenslim_builtin_command`；命中隐式运行命令时返回其后切片，否则 None。
 pub(crate) fn maybe_parse_implicit_run_command_from_argv(args: &[String]) -> Option<Vec<String>> {
     let cmd_index = find_cmd_index(args)?;
     let cmd = &args[cmd_index];
@@ -109,7 +122,16 @@ pub(crate) fn maybe_parse_implicit_run_command_from_argv(args: &[String]) -> Opt
     Some(args[cmd_index..].to_vec())
 }
 
-
+/// 从 argv[0] 中提取程序名称
+///
+/// 从可执行文件路径中提取文件名作为程序显示名称。
+/// 如果提取失败则返回默认值 "tokenslim"。
+///
+/// # 参数
+/// - `argv0` - 可执行文件的路径（argv[0]）
+///
+/// # 返回值
+/// 程序名称字符串
 pub(crate) fn program_name_from_argv0(argv0: &str) -> String {
     std::path::Path::new(argv0)
         .file_name()
@@ -118,7 +140,19 @@ pub(crate) fn program_name_from_argv0(argv0: &str) -> String {
         .to_string()
 }
 
-
+/// 判断是否应该显示快速用法提示
+///
+/// 在以下情况直接显示用法而不进入流水线：
+/// 1. 参数包含 --help 或 -h
+/// 2. 参数仅包含 -v/--verbose 且无其他位置参数
+/// 3. 无参数且 stdin 是终端（避免等待 stdin 造成卡住的体感）
+///
+/// # 参数
+/// - `argv` - 命令行参数数组
+/// - `stdin_is_terminal` - stdin 是否为终端
+///
+/// # 返回值
+/// true 表示应该显示快速用法，false 表示继续正常处理
 pub(crate) fn should_show_quick_usage(argv: &[String], stdin_is_terminal: bool) -> bool {
     if argv.len() == 2 && (argv[1] == "--help" || argv[1] == "-h") {
         return true;
@@ -130,24 +164,27 @@ pub(crate) fn should_show_quick_usage(argv: &[String], stdin_is_terminal: bool) 
     argv.len() <= 1 && stdin_is_terminal
 }
 
-
+/// 生成 `config` 子命令的用法帮助文本。
+///
+/// 列出 set/get/list/unset/reset/wizard/plugin 等子命令及其示例，
+/// 文案中的 `{program}` 占位由调用方传入的程序名填充。
 pub(crate) fn render_config_usage(program: &str) -> String {
     format!(
         "{} config
 
-管理全局与项目级配置项
+{}
 
 {}:
   {} config <subcommand> [args...]
 
-子命令:
-  set <key> <value> [--global|-g]   设置配置项的值
-  get <key>                         获取合并后的配置项值
-  list                              列出所有合并生效的配置项
-  unset <key> [--global|-g]         移除配置项
-  reset [--global|-g]               重置/清空配置文件
-  wizard [--global|-g]              进入交互式配置向导
-  plugin <subcommand> [args...]     管理插件启用/禁用和参数配置
+{}:
+  set <key> <value> [--global|-g]   {}
+  get <key>                         {}
+  list                              {}
+  unset <key> [--global|-g]         {}
+  reset [--global|-g]               {}
+  wizard [--global|-g]              {}
+  plugin <subcommand> [args...]     {}
 
 {}:
   {} config set general.preset fast --global
@@ -155,8 +192,17 @@ pub(crate) fn render_config_usage(program: &str) -> String {
   {} config list
   {} config wizard",
         program,
+        t("cli_desc_config"),
         t("cli_help_usage"),
         program,
+        t("cli_config_subcommands"),
+        t("cli_config_sub_set"),
+        t("cli_config_sub_get"),
+        t("cli_config_sub_list"),
+        t("cli_config_sub_unset"),
+        t("cli_config_sub_reset"),
+        t("cli_config_sub_wizard"),
+        t("cli_config_sub_plugin"),
         t("cli_help_examples"),
         program,
         program,
@@ -165,7 +211,9 @@ pub(crate) fn render_config_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成全局总览用法帮助文本（无子命令或未知命令时回退展示）。
+///
+/// 汇总核心命令、工作区诊断、工具类命令及常见示例，版本号取自 `CARGO_PKG_VERSION`。
 pub(crate) fn render_global_usage(program: &str) -> String {
     let capability_summary = String::new();
     let shorthand_text = t("cli_help_shorthand").replace("{program}", program);
@@ -237,46 +285,78 @@ pub(crate) fn render_global_usage(program: &str) -> String {
         "hooks",
         t("cli_desc_hooks"),
         "config",
-        "管理全局与项目级配置项 / Manage configurations",
+        t("cli_desc_config"),
         "serve-static",
-        "启动静态文件服务器 / Start a static file server",
+        t("cli_desc_serve_static"),
         t("cli_help_common_examples"),
         capability_summary
     )
 }
 
-
+/// 生成 `serve-static` 子命令的用法帮助文本。
+///
+/// 说明静态文件服务的目录参数与 `--port/--bind/--open` 选项及示例。
+/// 全部用户可见文案均经 i18n 词表渲染，不随 locale 之外的输入变化。
 pub(crate) fn render_serve_static_usage(program: &str) -> String {
     format!(
         "{} serve-static
 
-启动静态文件服务以托管指定目录下的文件。
+{}
 
-用法:
-  {} serve-static [目录路径] [选项]
+{}:
+  {} serve-static [<DIR>] [{}]
 
-参数:
-  [目录路径]                          静态服务根目录（默认：当前目录 \".\"）
+{}:
+  {:<34} {}
 
-选项:
-  --port <PORT>                      绑定的端口（默认：8080）
-  --bind <IP>                        绑定的 IP 地址（默认：127.0.0.1）
-  --open                             是否在启动后自动打开浏览器
-  -h, --help                         显示此帮助信息
+{}:
+  {:<34} {}
+  {:<34} {}
+  {:<34} {}
+  {:<34} {}
 
-示例:
-  {} serve-static                      # 托管当前目录，绑定到 127.0.0.1:8080
-  {} serve-static ./dist --port 9000   # 托管 ./dist 目录，绑定到端口 9000
-  {} serve-static --open               # 托管当前目录并自动打开浏览器",
-        program,
-        program,
-        program,
-        program,
-        program
+{}:
+  {} serve-static                      # {}
+  {} serve-static ./dist --port 9000   # {}
+  {} serve-static --open               # {}",
+        program,                                   // {0}
+        t("cli_serve_static_desc"),                // {1}
+        t("cli_help_usage"),                       // {2}
+        program,                                   // {3}
+        t("cli_help_options_placeholder"),         // {4}
+        t("cli_serve_static_args"),                // {5}
+        "<DIR>",                                   // {6}
+        t("cli_serve_static_dir_arg"),             // {7}
+        t("cli_help_options"),                     // {8}
+        "--port <PORT>",                           // {9}
+        t("cli_opt_port"),                         // {10}
+        "--bind <IP>",                             // {11}
+        t("cli_opt_bind"),                         // {12}
+        "--open",                                  // {13}
+        t("cli_opt_open"),                         // {14}
+        "-h, --help",                              // {15}
+        t("cli_opt_help"),                         // {16}
+        t("cli_help_examples"),                    // {17}
+        program,                                   // {18}
+        t("cli_serve_static_example_1"),           // {19}
+        program,                                   // {20}
+        t("cli_serve_static_example_2"),           // {21}
+        program,                                   // {22}
+        t("cli_serve_static_example_3"),           // {23}
     )
 }
 
-
+/// 拦截版本请求
+///
+/// 检查命令行参数是否为版本查询请求（-V/--version/version）。
+/// 会跳过 --dry-run、-v、--verbose 等全局开关后再判断。
+///
+/// # 参数
+/// - `argv` - 命令行参数数组
+///
+/// # 返回值
+/// - `Some(String)` - 版本信息字符串
+/// - `None` - 不是版本请求
 pub(crate) fn intercept_version_request(argv: &[String]) -> Option<String> {
     // 跳过 argv[0] 和全局开关，只看 position args
     const GLOBAL_FLAGS: &[&str] = &["--dry-run", "-v", "--verbose"];
@@ -299,7 +379,18 @@ pub(crate) fn intercept_version_request(argv: &[String]) -> Option<String> {
     None
 }
 
-
+/// 拦截帮助请求
+///
+/// 检查命令行参数是否包含帮助标志（-h/--help），
+/// 并根据子命令返回对应的帮助文本。
+///
+/// # 参数
+/// - `argv` - 命令行参数数组
+/// - `program` - 程序名称
+///
+/// # 返回值
+/// - `Some(String)` - 帮助文本
+/// - `None` - 不是帮助请求
 pub(crate) fn intercept_help_request(argv: &[String], program: &str) -> Option<String> {
     if !argv.iter().any(|a| a == "-h" || a == "--help") {
         return None;
@@ -330,7 +421,9 @@ pub(crate) fn intercept_help_request(argv: &[String], program: &str) -> Option<S
     Some(help_text)
 }
 
-
+/// 生成 `compress` 子命令的用法帮助文本。
+///
+/// 列出 `-i/-o/--format/--preset/--stream/--flush-interval/--merge` 等选项及示例。
 pub(crate) fn render_compress_usage(program: &str) -> String {
     format!(
         "{} compress
@@ -381,7 +474,9 @@ pub(crate) fn render_compress_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `decompress` 子命令的用法帮助文本。
+///
+/// 列出 `-i/-o/--ai-export/--ai-signal/--source-encoding-write` 等选项及示例。
 pub(crate) fn render_decompress_usage(program: &str) -> String {
     format!(
         "{} decompress
@@ -392,11 +487,12 @@ pub(crate) fn render_decompress_usage(program: &str) -> String {
   {} decompress [{}]
 
 {}:
-  {:<23} {}
-  {:<23} {}
-  {:<23} {}
-  {:<23} {}
-  {:<23} {}
+  {:<30} {}
+  {:<30} {}
+  {:<30} {}
+  {:<30} {}
+  {:<30} {}
+  {:<30} {}
 
 {}:
   {} decompress -i output.json --ai-signal",
@@ -414,6 +510,8 @@ pub(crate) fn render_decompress_usage(program: &str) -> String {
         t("cli_opt_ai_export"),
         "--ai-signal",
         t("cli_opt_ai_signal"),
+        "--source-encoding-write",
+        t("cli_opt_source_encoding_write"),
         "-h, --help",
         t("cli_opt_help"),
         t("cli_help_examples"),
@@ -421,7 +519,9 @@ pub(crate) fn render_decompress_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `repair-file` 子命令的用法帮助文本。
+///
+/// 说明 `<PATH>` 位置参数与 `--inplace/--backup/--include/--exclude` 选项及示例。
 pub(crate) fn render_repair_file_usage(program: &str) -> String {
     format!(
         "{} repair-file
@@ -461,7 +561,9 @@ pub(crate) fn render_repair_file_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `run` 子命令的用法帮助文本。
+///
+/// 列出 `--stream/--flush-interval/--merge` 选项及 `run cargo test` 等示例。
 pub(crate) fn render_run_usage(program: &str) -> String {
     format!(
         "{} run
@@ -472,6 +574,8 @@ pub(crate) fn render_run_usage(program: &str) -> String {
   {} run {}
 
 {}:
+  {:<23} {}
+  {:<23} {}
   {:<23} {}
   {:<23} {}
   {:<23} {}
@@ -487,6 +591,10 @@ pub(crate) fn render_run_usage(program: &str) -> String {
         program,
         t("cli_run_external_command"),
         t("cli_help_options"),
+        "--input <FILE>",
+        t("cli_opt_input_file"),
+        "--audit-jsonl <PATH>",
+        t("cli_opt_audit_jsonl"),
         "--stream",
         t("cli_opt_stream"),
         "--flush-interval <MS>",
@@ -502,7 +610,9 @@ pub(crate) fn render_run_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `hooks` 子命令的用法帮助文本。
+///
+/// 说明 `install/status` 动作与 `--shell` 选项及示例。
 pub(crate) fn render_hooks_usage(program: &str) -> String {
     format!(
         "{} hooks
@@ -535,7 +645,9 @@ pub(crate) fn render_hooks_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `workspace` 子命令的用法帮助文本。
+///
+/// 列出 `--inject/--format` 选项及示例。
 pub(crate) fn render_workspace_usage(program: &str) -> String {
     format!(
         "{} workspace
@@ -571,7 +683,9 @@ pub(crate) fn render_workspace_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `encoding` 子命令的用法帮助文本。
+///
+/// 列出 `--fix/--format` 选项及示例。
 pub(crate) fn render_encoding_usage(program: &str) -> String {
     format!(
         "{} encoding
@@ -605,7 +719,9 @@ pub(crate) fn render_encoding_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `rule` 子命令的用法帮助文本。
+///
+/// 列出 `--format` 选项及示例。
 pub(crate) fn render_rule_usage(program: &str) -> String {
     format!(
         "{} rule
@@ -636,7 +752,9 @@ pub(crate) fn render_rule_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `env` 子命令的用法帮助文本。
+///
+/// 列出 `--format` 选项及示例。
 pub(crate) fn render_env_usage(program: &str) -> String {
     format!(
         "{} env
@@ -667,7 +785,9 @@ pub(crate) fn render_env_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `gain` 子命令的用法帮助文本。
+///
+/// 列出 `--daily/--by-filter/--json/--days` 选项及示例。
 pub(crate) fn render_gain_usage(program: &str) -> String {
     format!(
         "{} gain
@@ -709,7 +829,7 @@ pub(crate) fn render_gain_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `plugins` 子命令的简短用法帮助文本（用法 + 示例占位）。
 pub(crate) fn render_plugins_usage(program: &str) -> String {
     format!(
         "{}:\n  {} plugins\n\n{}:\n  {} plugins [{}...]\n",
@@ -721,7 +841,9 @@ pub(crate) fn render_plugins_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `explain-plugin` 子命令的用法帮助文本。
+///
+/// 列出 `-i/--explain-command/--explain-replay-out` 选项及示例。
 pub(crate) fn render_explain_plugin_usage(program: &str) -> String {
     format!(
         "{} explain-plugin
@@ -758,7 +880,9 @@ pub(crate) fn render_explain_plugin_usage(program: &str) -> String {
     )
 }
 
-
+/// 生成 `init` 子命令的用法帮助文本。
+///
+/// 列出 `--force` 选项及示例。
 pub(crate) fn render_init_usage(program: &str) -> String {
     format!(
         "{} init
@@ -791,7 +915,10 @@ pub(crate) fn render_init_usage(program: &str) -> String {
     )
 }
 
-
+/// 从运行命令中剥离并记录 `--explain-route` 标志。
+///
+/// 遍历 run_cmd：遇到 `--explain-route` 时置位标志并跳过紧跟的 `--`；
+/// 遇到命令程序之后的 `--` 停止剥离并保留余下参数；返回 (是否解释路由, 余下参数)。
 pub(crate) fn split_run_explain_route_flag(run_cmd: Vec<String>) -> (bool, Vec<String>) {
     let mut explain_route = false;
     let mut remain = Vec::new();
@@ -817,14 +944,18 @@ pub(crate) fn split_run_explain_route_flag(run_cmd: Vec<String>) -> (bool, Vec<S
     (explain_route, remain)
 }
 
-
+/// 生成运行模式缺少外部命令时的提示文本。
+///
+/// 文案来自 i18n 词表（`cli_run_requires_external_command`），其中 `{program}`
+/// 占位符由调用方传入的程序名替换，便于在重命名/别名场景下保持示例可用。
 pub(crate) fn render_run_command_hint(program: &str) -> String {
-    format!(
-        "运行模式需要外部命令。\n示例:\n  {program} run git status\n  {program} git status\n\nRun mode expects an external command.\nExamples:\n  {program} run git status\n  {program} git status"
-    )
+    t("cli_run_requires_external_command").replace("{program}", program)
 }
 
-
+/// 为 Run 模式补全来自 argv 的默认参数。
+///
+/// 仅当模式为 Run 时生效：未显式指定 `--format` 时默认 `Text` 输出，
+/// 未显式指定 `--preset` 时默认 `Ai` 预设；其余模式原样返回。
 pub(crate) fn apply_run_mode_defaults_from_argv(mut parsed: CliArgs, argv: &[String]) -> CliArgs {
     if !matches!(parsed.mode, CliMode::Run) {
         return parsed;
@@ -840,8 +971,13 @@ pub(crate) fn apply_run_mode_defaults_from_argv(mut parsed: CliArgs, argv: &[Str
     parsed
 }
 
-
-pub(crate) fn rewrite_command_alias_to_flags(args: &[String]) -> Result<Option<Vec<String>>, CliError> {
+/// 将旧式子命令写法改写为统一的 `--mode/--doctor/--gain/...` 标志式参数。
+///
+/// 内置子命令（如 compress/workspace/gain/hooks/serve-static 等）被映射为对应的
+/// 长标志与子动作；非内置命令返回 None 表示无需改写；`repair-file` 缺少输入路径时报错。
+pub(crate) fn rewrite_command_alias_to_flags(
+    args: &[String],
+) -> Result<Option<Vec<String>>, CliError> {
     let cmd_index = match find_cmd_index(args) {
         Some(idx) => idx,
         None => return Ok(None),
@@ -1002,6 +1138,13 @@ pub(crate) fn rewrite_command_alias_to_flags(args: &[String]) -> Result<Option<V
             }
             Ok(Some(rewritten))
         }
+        "feature" => {
+            // `feature --feature-lib <p> --learn <cat> --sample <f>` 原样透传给 --mode feature。
+            rewritten.push("--mode".to_string());
+            rewritten.push("feature".to_string());
+            rewritten.extend(rest);
+            Ok(Some(rewritten))
+        }
         "serve-static" | "serve_static" => {
             rewritten.push("--mode".to_string());
             rewritten.push("serve-static".to_string());
@@ -1057,7 +1200,9 @@ pub(crate) fn rewrite_command_alias_to_flags(args: &[String]) -> Result<Option<V
     }
 }
 
-
+/// 将 doctor 相关短标志改写为 `--doctor-format`。
+///
+/// 仅把 `--format`/`-f` 替换为 `--doctor-format`，其余参数原样透传。
 pub(crate) fn rewrite_doctor_flags(args: &[String]) -> Vec<String> {
     args.iter()
         .map(|arg| match arg.as_str() {
@@ -1067,7 +1212,10 @@ pub(crate) fn rewrite_doctor_flags(args: &[String]) -> Vec<String> {
         .collect()
 }
 
-
+/// 将 gain 相关短标志改写为 `--gain-*` 长标志。
+///
+/// `--daily/--by-filter/--json` 映射为 `--gain-daily/--gain-by-filter/--gain-json`，
+/// `--days [n]` 改写为 `--gain-days [n]`（含 `--days=n` 等号形式），其余透传。
 pub(crate) fn rewrite_gain_flags(args: &[String]) -> Vec<String> {
     let mut out = Vec::with_capacity(args.len());
     let mut i = 0usize;
@@ -1094,7 +1242,9 @@ pub(crate) fn rewrite_gain_flags(args: &[String]) -> Vec<String> {
     out
 }
 
-
+/// 提取程序名、首个用户参数，并判断其是否“像外部命令”。
+///
+/// 像外部命令的条件：首个用户参数非空、不以 `-` 开头、且不是 tokenslim 内置命令。
 pub(crate) fn detect_external_like_first_arg(argv: &[String]) -> (String, String, bool) {
     let program = argv
         .first()
@@ -1107,7 +1257,10 @@ pub(crate) fn detect_external_like_first_arg(argv: &[String]) -> (String, String
     (program, first_user_arg, is_external_like)
 }
 
-
+/// 将 clap 解析错误转换为面向用户的 CliError，并附带友好提示与全局用法。
+///
+/// 若首个用户参数疑似外部命令，给出 `run <cmd>` 的提示；否则提示查看 `--help`；
+/// 末尾追加全局用法与原始 clap 错误信息。
 pub(crate) fn map_clap_error(err: clap::Error, argv: &[String]) -> CliError {
     let (program, first_user_arg, is_external_like) = detect_external_like_first_arg(argv);
 
@@ -1150,7 +1303,9 @@ pub(crate) fn map_clap_error(err: clap::Error, argv: &[String]) -> CliError {
     CliError::InvalidArgs(hints)
 }
 
-
+/// 拒绝已移除的旧式全局标志（`--mode/--doctor/--doctor-format`）。
+///
+/// 一旦检测到这些标志即返回 CliError，引导用户改用子命令式写法。
 pub(crate) fn reject_legacy_flags(args: &[String]) -> Result<(), CliError> {
     let has_mode = args.iter().any(|a| a == "--mode");
     let has_doctor = args.iter().any(|a| a == "--doctor");
@@ -1169,7 +1324,10 @@ pub(crate) fn reject_legacy_flags(args: &[String]) -> Result<(), CliError> {
     Ok(())
 }
 
-
+/// 根据运行命令与各项运行选项构造一个完整的 `CliArgs`（Run 模式）。
+///
+/// 将 stream/merge/flush_interval/run_plugin/passthrough/tee 等运行参数
+/// 写入 `CliArgs`，其余字段使用 Run 模式的合理默认值（如 ai_export/ai_signal 开启）。
 pub(crate) fn build_run_mode_args(
     run_command: Vec<String>,
     explain_route: bool,
@@ -1179,10 +1337,15 @@ pub(crate) fn build_run_mode_args(
     run_plugin: Option<String>,
     passthrough: bool,
     tee: Option<std::path::PathBuf>,
+    run_input_file: Option<std::path::PathBuf>,
+    run_audit_jsonl: Option<std::path::PathBuf>,
 ) -> CliArgs {
     CliArgs {
         mode: CliMode::Run,
-        input: InputSource::Stdin,
+        input: match run_input_file {
+            Some(path) => InputSource::File(path),
+            None => InputSource::Stdin,
+        },
         output: OutputTarget::Stdout,
         verbose: false,
         calc_tokens: false,
@@ -1191,10 +1354,15 @@ pub(crate) fn build_run_mode_args(
         normalize: false,
         ai_export: true,
         ai_signal: true,
+        strict_rehydrate: false,
+        source_encoding_write: false,
         output_format: OutputFormat::Text,
         verify_rule: None,
         verify_fixture: None,
         verify_expected: None,
+        feature_learn: None,
+        feature_sample: None,
+        feature_lib: None,
         init_hooks: false,
         uninstall_hooks: false,
         hook_shell: None,
@@ -1238,29 +1406,40 @@ pub(crate) fn build_run_mode_args(
         run_plugin,
         passthrough,
         tee,
+        audit_jsonl: run_audit_jsonl,
     }
 }
 
-
+/// 将输出格式字符串解析为 `OutputFormat` 枚举。
+///
+/// 复用 `FromStr` 实现；解析失败时将错误信息包装为 CliError。
 pub(crate) fn parse_output_format_arg(format: &str) -> Result<OutputFormat, CliError> {
     format.parse().map_err(|e: String| CliError::InvalidArgs(e))
 }
 
-
+/// 将 doctor 输出格式字符串解析为 `DoctorOutputFormat` 枚举。
+///
+/// 复用 `FromStr` 实现；解析失败时将错误包装为 CliError。
 pub(crate) fn parse_doctor_output_format_arg(format: &str) -> Result<DoctorOutputFormat, CliError> {
     format
         .parse::<DoctorOutputFormat>()
         .map_err(CliError::InvalidArgs)
 }
 
-
+/// 将可选的预设字符串解析为 `Option<Preset>`。
+///
+/// 传入 None 时返回 None；传入 Some 时解析，失败则包装为 CliError；
+/// 用 `transpose` 把 `Option<Result>` 翻转为 `Result<Option>`。
 pub(crate) fn parse_preset_arg(preset: Option<&str>) -> Result<Option<Preset>, CliError> {
     preset
         .map(|p| p.parse::<Preset>().map_err(CliError::InvalidArgs))
         .transpose()
 }
 
-
+/// 将 clap 解析出的 `CliRawArgs` 与派生参数（模式/钩子 shell/doctor/格式/预设）组装为 `CliArgs`。
+///
+/// 负责把原始可选字段（input/output/hook_shell 等）映射为 `CliArgs` 的强类型字段，
+/// 并补全 doctor_format/preset 等由上层解析得到的取值。
 pub(crate) fn build_cli_args_from_raw(
     cli: CliRawArgs,
     mode: CliMode,
@@ -1290,11 +1469,16 @@ pub(crate) fn build_cli_args_from_raw(
         normalize: cli.normalize,
         ai_export: cli.ai_export,
         ai_signal: cli.ai_signal,
+        strict_rehydrate: cli.strict_rehydrate,
+        source_encoding_write: cli.source_encoding_write,
         output_format,
         json: cli.json,
         verify_rule: cli.verify_rule,
         verify_fixture: cli.verify_fixture,
         verify_expected: cli.verify_expected,
+        feature_learn: cli.feature_learn,
+        feature_sample: cli.feature_sample,
+        feature_lib: cli.feature_lib,
         init_hooks: cli.init_hooks,
         uninstall_hooks: cli.uninstall_hooks,
         hook_shell,
@@ -1337,16 +1521,23 @@ pub(crate) fn build_cli_args_from_raw(
         run_plugin: cli.run_plugin,
         passthrough: cli.passthrough,
         tee: cli.tee,
+        audit_jsonl: cli.audit_jsonl,
     }
 }
 
-
 impl CliArgs {
+    /// 从进程真实命令行参数（`std::env::args`）解析 `CliArgs`。
+    ///
+    /// 仅作薄封装：收集 `env::args` 后转交 `parse_args_from_argv`。
     pub fn parse_args() -> Result<Self, CliError> {
         let argv: Vec<String> = std::env::args().collect();
         parse_args_from_argv(&argv)
     }
 
+    /// 由 `CliRawArgs` 构建 `CliArgs`，串联模式解析、参数校验与派生字段解析。
+    ///
+    /// 依次：解析模式、校验 repair-file 作用域/互斥特性/verify 三元组、
+    /// 解析 hook shell 与 doctor、解析输出格式与预设，最后委托 `build_cli_args_from_raw`。
     pub(crate) fn from_raw(cli: CliRawArgs) -> Result<Self, CliError> {
         let mode = resolve_cli_mode(&cli);
         validate_repair_file_scoped_args(&cli, &mode)?;
@@ -1370,7 +1561,10 @@ impl CliArgs {
     }
 }
 
-
+/// 从 argv 解析完整 `CliArgs`，是参数解析的入口编排函数。
+///
+/// 优先尝试 Run 模式快捷解析；否则拒绝旧标志后，将子命令别名改写为标志式参数，
+/// 再交给 clap 解析，最后应用 Run 模式默认值。
 pub(crate) fn parse_args_from_argv(argv: &[String]) -> Result<CliArgs, CliError> {
     if let Some(run_args) = parse_run_mode_args_from_argv(argv) {
         return Ok(run_args);
@@ -1387,20 +1581,62 @@ pub(crate) fn parse_args_from_argv(argv: &[String]) -> Result<CliArgs, CliError>
     Ok(apply_run_mode_defaults_from_argv(parsed, argv))
 }
 
-
+/// 从运行命令中解析 run 模式的包裹参数（stream/merge/flush/plugin/passthrough/tee）。
+///
+/// 逐个扫描 run_cmd：识别 `--stream/--merge/--flush-interval/--run-plugin/--passthrough/--tee`，
+/// 区分命令程序前后的 `--` 语义（前者剥离、后者保留），其余归入 filtered 透传。
 pub(crate) fn extract_run_wrapper_args_from_run_cmd(
     run_cmd: Vec<String>,
-) -> (bool, bool, u64, Option<String>, bool, Option<std::path::PathBuf>, Vec<String>) {
+) -> (
+    bool,
+    bool,
+    u64,
+    Option<String>,
+    bool,
+    Option<std::path::PathBuf>,
+    Option<std::path::PathBuf>,
+    Option<std::path::PathBuf>,
+    Vec<String>,
+) {
     let mut stream = false;
     let mut merge = false;
     let mut flush_interval = 500;
     let mut run_plugin = None;
     let mut passthrough = false;
     let mut tee = None;
+    let mut run_input_file = None;
+    let mut run_audit_jsonl = None;
     let mut filtered = Vec::new();
     let mut i = 0;
+    // 记录是否已遇到命令程序 (第一个非 wrapper flag 的 token)。
+    // 用于区分 `--` 的两种语义: 程序之前的 `--` 是 tokenslim 与命令的分隔符 (应剥离),
+    // 程序之后的 `--` 属于命令自身参数 (如 `cargo test -- --nocapture`, 必须保留)。
+    let mut seen_program = false;
     while i < run_cmd.len() {
         let arg = &run_cmd[i];
+        // Wrapper flags 只在命令程序出现之前生效：一旦已识别命令程序，后续同名 flag
+        // 一律作为子命令自身参数透传，避免 `pytest --plugin x` / `cargo test --stream`
+        // 等被 tokenslim 错误吞掉。`--` 分隔符的两种语义在下方单独处理。
+        let is_wrapper_flag = arg == "--stream"
+            || arg == "--merge"
+            || arg == "--flush-interval"
+            || arg.starts_with("--flush-interval=")
+            || arg == "--run-plugin"
+            || arg == "--plugin"
+            || arg.starts_with("--run-plugin=")
+            || arg.starts_with("--plugin=")
+            || arg == "--passthrough"
+            || arg == "--tee"
+            || arg.starts_with("--tee=")
+            || arg == "--input"
+            || arg.starts_with("--input=")
+            || arg == "--audit-jsonl"
+            || arg.starts_with("--audit-jsonl=");
+        if seen_program && is_wrapper_flag {
+            filtered.push(arg.clone());
+            i += 1;
+            continue;
+        }
         if arg == "--stream" {
             stream = true;
             i += 1;
@@ -1449,22 +1685,76 @@ pub(crate) fn extract_run_wrapper_args_from_run_cmd(
         } else if arg.starts_with("--tee=") {
             tee = arg.strip_prefix("--tee=").map(std::path::PathBuf::from);
             i += 1;
+        } else if arg == "--input" {
+            if i + 1 < run_cmd.len() {
+                run_input_file = Some(std::path::PathBuf::from(run_cmd[i + 1].clone()));
+                i += 2;
+            } else {
+                i += 1;
+            }
+        } else if arg.starts_with("--input=") {
+            run_input_file = arg.strip_prefix("--input=").map(std::path::PathBuf::from);
+            i += 1;
+        } else if arg == "--audit-jsonl" {
+            if i + 1 < run_cmd.len() {
+                run_audit_jsonl = Some(std::path::PathBuf::from(run_cmd[i + 1].clone()));
+                i += 2;
+            } else {
+                i += 1;
+            }
+        } else if arg.starts_with("--audit-jsonl=") {
+            run_audit_jsonl = arg
+                .strip_prefix("--audit-jsonl=")
+                .map(std::path::PathBuf::from);
+            i += 1;
         } else if arg == "--" {
-            filtered.extend(run_cmd[i + 1..].to_vec());
+            if !seen_program {
+                // `--` 出现在命令程序之前: 作为 tokenslim 与命令的分隔符, 剥离自身后透传
+                filtered.extend(run_cmd[i + 1..].to_vec());
+            } else {
+                // `--` 出现在命令程序之后: 属于命令自身的参数 (如 cargo test -- --nocapture), 保留
+                filtered.push(arg.clone());
+                filtered.extend(run_cmd[i + 1..].to_vec());
+            }
             break;
         } else {
             filtered.push(arg.clone());
+            // 第一个非 wrapper flag 的 token 即命令程序
+            seen_program = true;
             i += 1;
         }
     }
-    (stream, merge, flush_interval, run_plugin, passthrough, tee, filtered)
+    (
+        stream,
+        merge,
+        flush_interval,
+        run_plugin,
+        passthrough,
+        tee,
+        run_input_file,
+        run_audit_jsonl,
+        filtered,
+    )
 }
 
+/// 从 argv 解析 Run 模式的 `CliArgs`（显式 `run` 或隐式外部命令两种入口）。
+///
+/// 先尝试显式 `run` 子命令，再尝试隐式外部命令；两者均先剥离 `--explain-route`，
+/// 再提取包裹参数并委托 `build_run_mode_args` 构造最终结果。
 pub(crate) fn parse_run_mode_args_from_argv(argv: &[String]) -> Option<CliArgs> {
     if let Some(run_cmd) = maybe_parse_run_subcommand_from_argv(argv) {
         let (explain_route, run_cmd) = split_run_explain_route_flag(run_cmd);
-        let (stream, merge, flush_interval, run_plugin, passthrough, tee, run_cmd) =
-            extract_run_wrapper_args_from_run_cmd(run_cmd);
+        let (
+            stream,
+            merge,
+            flush_interval,
+            run_plugin,
+            passthrough,
+            tee,
+            run_input_file,
+            run_audit_jsonl,
+            run_cmd,
+        ) = extract_run_wrapper_args_from_run_cmd(run_cmd);
         return Some(build_run_mode_args(
             run_cmd,
             explain_route,
@@ -1474,11 +1764,22 @@ pub(crate) fn parse_run_mode_args_from_argv(argv: &[String]) -> Option<CliArgs> 
             run_plugin,
             passthrough,
             tee,
+            run_input_file,
+            run_audit_jsonl,
         ));
     }
     if let Some(run_cmd) = maybe_parse_implicit_run_command_from_argv(argv) {
-        let (stream, merge, flush_interval, run_plugin, passthrough, tee, run_cmd) =
-            extract_run_wrapper_args_from_run_cmd(run_cmd);
+        let (
+            stream,
+            merge,
+            flush_interval,
+            run_plugin,
+            passthrough,
+            tee,
+            run_input_file,
+            run_audit_jsonl,
+            run_cmd,
+        ) = extract_run_wrapper_args_from_run_cmd(run_cmd);
         return Some(build_run_mode_args(
             run_cmd,
             false,
@@ -1488,19 +1789,25 @@ pub(crate) fn parse_run_mode_args_from_argv(argv: &[String]) -> Option<CliArgs> 
             run_plugin,
             passthrough,
             tee,
+            run_input_file,
+            run_audit_jsonl,
         ));
     }
     None
 }
 
-
+/// 用 clap 解析 argv 为 `CliRawArgs`，再转换为 `CliArgs`。
+///
+/// clap 解析失败时将 `clap::Error` 交给 `map_clap_error` 生成友好错误。
 pub(crate) fn parse_cli_args_with_clap(argv: &[String]) -> Result<CliArgs, CliError> {
     let cli = <CliRawArgs as clap::Parser>::try_parse_from(argv.to_vec())
         .map_err(|e| map_clap_error(e, argv))?;
     CliArgs::from_raw(cli)
 }
 
-
+/// 根据 `CliRawArgs.mode` 解析出 `CliMode` 枚举。
+///
+/// 已知子命令直接映射；未指定 mode 时，若携带 run_command 则归为 Run，否则默认 Compress。
 pub(crate) fn resolve_cli_mode(cli: &CliRawArgs) -> CliMode {
     match cli.mode.as_deref() {
         Some("compress") => CliMode::Compress,
@@ -1514,6 +1821,7 @@ pub(crate) fn resolve_cli_mode(cli: &CliRawArgs) -> CliMode {
         Some("explain-plugin") | Some("explain_plugin") => CliMode::ExplainPlugin,
         Some("plugins") => CliMode::Plugins,
         Some("repair-file") | Some("repair_file") => CliMode::RepairFile,
+        Some("feature") => CliMode::Feature,
         _ => {
             if !cli.run_command.is_empty() {
                 CliMode::Run
@@ -1524,8 +1832,13 @@ pub(crate) fn resolve_cli_mode(cli: &CliRawArgs) -> CliMode {
     }
 }
 
-
-pub(crate) fn validate_repair_file_scoped_args(cli: &CliRawArgs, mode: &CliMode) -> Result<(), CliError> {
+/// 校验仅 `repair-file` 模式可用的作用域参数。
+///
+/// `--inplace/--backup/--include/--exclude` 若出现在非 repair-file 模式下即报错。
+pub(crate) fn validate_repair_file_scoped_args(
+    cli: &CliRawArgs,
+    mode: &CliMode,
+) -> Result<(), CliError> {
     if cli.inplace && !matches!(mode, CliMode::RepairFile) {
         return Err(CliError::InvalidArgs(
             "--inplace is only available for `repair-file` mode".to_string(),
@@ -1545,7 +1858,9 @@ pub(crate) fn validate_repair_file_scoped_args(cli: &CliRawArgs, mode: &CliMode)
     Ok(())
 }
 
-
+/// 校验互斥特性标志不能同时使用。
+///
+/// `--ai-export` 与 `--ai-signal`、`--init-hooks` 与 `--uninstall-hooks` 两两互斥。
 pub(crate) fn validate_exclusive_feature_flags(cli: &CliRawArgs) -> Result<(), CliError> {
     if cli.ai_export && cli.ai_signal {
         return Err(CliError::InvalidArgs(
@@ -1560,7 +1875,9 @@ pub(crate) fn validate_exclusive_feature_flags(cli: &CliRawArgs) -> Result<(), C
     Ok(())
 }
 
-
+/// 校验 verify 三元组参数要么全提供、要么全不提供。
+///
+/// `--verify-rule/--verify-fixture/--verify-expected` 提供数量必须为 0 或 3，否则报错。
 pub(crate) fn validate_verify_triplet(cli: &CliRawArgs) -> Result<(), CliError> {
     let verify_params = [
         cli.verify_rule.is_some(),
@@ -1577,7 +1894,9 @@ pub(crate) fn validate_verify_triplet(cli: &CliRawArgs) -> Result<(), CliError> 
     Ok(())
 }
 
-
+/// 将可选的 doctor 字符串解析为 `Option<DoctorKind>`。
+///
+/// 传入 None 返回 None；传入 Some 时按 `FromStr` 解析，失败包装为 CliError。
 pub(crate) fn parse_optional_doctor(doctor: Option<&str>) -> Result<Option<DoctorKind>, CliError> {
     if let Some(d) = doctor {
         return d
@@ -1588,7 +1907,10 @@ pub(crate) fn parse_optional_doctor(doctor: Option<&str>) -> Result<Option<Docto
     Ok(None)
 }
 
-
+/// 构造并返回全部默认启用的压缩插件实例列表。
+///
+/// 集中 new 所有内置插件（VCS/语言/框架/通用等数十种），供非 Run 模式全量加载；
+/// Run 模式则由 `plugins_for_run_command` 按需挑选。
 pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     use crate::plugins::android_gradle_plugin::AndroidGradlePlugin;
     use crate::plugins::ansi_cleaner_plugin::AnsiCleanerPlugin;
@@ -1607,6 +1929,7 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     use crate::plugins::java_stack_plugin::JavaStackPlugin;
     use crate::plugins::json_plugin::JsonPlugin;
     use crate::plugins::kubernetes_docker_plugin::KubernetesDockerPlugin;
+    use crate::plugins::ls_listing_plugin::LsListingPlugin;
     use crate::plugins::markdown_plugin::MarkdownPlugin;
     use crate::plugins::maven_plugin::MavenPlugin;
     use crate::plugins::ndjson_plugin::NdjsonPlugin;
@@ -1614,6 +1937,7 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     use crate::plugins::nodejs_plugin::NodeJsPlugin;
     use crate::plugins::noise_filter_plugin::NoiseFilterPlugin;
     use crate::plugins::php_ruby_plugin::PhpRubyPlugin;
+    use crate::plugins::privacy_plugin::PrivacyPlugin;
     use crate::plugins::protobuf_plugin::ProtobufPlugin;
     use crate::plugins::pulumi_plugin::PulumiPlugin;
     use crate::plugins::pytest_plugin::PytestPlugin;
@@ -1626,8 +1950,8 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     use crate::plugins::sql_plugin::SqlPlugin;
     use crate::plugins::static_rule_plugin::{SimpleRulePlugin, StaticRuleConfig};
     use crate::plugins::syslog_plugin::SyslogPlugin;
-    use crate::plugins::template_driven_plugin::types::{TemplateConfig, TemplateDrivenPlugin};
     use crate::plugins::terraform_plugin::TerraformPlugin;
+    use crate::plugins::toml_ini_plugin::TomlIniPlugin;
     use crate::plugins::unity_unreal_plugin::UnityUnrealPlugin;
     use crate::plugins::vcs_plugin::VcsPlugin;
     use crate::plugins::web_log_plugin::WebLogPlugin;
@@ -1652,6 +1976,7 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     plugins.push(Box::new(JavaStackPlugin::new()));
     plugins.push(Box::new(JsonPlugin::new()));
     plugins.push(Box::new(KubernetesDockerPlugin::new()));
+    plugins.push(Box::new(LsListingPlugin::new()));
     plugins.push(Box::new(NdjsonPlugin::new()));
     plugins.push(Box::new(MarkdownPlugin::new()));
     plugins.push(Box::new(MavenPlugin::new()));
@@ -1662,6 +1987,7 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     plugins.push(Box::new(PhpRubyPlugin::new()));
     plugins.push(Box::new(ProtobufPlugin::new()));
     plugins.push(Box::new(PulumiPlugin::new()));
+    plugins.push(Box::new(PrivacyPlugin::new()));
     plugins.push(Box::new(PytestPlugin::new()));
     plugins.push(Box::new(PythonTracebackPlugin::new()));
     plugins.push(Box::new(RustGoPlugin::new()));
@@ -1673,6 +1999,7 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     plugins.push(Box::new(SimpleRulePlugin::new(StaticRuleConfig::default())));
     plugins.push(Box::new(SyslogPlugin::new()));
     plugins.push(Box::new(TerraformPlugin::new()));
+    plugins.push(Box::new(TomlIniPlugin::new()));
     plugins.push(Box::new(UnityUnrealPlugin::new()));
     plugins.push(Box::new(WebLogPlugin::new()));
     plugins.push(Box::new(XcodeLogPlugin::new()));
@@ -1680,15 +2007,15 @@ pub fn get_plugins() -> Vec<Box<dyn Plugin>> {
     plugins.push(Box::new(XmlHtmlPlugin::new()));
     plugins.push(Box::new(VcsPlugin::new()));
     plugins.push(Box::new(GitDiffPlugin::new()));
-    plugins.push(Box::new(TemplateDrivenPlugin::new(
-        TemplateConfig::default(),
-    )));
     plugins.push(Box::new(YamlPlugin::new()));
 
     plugins
 }
 
-
+/// 流水线执行前的预操作枚举。
+///
+/// 由 `select_pre_pipeline_action` 根据 `CliArgs` 选出，描述在创建压缩流水线之前
+/// 需要先处理的动作（注入、各类 doctor 诊断、rewrite、discover、gain、init、hooks 等）。
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) enum PrePipelineAction {
     Continue,
@@ -1709,9 +2036,14 @@ pub(crate) enum PrePipelineAction {
     RepairFile,
     Config,
     ServeStatic,
+    Feature,
 }
 
-
+/// 根据 `CliArgs` 选出本次应执行的预操作（`PrePipelineAction`）。
+///
+/// 按优先级依次判断 inject / doctor 系列 / rewrite / discover / gain / init /
+/// hooks / verify-rule / explain-plugin / plugins / repair-file / config / serve-static，
+/// 均不匹配时回退为 `Continue`（进入常规压缩流水线）。
 pub(crate) fn select_pre_pipeline_action(args: &CliArgs) -> PrePipelineAction {
     if args.inject {
         return PrePipelineAction::Inject;
@@ -1766,10 +2098,16 @@ pub(crate) fn select_pre_pipeline_action(args: &CliArgs) -> PrePipelineAction {
     if matches!(args.mode, CliMode::ServeStatic) {
         return PrePipelineAction::ServeStatic;
     }
+    if matches!(args.mode, CliMode::Feature) {
+        return PrePipelineAction::Feature;
+    }
     PrePipelineAction::Continue
 }
 
-
+/// 判断是否对 compress 模式展示“空输入”快速用法。
+///
+/// 仅当“无参数启动 + 输入来自终端 + 标准输入文本为空”三者同时满足时返回 true，
+/// 用于避免空输入时阻塞等待 stdin 的体感。
 pub(crate) fn should_show_compress_quick_usage(
     launched_without_args: bool,
     is_stdin_input: bool,
@@ -1778,7 +2116,31 @@ pub(crate) fn should_show_compress_quick_usage(
     launched_without_args && is_stdin_input && input_text.trim().is_empty()
 }
 
-
+/// 处理流水线前的预操作
+///
+/// 在创建压缩流水线之前，先判断是否需要执行一些预操作。
+/// 这些操作不需要完整的流水线，包括：
+/// - inject: 注入命令包装
+/// - doctor 系列: 编码/工作区/规则/环境诊断
+/// - rewrite: 命令重写
+/// - discover: 插件发现
+/// - gain: 增益统计
+/// - init: 初始化项目
+/// - hooks: Git hooks 管理
+/// - verify-rule: 规则验证
+/// - explain-plugin: 插件说明
+/// - plugins: 插件列表
+/// - repair-file: 文件修复
+/// - config: 配置管理
+/// - serve-static: 静态文件服务
+///
+/// # 参数
+/// - `args` - CLI 参数
+///
+/// # 返回值
+/// - `Ok(true)` - 已处理预操作，程序应直接退出
+/// - `Ok(false)` - 未处理预操作，继续进入流水线
+/// - `Err(CliError)` - 处理过程中发生错误
 pub(crate) fn handle_pre_pipeline_action(args: &CliArgs) -> Result<bool, CliError> {
     match select_pre_pipeline_action(args) {
         PrePipelineAction::Continue => Ok(false),
@@ -1843,25 +2205,81 @@ pub(crate) fn handle_pre_pipeline_action(args: &CliArgs) -> Result<bool, CliErro
             crate::cli::commands::serve_static::handle_serve_static_command(args)?;
             Ok(true)
         }
+        PrePipelineAction::Feature => {
+            crate::cli::commands::feature::handle_feature_command(args)?;
+            Ok(true)
+        }
     }
 }
 
-
+/// 根据 CLI 参数解析需要加载的插件列表
+///
+/// - Run 模式：根据运行的命令选择对应的插件（如 cargo 命令选择 rust_go 插件）
+/// - 其他模式：加载所有默认插件
+///
+/// # 参数
+/// - `args` - CLI 参数
+///
+/// # 返回值
+/// 插件实例列表
 pub(crate) fn resolve_plugins_for_args(args: &CliArgs) -> Vec<Box<dyn Plugin>> {
     if matches!(args.mode, CliMode::Run) {
         if let Some(prog) = args.run_command.first() {
-            return plugins_for_run_command(prog, &args.run_command[1..], args.run_plugin.as_deref());
+            return plugins_for_run_command(
+                prog,
+                &args.run_command[1..],
+                args.run_plugin.as_deref(),
+            );
         }
     }
     get_plugins()
 }
 
-
+/// 获取当前项目工作区的调试审计路径。
+///
+/// 该功能只读取最近 `.tokenslim.toml` 的本地配置，避免用户的全局配置、环境变量
+/// 或 AGENTS.md 注入流程在不知情的情况下启用审计。
+fn workspace_debug_audit_path() -> Option<PathBuf> {
+    if crate::core::config_manager::ConfigManager::get_local_bool("debug.audit.enabled")
+        != Some(true)
+    {
+        return None;
+    }
+    let config_path = crate::core::config_manager::ConfigManager::local_project_config_path()?;
+    let workspace_root = config_path.parent()?;
+    let configured_path =
+        crate::core::config_manager::ConfigManager::get_local_value("debug.audit.path")
+            .filter(|value| !value.trim().is_empty())
+            .unwrap_or_else(|| ".tokenslim/audit/compression.jsonl".to_string());
+    let audit_path = PathBuf::from(configured_path);
+    Some(if audit_path.is_absolute() {
+        audit_path
+    } else {
+        workspace_root.join(audit_path)
+    })
+}
+/// 根据 CLI 参数构建流水线配置。
+///
+/// 配置优先级从高到低：命令行参数 > 用户配置文件 > 默认值。
+///
+/// 主要配置项包括：
+/// - 预设模式（fast/balanced/ai）
+/// - 重排序功能
+/// - 字典阈值
+/// - 去重配置
+/// - 切片器配置
+///
+/// # 参数
+/// - `args` - CLI 参数
+///
+/// # 返回值
+/// 流水线配置对象
 pub(crate) fn build_pipeline_config_for_args(args: &CliArgs) -> PipelineConfig {
     use crate::core::config_manager::ConfigManager;
 
     let mut pipeline_config = PipelineConfig::default();
-    pipeline_config.dispatcher_config.fallback_plugin = "git_diff".to_string();
+    pipeline_config.debug_audit_jsonl =
+        args.audit_jsonl.clone().or_else(workspace_debug_audit_path);
 
     let active_preset = args.preset.or_else(|| {
         ConfigManager::get_value("compression.preset")
@@ -1907,7 +2325,22 @@ pub(crate) fn build_pipeline_config_for_args(args: &CliArgs) -> PipelineConfig {
     pipeline_config
 }
 
-
+/// CLI 主入口函数
+///
+/// 负责 TokenSlim 命令行工具的整体流程控制：
+/// 1. 解析命令行参数，提取程序名称
+/// 2. 拦截版本请求（-V/--version/version）
+/// 3. 拦截帮助请求（-h/--help），根据子命令返回对应帮助
+/// 4. 处理无参数交互调用场景，直接显示用法
+/// 5. 使用 clap 解析完整参数
+/// 6. 处理流水线前的预操作（init、doctor、config 等）
+/// 7. 根据参数解析插件列表和流水线配置
+/// 8. 创建压缩流水线并根据模式执行对应操作
+/// 9. 处理 JSON 输出模式下的错误格式化
+///
+/// # 返回值
+/// - Ok(()) - 执行成功
+/// - Err(CliError) - 执行失败，包含错误类型和信息
 pub fn run_cli() -> Result<(), CliError> {
     let argv: Vec<String> = std::env::args().collect();
     let launched_without_args = argv.len() <= 1;
@@ -1972,6 +2405,9 @@ pub fn run_cli() -> Result<(), CliError> {
             CliMode::ServeStatic => {
                 unreachable!("serve-static mode should return before pipeline execution")
             }
+            CliMode::Feature => {
+                unreachable!("feature mode should return before pipeline execution")
+            }
         }
         Ok(())
     })();
@@ -2024,6 +2460,9 @@ impl CliArgs {
         }
     }
 
+    /// 将负载写入输出目标（文件或标准输出）。
+    ///
+    /// 文件目标用 `std::fs::write`，标准输出用 `println!`；IO 错误包装为 `CliError::Io`。
     fn write_output(&self, payload: &str) -> Result<(), CliError> {
         match &self.output {
             OutputTarget::File(path) => std::fs::write(path, payload).map_err(CliError::Io),
@@ -2034,6 +2473,22 @@ impl CliArgs {
         }
     }
 
+    /// P1-08：字节写出通道——按源编码回写时产出的是原始字节而非 UTF-8 文本，
+    /// 必须经此通道写出；stdout 场景直接 `write_all`，不做文本化包装。
+    pub fn write_output_bytes(&self, bytes: &[u8]) -> Result<(), CliError> {
+        match &self.output {
+            OutputTarget::File(path) => std::fs::write(path, bytes).map_err(CliError::Io),
+            OutputTarget::Stdout => {
+                use std::io::Write;
+                io::stdout().write_all(bytes).map_err(CliError::Io)
+            }
+        }
+    }
+
+    /// 以 `--json` 错误格式打印 `CliError` 到标准输出。
+    ///
+    /// 根据错误变体归类为 `invalid_args/io/compression/...` 等 code，输出
+    /// `{status:error, error, code}` 的 JSON；序列化失败则静默跳过。
     fn emit_error(&self, err: &CliError) {
         let code = match err {
             CliError::InvalidArgs(_) => "invalid_args",
@@ -2052,5 +2507,99 @@ impl CliArgs {
         if let Ok(text) = serde_json::to_string(&obj) {
             println!("{}", text);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn extract(run_cmd: Vec<&str>) -> Vec<String> {
+        let run_cmd: Vec<String> = run_cmd.into_iter().map(String::from).collect();
+        let (_, _, _, _, _, _, _, _, filtered) = extract_run_wrapper_args_from_run_cmd(run_cmd);
+        filtered
+    }
+
+    // 回归: `cargo test ... -- --nocapture` 中的 `--` 是命令自身参数分隔符,
+    // 转发时必须保留, 否则 Cargo 在执行测试前就以 exit 1 拒绝。
+    #[test]
+    fn preserves_double_dash_after_command_program() {
+        let filtered = extract(vec![
+            "cargo",
+            "test",
+            "--manifest-path",
+            "rust_ext/Cargo.toml",
+            "--lib",
+            "http_server",
+            "--",
+            "--nocapture",
+        ]);
+        assert_eq!(
+            filtered,
+            vec![
+                "cargo",
+                "test",
+                "--manifest-path",
+                "rust_ext/Cargo.toml",
+                "--lib",
+                "http_server",
+                "--",
+                "--nocapture",
+            ]
+        );
+    }
+
+    // `--` 出现在命令程序之前时仍是 tokenslim 与命令的分隔符, 应剥离
+    #[test]
+    fn strips_double_dash_before_command_program() {
+        let filtered = extract(vec!["--stream", "--", "cargo", "test"]);
+        assert_eq!(filtered, vec!["cargo", "test"]);
+    }
+
+    // 显式 `--` 分隔符 + 命令自身 `--` 分隔符 同时存在时, 前者剥离、后者保留
+    #[test]
+    fn preserves_command_double_dash_when_separator_precedes() {
+        let filtered = extract(vec!["--", "cargo", "test", "--", "--nocapture"]);
+        assert_eq!(filtered, vec!["cargo", "test", "--", "--nocapture"]);
+    }
+
+    // 无 `--` 的普通命令不受影响
+    #[test]
+    fn ordinary_command_untouched() {
+        let filtered = extract(vec!["git", "status"]);
+        assert_eq!(filtered, vec!["git", "status"]);
+    }
+
+    // 命令程序之后出现的 wrapper flags（如 `--plugin`/`--stream`）必须原样透传给子命令，
+    // 否则 `pytest --plugin x` / `cargo test --stream` 等命令自身的参数会被错误吞掉。
+    #[test]
+    fn passes_through_same_named_flags_after_command_program() {
+        let filtered = extract(vec![
+            "pytest",
+            "--plugin",
+            "pytest_rerunfailures",
+            "--stream",
+            "--merge",
+            "tests/test_a.py",
+        ]);
+        assert_eq!(
+            filtered,
+            vec![
+                "pytest",
+                "--plugin",
+                "pytest_rerunfailures",
+                "--stream",
+                "--merge",
+                "tests/test_a.py",
+            ]
+        );
+    }
+
+    // 命令程序之前的 wrapper flags 仍按 tokenslim 语义生效（剥离），不被透传给子命令
+    #[test]
+    fn still_strips_wrapper_flags_before_command_program() {
+        let filtered = extract(vec!["--stream", "--plugin", "smart_path", "pytest", "run"]);
+        // 注意: `--plugin smart_path` 与 `--stream` 均被剥离
+        assert_eq!(filtered, vec!["pytest", "run"]);
     }
 }

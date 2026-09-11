@@ -55,6 +55,7 @@ pub struct SliceFlags {
 }
 
 impl Default for SliceFlags {
+    /// SliceFlags 默认值：所有特殊内容标记均为 false。
     fn default() -> Self {
         Self {
             has_paths: false,
@@ -116,6 +117,7 @@ pub struct TextSlicer {
 }
 
 impl Default for SlicerConfig {
+    /// SlicerConfig 默认值：段落模式，跳过空行。
     fn default() -> Self {
         Self {
             mode: SliceMode::Paragraph, // 默认段落模式

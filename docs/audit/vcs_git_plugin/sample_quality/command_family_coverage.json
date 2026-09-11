@@ -150,12 +150,6 @@
             "command_lines": [],
             "aliases": {}
         },
-        "case_248_git_status_short.log": {
-            "families": [],
-            "tokens": [],
-            "command_lines": [],
-            "aliases": {}
-        },
         "case_249_git_status_long.log": {
             "families": [],
             "tokens": [],
@@ -306,17 +300,6 @@
             "families": [],
             "tokens": [],
             "command_lines": [],
-            "aliases": {}
-        },
-        "case_260_git_diff_word_diff.log": {
-            "families": [],
-            "tokens": [
-                "vec::new()"
-            ],
-            "command_lines": [
-                "// Parallel processing implementation",
-                "Vec::new()"
-            ],
             "aliases": {}
         },
         "case_261_git_diff_branches.log": {

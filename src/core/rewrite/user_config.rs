@@ -33,20 +33,40 @@ pub struct RewriteRule {
 /// 2. 用户主目录的 `~/.tokenslim/rewrites.toml`
 pub fn load_user_config() -> RewriteConfig {
     // 尝试从当前目录加载
-    if let Ok(config) = load_from_path(".tokenslim/rewrites.toml") {
+    if let Some(config) = load_if_present(Path::new(".tokenslim/rewrites.toml")) {
         return config;
     }
 
     // 尝试从用户主目录加载
     if let Some(home) = std::env::var_os("HOME").or_else(|| std::env::var_os("USERPROFILE")) {
         let home_path = Path::new(&home).join(".tokenslim").join("rewrites.toml");
-        if let Ok(config) = load_from_path(&home_path) {
+        if let Some(config) = load_if_present(&home_path) {
             return config;
         }
     }
 
     // 返回默认配置
     RewriteConfig::default()
+}
+
+/// P2-33：`rewrites.toml` 静默回退修复。
+///
+/// 旧实现用 `if let Ok(config) = load_from_path(...)` 统一吞掉「文件不存在」与
+/// 「文件存在但读取/解析失败」两类错误——后者会让 `E_REWRITE_CONFIG_PARSE`
+/// 生产路径永不报告，坏配置被静默替换为默认配置。现区分处理：文件不存在属
+/// 正常降级（静默跳过）；文件存在但加载/解析失败则 `log::warn!` 显式告警。
+fn load_if_present<P: AsRef<Path>>(path: P) -> Option<RewriteConfig> {
+    let path_ref = path.as_ref();
+    if !path_ref.exists() {
+        return None;
+    }
+    match load_from_path(path_ref) {
+        Ok(cfg) => Some(cfg),
+        Err(e) => {
+            log::warn!("{e}");
+            None
+        }
+    }
 }
 
 /// 从指定路径加载配置
@@ -67,6 +87,7 @@ pub fn parse_config(toml_str: &str) -> Result<RewriteConfig, String> {
 mod tests {
     use super::*;
 
+    /// 测试：解析空 TOML 字符串得到无规则、无跳过模式的空配置。
     #[test]
     fn test_parse_empty_config() {
         let config = parse_config("").unwrap();
@@ -74,6 +95,7 @@ mod tests {
         assert!(config.skip_patterns.is_empty());
     }
 
+    /// 测试：解析包含 skip_patterns 与多条 user_rules 的 TOML 配置。
     #[test]
     fn test_parse_config_with_rules() {
         let toml = r#"
@@ -99,12 +121,14 @@ replacement = "cargo test --quiet"
         assert_eq!(config.skip_patterns[0], "^git ");
     }
 
+    /// 测试：非法 TOML 内容解析失败并返回错误。
     #[test]
     fn test_parse_config_invalid_toml() {
         let result = parse_config("invalid toml [[[");
         assert!(result.is_err());
     }
 
+    /// 测试：RewriteConfig 默认值应为空规则与空跳过模式。
     #[test]
     fn test_default_config() {
         let config = RewriteConfig::default();
@@ -112,6 +136,7 @@ replacement = "cargo test --quiet"
         assert!(config.skip_patterns.is_empty());
     }
 
+    /// 测试：当前目录与用户主目录均无 rewrites.toml 时返回默认配置且不 panic。
     #[test]
     fn test_load_user_config_returns_default_when_not_found() {
         // 这个测试假设当前目录和用户主目录都没有 rewrites.toml

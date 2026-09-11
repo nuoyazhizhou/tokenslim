@@ -4,11 +4,7 @@ use super::types::AndroidGradlePlugin;
 use crate::core::dictionary_engine::DictionaryEngine;
 
 impl AndroidGradlePlugin {
-    #[tracing::instrument(level = "debug", skip_all)]
-    pub fn optimize_gradle_tasks(&self, text: &str, _dict: &mut DictionaryEngine) -> String {
-        text.to_string()
-    }
-
+    /// 通用 Gradle 日志压缩：提取 `> Task ` 任务行、下载行与构建状态，折叠为紧凑的 `[GRADLE]` 摘要。
     #[tracing::instrument(level = "debug", skip_all)]
     pub fn optimize_generic_gradle(&self, text: &str) -> String {
         let lines: Vec<&str> = text.lines().collect();
@@ -28,6 +24,7 @@ impl AndroidGradlePlugin {
         let mut no_source = 0usize;
         let mut executed = 0usize;
         let mut actionable_summary = None;
+        let mut actionable_total = None;
         for line in &task_lines {
             let trimmed = line.trim();
             if trimmed.contains(" FAILED") {
@@ -57,6 +54,10 @@ impl AndroidGradlePlugin {
             up_to_date = summary_up_to_date;
             from_cache = summary_from_cache;
             skipped = summary_skipped;
+            // 可见任务行数可能少于头行的 actionable 总数（部分任务未逐行打印）；
+            // 以头行总数作为 `tasks=`，保证摘要与原文计数一致（SAP-0001）。
+            actionable_total =
+                Some(summary_executed + summary_up_to_date + summary_from_cache + summary_skipped);
         }
 
         let downloads = lines
@@ -69,7 +70,7 @@ impl AndroidGradlePlugin {
             self.push_unique(&mut result, line);
         }
         result.push(self.gradle_task_summary(
-            task_lines.len(),
+            actionable_total.unwrap_or(task_lines.len()),
             executed,
             up_to_date,
             from_cache,
@@ -105,6 +106,7 @@ impl AndroidGradlePlugin {
         crate::core::utils::roi::prefer_non_expanding(text, compacted)
     }
 
+    /// 将任务统计（执行/最新/缓存/跳过/无源/失败）格式化为单行 `[GRADLE] ...` 摘要串。
     #[tracing::instrument(level = "trace", skip_all)]
     fn gradle_task_summary(
         &self,
@@ -135,6 +137,7 @@ impl AndroidGradlePlugin {
         format!("[GRADLE] {}", parts.join(" "))
     }
 
+    /// 从 `actionable tasks:` 行用正则解析出 executed/up-to-date/from cache/skipped 四项计数。
     #[tracing::instrument(level = "trace", skip_all)]
     fn parse_actionable_summary(&self, line: &str) -> Option<(usize, usize, usize, usize)> {
         if !line.contains(" actionable tasks:") {
@@ -162,6 +165,7 @@ impl AndroidGradlePlugin {
         Some((executed, up_to_date, from_cache, skipped))
     }
 
+    /// 提取首条 `> Task ` 之前的前导语义上下文行（跳过空行与下载行）作为压缩保留头。
     #[tracing::instrument(level = "trace", skip_all)]
     fn leading_semantic_context<'a>(&self, lines: &'a [&'a str]) -> Vec<&'a str> {
         let mut context = Vec::new();
@@ -181,6 +185,7 @@ impl AndroidGradlePlugin {
         context
     }
 
+    /// 将一行追加到结果集，仅当该行尚未存在（去重，避免重复信号行）。
     #[tracing::instrument(level = "trace", skip_all)]
     fn push_unique(&self, result: &mut Vec<String>, line: &str) {
         if !result.iter().any(|existing| existing == line) {
@@ -188,6 +193,7 @@ impl AndroidGradlePlugin {
         }
     }
 
+    /// 判断一行是否为诊断细节（warning/java./org./at / 各类错误与异常签名等），需保留。
     #[tracing::instrument(level = "trace", skip_all)]
     fn is_diagnostic_detail(&self, line: &str) -> bool {
         let lower = line.to_ascii_lowercase();
@@ -202,6 +208,7 @@ impl AndroidGradlePlugin {
             || line.starts_with("Zip aligning ")
             || line.starts_with("Zip aligned APK:")
             || line.starts_with("> A failure occurred while executing ")
+            || line.starts_with("D8:") // D8 dex 编译冲突（如 Program type already present）为决定性诊断信息，必须保留
             || line.starts_with("Deprecated Gradle features")
             || line.starts_with("You can use '--warning-mode")
             || line.starts_with("Publishing build scan")
@@ -215,6 +222,7 @@ impl AndroidGradlePlugin {
             || lower.contains("not found")
     }
 
+    /// 判断一行是否为 CI/Gradle 信号（GitHub Actions/GitLab/Jenkins/Azure/Bitrise/Buildkite/CircleCI 等 runner 与失败标记）。
     #[tracing::instrument(level = "trace", skip_all)]
     fn is_ci_gradle_signal(&self, line: &str) -> bool {
         let lower = line.to_ascii_lowercase();
@@ -244,26 +252,7 @@ impl AndroidGradlePlugin {
             || lower.contains("test report")
     }
 
-    pub fn optimize_build_paths(&self, text: &str, dict: &mut DictionaryEngine) -> String {
-        let pattern =
-            regex::Regex::new(r"([\w-]+)/build/(intermediates|outputs|tmp)/([\w./-]+)").unwrap();
-        let mut result = text.to_string();
-        for cap in pattern.captures_iter(text) {
-            if let (Some(module), Some(dir_type), Some(path)) = (cap.get(1), cap.get(2), cap.get(3))
-            {
-                let full_path = format!(
-                    "{}/build/{}/{}",
-                    module.as_str(),
-                    dir_type.as_str(),
-                    path.as_str()
-                );
-                let token = dict.add_path_layered(&full_path);
-                result = result.replace(&full_path, &token);
-            }
-        }
-        result
-    }
-
+    /// 折叠 Jenkins 环境变量块：仅保留关键变量，整段超过 8 行时摘要为 `[ENV_BLOCK]`。
     pub fn optimize_jenkins_env(&self, text: &str, _dict: &mut DictionaryEngine) -> String {
         let pattern = regex::Regex::new(r"^([A-Z0-9_]+)=(.*)$").unwrap();
         let lines: Vec<&str> = text.lines().collect();
@@ -326,6 +315,7 @@ impl AndroidGradlePlugin {
         result
     }
 
+    /// 聚合 `warn: removing resource ... without default value` 同类告警，超过 5 条时折叠为 `[RES_WARN_AGG]` 摘要。
     pub fn optimize_resource_warnings(
         &self,
         text: &str,

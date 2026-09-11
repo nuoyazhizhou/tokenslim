@@ -11,17 +11,20 @@ mod tests {
     use std::borrow::Cow;
     use std::path::{Path, PathBuf};
 
+    /// 测试辅助：返回样例目录路径。
     fn sample_dir() -> PathBuf {
         Path::new(env!("CARGO_MANIFEST_DIR"))
             .join("samples")
             .join("kubernetes_docker_plugin")
     }
 
+    /// 测试辅助：读取指定样例文件。
     fn read_sample(file_name: &str) -> String {
         std::fs::read_to_string(sample_dir().join(file_name))
             .expect("read kubernetes/docker sample")
     }
 
+    /// 测试辅助：压缩样例文本并提取 Text token 拼接。
     fn compress_sample(plugin: &KubernetesDockerPlugin, raw: &str) -> String {
         let slice = Slice {
             id: 10,
@@ -127,6 +130,7 @@ mod tests {
         assert_eq!(compressed, "Database connection failed");
     }
 
+    /// 测试：带噪声前缀的 CloudWatch JSON 日志被解包还原消息。
     #[test]
     fn test_cloudwatch_unwrap_with_noisy_prefix() {
         let plugin = KubernetesDockerPlugin::new();
@@ -156,6 +160,61 @@ mod tests {
         assert_eq!(compressed, "Timeout on upstream");
     }
 
+    /// P2-76 回归：多行 JSON 流（docker json-file / 云日志逐行 JSON）必须逐行解包——
+    /// 此前整片文本被首行 message 替换，第 2..N 行静默丢失；非 JSON 行须原样保留。
+    #[test]
+    fn test_multiline_json_stream_unwraps_per_line() {
+        let plugin = KubernetesDockerPlugin::new();
+        let mut dict_engine = DictionaryEngine::new();
+        let arena = Bump::new();
+        let mut dedup_engine = DedupEngine::new(DedupConfig::default());
+
+        let stream = concat!(
+            r#"{"message": "first line", "logStream": "s-1"}"#,
+            "\n",
+            r#"{"message": "second line", "logStream": "s-2"}"#,
+            "\n",
+            "plain text line kept\n",
+            r#"{"log": "third via log field", "logStream": "s-3"}"#,
+            "\n",
+        );
+        let slice = Slice {
+            id: 3,
+            text: Cow::Borrowed(stream),
+            slice_type: SliceType::Unknown,
+            offset: 0,
+            line_start: 1,
+            line_end: 4,
+            file_metadata: None,
+            flags: Default::default(),
+        };
+
+        let result = plugin.compress(&slice, &mut dict_engine, &mut dedup_engine, &arena);
+        let compressed = match &result.tokens[0] {
+            crate::core::compression::Token::Text(s) => s,
+            _ => panic!("Expected text token"),
+        };
+
+        for expected in [
+            "first line",
+            "second line",
+            "plain text line kept",
+            "third via log field",
+        ] {
+            assert!(
+                compressed.contains(expected),
+                "多行流每行都应保留，缺失 {expected:?}，实际：{compressed:?}"
+            );
+        }
+        // 解包后的行数守恒：4 行输入 → 4 行输出
+        assert_eq!(
+            compressed.lines().count(),
+            4,
+            "行数应守恒，实际：{compressed:?}"
+        );
+    }
+
+    /// 测试：Docker 与 kubectl CI 输出被插件识别。
     #[test]
     fn detects_ci_docker_and_kubectl_outputs() {
         let plugin = KubernetesDockerPlugin::new();
@@ -186,6 +245,7 @@ mod tests {
         }
     }
 
+    /// 测试：新增样例的 CI 错误信号在压缩后被保留。
     #[test]
     fn preserves_ci_error_signals_for_new_cases() {
         let plugin = KubernetesDockerPlugin::new();

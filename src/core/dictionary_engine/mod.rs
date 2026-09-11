@@ -6,6 +6,7 @@
 
 mod methods;
 mod types;
-pub use types::{DictError, DictType, Dictionary, DictionaryEngine, SemanticAliasRule};
+pub(crate) use methods::is_semantic_macro;
+pub use types::{DictError, Dictionary, DictionaryEngine};
 #[cfg(test)]
 mod test;

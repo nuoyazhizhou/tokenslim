@@ -94,12 +94,14 @@ pub enum TemplateToken {
 mod tests {
     use super::*;
 
+    /// 测试：新建上下文无任何变量。
     #[test]
     fn test_context_new() {
         let context = TemplateContext::new();
         assert!(context.get_var("test").is_none());
     }
 
+    /// 测试：set_var/get_var 存取简单变量。
     #[test]
     fn test_context_set_get_var() {
         let mut context = TemplateContext::new();
@@ -107,6 +109,7 @@ mod tests {
         assert_eq!(context.get_var("name"), Some("Alice"));
     }
 
+    /// 测试：set_section/get_section 存取 section 内容。
     #[test]
     fn test_context_set_get_section() {
         let mut context = TemplateContext::new();
@@ -114,6 +117,7 @@ mod tests {
         assert_eq!(context.get_section("errors"), Some("Error 1\nError 2"));
     }
 
+    /// 测试：set_section_count/get_section_count 存取计数。
     #[test]
     fn test_context_set_get_section_count() {
         let mut context = TemplateContext::new();
@@ -121,6 +125,7 @@ mod tests {
         assert_eq!(context.get_section_count("errors"), Some(5));
     }
 
+    /// 测试：set_section_items/get_section_items 存取条目列表。
     #[test]
     fn test_context_set_get_section_items() {
         let mut context = TemplateContext::new();
@@ -129,6 +134,7 @@ mod tests {
         assert_eq!(context.get_section_items("files"), Some(&items));
     }
 
+    /// 测试：is_truthy 对缺失变量与空串为假，对非空串为真。
     #[test]
     fn test_context_is_truthy() {
         let mut context = TemplateContext::new();

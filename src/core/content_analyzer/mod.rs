@@ -6,15 +6,13 @@
 //!
 //! ## 主要功能
 //!
-//! - 提供核心类型定义和接口
-//! - 协调各子组件的工作流程
-//! - 对外提供统一的 API 接口
+//! - 文档级语义分类（[`ContentAnalyzer::document_category`]）与剥皮类别识别（[`document_skin`](ContentAnalyzer::document_skin)）
+//! - 切片级候选插件提升（[`ContentAnalyzer::candidate_plugins_for_slice`]，贝叶斯 + 配置样锚点前置）
+//! - `drain` 子模块：日志模板聚类（Drain 算法）
 
 pub mod drain;
 mod methods;
 mod types;
-pub use types::{
-    AnalysisResult, AnalyzerConfig, AnalyzerError, ContentAnalyzer, QuickAnalysisResult, Rule,
-};
+pub use types::ContentAnalyzer;
 #[cfg(test)]
 mod test;

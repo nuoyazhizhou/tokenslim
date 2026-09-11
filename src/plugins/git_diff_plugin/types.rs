@@ -7,30 +7,18 @@ pub struct GitDiffConfig {
     /// 保留的上下文行数
     #[serde(default = "default_context_lines")]
     pub context_lines: usize,
-    /// 是否汇总未修改的文件
-    #[serde(default = "default_true")]
-    pub summarize_unmodified: bool,
-    /// 是否对文件路径进行字典化
-    #[serde(default = "default_true")]
-    pub dictionaryize_paths: bool,
 }
 
-/// 内部辅助函数：执行与 default context lines 相关的具体逻辑。
+/// 返回保留上下文行数的默认值（1）。
 fn default_context_lines() -> usize {
     1
 }
-/// 内部辅助函数：执行与 default true 相关的具体逻辑。
-fn default_true() -> bool {
-    true
-}
 
 impl Default for GitDiffConfig {
-    /// 提供该插件类型的默认配置实现。
+    /// 构造 GitDiffConfig 默认配置：上下文 1 行。
     fn default() -> Self {
         Self {
             context_lines: default_context_lines(),
-            summarize_unmodified: true,
-            dictionaryize_paths: true,
         }
     }
 }

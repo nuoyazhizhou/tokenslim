@@ -1,0 +1,3 @@
+svn annotate file.txt
+   123   alice   line1
+   124   bob   line2

@@ -1,0 +1,23 @@
+vitest run --reporter=default
+
+ RUN  v3.2.0 /home/ci/projects/app
+
+ ✓ src/components/Button.test.tsx (4 tests) 125ms
+ ✓ src/components/Modal.test.tsx (2 tests) 87ms
+ ✓ src/components/Input.test.tsx (3 tests) 41ms
+ ✓ src/hooks/useAuth.test.ts (1 test) 19ms
+ ✓ src/hooks/useDebounce.test.ts (2 tests) 8ms
+ ✓ src/utils/format.test.ts (5 tests) 12ms
+ ✓ src/utils/validator.test.ts (3 tests) 15ms
+ ✓ src/api/client.test.ts (2 tests) 33ms
+ ✓ src/store/auth.test.ts (2 tests) 25ms
+ ✓ src/store/cart.test.ts (2 tests) 22ms
+ ✓ src/pages/Login.test.tsx (3 tests) 54ms
+ ✓ src/pages/Home.test.tsx (4 tests) 66ms
+ ✓ src/App.test.tsx (1 test) 91ms
+
+ Test Files  13 passed (13)
+      Tests  35 passed (35)
+   Duration  2.19s (in 2.31s)
+
+ ✓ 13 passed

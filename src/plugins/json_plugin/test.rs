@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::json_plugin::types::JsonPlugin;
     use crate::plugins::test_utils::*;
 
+    /// 测试：嵌套 JSON 样例被识别且置信度 >0.5。
     #[test]
     fn detects_nested_json_sample_with_high_confidence() {
         let plugin = JsonPlugin::new();
@@ -35,6 +36,7 @@ mod tests {
         assert_eq!(parsed_orig, parsed_decompressed);
     }
 
+    /// 测试：带噪声包裹的 JSON 样例被识别。
     #[test]
     fn detects_noisy_wrapper_sample() {
         let plugin = JsonPlugin::new();

@@ -21,7 +21,7 @@
 
 use std::io::Read;
 use std::sync::OnceLock;
-use std::time::{Duration, Instant};
+use std::time::Duration;
 
 /// 探测超时: 1 秒. Trae IDE 沙箱拦截 ConPTY 时, portable-pty 调用会立即失败,
 /// 但留 1s 给"创建 PTY 句柄成功但子进程启动 hang"的极端情况。
@@ -47,6 +47,8 @@ pub fn reset_conpty_probe() {
 }
 
 #[cfg(not(test))]
+/// 生产版 ConPTY 探测：通过 portable-pty 创建伪 tty 运行探测命令，
+/// 1 秒超时内读到预期标记则视为可用，任一环节失败/超时/空输出均返回 false。
 fn probe_conpty() -> bool {
     use portable_pty::native_pty_system;
     use portable_pty::CommandBuilder;
@@ -62,6 +64,9 @@ fn probe_conpty() -> bool {
 
     let mut cmd = CommandBuilder::new(probe_command());
     cmd.arg(probe_arg());
+    // P2-84：`/c`/`-c` 必须跟在命令字符串之后才有意义；旧版只传了 `-c` 而无操作数，
+    // 导致 `/bin/sh -c`（缺命令）恒失败，Unix 上 PTY 路径永不可达。现补上探测命令文本。
+    cmd.arg(probe_command_text());
 
     let mut child = match pair.slave.spawn_command(cmd) {
         Ok(c) => c,
@@ -80,9 +85,8 @@ fn probe_conpty() -> bool {
         }
     };
 
-    let start = Instant::now();
-    let mut buf = Vec::with_capacity(64);
-    let read_result = read_with_timeout(&mut reader, &mut buf, PROBE_TIMEOUT);
+    let (read_result, buf) = read_with_timeout(reader, PROBE_TIMEOUT);
+    let read_elapsed = PROBE_TIMEOUT;
 
     // 清理子进程 (不等, best-effort)
     let _ = child.kill();
@@ -103,7 +107,7 @@ fn probe_conpty() -> bool {
         ReadOutcome::Timeout => {
             tracing::debug!(
                 "[tokenslim] ConPTY 探测超时 ({:?}), 视为不可用",
-                start.elapsed()
+                read_elapsed
             );
             false
         }
@@ -118,6 +122,8 @@ fn probe_conpty() -> bool {
     }
 }
 
+/// 测试版探测：默认返回 true，使分发测试不依赖真实 PTY；
+/// 真实降级由 set_probe_override 注入。
 #[cfg(test)]
 fn probe_conpty() -> bool {
     // 测试里默认 true, 让分发测试不依赖真实 PTY.
@@ -132,6 +138,7 @@ enum ReadOutcome {
 }
 
 impl std::fmt::Debug for ReadOutcome {
+    /// 为 ReadOutcome 实现 Debug：Ok(n)/Timeout/Err(e) 的可读表示。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ReadOutcome::Ok(n) => write!(f, "Ok({n})"),
@@ -143,48 +150,62 @@ impl std::fmt::Debug for ReadOutcome {
 
 /// 在 [`PROBE_TIMEOUT`] 内尽力读取, 不会阻塞超过这个时长.
 ///
-/// 用一个简单 spin-loop + `Instant::now()` 比较; 不引入额外线程/select 复杂度.
-fn read_with_timeout<R: Read>(
-    reader: &mut R,
-    buf: &mut Vec<u8>,
-    timeout: Duration,
-) -> ReadOutcome {
-    let start = Instant::now();
-    // 分块读, 每次最多 16 字节, 避免一次性读满 block
-    let mut handle = reader.take(16);
-    let mut tmp = [0u8; 16];
-    loop {
-        if start.elapsed() > timeout {
-            return ReadOutcome::Timeout;
-        }
-        match std::io::Read::read(&mut handle, &mut tmp) {
-            Ok(0) => return ReadOutcome::Ok(buf.len()),
-            Ok(n) => {
-                buf.extend_from_slice(&tmp[..n]);
-                // 读到任何字节就返回, 不必把输出读完 (我们只验证 tty 是否活着)
-                return ReadOutcome::Ok(buf.len());
+/// 由于 portable-pty 的 master reader 在两平台都是**阻塞式读**（Windows ReadFile /
+/// Unix 阻塞 fd），直接在当前线程读无法实现超时——子进程 hang 且无输出时 read 永不返回。
+/// P3-176：改为把 reader 移入读取线程，经 `mpsc` 通道回传，主线程用 `recv_timeout`
+/// 在预算内等待，超时即放弃（返回 Timeout），探测线程随之可被清理。
+/// 返回 (读结果, 已收集字节)。
+fn read_with_timeout<R>(reader: R, timeout: Duration) -> (ReadOutcome, Vec<u8>)
+where
+    R: Read + Send + 'static,
+{
+    let (tx, rx) = std::sync::mpsc::channel::<Vec<u8>>();
+    let _ = std::thread::spawn(move || {
+        // 分块读, 每次最多 16 字节; 收到任何字节或 EOF 即回传
+        let mut buf = Vec::with_capacity(64);
+        let mut tmp = [0u8; 16];
+        let mut handle = reader.take(16);
+        loop {
+            match std::io::Read::read(&mut handle, &mut tmp) {
+                Ok(0) => break,
+                Ok(n) => {
+                    buf.extend_from_slice(&tmp[..n]);
+                    break; // 只验证 tty 是否活着, 不必读满
+                }
+                Err(_) => break,
             }
-            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                std::thread::sleep(Duration::from_millis(10));
-                continue;
-            }
-            Err(e) => return ReadOutcome::Err(e),
         }
+        let _ = tx.send(buf);
+    });
+
+    match rx.recv_timeout(timeout) {
+        Ok(buf) => (ReadOutcome::Ok(buf.len()), buf),
+        Err(std::sync::mpsc::RecvTimeoutError::Timeout) => (ReadOutcome::Timeout, Vec::new()),
+        Err(_) => (
+            ReadOutcome::Err(std::io::Error::new(
+                std::io::ErrorKind::BrokenPipe,
+                "探测读取通道断开",
+            )),
+            Vec::new(),
+        ),
     }
 }
 
 // === 平台特定的探测命令 ===
 
+/// Windows 平台的探测命令：cmd.exe。
 #[cfg(windows)]
 fn probe_command() -> &'static str {
     "cmd.exe"
 }
 
+/// 非 Windows 平台的探测命令：/bin/sh。
 #[cfg(not(windows))]
 fn probe_command() -> &'static str {
     "/bin/sh"
 }
 
+/// Windows 平台的探测参数：/c (并用 /d 跳过 AutoRun)。
 #[cfg(windows)]
 fn probe_arg() -> &'static str {
     // cmd /c ver → 输出版本号
@@ -192,16 +213,31 @@ fn probe_arg() -> &'static str {
     "/c"
 }
 
+/// 非 Windows 平台的探测参数：-c。
 #[cfg(not(windows))]
 fn probe_arg() -> &'static str {
     "-c"
 }
 
+/// Windows 平台的探测命令文本：`ver` 输出版本号。
+#[cfg(windows)]
+fn probe_command_text() -> &'static str {
+    "ver"
+}
+
+/// 非 Windows 平台的探测命令文本：`echo ok` 输出预期标记。
+#[cfg(not(windows))]
+fn probe_command_text() -> &'static str {
+    "echo ok"
+}
+
+/// Windows 平台的探测预期标记：cmd /c ver 输出版本号(Microsoft Windows)。
 #[cfg(windows)]
 fn probe_expected_marker() -> &'static str {
     "Microsoft Windows"
 }
 
+/// 非 Windows 平台的探测预期标记：/bin/sh -c "echo ok" 应输出 "ok"。
 #[cfg(not(windows))]
 fn probe_expected_marker() -> &'static str {
     // /bin/sh -c "echo ok" 应当输出 "ok"
@@ -224,6 +260,7 @@ pub fn set_probe_override(value: bool) {
 mod tests {
     use super::*;
 
+    /// 校验 is_conpty_available 多次调用返回一致值(OnceLock 缓存生效)。
     #[test]
     fn is_conpty_available_returns_consistently() {
         // 多次调用应返回相同值 (OnceLock 缓存生效)
@@ -232,27 +269,28 @@ mod tests {
         assert_eq!(a, b);
     }
 
+    /// 校验同步读取立即可用时 read_with_timeout 返回 Ok 且字节数 > 0。
     #[test]
     fn read_with_timeout_returns_on_data() {
         // 同步读取立即有数据, 应返回 Ok
-        let mut input: &[u8] = b"hello";
-        let mut buf = Vec::new();
-        let outcome = read_with_timeout(&mut input, &mut buf, Duration::from_secs(1));
+        let input: &[u8] = b"hello";
+        let (outcome, _buf) = read_with_timeout(input, Duration::from_secs(1));
         match outcome {
             ReadOutcome::Ok(n) => assert!(n > 0),
             _ => panic!("expected Ok, got {:?}", outcome),
         }
     }
 
+    /// 校验 0 字节输入时 read_with_timeout 立即返回 Ok(0) (EOF)。
     #[test]
     fn read_with_timeout_returns_on_eof() {
         // 0 字节输入 → 立即 EOF → Ok(0)
-        let mut input: &[u8] = b"";
-        let mut buf = Vec::new();
-        let outcome = read_with_timeout(&mut input, &mut buf, Duration::from_secs(1));
+        let input: &[u8] = b"";
+        let (outcome, _buf) = read_with_timeout(input, Duration::from_secs(1));
         assert!(matches!(outcome, ReadOutcome::Ok(0)));
     }
 
+    /// 校验探测命令/参数/预期标记基名均非空(平台无关)。
     #[test]
     fn probe_command_and_arg_are_valid() {
         // 探测命令基名不应该为空
@@ -282,19 +320,15 @@ mod tests {
         // 简化: 用一个 pending reader wrapper
         struct Pending;
         impl std::io::Read for Pending {
+            /// 测试用永不返回的 reader：read 先 sleep 再返回 Ok(0)，用于验证超时兜底不会 hang。
             fn read(&mut self, _buf: &mut [u8]) -> std::io::Result<usize> {
                 std::thread::sleep(std::time::Duration::from_millis(100));
                 Ok(0) // 模拟 EOF 之前先 sleep, 期间应被 timeout 抢断
             }
         }
-        let mut reader = Pending;
-        let mut buf = Vec::new();
+        let reader = Pending;
         // 50ms timeout, reader 每 100ms 才返回 → 必然 Timeout
-        let outcome = read_with_timeout(
-            &mut reader,
-            &mut buf,
-            Duration::from_millis(50),
-        );
+        let (outcome, _buf) = read_with_timeout(reader, Duration::from_millis(50));
         // Timeout 是预期, 但只要不是 panic 即可 — 这是 timeout 兜底机制
         let _ = outcome;
     }

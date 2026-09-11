@@ -7,9 +7,9 @@ generated_at: '2026-06-09T08:05:13Z'
 
 # === audit 字段（自动维护，请勿手填内容字段）===
 audit:
-  content_hash: ''
-  final_status: ''
+  content_hash: 'd6386d4db769b0b25ab96464e6a16d2967e2ef4f0d3fb8868923a3dde54685c4'
+  final_status: 'valid'
   llm_invoked: false
-  llm_verified_at: ''
-  last_audit_tool: ''
+  llm_verified_at: '2026-09-11T14:10:51.368816'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
   skip: false

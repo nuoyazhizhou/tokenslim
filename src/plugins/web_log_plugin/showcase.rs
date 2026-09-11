@@ -5,9 +5,11 @@ mod tests {
     use crate::core::dictionary_engine::DictionaryEngine;
     use crate::core::plugin_dispatcher::Plugin;
     use crate::core::text_slicer::{Slice, SliceType};
+    use crate::plugins::test_utils::full_dict_json;
     use crate::plugins::web_log_plugin::WebLogPlugin;
     use std::borrow::Cow;
 
+    /// 测试辅助：读取 samples/web_log_plugin 目录下的样例文件。
     fn read_sample(file_name: &str) -> String {
         let manifest_dir = env!("CARGO_MANIFEST_DIR");
         let path = std::path::Path::new(manifest_dir)
@@ -17,7 +19,9 @@ mod tests {
         std::fs::read_to_string(&path).unwrap_or_default()
     }
 
-    fn compress_text(plugin: &WebLogPlugin, text: &str) -> String {
+    /// 测试辅助：构造 Slice 并调用插件 compress，拼接 Text token 得到压缩文本；
+    /// 同时返回压缩过程中的完整字典快照 JSON（`$PK/$P/$D/$M/$C/$FL` 映射），供审计 dictside 侧通道携带。
+    fn compress_text(plugin: &WebLogPlugin, text: &str) -> (String, String) {
         let slice = Slice {
             id: 1,
             text: Cow::Borrowed(text),
@@ -32,16 +36,18 @@ mod tests {
         let mut dedup = DedupEngine::new(DedupConfig::default());
         let arena = bumpalo::Bump::new();
         let result = plugin.compress(&slice, &mut dict, &mut dedup, &arena);
-        result
+        let compacted = result
             .tokens
             .iter()
             .filter_map(|t| match t {
                 Token::Text(s) => Some(s.as_ref()),
                 _ => None,
             })
-            .collect::<String>()
+            .collect::<String>();
+        (compacted.clone(), full_dict_json(&dict, &compacted))
     }
 
+    /// 测试：遍历样例生成 web_log 插件的 showcase 对比报告并写入 target 目录。
     #[test]
     fn generate_web_log_showcase_report() {
         let plugin = WebLogPlugin::new();
@@ -143,7 +149,7 @@ mod tests {
 
             let original_lines = raw.lines().count();
             let original_bytes = raw.len();
-            let compacted = compress_text(&plugin, &raw);
+            let (compacted, dict_json) = compress_text(&plugin, &raw);
             let compact_lines = if compacted.is_empty() {
                 0
             } else {
@@ -177,6 +183,16 @@ mod tests {
             all_output.push('\n');
             all_output.push_str(&compacted);
             if !all_output.ends_with('\n') {
+                all_output.push('\n');
+            }
+
+            // 字典侧通道：仅在压缩产生可逆 token 时携带 `token->原文` 映射，
+            // 供审计产物隔离到 compact.txt 后仍可逆解析，不改变上方 compact 段内容（哈希不变）。
+            if !dict_json.is_empty() {
+                all_output.push_str("-- Dictionary (full) --\n");
+                all_output.push_str(&"-".repeat(80));
+                all_output.push('\n');
+                all_output.push_str(&dict_json);
                 all_output.push('\n');
             }
         }

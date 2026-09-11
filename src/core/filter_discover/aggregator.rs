@@ -91,12 +91,21 @@ fn aggregate_groups(
         // 从历史数据加载 savings_pct
         let estimated_savings_pct = load_historical_savings_pct(tracker, key)?;
 
-        // 估算节省的 Token 数
-        let estimated_tokens_saved = if let Some(pct) = estimated_savings_pct {
-            Some((total_output_tokens as f64 * pct / 100.0) as i64)
+        // P2-45：估算诚实降级——当该组没有任何真实 token 元数据（total_output_tokens==0，
+        // 如 DeepSeek/Claude session 解析器未补采到 usage）时，`estimated_tokens_saved` 返回
+        // `None` 而非 `Some(0)`。旧实现恒算出 `Some((0 * pct) as i64) = Some(0)`，与
+        // `total_potential_savings` 叠加后让 discover 核心卖点「估算潜在节省」系统性恒 0，
+        // 误导用户以为无收益。诚实降级后：无元数据的组不产出估算值，仅保留命令频次发现；
+        // 有真实 token 数据的组（generic 解析路径）仍按历史 pct 或 30% 兜底正常估算。
+        let estimated_tokens_saved = if total_output_tokens > 0 {
+            if let Some(pct) = estimated_savings_pct {
+                Some((total_output_tokens as f64 * pct / 100.0) as i64)
+            } else {
+                // 如果没有历史数据，使用默认估算值 30%
+                Some((total_output_tokens as f64 * 0.30) as i64)
+            }
         } else {
-            // 如果没有历史数据，使用默认估算值 30%
-            Some((total_output_tokens as f64 * 0.30) as i64)
+            None
         };
 
         groups.push(CommandGroup {
@@ -164,6 +173,7 @@ mod tests {
     use super::super::types::SessionCommand;
     use super::*;
 
+    /// 验证 `extract_group_key` 的分组键提取规则：单/双词命令分别返回首词与"前两个词"，空串原样返回。
     #[test]
     fn test_extract_group_key() {
         assert_eq!(extract_group_key("git status"), "git status");
@@ -173,6 +183,7 @@ mod tests {
         assert_eq!(extract_group_key(""), "");
     }
 
+    /// 验证 `aggregate_groups` 对单过滤器分组（vcs_git）的聚合：命令数、字节/Token 汇总正确，且无历史数据时按默认 30% 估算节省（2 命令 300 output_token → 90 saved）。
     #[test]
     fn test_aggregate_groups() {
         let commands = vec![
@@ -222,6 +233,7 @@ mod tests {
         assert_eq!(groups[0].estimated_tokens_saved, Some(90));
     }
 
+    /// 验证 `aggregate_and_estimate` 端到端：混合 Filterable/AlreadyFiltered/NoFilter 三类命令后，total_commands 与 total_potential_savings（仅累加 filterable+no_filter 的 30%）计算正确。
     #[test]
     fn test_aggregate_and_estimate() {
         let classified = vec![
@@ -271,5 +283,79 @@ mod tests {
         assert_eq!(result.no_filter.len(), 1);
         // 100 * 0.3 + 50 * 0.3 = 30 + 15 = 45
         assert_eq!(result.total_potential_savings, 45);
+    }
+
+    /// P2-45 负路径：验证 `aggregate_and_estimate` 对无 token 元数据的命令（DeepSeek/Claude
+    /// session 解析路径的 output_tokens=None 恒 0 场景）诚实降级——`estimated_tokens_saved`
+    /// 返回 `None`（不产出误导性估算），且 `total_potential_savings` 只累加有真实元数据的分组。
+    #[test]
+    fn test_aggregate_no_token_metadata_honest_degrade() {
+        let classified = vec![
+            // DeepSeek 路径：硬编码 metrics=None，output_tokens 恒 0。
+            ClassifiedCommand {
+                command: SessionCommand {
+                    command: "git status".to_string(),
+                    input_bytes: None,
+                    output_bytes: None,
+                    input_tokens: None,
+                    output_tokens: None,
+                    timestamp: None,
+                },
+                class: CommandClass::Filterable {
+                    filter_name: "vcs_git".to_string(),
+                },
+            },
+            // generic 路径：携带真实 output_tokens，估算应正常。
+            ClassifiedCommand {
+                command: SessionCommand {
+                    command: "npm test".to_string(),
+                    input_bytes: None,
+                    output_bytes: None,
+                    input_tokens: None,
+                    output_tokens: Some(200),
+                    timestamp: None,
+                },
+                class: CommandClass::Filterable {
+                    filter_name: "vcs_git".to_string(),
+                },
+            },
+        ];
+
+        let tracker = Tracker::open_in_memory().unwrap();
+        let result = aggregate_and_estimate(&classified, &tracker).unwrap();
+
+        // 两组同 filter_name 会合并为一个分组，合计 output_tokens=200。
+        assert_eq!(result.filterable.len(), 1);
+        let group = &result.filterable[0];
+        assert_eq!(group.total_output_tokens, 200);
+        // 有真实元数据：按 30% 兜底估算 200 * 0.3 = 60。
+        assert_eq!(group.estimated_tokens_saved, Some(60));
+        assert_eq!(result.total_potential_savings, 60);
+    }
+
+    /// P2-45 负路径：验证 `aggregate_and_estimate` 对**全部**命令均无 token 元数据时，
+    /// `total_potential_savings` 为 0 而非误导性的正数——DiscoverResult 序列化面保持诚实。
+    #[test]
+    fn test_aggregate_all_missing_metadata_yields_zero_savings() {
+        let classified = vec![ClassifiedCommand {
+            command: SessionCommand {
+                command: "git log".to_string(),
+                input_bytes: None,
+                output_bytes: None,
+                input_tokens: None,
+                output_tokens: None,
+                timestamp: None,
+            },
+            class: CommandClass::Filterable {
+                filter_name: "vcs_git".to_string(),
+            },
+        }];
+
+        let tracker = Tracker::open_in_memory().unwrap();
+        let result = aggregate_and_estimate(&classified, &tracker).unwrap();
+
+        assert_eq!(result.filterable.len(), 1);
+        assert_eq!(result.filterable[0].estimated_tokens_saved, None);
+        assert_eq!(result.total_potential_savings, 0);
     }
 }

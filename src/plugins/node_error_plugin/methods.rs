@@ -9,23 +9,25 @@ use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
-use std::any::Any;
 use std::sync::Arc;
 
 impl Default for NodeErrorPlugin {
-    /// 提供该插件类型的默认配置实现。
+    /// 返回该插件类型的默认实例，等价于调用 `new()`。
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl NodeErrorPlugin {
-    /// 实例化并返回该插件的默认配置对象。
+    /// 实例化并返回该插件的默认实例（名称 `node_error`、优先级 85，并预编译异常头与栈帧两条正则）。
     pub fn new() -> Self {
-        let exception_pattern =
-            Regex::new(r"^(?P<class>[A-Z]\w*(?:Error|Exception)): (?P<msg>.*)$").unwrap();
+        let exception_pattern = Regex::new(
+            r"^(?:\(node:\d+\)\s*)?(?P<class>[A-Z]\w*(?:Error|Exception|Warning)): (?P<msg>.*)$",
+        )
+        .unwrap();
+        // P3-162：frame file 列兼容 Windows 盘符前缀（`at fn (C:\app.js:1:2)`）。
         let frame_pattern = Regex::new(
-            r"^\s*at (?P<func>[^\s]+) \((?P<file>[^:]+)(?::(?P<line>\d+):(?P<col>\d+))?\)$",
+            r"^\s*at (?P<func>[^\s]+) \((?P<file>(?:[A-Za-z]:\\?)?[^:]+)(?::(?P<line>\d+):(?P<col>\d+))?\)$",
         )
         .unwrap();
 
@@ -40,10 +42,12 @@ impl NodeErrorPlugin {
 
     /// 使用给定的自定义配置结构体来初始化一个新的插件实例。
     pub fn with_config(config: CompiledPluginConfig) -> Self {
-        let exception_pattern =
-            Regex::new(r"^(?P<class>[A-Z]\w*(?:Error|Exception)): (?P<msg>.*)$").unwrap();
+        let exception_pattern = Regex::new(
+            r"^(?:\(node:\d+\)\s*)?(?P<class>[A-Z]\w*(?:Error|Exception|Warning)): (?P<msg>.*)$",
+        )
+        .unwrap();
         let frame_pattern = Regex::new(
-            r"^\s*at (?P<func>[^\s]+) \((?P<file>[^:]+)(?::(?P<line>\d+):(?P<col>\d+))?\)$",
+            r"^\s*at (?P<func>[^\s]+) \((?P<file>(?:[A-Za-z]:\\?)?[^:]+)(?::(?P<line>\d+):(?P<col>\d+))?\)$",
         )
         .unwrap();
 
@@ -134,7 +138,11 @@ impl Plugin for NodeErrorPlugin {
         }
     }
 
-    /// 执行核心的压缩与特征提取逻辑。将输入文本中的重复长字符串、路径、包名等转换为紧凑的 Token，并存入字典引擎。
+    /// 核心压缩逻辑：按行解析 Node.js 异常头（`Class: msg`）与栈帧（`at func (file:line:col)`），
+    /// 编码为结构化 Token —— 异常头 `$ND|EX|{类名}|{消息}`、栈帧 `$ND|FL|{缩进}|{函数}|{文件}|{行?}|{列?}`。
+    /// 类名命中 `should_preserve_class_name` 白名单时以字面量保留，否则经 `dict_engine.add_package` 字典化；
+    /// 文件路径除 `<anonymous>` 外经 `dict_engine.add_path_layered` 字典化；其余行原样透传。
+    /// 末段经 ROI 门控 `prefer_non_expanding`：若压缩后体积反增则整体回退原文，保证「不增反降」。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -266,20 +274,6 @@ impl Plugin for NodeErrorPlugin {
         }
 
         result
-    }
-
-    /// 从外部的配置文件或数据源加载并覆盖当前插件的配置项。
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(compiled_config) = config.downcast_ref::<CompiledPluginConfig>() {
-            let new_plugin = NodeErrorPlugin::with_config(compiled_config.clone());
-            self.name = new_plugin.name;
-            self.priority = new_plugin.priority;
-            self.exception_pattern = new_plugin.exception_pattern;
-            self.frame_pattern = new_plugin.frame_pattern;
-            self.config = new_plugin.config;
-            return Ok(());
-        }
-        Err("Invalid config type".to_string())
     }
 
     /// 返回当前插件执行完毕后，推荐调度器优先尝试执行的后续插件列表（构建处理管道）。

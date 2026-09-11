@@ -37,14 +37,13 @@ category = "cli"
 owner = "core"
 priority = "P0"
 goal_impact = { decision_quality = 4, compression_roi = 5, routing_accuracy = 5, audit_regression = 4, cross_platform_usability = 4 }
-entry_functions = ["run_cli", "handle_run_command"]
-paths = ["src/cli/methods.rs"]
+entry_functions = ["run_cli", "run_run_mode"]
+paths = ["src/cli/app.rs", "src/cli/commands/run.rs"]
 evidence_patterns = [
   "CliMode::Run",
-  "handle_run_command\\(",
+  "run_run_mode\\(",
   "plugins_for_run_command\\(",
   "detect_vcs_run_intent\\(",
-  "run_filter_pipeline\\(",
 ]
 audit_artifacts = [
   "docs/audit/audit_health.md",
@@ -59,7 +58,7 @@ owner = "core"
 priority = "P0"
 goal_impact = { decision_quality = 4, compression_roi = 3, routing_accuracy = 5, audit_regression = 4, cross_platform_usability = 4 }
 entry_functions = ["run_cli", "explain_plugin_for_command_line", "explain_plugin_for_log_text"]
-paths = ["src/cli/methods.rs", "scripts/audit_all_case_metrics.ps1"]
+paths = ["src/cli/app.rs", "src/cli/commands/export.rs"]
 evidence_patterns = [
   "CliMode::ExplainPlugin",
   "explain_plugin_for_command_line\\(",
@@ -99,13 +98,13 @@ category = "encoding"
 owner = "core"
 priority = "P1"
 goal_impact = { decision_quality = 3, compression_roi = 2, routing_accuracy = 1, audit_regression = 3, cross_platform_usability = 5 }
-entry_functions = ["run_cli", "run_repair_file_command", "run_single_repair", "run_bulk_repair"]
-paths = ["src/cli/methods.rs", "src/core/encoding_fallback/*.rs"]
+entry_functions = ["run_cli", "run_repair_file_command", "run_single_repair", "run_repair_file_directory_mode"]
+paths = ["src/cli/app.rs", "src/cli/commands/repair.rs", "src/core/encoding_fallback/*.rs"]
 evidence_patterns = [
   "CliMode::RepairFile",
   "run_repair_file_command\\(",
   "run_single_repair\\(",
-  "run_bulk_repair\\(",
+  "run_repair_file_directory_mode\\(",
   "encoding_fallback",
 ]
 audit_artifacts = [
@@ -144,14 +143,14 @@ priority = "P0"
 goal_impact = { decision_quality = 5, compression_roi = 4, routing_accuracy = 4, audit_regression = 5, cross_platform_usability = 3 }
 entry_functions = []
 entry_optional = true
-paths = ["scripts/audit_all_case_metrics.ps1"]
+paths = ["scripts/audit_all_case_metrics.py", "scripts/generate_plugin_capability_index.py"]
 evidence_patterns = [
-  "Invoke-PluginAudit",
+  "write_route_replay_cases",
   "audit_index\\.json",
   "audit_health\\.md",
-  "Write-RouteReplayCases",
-  "Write-AuditReviewPrompt",
-  "generate_plugin_capability_index\\.ps1",
+  "write_audit_review_prompt",
+  "write_route_replay_tracker",
+  "generate_plugin_capability_index\\.py",
 ]
 audit_artifacts = [
   "docs/audit/audit_index.json",
@@ -178,7 +177,7 @@ evidence_patterns = [
   "SLOW",
 ]
 audit_artifacts = [
-  "docs/audit/web_log/web_log.latest.json",
+  "docs/audit/web_log_plugin/web_log.latest.json",
 ]
 
 [[features]]
@@ -197,5 +196,5 @@ evidence_patterns = [
   "unwrap|de[-_ ]shell",
 ]
 audit_artifacts = [
-  "docs/audit/cloud_log/cloud_log.latest.json",
+  "docs/audit/cloud_log_plugin/cloud_log.latest.json",
 ]

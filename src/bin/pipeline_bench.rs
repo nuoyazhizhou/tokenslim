@@ -20,7 +20,6 @@ use tokenslim::plugins::smart_path_plugin::SmartPathPlugin;
 #[derive(Clone, Debug)]
 struct Scenario {
     name: &'static str,
-    mmap_enabled: bool,
     parallel_enabled: bool,
 }
 
@@ -42,6 +41,7 @@ struct ScenarioResult {
     throughput_mb_s: f64,
 }
 
+/// 构造基准用的插件集合：Android Gradle / GCC / Java Stack / Node.js / Python Traceback / SmartPath。
 fn build_plugins() -> Vec<Box<dyn Plugin>> {
     vec![
         Box::new(AndroidGradlePlugin::new()),
@@ -53,6 +53,7 @@ fn build_plugins() -> Vec<Box<dyn Plugin>> {
     ]
 }
 
+/// 构造一个全部禁用的 MetricsCollector 实例(不采集模块计时/插件统计/错误日志)。
 fn metrics_collector() -> MetricsCollector {
     MetricsCollector::new(MetricsConfig {
         enabled: false,
@@ -63,18 +64,17 @@ fn metrics_collector() -> MetricsCollector {
     })
 }
 
+/// 按场景构造压缩管道：依据 parallel 开关设置 parallel_threshold，
+/// 装配固定插件集合与禁用指标的 MetricsCollector 后返回 CompressionPipeline。
 fn make_pipeline(input_size: usize, s: &Scenario) -> CompressionPipeline {
     let mut config = PipelineConfig::default();
     config.dictionary_threshold = 0;
     config.parallel_threshold = if s.parallel_enabled { 1 } else { usize::MAX };
-    config.stream_mmap_threshold = if s.mmap_enabled {
-        Some(1)
-    } else {
-        Some(input_size.saturating_add(1024))
-    };
     CompressionPipeline::new(config, build_plugins(), metrics_collector())
 }
 
+/// 由压缩输出构造 LLM 负载字符串：先写入 [DICT] 段(路径/包/宏/文件字典)，
+/// 再写入 [DATA] 段(拼接所有文本 token)，供后续 token 占比统计。
 fn build_llm_payload(output: &CompressionOutput) -> String {
     let mut payload = String::new();
     payload.push_str("[DICT]\n");
@@ -99,6 +99,7 @@ fn build_llm_payload(output: &CompressionOutput) -> String {
     payload
 }
 
+/// 计算 f64 切片算术平均值；空切片返回 0.0。
 fn average(v: &[f64]) -> f64 {
     if v.is_empty() {
         return 0.0;
@@ -106,6 +107,7 @@ fn average(v: &[f64]) -> f64 {
     v.iter().sum::<f64>() / v.len() as f64
 }
 
+/// 解析形如 `--key value` 的命令行参数：找到 key 后取其后一项，缺失时返回 default。
 fn parse_arg(args: &[String], key: &str, default: &str) -> String {
     if let Some(i) = args.iter().position(|v| v == key) {
         if let Some(v) = args.get(i + 1) {
@@ -115,10 +117,12 @@ fn parse_arg(args: &[String], key: &str, default: &str) -> String {
     default.to_string()
 }
 
+/// 判断参数字串中是否出现指定标志(flag)，用于检测 --skip-tokenize 等无值开关。
 fn has_flag(args: &[String], flag: &str) -> bool {
     args.iter().any(|v| v == flag)
 }
 
+/// 确保目标路径的父目录存在：若父目录非空且不存在则创建(含多级)，成功返回 Ok。
 fn ensure_parent(path: &Path) -> Result<(), String> {
     if let Some(parent) = path.parent() {
         if !parent.as_os_str().is_empty() && !parent.exists() {
@@ -128,6 +132,9 @@ fn ensure_parent(path: &Path) -> Result<(), String> {
     Ok(())
 }
 
+/// 程序入口(基准)：解析 --input/--report/--json/--iterations/--scenario/--skip-tokenize 参数，
+/// 对 parallel/serial 两种场景各跑若干轮压缩，统计耗时/吞吐/token 比，
+/// 给出 parallel 阈值建议，并写出 Markdown 与 JSON 报告。
 fn main() -> Result<(), String> {
     let args: Vec<String> = env::args().collect();
     let input = PathBuf::from(parse_arg(&args, "--input", "benchmarks/input_100mb.txt"));
@@ -161,23 +168,11 @@ fn main() -> Result<(), String> {
 
     let all_scenarios = vec![
         Scenario {
-            name: "mmap+parallel",
-            mmap_enabled: true,
+            name: "parallel",
             parallel_enabled: true,
         },
         Scenario {
-            name: "mmap+serial",
-            mmap_enabled: true,
-            parallel_enabled: false,
-        },
-        Scenario {
-            name: "non_mmap+parallel",
-            mmap_enabled: false,
-            parallel_enabled: true,
-        },
-        Scenario {
-            name: "non_mmap+serial",
-            mmap_enabled: false,
+            name: "serial",
             parallel_enabled: false,
         },
     ];
@@ -191,7 +186,7 @@ fn main() -> Result<(), String> {
     };
     if scenarios.is_empty() {
         return Err(format!(
-            "invalid --scenario: {} (expected one of: all, mmap+parallel, mmap+serial, non_mmap+parallel, non_mmap+serial)",
+            "invalid --scenario: {} (expected one of: all, parallel, serial)",
             scenario_filter
         ));
     }
@@ -275,34 +270,22 @@ fn main() -> Result<(), String> {
         let best_parallel = results
             .iter()
             .filter(|r| r.scenario.parallel_enabled)
-            .min_by(|a, b| a.avg_elapsed_ms.partial_cmp(&b.avg_elapsed_ms).unwrap());
+            .min_by(|a, b| {
+                a.avg_elapsed_ms
+                    .partial_cmp(&b.avg_elapsed_ms)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            });
         let best_serial = results
             .iter()
             .filter(|r| !r.scenario.parallel_enabled)
-            .min_by(|a, b| a.avg_elapsed_ms.partial_cmp(&b.avg_elapsed_ms).unwrap());
+            .min_by(|a, b| {
+                a.avg_elapsed_ms
+                    .partial_cmp(&b.avg_elapsed_ms)
+                    .unwrap_or(std::cmp::Ordering::Equal)
+            });
         match (best_parallel, best_serial) {
             (Some(p), Some(s)) => {
                 if p.avg_elapsed_ms < s.avg_elapsed_ms {
-                    1024 * 1024usize
-                } else {
-                    usize::MAX
-                }
-            }
-            _ => usize::MAX,
-        }
-    };
-    let recommended_mmap_threshold = {
-        let mmap_best = results
-            .iter()
-            .filter(|r| r.scenario.mmap_enabled)
-            .min_by(|a, b| a.avg_elapsed_ms.partial_cmp(&b.avg_elapsed_ms).unwrap());
-        let non_mmap_best = results
-            .iter()
-            .filter(|r| !r.scenario.mmap_enabled)
-            .min_by(|a, b| a.avg_elapsed_ms.partial_cmp(&b.avg_elapsed_ms).unwrap());
-        match (mmap_best, non_mmap_best) {
-            (Some(m), Some(nm)) => {
-                if m.avg_elapsed_ms <= nm.avg_elapsed_ms {
                     1024 * 1024usize
                 } else {
                     usize::MAX
@@ -363,15 +346,6 @@ fn main() -> Result<(), String> {
             "prefer parallel from ~1MB"
         }
     ));
-    md.push_str(&format!(
-        "- `stream_mmap_threshold`: `{}` ({})\n",
-        recommended_mmap_threshold,
-        if recommended_mmap_threshold == usize::MAX {
-            "prefer non-mmap for this profile"
-        } else {
-            "prefer mmap from ~1MB"
-        }
-    ));
 
     ensure_parent(&report)?;
     ensure_parent(&json_out)?;
@@ -384,8 +358,7 @@ fn main() -> Result<(), String> {
             "iterations": iterations,
             "original_tokens": original_tokens,
             "rows": raw_rows,
-            "recommended_parallel_threshold": recommended_parallel_threshold,
-            "recommended_stream_mmap_threshold": recommended_mmap_threshold
+            "recommended_parallel_threshold": recommended_parallel_threshold
         }))
         .map_err(|e| format!("json encode failed: {e}"))?,
     )

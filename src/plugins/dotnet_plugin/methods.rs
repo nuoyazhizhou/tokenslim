@@ -159,13 +159,4 @@ impl Plugin for DotNetPlugin {
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
     }
-
-    fn load_config(&mut self, config: &dyn std::any::Any) -> Result<(), String> {
-        if let Some(new_config) = config.downcast_ref::<DotNetConfig>() {
-            self.config = new_config.clone();
-            Ok(())
-        } else {
-            Err("Invalid config type".to_string())
-        }
-    }
 }

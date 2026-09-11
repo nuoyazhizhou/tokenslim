@@ -1,0 +1,15 @@
+scenario: '对 main.o 运行 objdump -d 查看 .text 节反汇编，输出含多个函数边界标签与每条指令（相对偏移 + 机器码字节 + 助记符），含调用相对目标 <func_add>。'
+target_capability: 'binutils objdump -d 反汇编压缩（保留 $FUNC 函数标签与 $ASM 助记符，折叠偏移/机器码字节）'
+expected_keep: 'call 0 <func_add>'
+expected_compress: '0000000000000000 <main>:'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'f61cec9dea57ab8673cae05cbd783d7c3033516a216f40bc592afdd727de2497'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

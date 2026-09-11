@@ -36,6 +36,7 @@ pub enum VcsRecord {
 }
 
 impl std::fmt::Display for VcsRecord {
+    /// 将 VcsRecord 格式化为可读字符串。
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             VcsRecord::Section(s) => write!(f, "[{}]", s),
@@ -67,6 +68,7 @@ pub struct VcsDocument {
     pub records: Vec<VcsRecord>,
 }
 pub trait VcsParser {
+    /// VcsParser 解析入口：子类实现具体解析逻辑。
     fn parse(&self, raw: &str) -> Option<VcsDocument>;
 }
 
@@ -83,6 +85,7 @@ pub struct CvsEditParser;
 // 通用辅助函数（内联自 helpers.rs）
 // ============================================================================
 
+/// 非空记录列表包装为 VcsDocument；空列表返回 None。
 #[tracing::instrument(level = "debug", skip_all)]
 fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Option<VcsDocument> {
     if records.is_empty() {
@@ -96,6 +99,7 @@ fn to_doc_if_any(tool: VcsTool, kind: VcsDocKind, records: Vec<VcsRecord>) -> Op
     }
 }
 
+/// 解析单字符状态码 + 路径。
 #[tracing::instrument(level = "debug", skip_all)]
 fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     let token_end = line.find(char::is_whitespace).unwrap_or(line.len());
@@ -137,6 +141,7 @@ fn parse_simple_status_path(line: &str) -> Option<(char, String)> {
     Some((status, rest.to_string()))
 }
 
+/// 按允许状态码集合解析单字符状态行。
 fn parse_single_char_status_path(line: &str, allowed: &[char]) -> Option<(char, String)> {
     let token_end = line.find(char::is_whitespace).unwrap_or(line.len());
     if token_end != 1 {
@@ -153,6 +158,7 @@ fn parse_single_char_status_path(line: &str, allowed: &[char]) -> Option<(char, 
     Some((status, path.to_string()))
 }
 
+/// 判断字符串是否为 VCS 路径形态（过滤邮箱/URL/代码调用/方法名）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_vcs_path(path: &str) -> bool {
     let trimmed = path.trim_matches('"');
@@ -204,11 +210,13 @@ fn looks_like_vcs_path(path: &str) -> bool {
         || trimmed.starts_with('.')
 }
 
+/// 折叠行内连续空白为单空格。
 #[tracing::instrument(level = "debug", skip_all)]
 fn collapse_inline_whitespace(line: &str) -> String {
     line.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
+/// 通用 status 解析：按命令前缀过滤，解析状态行与路径为 File 记录。
 fn parse_generic_status_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -253,6 +261,7 @@ fn parse_generic_status_for_tool(
     to_doc_if_any(tool, VcsDocKind::Status, records)
 }
 
+/// 通用 log 解析：按命令前缀过滤，解析 revno/author/date/缩进消息为记录。
 fn parse_generic_log_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -331,6 +340,7 @@ fn parse_generic_log_for_tool(
     to_doc_if_any(tool, VcsDocKind::Log, records)
 }
 
+/// 通用 diff 解析：降维 diff 头，解析补丁/路径为记录。
 fn parse_generic_diff_for_tool(
     raw: &str,
     tool: VcsTool,
@@ -375,6 +385,7 @@ fn parse_generic_diff_for_tool(
     to_doc_if_any(tool, VcsDocKind::Diff, records)
 }
 
+/// 按长词状态前缀（modified:/added: 等）解析状态码与路径。
 fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     let lower = line.to_ascii_lowercase();
     let candidates = [
@@ -406,6 +417,7 @@ fn parse_status_word_and_path(line: &str) -> Option<(char, String)> {
     None
 }
 
+/// 解析 diff 的 index/---/+++/@@ 行与 +/- 补丁行，分类为 Raw/Hunk/Patch 记录。
 fn parse_generic_patch_or_stat_line(
     line: &str,
     trimmed: &str,
@@ -445,6 +457,7 @@ fn parse_generic_patch_or_stat_line(
     false
 }
 
+/// 判断是否为 diff stat 行（含 " | " 分隔）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn looks_like_diff_stat_line(line: &str) -> bool {
     line.contains(" | ")
@@ -456,12 +469,14 @@ fn looks_like_diff_stat_line(line: &str) -> bool {
         || line.contains("deletions(-)")
 }
 
+/// 紧凑化 diff stat 行：折叠连续空白。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_diff_stat_line(line: &str) -> String {
     let normalized = line.split_whitespace().collect::<Vec<_>>().join(" ");
     normalized
 }
 
+/// 紧凑化日志日期值（当前仅 trim）。
 #[tracing::instrument(level = "debug", skip_all)]
 fn compact_log_date_value(value: &str) -> String {
     value.trim().to_string()
@@ -471,6 +486,7 @@ fn compact_log_date_value(value: &str) -> String {
 // CVS 专用辅助函数（内联自 helpers.rs）
 // ============================================================================
 
+/// 从 "Checking in path;" 行提取路径。
 fn parse_cvs_checking_in_path(line: &str) -> Option<String> {
     let path = line
         .strip_prefix("Checking in ")?
@@ -482,6 +498,7 @@ fn parse_cvs_checking_in_path(line: &str) -> Option<String> {
     Some(path.to_string())
 }
 
+/// 判断行是否为 CVS 修订号 token（数字与点/下划线组成）。
 fn looks_like_cvs_revision_token(line: &str) -> bool {
     let trimmed = line.trim();
     !trimmed.is_empty()
@@ -491,6 +508,7 @@ fn looks_like_cvs_revision_token(line: &str) -> bool {
             .all(|ch| ch.is_ascii_digit() || ch == '.' || ch == '_')
 }
 
+/// 从 cvs tag 命令行解析标签名（跳过选项）。
 fn parse_cvs_tag_name_from_command(line: &str) -> Option<String> {
     let mut parts = line.split_whitespace();
     let tool = parts.next()?;
@@ -504,6 +522,7 @@ fn parse_cvs_tag_name_from_command(line: &str) -> Option<String> {
         .filter(|part| !part.is_empty())
 }
 
+/// 解析引号包裹的路径（反引号/单引号/双引号）。
 fn parse_cvs_quoted_path(line: &str) -> Option<String> {
     let extract = |start_char: char, end_char: char| -> Option<String> {
         let start = line.find(start_char)?;
@@ -528,6 +547,7 @@ struct CvsAnnotateLine {
     blanked_rendered: String,
 }
 
+/// 解析 cvs annotate 行（*** 修订号 (author: date): 代码）。
 fn parse_cvs_annotate_line(line: &str) -> Option<CvsAnnotateLine> {
     let line = line.trim_end_matches('\r');
     let open_paren = line.find('(')?;
@@ -564,6 +584,7 @@ fn parse_cvs_annotate_line(line: &str) -> Option<CvsAnnotateLine> {
     })
 }
 
+/// 渲染紧凑化 blame 行：保留前导缩进，前缀去空白后拼接代码。
 fn render_compacted_blame_line(prefix: &str, content: &str) -> String {
     let stripped = prefix.trim_start();
     let pad = prefix.len().saturating_sub(stripped.len());
@@ -576,6 +597,7 @@ fn render_compacted_blame_line(prefix: &str, content: &str) -> String {
     out
 }
 
+/// 渲染空白化的 blame 行：前缀字符全部替换为空格（对齐用）。
 fn blank_compacted_blame_line(prefix: &str, content: &str) -> String {
     let mut chars: Vec<char> = prefix.chars().collect();
     for ch in chars.iter_mut() {
@@ -589,6 +611,7 @@ fn blank_compacted_blame_line(prefix: &str, content: &str) -> String {
     rendered
 }
 
+/// 压缩 blame 行代码前缀后的内容（去前导空白）。
 fn compact_blame_content_after_prefix(content: &str) -> String {
     let trimmed = content
         .strip_prefix(' ')
@@ -597,6 +620,7 @@ fn compact_blame_content_after_prefix(content: &str) -> String {
     compact_blame_code_indent(trimmed)
 }
 
+/// 压缩 blame 代码缩进：按 4/2/1 空格单位归一化。
 fn compact_blame_code_indent(content: &str) -> String {
     let trimmed_end = content.trim_end();
     if trimmed_end.is_empty() {
@@ -625,24 +649,28 @@ fn compact_blame_code_indent(content: &str) -> String {
 // ============================================================================
 
 impl VcsParser for CvsStatusParser {
+    /// 解析 `cvs status`/`cvs update` 输出：委托通用状态解析器，将文件状态行归并为 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_status_for_tool(raw, VcsTool::Cvs, &["cvs status", "cvs update", "cvs -q"])
     }
 }
 
 impl VcsParser for CvsDiffParser {
+    /// 解析 `cvs diff` 输出：委托通用差异解析器，将补丁片段归并为 Diff 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_diff_for_tool(raw, VcsTool::Cvs, &["cvs diff"])
     }
 }
 
 impl VcsParser for CvsLogParser {
+    /// 解析 `cvs log` 输出：委托通用日志解析器，将版本历史归并为 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         parse_generic_log_for_tool(raw, VcsTool::Cvs, &["cvs log"])
     }
 }
 
 impl VcsParser for CvsAnnotateParser {
+    /// 解析 `cvs annotate` 输出：将每行 版本/作者/日期 标注解析为记录（连续相同标注行折叠去重），输出 Show 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut matched_annotate_line = false;
@@ -694,6 +722,7 @@ impl VcsParser for CvsAnnotateParser {
 }
 
 impl VcsParser for CvsUpdateParser {
+    /// 解析 `cvs update` 输出：将 U/A/R/M/D/C/?/! 单字符状态行归为状态文件，其余路径作兜底文件，输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         for line in raw.lines() {
@@ -728,6 +757,7 @@ impl VcsParser for CvsUpdateParser {
 }
 
 impl VcsParser for CvsCommitParser {
+    /// 解析 `cvs commit` 输出：将 `checking in` 路径与版本号归为 checkin 标签文件，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut pending_path: Option<String> = None;
@@ -783,6 +813,7 @@ impl VcsParser for CvsCommitParser {
 }
 
 impl VcsParser for CvsTagParser {
+    /// 解析 `cvs tag` 输出：将 T 状态行与引号路径归为 tag(<name>) 标签文件，输出 Log 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut tag_name: Option<String> = None;
@@ -801,8 +832,7 @@ impl VcsParser for CvsTagParser {
             {
                 continue;
             }
-            if let Some((status, path)) = parse_single_char_status_path(trimmed, &['T']) {
-                let _ = status;
+            if let Some((_, path)) = parse_single_char_status_path(trimmed, &['T']) {
                 let label = tag_name
                     .as_deref()
                     .map(|name| format!("tag({name})"))
@@ -825,6 +855,7 @@ impl VcsParser for CvsTagParser {
 }
 
 impl VcsParser for CvsEditParser {
+    /// 解析 `cvs edit` 输出：将引号路径按 `edited by <user>` 归为 edited 标签文件（无用户时兜底为 edit），输出 Status 类文档。
     fn parse(&self, raw: &str) -> Option<VcsDocument> {
         let mut records = Vec::new();
         let mut fallback_path: Option<String> = None;

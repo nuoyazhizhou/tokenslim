@@ -6,6 +6,7 @@ mod tests {
     use crate::core::text_slicer::SliceType;
     use crate::plugins::test_utils::*;
     use crate::plugins::unity_unreal_plugin::UnityUnrealPlugin;
+    /// 验证 Unity 日志样例压缩后不显著扩张(输出长度 ≤ 原始 + 4)。
     #[test]
     fn compresses_unity_log_sample_without_expansion() {
         let plugin = UnityUnrealPlugin::new();
@@ -19,6 +20,7 @@ mod tests {
         );
     }
 
+    /// 验证 Unreal 日志样例压缩后不显著扩张(输出长度 ≤ 原始 + 4)。
     #[test]
     fn compresses_unreal_log_sample_without_expansion() {
         let plugin = UnityUnrealPlugin::new();
@@ -32,6 +34,7 @@ mod tests {
         );
     }
 
+    /// 验证性能样例日志压缩后不显著扩张(输出长度 ≤ 原始 + 4)。
     #[test]
     fn compresses_performance_sample_without_expansion() {
         let plugin = UnityUnrealPlugin::new();

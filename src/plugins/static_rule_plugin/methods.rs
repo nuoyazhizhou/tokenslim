@@ -6,10 +6,10 @@ use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::Slice;
 use bumpalo::Bump;
 use regex::Regex;
-use std::any::Any;
 use std::borrow::Cow;
 
 impl SimpleRulePlugin {
+    /// 创建 SimpleRulePlugin 实例：编译规则正则（enter/exit/keep/drop/aggregates），名称 static_rule，优先级 95。
     pub fn new(config: StaticRuleConfig) -> Self {
         let compiled_sections = Self::compile_sections(&config);
         Self {
@@ -20,12 +20,14 @@ impl SimpleRulePlugin {
         }
     }
 
+    /// 从 TOML 文本解析配置并创建插件实例。
     pub fn from_toml(toml_text: &str) -> Result<Self, String> {
         let config: StaticRuleConfig =
             toml::from_str(toml_text).map_err(|e| format!("invalid static rule toml: {e}"))?;
         Ok(Self::new(config))
     }
 
+    /// 将 TOML 规则编译为预编译正则的 CompiledSection 列表（非法正则静默跳过）。
     fn compile_sections(config: &StaticRuleConfig) -> Vec<CompiledSection> {
         config
             .sections
@@ -35,7 +37,6 @@ impl SimpleRulePlugin {
                 enter: Regex::new(&s.enter).ok(),
                 exit: s.exit.as_ref().and_then(|r| Regex::new(r).ok()),
                 match_pattern: s.match_pattern.as_ref().and_then(|r| Regex::new(r).ok()),
-                split_on: s.split_on.as_ref().and_then(|r| Regex::new(r).ok()),
                 keep: s.keep.iter().filter_map(|r| Regex::new(r).ok()).collect(),
                 drop: s.drop.iter().filter_map(|r| Regex::new(r).ok()).collect(),
                 aggregates: s
@@ -51,6 +52,7 @@ impl SimpleRulePlugin {
             .collect()
     }
 
+    /// 对当前行应用聚合规则：Count 按模式命中计数，Sum 提取捕获组的数值累加。
     fn apply_aggregates(section: &CompiledSection, line: &str, state: &mut AggregationState) {
         for agg in &section.aggregates {
             match agg.kind {
@@ -79,6 +81,7 @@ impl SimpleRulePlugin {
         }
     }
 
+    /// 判断行是否应保留：命中 drop 规则丢弃，无 keep 规则时全部保留，否则需命中 keep。
     fn should_keep_line(section: &CompiledSection, line: &str) -> bool {
         if section.drop.iter().any(|r| r.is_match(line)) {
             return false;
@@ -89,39 +92,7 @@ impl SimpleRulePlugin {
         section.keep.iter().any(|r| r.is_match(line))
     }
 
-    /// 将收集的行按 split_on 分隔符切割为 blocks
-    ///
-    /// 如果 section 没有设置 split_on，返回原始行列表。
-    /// 否则，按分隔符将行分组为多个 block，每个 block 用空行分隔。
-    #[cfg(test)]
-    fn split_into_blocks(section: &CompiledSection, lines: &[String]) -> Vec<String> {
-        let Some(ref split_re) = section.split_on else {
-            return lines.to_vec();
-        };
-
-        let mut blocks = Vec::new();
-        let mut current_block = Vec::new();
-
-        for line in lines {
-            if split_re.is_match(line) {
-                // 遇到分隔符，保存当前 block
-                if !current_block.is_empty() {
-                    blocks.push(current_block.join("\n"));
-                    current_block.clear();
-                }
-            } else {
-                current_block.push(line.clone());
-            }
-        }
-
-        // 保存最后一个 block
-        if !current_block.is_empty() {
-            blocks.push(current_block.join("\n"));
-        }
-
-        blocks
-    }
-
+    /// 渲染输出：有 output_template 时按模板替换 {body} 与聚合变量，否则拼 $SR| 指标 + 正文。
     fn render_output(&self, collected_lines: &[String], state: &AggregationState) -> String {
         let body = collected_lines.join("\n");
         if let Some(template) = &self.config.output_template {
@@ -151,14 +122,17 @@ impl SimpleRulePlugin {
 }
 
 impl Plugin for SimpleRulePlugin {
+    /// 返回插件名称 "static_rule"。
     fn name(&self) -> &'static str {
         self.name
     }
 
+    /// 返回插件优先级 95。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：任一 section 的 enter 正则命中得 0.75，keep 正则命中得 0.45。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         let text = slice.text.as_ref();
         if self.compiled_sections.is_empty() {
@@ -181,6 +155,7 @@ impl Plugin for SimpleRulePlugin {
         None
     }
 
+    /// 压缩切片：按 section 进入/退出/匹配规则收集行并应用聚合，有信号时输出渲染结果。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -253,24 +228,9 @@ impl Plugin for SimpleRulePlugin {
         }
     }
 
+    /// 解压：原文透传（规则压缩不可逆）。
     fn decompress(&self, compressed: &str, _dict: &Dictionary) -> String {
         compressed.to_string()
-    }
-
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<StaticRuleConfig>() {
-            self.config = c.clone();
-            self.compiled_sections = Self::compile_sections(&self.config);
-            return Ok(());
-        }
-        if let Some(raw) = config.downcast_ref::<String>() {
-            let parsed: StaticRuleConfig =
-                toml::from_str(raw).map_err(|e| format!("invalid static rule toml: {e}"))?;
-            self.config = parsed;
-            self.compiled_sections = Self::compile_sections(&self.config);
-            return Ok(());
-        }
-        Err("Invalid config for static_rule plugin".to_string())
     }
 }
 
@@ -281,6 +241,7 @@ mod tests {
     use crate::core::dictionary_engine::DictionaryEngine;
     use crate::core::text_slicer::{Slice, SliceType};
 
+    /// 测试：从 TOML 解析失败 section 并验证规则提取与聚合生效。
     #[test]
     fn parse_from_toml_and_extract_fail_section() {
         let toml_text = r#"
@@ -332,6 +293,7 @@ mod tests {
         assert_eq!(out.plugin_name, Some("static_rule"));
     }
 
+    /// 测试：Sum 聚合从捕获组累加数值。
     #[test]
     fn aggregate_sum_works_with_capture_group() {
         let cfg = StaticRuleConfig {
@@ -340,7 +302,6 @@ mod tests {
                 enter: "^BEGIN$".to_string(),
                 exit: Some("^END$".to_string()),
                 match_pattern: None,
-                split_on: None,
                 keep: vec![],
                 drop: vec![],
                 aggregates: vec![AggregateRule {
@@ -374,6 +335,7 @@ mod tests {
         assert_eq!(text, "total=20");
     }
 
+    /// 测试：match_pattern 只收集匹配行，噪声行被过滤。
     #[test]
     fn match_pattern_filters_collected_lines() {
         let cfg = StaticRuleConfig {
@@ -382,7 +344,6 @@ mod tests {
                 enter: "^FAILURES$".to_string(),
                 exit: Some("^$".to_string()),
                 match_pattern: Some("^  (test_|FAIL:)".to_string()),
-                split_on: None,
                 keep: vec![],
                 drop: vec![],
                 aggregates: vec![],
@@ -415,37 +376,5 @@ mod tests {
         assert!(text.contains("FAIL: test_bar"));
         assert!(!text.contains("some noise"));
         assert!(!text.contains("more noise"));
-    }
-
-    #[test]
-    fn split_on_divides_into_blocks() {
-        // 直接测试 split_into_blocks 函数的逻辑
-        let split_re = Regex::new("---").unwrap();
-        let section = CompiledSection {
-            name: "blocks".to_string(),
-            enter: None,
-            exit: None,
-            match_pattern: None,
-            split_on: Some(split_re),
-            keep: vec![],
-            drop: vec![],
-            aggregates: vec![],
-        };
-
-        let lines = vec![
-            "[blocks] line1".to_string(),
-            "[blocks] line2".to_string(),
-            "[blocks] ---".to_string(), // 分隔符
-            "[blocks] line3".to_string(),
-            "[blocks] line4".to_string(),
-            "[blocks] ---".to_string(), // 分隔符
-            "[blocks] line5".to_string(),
-        ];
-
-        let blocks = SimpleRulePlugin::split_into_blocks(&section, &lines);
-        assert_eq!(blocks.len(), 3);
-        assert_eq!(blocks[0], "[blocks] line1\n[blocks] line2");
-        assert_eq!(blocks[1], "[blocks] line3\n[blocks] line4");
-        assert_eq!(blocks[2], "[blocks] line5");
     }
 }

@@ -1,0 +1,15 @@
+scenario: '对 main.o 运行 objdump -t 查看符号表，输出含局部/全局符号与节信息，格式为 addr flag type section size name。'
+target_capability: 'binutils objdump -t 符号表压缩（全局/弱符号逐条 $OBJ，局部符号类型折叠摘要）'
+expected_keep: 'main'
+expected_compress: '0000000000000000 g     F .text'
+source: 'llm'
+generated_at: '2026-09-02T12:00:00Z'
+
+# === audit 字段（自动维护，请勿手填内容字段）===
+audit:
+  content_hash: 'a8d77ddf068b3d111d95bdceaf27300de81012428425ef88180bc3deb6c93b63'
+  final_status: 'valid'
+  llm_invoked: false
+  llm_verified_at: '2026-09-11T14:09:09.639462'
+  last_audit_tool: 'audit_sample_case_quality@incremental'
+  skip: false

@@ -1,0 +1,37 @@
+{
+    "name": "toml_ini",
+    "description": "TOML/INI 配置结构压缩",
+    "priority": 145,
+    "enabled": true,
+    "detect": {
+        "rules": [
+            {
+                "type": "any",
+                "patterns": ["["],
+                "note": "段头 [section] 行"
+            },
+            {
+                "type": "any",
+                "patterns": ["="],
+                "note": "键值 key=value 行"
+            }
+        ],
+        "min_keyval_lines": 3
+    },
+    "compress": {
+        "token_prefix": "$TOML",
+        "dedup": {
+            "enabled": false
+        }
+    },
+    "keep_signals": [
+        "配置的段结构（[section] 头被保留）",
+        "有效键值对的语义（键被保留，值择要）"
+    ],
+    "compress_targets": [
+        "TOML 解析成功后归一化为紧凑格式（去掉冗余空白/换行）",
+        "键保留、值去重",
+        "ROI 门控：压缩结果若扩张则回退原文"
+    ],
+    "design_intent": "TOML/INI 脱水：保留段与键值结构，用紧凑归一化压缩冗余空白，交由肥手 plugin 的 ROI 门控兜底。"
+}

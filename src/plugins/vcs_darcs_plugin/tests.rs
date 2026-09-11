@@ -1,19 +1,18 @@
 use super::methods::*;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 fn sample_dir() -> PathBuf {
-    Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("samples")
-        .join("vcs_darcs_plugin")
+    crate::plugins::test_utils::vcs_sample_dir("vcs_darcs_plugin")
 }
+/// 测试辅助：读取指定 darcs 样例文件。
 fn read_case(c: &str) -> String {
-    let p = sample_dir().join(format!("{c}.log"));
-    std::fs::read_to_string(&p).unwrap_or_else(|e| panic!("读取样本失败 {}: {e}", p.display()))
+    crate::plugins::test_utils::vcs_read_case("vcs_darcs_plugin", c)
 }
 
 // ============================================================================
 // Case 35: log — 命令锚点 + 提交信息未被丢弃
 // ============================================================================
+/// 测试：darcs log 样例（case 35）结构化压缩。
 #[test]
 fn test_log_case_35() {
     let c = compact_darcs_log_for_ai(&read_case("case_35_darcs_log"));
@@ -31,16 +30,31 @@ fn test_log_case_35() {
 // ============================================================================
 // Case 42: status — 命令锚点 + A/M/R 状态码
 // ============================================================================
+/// 测试：darcs status 样例（case 42）状态映射。
 #[test]
 fn test_status_case_42() {
     let c = compact_darcs_status_for_ai(&read_case("case_42_darcs_status"));
-    assert!(!c.is_empty());
-    assert!(c.contains("A") || c.contains("M") || c.contains("R"));
+    // P3-203：原断言 contains("A")||contains("M")||contains("R") 为单字符无锚点弱断言，
+    // 补命令锚点与状态行完整路径锚点。
+    assert!(c.starts_with("darcs status"), "必须保留命令锚点: {c}");
+    assert!(
+        c.contains("A src/plugins/vcs_plugin/new_darcs_adapter.rs"),
+        "A 状态行应完整保留: {c}"
+    );
+    assert!(
+        c.contains("M src/plugins/vcs_plugin/methods.rs"),
+        "M 状态行应完整保留: {c}"
+    );
+    assert!(
+        c.contains("R src/legacy/old_darcs_parser.rs"),
+        "R 状态行应完整保留: {c}"
+    );
 }
 
 // ============================================================================
 // Case 210: obliterate — 命令锚点 + 交互式对话消除
 // ============================================================================
+/// 测试：darcs obliterate 样例（case 210）抹除交互并映射 D:。
 #[test]
 fn test_obliterate_case_210() {
     let c = compact_darcs_log_family_for_ai(&read_case("case_210_darcs_obliterate"));
@@ -57,6 +71,7 @@ fn test_obliterate_case_210() {
 // ============================================================================
 // Case 154: amend — 命令锚点 + 流向箭头
 // ============================================================================
+/// 测试：darcs amend 样例（case 154）输出 AMEND 行。
 #[test]
 fn test_amend_case_154() {
     let c = compact_darcs_log_family_for_ai(&read_case("case_154_darcs_amend"));
@@ -72,6 +87,7 @@ fn test_amend_case_154() {
 // ============================================================================
 // Case 282: rebase — 命令锚点 + 流向箭头
 // ============================================================================
+/// 测试：darcs rebase 样例（case 282）输出 REBASE 行。
 #[test]
 fn test_rebase_case_282() {
     let c = compact_darcs_log_family_for_ai(&read_case("case_282_darcs_rebase"));
@@ -86,6 +102,7 @@ fn test_rebase_case_282() {
 // ============================================================================
 // Case 321: log summary — 补丁描述保留
 // ============================================================================
+/// 测试：darcs log 汇总样例（case 321）结构化压缩。
 #[test]
 fn test_log_summary_case_321() {
     let c = compact_darcs_log_family_for_ai(&read_case("case_321_darcs_log_summary"));
@@ -108,12 +125,14 @@ fn test_log_summary_case_321() {
 // ============================================================================
 // 短输入 + 噪音检测
 // ============================================================================
+/// 测试：短输入直接返回原文（不压缩）。
 #[test]
 fn test_short_input_fallback() {
     let c = compact_darcs_log_for_ai("darcs help");
     assert_eq!(c, "darcs help");
 }
 
+/// 测试：darcs 噪音行检测。
 #[test]
 fn test_darcs_noise_detection() {
     assert!(super::methods::is_darcs_noise("About to delete 3 patches"));
@@ -135,6 +154,7 @@ fn test_darcs_noise_detection() {
     assert!(!super::methods::is_darcs_noise("Author: alice"));
 }
 
+/// 测试：darcs 告警行映射（ERROR/WARN 前缀行保留）。
 #[test]
 fn test_darcs_alert_mapping() {
     assert!(super::methods::map_darcs_alert("CONFLICT: merge conflict").is_some());

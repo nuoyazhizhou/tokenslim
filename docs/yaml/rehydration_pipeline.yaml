@@ -1,0 +1,180 @@
+module:
+  name: rehydration_pipeline
+  path: src/core/rehydration_pipeline
+  dependencies:
+    - thiserror = "1.0"
+  files:
+    - name: mod.rs
+      content: |
+        mod types;
+        mod  methods;
+        pub use types::{RehydrationPipeline, RehydrationConfig, RehydrationError};
+        pub use methods::*;
+
+    - name: types
+      content: |
+        use std::collections::HashMap;
+        use crate::core::compression::{CompressionOutput, Token};
+        use crate::core::dictionary_engine::Dictionary;
+        use crate::core::plugin_dispatcher::Plugin;
+
+        /// 还原流水线配置
+        #[derive(Clone)]
+        pub struct RehydrationConfig {
+            pub preserve_order: bool,           // 是否保留重排序信息（未来）
+            pub fallback_on_error: bool,        // 遇到无法还原的 token 时是否 fallback（例如跳过）
+        }
+
+        /// 还原流水线主结构
+        pub struct RehydrationPipeline {
+            pub(crate) dict: Dictionary,
+            pub(crate) plugins: HashMap<String, Box<dyn Plugin>>,
+            pub(crate) config: RehydrationConfig,
+        }
+
+        /// 还原错误类型
+        #[derive(Debug, thiserror::Error)]
+        pub enum RehydrationError {
+            #[error("Unknown token: {0}")]
+            UnknownToken(String),
+            #[error("Dictionary resolution failed for token: {0}")]
+            DictResolutionFailed(String),
+            #[error("Plugin not found: {0}")]
+            PluginNotFound(String),
+            #[error("Plugin decompress failed: {0}")]
+            PluginDecompressFailed(String),
+            #[error("AST reconstruction failed")]
+            AstReconstructionFailed,
+        }
+
+    - name: methods.rs
+      content: |
+        use super::types::*;
+        use crate::core::compression::{CompressionOutput, Token};
+        use crate::core::dictionary_engine::Dictionary;
+        use crate::core::plugin_dispatcher::Plugin;
+        use std::collections::HashMap;
+
+        impl RehydrationPipeline {
+            // ========== MVP 函数 ==========
+
+            /// 创建新的 RehydrationPipeline 实例
+            ///
+            /// # 参数
+            /// - `dict`: 压缩时生成的字典
+            /// - `plugins`: 插件实例列表
+            /// - `config`: 还原配置
+            ///
+            /// # 返回值
+            /// - `Self`: RehydrationPipeline 实例
+            ///
+            /// # 实现要求
+            /// 1. 存储字典。
+            /// 2. 建立插件名称到实例的映射，便于后续查找。
+            ///
+            /// # 测试要点
+            /// - 插件映射正确。
+            /// - 字典存储正确。
+            ///
+            /// MVP 优先级
+            pub fn new(
+                dict: Dictionary,
+                plugins: Vec<Box<dyn Plugin>>,
+                config: RehydrationConfig,
+            ) -> Self {
+                todo!()
+            }
+
+            /// 完整还原压缩输出
+            ///
+            /// # 参数
+            /// - `output`: CompressionPipeline 生成的压缩输出
+            ///
+            /// # 返回值
+            /// - `Result<String, RehydrationError>`: 还原后的原始文本
+            ///
+            /// # 实现要求
+            /// 调用 `rehydrate_tokens` 处理 Token 流。
+            ///
+            /// # 测试要点
+            /// - 还原后的文本与原始文本完全一致。
+            /// - 处理空输出。
+            ///
+            /// MVP 优先级
+            pub fn rehydrate(&self, output: &CompressionOutput) -> Result<String, RehydrationError> {
+                todo!()
+            }
+
+            /// 还原 Token 流（核心）
+            ///
+            /// # 参数
+            /// - `tokens`: Token 流切片
+            ///
+            /// # 返回值
+            /// - `Result<String, RehydrationError>`: 还原后的文本
+            ///
+            /// # 实现要求
+            /// 遍历 Token 流，按类型处理：
+            /// - `Token::Text(s)`：直接追加。
+            /// - `Token::DictRef(token)`：调用 `dict.resolve(token)`，若失败返回错误。
+            /// - `Token::Repeat { token, count }`：递归还原内部 token，然后重复 count 次追加。
+            /// - `Token::Marker { kind, value }`：MVP 阶段可忽略或原样输出 value。
+            ///
+            /// # 测试要点
+            /// - 纯 Text Token → 拼接正确。
+            /// - DictRef Token → 正确替换。
+            /// - Repeat Token → 正确展开。
+            /// - Marker Token → 忽略或原样输出。
+            /// - 混合类型 → 顺序正确。
+            ///
+            /// MVP 优先级
+            pub fn rehydrate_tokens(&self, tokens: &[Token]) -> Result<String, RehydrationError> {
+                todo!()
+            }
+
+            /// 调用插件解压（未来）
+            ///
+            /// # 参数
+            /// - `plugin_name`: 插件名称
+            /// - `compressed`: 插件压缩的文本片段
+            ///
+            /// # 返回值
+            /// - `Result<String, RehydrationError>`: 解压后的原始文本
+            ///
+            /// # 实现要求
+            /// 查找插件，调用其 `decompress` 方法。
+            ///
+            /// # 测试要点
+            /// - 插件存在 → 返回解压结果。
+            /// - 插件不存在 → 返回 PluginNotFound。
+            /// - 插件解压失败 → 返回 PluginDecompressFailed。
+            ///
+            /// 未来优先级
+            pub fn decompress_slice(&self, plugin_name: &str, compressed: &str) -> Result<String, RehydrationError> {
+                todo!()
+            }
+
+            // ========== 未来函数（待实现） ==========
+
+            /// 处理重排序（未来）
+            ///
+            /// # 参数
+            /// - `text`: 初步还原的文本
+            /// - `order_info`: 压缩时记录的顺序信息
+            ///
+            /// # 返回值
+            /// - `String`: 恢复原始顺序后的文本
+            ///
+            /// 未来优先级
+            pub fn reorder(&self, text: &str, order_info: &OrderInfo) -> String {
+                todo!()
+            }
+        }
+
+    - name: test.rs
+      content: |
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            // 单元测试将在此添加
+        }

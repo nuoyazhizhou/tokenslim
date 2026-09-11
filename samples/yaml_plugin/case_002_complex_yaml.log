@@ -10,4 +10,4 @@ database:
   port: 5432
   credentials:
     username: admin
-    password: secret
+    password: <PASSWORD>

@@ -78,11 +78,13 @@ const DEFAULT_MAX_WAIT_SECS: u64 = 0;
 /// 调用方应在调用前检查 [`crate::cli::conpty_probe::is_conpty_available`],
 /// 不可用时降级到 passthrough, 不调用本函数。
 #[tracing::instrument(level = "debug", skip_all, fields(prog = %prog, args = ?args))]
-pub(crate) fn run_external_command_pty(
-    prog: &str,
-    args: &[String],
-) -> Result<i32, CliError> {
-    run_in_pty_impl(prog, args, DEFAULT_MAX_WAIT_SECS, true /* echo to stdout */)
+pub(crate) fn run_external_command_pty(prog: &str, args: &[String]) -> Result<i32, CliError> {
+    run_in_pty_impl(
+        prog,
+        args,
+        DEFAULT_MAX_WAIT_SECS,
+        true, /* echo to stdout */
+    )
 }
 
 /// 走 ConPTY / PTY 跑, **不回显到本进程 stdout** (用于测试 / 内部流水线)
@@ -98,6 +100,8 @@ pub(crate) fn run_external_command_pty_silent(
     Ok((collected.unwrap_or_default(), exit))
 }
 
+/// run_external_command_pty 的薄封装：根据 echo 标志决定是否创建收集缓冲，
+/// 再委托 run_in_pty_impl_with_buffer 完成实际 PTY 运行。
 fn run_in_pty_impl(
     prog: &str,
     args: &[String],
@@ -108,6 +112,9 @@ fn run_in_pty_impl(
     run_in_pty_impl_with_buffer(prog, args, max_wait_secs, &mut sink)
 }
 
+/// PTY 运行核心实现：创建伪终端、spawn 子进程，并桥接 reader/writer 线程。
+/// 主线程从 mpsc 通道 drain 字节，按需回显到 stdout 或累积到 collected 缓冲；
+/// 子进程自然退出返回退出码，max_wait_secs>0 且超时时 kill 子进程并返回错误。
 fn run_in_pty_impl_with_buffer(
     prog: &str,
     args: &[String],
@@ -201,12 +208,22 @@ fn run_in_pty_impl_with_buffer(
             }
         }
         if let Ok(Some(status)) = child.try_wait() {
-            // 子进程退出, drain 剩余字节
+            // 子进程退出后，输出可能仍在 reader 线程的读取/投递途中（PTY EOF 传播晚于退出码）。
+            // 原实现仅做一次非阻塞 try_recv 排空，通道瞬时 Empty 会提前中断收集，
+            // 导致 cmd /c ver 等快速退出命令的输出为空/半截（Q543 空输出竞态）。
+            // 修复：有界等待 reader 线程收尽（子进程退出 → slave 关闭 → master 读到 EOF），再完整排空通道。
+            for _ in 0..10 {
+                if reader_handle.is_finished() {
+                    break;
+                }
+                thread::sleep(Duration::from_millis(20));
+            }
             while let Ok(chunk) = rx.try_recv() {
                 if collected.is_some() {
                     collected.as_mut().unwrap().extend_from_slice(&chunk);
                 } else {
                     let _ = stdout.write_all(&chunk);
+                    let _ = stdout.flush();
                 }
             }
             // portable_pty 0.8 的 ExitStatus::exit_code() 返回 u32. 这里约定:
@@ -217,24 +234,144 @@ fn run_in_pty_impl_with_buffer(
         }
         if max_wait_secs > 0 && start.elapsed() > Duration::from_secs(max_wait_secs) {
             let _ = child.kill();
-            return Err(pty_err(
-                "子进程超时",
-                format!("{max_wait_secs}s, 已 kill"),
-            ));
+            return Err(pty_err("子进程超时", format!("{max_wait_secs}s, 已 kill")));
         }
         thread::sleep(Duration::from_millis(30));
     };
 
     drop(pair.master);
-    let _ = reader_handle.join();
+    // 有界收尾（Q543 复审 P1）：先 drop master 强制 reader 的 read() 返回 EOF/错误并解除阻塞，
+    // 再用预算内轮询等待 reader 结束；超时则放弃 join（detach）——reader 线程会随
+    // master 句柄关闭而自然退出。保证整个收尾有界，不会在 join() 上无界悬挂。
+    if !wait_join_bounded(&reader_handle, Duration::from_millis(100)) {
+        tracing::warn!("pty reader 线程未在 100ms 内结束，已 detach（master 已关闭，将自然退出）");
+    }
     drop(writer_handle);
 
     Ok(exit_code)
 }
 
+/// 有界等待线程结束：在预算内轮询 `is_finished()`；超时返回 false，由调用方放弃 join（detach）。
+///
+/// 背景（Q543 复审 P1）：PTY reader 线程阻塞在 `master.read()` 上，若 EOF 传播延迟，
+/// 无超时的 `JoinHandle::join()` 会让整个函数无界悬挂。本函数保证等待有界；
+/// 超时后调用方应 drop master（强制 read 返回错误）并 detach，线程将自然退出。
+fn wait_join_bounded<T>(handle: &std::thread::JoinHandle<T>, budget: Duration) -> bool {
+    let deadline = Instant::now() + budget;
+    while !handle.is_finished() {
+        if Instant::now() >= deadline {
+            return false;
+        }
+        thread::sleep(Duration::from_millis(5));
+    }
+    true
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// 测试辅助：剥离 ANSI 控制序列（CSI / OSC / 孤立 ESC），使断言针对真实语义文本。
+    ///
+    /// 背景（Q543）：ConPTY 在压力运行下会在输出中混入终端初始化序列——如 OSC 标题
+    /// `ESC]0;cmd.EXE BEL`、光标隐藏 `ESC[?25l`、光标定位 `ESC[1;1H` 等——这些序列会把
+    /// "Windows"/"Microsoft" 等连续子串打断，导致断言非确定性失败（全量压力下偶发）。
+    /// 剥离后仅验证子命令的真实语义输出。
+    fn strip_ansi(text: &str) -> String {
+        let mut out = String::with_capacity(text.len());
+        let mut chars = text.chars().peekable();
+        while let Some(c) = chars.next() {
+            if c != '\x1b' {
+                out.push(c);
+                continue;
+            }
+            match chars.peek() {
+                // CSI: ESC [ 参数(0-9;?<>!:) 终字符(@-~)
+                Some(&'[') => {
+                    chars.next();
+                    while let Some(&n) = chars.peek() {
+                        if n.is_ascii_digit() || matches!(n, ';' | '?' | '<' | '>' | '!' | ':') {
+                            chars.next();
+                        } else {
+                            break;
+                        }
+                    }
+                    if let Some(&fin) = chars.peek() {
+                        if ('@'..='~').contains(&fin) {
+                            chars.next();
+                        }
+                    }
+                }
+                // OSC: ESC ] ... BEL(\x07) 或 ESC \
+                Some(&']') => {
+                    chars.next();
+                    while let Some(&n) = chars.peek() {
+                        if n == '\x07' {
+                            chars.next();
+                            break;
+                        }
+                        if n == '\x1b' {
+                            chars.next(); // 消费 ESC
+                            let _ = chars.next(); // 消费可能存在的 '\'
+                            break;
+                        }
+                        chars.next();
+                    }
+                }
+                _ => {
+                    // 孤立 ESC（如 ESC\\ 尾部），丢弃
+                }
+            }
+        }
+        out
+    }
+
+    /// 验证 strip_ansi 能剥离 OSC 标题（BEL 终止）与 CSI 序列，保留语义文本。
+    #[test]
+    fn strip_ansi_removes_title_and_csi() {
+        let raw = "\x1b]0;cmd.EXE\x07\x1b[?25l\x1b[1;1HMicrosoft Windows [版本 10.0.26200.0]\r\n";
+        let clean = strip_ansi(raw);
+        assert!(clean.contains("Microsoft Windows"));
+        assert!(!clean.contains('\x1b'));
+        assert!(!clean.contains("cmd.EXE"));
+        assert!(!clean.contains("?25l"));
+    }
+
+    /// 验证 strip_ansi 也处理 OSC ST 终止形式（ESC ] ... ESC \），而非仅 BEL 终止（Q543 复审整改）。
+    #[test]
+    fn strip_ansi_handles_osc_st_termination() {
+        let raw = "\x1b]0;cmd.EXE\x1b\\Microsoft Windows [版本 10.0.26200.0]\r\n";
+        let clean = strip_ansi(raw);
+        assert!(
+            clean.contains("Microsoft Windows"),
+            "OSC ST 标题应被剥离，got: {clean:?}"
+        );
+        assert!(!clean.contains('\x1b'));
+        assert!(!clean.contains("cmd.EXE"));
+    }
+
+    /// Q543 v2 复审 P1 回归：wait_join_bounded 对快速线程在预算内返回 true。
+    #[test]
+    fn wait_join_bounded_returns_true_for_fast_thread() {
+        let handle = std::thread::spawn(|| std::thread::sleep(Duration::from_millis(30)));
+        let finished = wait_join_bounded(&handle, Duration::from_millis(500));
+        assert!(finished, "快速线程应在预算内完成");
+    }
+
+    /// Q543 v2 复审 P1 回归：wait_join_bounded 对慢线程在预算后返回 false（不悬挂），
+    /// 调用方 detach 后线程自然退出——保证 PTY 收尾有界。
+    #[test]
+    fn wait_join_bounded_returns_false_without_hanging() {
+        let handle = std::thread::spawn(|| std::thread::sleep(Duration::from_secs(5)));
+        let started = Instant::now();
+        let finished = wait_join_bounded(&handle, Duration::from_millis(50));
+        assert!(!finished, "慢线程不应在 50ms 预算内完成");
+        assert!(
+            started.elapsed() < Duration::from_secs(2),
+            "有界等待必须及时返回，不得悬挂"
+        );
+        // handle 在此 drop → detach；线程 5s 后自然退出，不阻塞测试进程退出
+    }
 
     /// 测试 1: `cmd /c ver` 走 pty 立即退出, 拿到 stdout
     #[test]
@@ -244,7 +381,14 @@ mod tests {
         match result {
             Ok((bytes, code)) => {
                 if code == 0 {
-                    let text = String::from_utf8_lossy(&bytes);
+                    // 空输出必须作为独立失败信号（PTY 读取/收集竞态，Q543），
+                    // 不能被 strip_ansi 的成功样例掩盖。
+                    assert!(
+                        !bytes.is_empty(),
+                        "PTY 输出为空（读取/收集/句柄关闭竞态，Q543）：cmd /c ver 应产生输出"
+                    );
+                    // 剥离 ANSI 终端初始化/标题序列后，再断言真实语义输出（Q543 非确定性失败修复）
+                    let text = strip_ansi(&String::from_utf8_lossy(&bytes));
                     assert!(
                         text.contains("Windows") || text.contains("Microsoft"),
                         "expected Windows version in output, got: {text}"
@@ -252,9 +396,7 @@ mod tests {
                 } else {
                     // 非零退出码 (如 0xC000013A = STATUS_CONTROL_C_EXIT) 说明
                     // 被沙箱截断 (Trae IDE 等), 此情况跳过验证
-                    eprintln!(
-                        "[skip] pty_runs_simple_command: ConPTY 退出码 {code} (沙箱截断)"
-                    );
+                    eprintln!("[skip] pty_runs_simple_command: ConPTY 退出码 {code} (沙箱截断)");
                 }
             }
             Err(e) => {
@@ -268,11 +410,8 @@ mod tests {
     #[test]
     fn pty_unknown_program_returns_err() {
         let args: Vec<String> = vec![];
-        let result = run_external_command_pty_silent(
-            "definitely-not-a-real-command-xyz123",
-            &args,
-            3,
-        );
+        let result =
+            run_external_command_pty_silent("definitely-not-a-real-command-xyz123", &args, 3);
         assert!(result.is_err(), "expected Err for unknown program");
     }
 

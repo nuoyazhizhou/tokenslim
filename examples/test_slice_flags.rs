@@ -2,6 +2,8 @@ use std::borrow::Cow;
 use tokenslim::core::stream_reader::SliceInput;
 use tokenslim::core::text_slicer::{SliceMode, SlicerConfig, TextSlicer};
 
+/// 切片标记测试示例：对 5 组含路径/宏/编译命令/堆栈跟踪/日志头的文本
+/// 调用 `slice_line` 切片，逐项打印 `SliceFlags` 检测结果。
 fn main() {
     println!("测试 TextSlicer 切片标记功能");
     println!("====================================");

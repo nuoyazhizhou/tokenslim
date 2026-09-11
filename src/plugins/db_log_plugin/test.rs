@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::db_log_plugin::DbLogPlugin;
     use crate::plugins::test_utils::*;
 
+    /// 测试：PostgreSQL 日志样例被插件识别。
     #[test]
     fn detects_pg_case() {
         let plugin = DbLogPlugin::new();
@@ -14,6 +15,7 @@ mod tests {
         assert!(plugin.detect(&make_log_slice(&raw)).is_some());
     }
 
+    /// 测试：MySQL 日志样例压缩后不显著扩张（ROI 门控生效）。
     #[test]
     fn compresses_mysql_case() {
         let plugin = DbLogPlugin::new();
@@ -48,6 +50,7 @@ mod tests {
         );
     }
 
+    /// 测试：MongoDB 慢查询样例被识别，压缩输出含 MONGO|/ns/dur 信息。
     #[test]
     fn detects_mongodb_case() {
         let plugin = DbLogPlugin::new();
@@ -60,6 +63,7 @@ mod tests {
         assert!(out.contains("dur=1284ms"));
     }
 
+    /// 测试：Redis 事件样例被识别，压缩输出含 REDIS|/ERR/role 信息。
     #[test]
     fn detects_redis_case() {
         let plugin = DbLogPlugin::new();
@@ -71,6 +75,7 @@ mod tests {
         assert!(out.contains("role=M"));
     }
 
+    /// 测试：PG duration 样例压缩输出含 SLOW 标签与耗时。
     #[test]
     fn compresses_postgres_duration_case() {
         let plugin = DbLogPlugin::new();
@@ -80,6 +85,7 @@ mod tests {
         assert!(out.len() <= raw.len());
     }
 
+    /// 测试：PG 锁与死锁信号在压缩输出中被保留。
     #[test]
     fn highlights_postgres_lock_and_deadlock_signals() {
         let plugin = DbLogPlugin::new();
@@ -92,6 +98,7 @@ mod tests {
         assert!(out.len() <= raw.len());
     }
 
+    /// 测试：MongoDB 命令超时详情在压缩输出中被提取。
     #[test]
     fn extracts_mongodb_command_timeout_details() {
         let plugin = DbLogPlugin::new();
@@ -104,6 +111,7 @@ mod tests {
         assert!(out.contains("dur=30000ms"), "{out}");
     }
 
+    /// 测试：Redis 内存与复制事件在压缩输出中被保留。
     #[test]
     fn extracts_redis_memory_and_replication_events() {
         let plugin = DbLogPlugin::new();
@@ -115,6 +123,7 @@ mod tests {
         assert!(out.len() <= raw.len());
     }
 
+    /// 测试：MySQL 死锁/超时错误在压缩输出中被保留。
     #[test]
     fn preserves_mysql_deadlock_timeout_errors() {
         let plugin = DbLogPlugin::new();

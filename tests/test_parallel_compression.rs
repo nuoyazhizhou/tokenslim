@@ -5,6 +5,7 @@
 use std::fs;
 use std::time::Instant;
 
+/// 高性能并行压缩测试入口：对两个样本文件逐一执行传统/并行压缩对比。
 fn main() {
     println!("=== 高性能并行压缩测试 ===\n");
 
@@ -20,6 +21,7 @@ fn main() {
     }
 }
 
+/// 对单个文件执行传统逐行与并行处理两种压缩路径，输出耗时/吞吐/压缩率对比。
 fn test_parallel_compression(file_path: &str) {
     println!("测试文件：{}", file_path);
 

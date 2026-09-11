@@ -7,6 +7,7 @@ mod tests {
     use crate::plugins::smart_code_plugin::types::SmartCodePlugin;
     use crate::plugins::test_utils::*;
 
+    /// 测试：简单代码样例被识别。
     #[test]
     fn detects_simple_code_sample() {
         let plugin = SmartCodePlugin::new();
@@ -16,6 +17,7 @@ mod tests {
             .is_some());
     }
 
+    /// 测试：代码块 slice 类型样例被识别。
     #[test]
     fn detects_code_block_sample() {
         let plugin = SmartCodePlugin::new();
@@ -25,6 +27,7 @@ mod tests {
             .is_some());
     }
 
+    /// 测试：长代码样例压缩后不扩张。
     #[test]
     fn compresses_long_code_sample_without_expansion() {
         let plugin = SmartCodePlugin::new();

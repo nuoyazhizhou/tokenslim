@@ -1,66 +1,34 @@
 #![allow(dead_code)]
 //! GitHub CLI (gh) 压缩方法 — Compression Protocol V1
-use super::parser::*;
 use crate::core::plugin_config_loader::parse_vcs_command_words_from_line;
 use crate::core::utils::roi::prefer_non_expanding;
 
 // ============================================================================
-// 遗留 parser 集成
-// ============================================================================
-#[tracing::instrument(level = "debug", skip_all)]
-pub fn process_parser(parser: &dyn VcsParser, raw: &str) -> String {
-    match parser.parse(raw) {
-        Some(doc) => render_gh_doc(&doc),
-        None => raw.to_string(),
-    }
-}
-fn render_gh_doc(doc: &VcsDocument) -> String {
-    doc.records
-        .iter()
-        .map(|r| render_gh_record(r))
-        .collect::<Vec<_>>()
-        .join("\n")
-}
-fn render_gh_record(rec: &VcsRecord) -> String {
-    match rec {
-        VcsRecord::Section(s) => format!("[{}]", s),
-        VcsRecord::Commit(c) => format!("#{}", c),
-        VcsRecord::Subject(s) => s.clone(),
-        VcsRecord::Author(a) => format!("@{}", a),
-        VcsRecord::Date(d) => d.clone(),
-        VcsRecord::Stat(s) => s.clone(),
-        VcsRecord::Raw(r) => r.clone(),
-        VcsRecord::File { status, path } => {
-            if let Some(st) = status {
-                format!("{} {}", st, path)
-            } else {
-                path.clone()
-            }
-        }
-        VcsRecord::LabeledFile { label, path } => format!("[{}] {}", label, path),
-        _ => rec.to_string(),
-    }
-}
-
-// ============================================================================
 // 公开 API
 // ============================================================================
+/// gh 日志的 AI 压缩入口：dispatch 压缩 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_gh_log_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, compact_gh_dispatch(raw))
 }
+/// gh 其他输出的 AI 压缩入口：dispatch 压缩 + ROI 门控。
 #[tracing::instrument(level = "debug", skip_all)]
 pub fn compact_gh_other_for_ai(raw: &str) -> String {
     prefer_non_expanding(raw, compact_gh_dispatch(raw))
 }
+/// 判断是否为 gh 命令块：首个非空行以 gh 命令头开头。
 #[tracing::instrument(level = "debug", skip_all)]
-pub fn is_gh_log_block(_: &str) -> bool {
-    true
+pub fn is_gh_log_block(text: &str) -> bool {
+    text.lines()
+        .find(|l| !l.trim().is_empty())
+        .map(|l| l.trim_start().starts_with("gh "))
+        .unwrap_or(false)
 }
 
 // ============================================================================
 // 调度器
 // ============================================================================
+/// 调度器：按首行 gh 命令分派到 pr/issue/run/api/auth 各专用压缩。
 fn compact_gh_dispatch(raw: &str) -> String {
     if raw.len() < 50 {
         return raw.to_string();
@@ -100,6 +68,7 @@ fn compact_gh_dispatch(raw: &str) -> String {
 // 格式: #22   feature/new-ui   [open]   Add dark mode support   alice   2026-04-01
 // 输出: #22 ST:open OW:@alice CR:2026-04-01 Add dark mode support
 // ============================================================================
+/// 压缩 gh pr list 输出：保留锚点，数据行解析为 #ID ST: OW: 格式。
 fn compact_gh_pr_list(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -118,6 +87,7 @@ fn compact_gh_pr_list(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 解析 PR/issue 数据行：提取 #ID、状态括号、作者、日期与标题。
 fn parse_gh_pr_row(line: &str) -> Option<String> {
     let tokens: Vec<&str> = line.split_whitespace().collect();
     if tokens.len() < 4 || !tokens[0].starts_with('#') {
@@ -150,6 +120,9 @@ fn parse_gh_pr_row(line: &str) -> Option<String> {
         // issue_list: columns #ID title [state]...
         1
     };
+    // 防御：无标题行（如 `#1 a/b [open] 2026-01-01`）时 title_start 可能越过 author_idx，
+    // 钳制后切片必然合法，避免越界 panic。
+    let title_start = title_start.min(author_idx);
     let title = tokens[title_start..author_idx]
         .iter()
         .filter(|t| !t.starts_with('['))
@@ -168,6 +141,7 @@ fn parse_gh_pr_row(line: &str) -> Option<String> {
 // ============================================================================
 // Case 93: issue list — 复用 pr list 解析
 // ============================================================================
+/// 压缩 gh issue list 输出：复用 PR 行解析。
 fn compact_gh_issue_list(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -189,6 +163,7 @@ fn compact_gh_issue_list(raw: &str) -> String {
 // ============================================================================
 // Case 99: run list — 保留锚点，WF 块压缩
 // ============================================================================
+/// 压缩 gh run list 输出：按空行分组，KV 压缩为 WF/ST/RN 块。
 fn compact_gh_run_list(raw: &str) -> String {
     let mut out = Vec::new();
     let mut block: Vec<String> = Vec::new();
@@ -216,6 +191,7 @@ fn compact_gh_run_list(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将 run list 的 KV 行映射为符号标记（WF/ST/RN/BR/CM/DUR 等）。
 fn compact_gh_run_kv(line: &str) -> Option<String> {
     let colon = line.find(':')?;
     let key = line[..colon].trim().to_ascii_lowercase();
@@ -242,6 +218,7 @@ fn compact_gh_run_kv(line: &str) -> Option<String> {
 // ============================================================================
 // Case 155/157: pr/issue create — 保留锚点，去除 ✓，A: 映射
 // ============================================================================
+/// 压缩 gh pr create 输出：Created pull request 映射为 A:，标签收集为 LB:。
 fn compact_gh_pr_create(raw: &str) -> String {
     let mut out = Vec::new();
     let mut labels = Vec::new();
@@ -275,6 +252,7 @@ fn compact_gh_pr_create(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 压缩 gh issue create 输出：Created issue 映射为 A:，标签收集为 LB:。
 fn compact_gh_issue_create(raw: &str) -> String {
     let mut out = Vec::new();
     let mut labels = Vec::new();
@@ -305,6 +283,7 @@ fn compact_gh_issue_create(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 从结果消息中提取 #号/URL 尾部的编号作为紧凑标识。
 fn compact_gh_result(msg: &str) -> String {
     if let Some(idx) = msg.rfind('#') {
         msg[idx..].to_string()
@@ -324,6 +303,7 @@ fn compact_gh_result(msg: &str) -> String {
 // ============================================================================
 // Case 106: api — 保留锚点，JSON 平面化提取
 // ============================================================================
+/// 压缩 gh api 输出：保留锚点，JSON 平面化提取 name/id/description/url 等字段。
 fn compact_gh_api(raw: &str) -> String {
     let mut lines = raw.lines();
     let anchor = lines.next().unwrap_or("").trim().to_string();
@@ -356,6 +336,7 @@ fn compact_gh_api(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 从 JSON 字符串中提取指定 key 的值（支持字符串/数字/布尔）。
 fn extract_gh_json(json: &str, key: &str) -> Option<String> {
     let pat = format!("\"{}\"", key);
     let start = json.find(&pat)?;
@@ -384,6 +365,7 @@ fn extract_gh_json(json: &str, key: &str) -> Option<String> {
 // ============================================================================
 // Case 107: auth — 保留锚点，K-V 扁平化
 // ============================================================================
+/// 压缩 gh auth 输出：Logged in 映射 OW:，Current account 映射 ACC:。
 fn compact_gh_auth(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -420,6 +402,7 @@ fn compact_gh_auth(raw: &str) -> String {
 // ============================================================================
 // Case 156: pr merge — ✓ 去除，动作映射
 // ============================================================================
+/// 压缩 gh pr merge 输出：Merged 映射 MRG:，Deleted branch 映射 D:。
 fn compact_gh_pr_merge(raw: &str) -> String {
     let mut out = Vec::new();
     for line in raw.lines() {
@@ -450,6 +433,7 @@ fn compact_gh_pr_merge(raw: &str) -> String {
 // ============================================================================
 // Case 162: run view — K-V 扁平化
 // ============================================================================
+/// 压缩 gh run view 输出：KV 扁平化，跳过缩进任务行。
 fn compact_gh_run_view(raw: &str) -> String {
     let mut out = Vec::new();
     let mut parts = Vec::new();
@@ -462,8 +446,10 @@ fn compact_gh_run_view(raw: &str) -> String {
             out.push(t.to_string());
             continue;
         }
-        // 跳过缩进的任务行
-        if t.starts_with("  ") {
+        // P3-186：跳过缩进的任务行（✓/x job 等）。旧实现用 `t.starts_with("  ")`——
+        // 但 `t` 已经过 `trim()`，缩进已被去除，该条件永不成立，任务行从未被跳过，
+        // 而会被误当 KV 行参与扁平化。改回在原始行上检测空白缩进。
+        if line.starts_with(' ') || line.starts_with('\t') {
             continue;
         }
         if let Some(kv) = compact_gh_run_view_kv(t) {
@@ -477,6 +463,7 @@ fn compact_gh_run_view(raw: &str) -> String {
     out.join("\n")
 }
 
+/// 将 run view 的 KV 行映射为符号标记（WF/RN/ST/BR/EV/CN/JB）。
 fn compact_gh_run_view_kv(line: &str) -> Option<String> {
     let colon = line.find(':')?;
     let key = line[..colon].trim().to_ascii_lowercase();
@@ -500,6 +487,7 @@ fn compact_gh_run_view_kv(line: &str) -> Option<String> {
 // ============================================================================
 // 通用 fallback — 处理剩余的 list/view/gist 等
 // ============================================================================
+/// 通用压缩：保留命令锚点，过滤分隔线/表头/噪音，符号清理与 KV 压缩。
 fn compact_gh_generic(raw: &str) -> String {
     let mut out = Vec::new();
     let mut first = true;
@@ -577,6 +565,7 @@ fn collapse_whitespace(s: &str) -> String {
     result.trim().to_string()
 }
 
+/// 将通用 KV 行映射为符号标记（含状态/分支/标签/URL 缩写等）。
 fn compact_gh_kv(line: &str) -> Option<String> {
     let c = if line.starts_with("- ") {
         &line[2..]
@@ -626,6 +615,7 @@ fn compact_gh_kv(line: &str) -> Option<String> {
     Some(format!("{}:{}", sym, val))
 }
 
+/// 压缩符号前缀行（✓/✗/○）并缩写其后 URL。
 fn compact_gh_status_line(line: &str) -> Option<String> {
     let rest = line
         .trim_start_matches(|c: char| c == '✓' || c == '✗' || c == '○')
@@ -648,9 +638,11 @@ fn compact_gh_status_line(line: &str) -> Option<String> {
 // ============================================================================
 // 辅助函数
 // ============================================================================
+/// 判断是否为分隔线（≥10 个连字符）。
 fn is_gh_separator(line: &str) -> bool {
     line.len() >= 10 && line.chars().all(|c| c == '-')
 }
+/// 判断是否为表格表头行（全大写缩写或表头关键词）。
 fn is_gh_table_header(line: &str) -> bool {
     let words: Vec<&str> = line.split_whitespace().collect();
     if words.len() < 3 {
@@ -690,6 +682,7 @@ fn is_gh_table_header(line: &str) -> bool {
         .count();
     kw_count >= 3
 }
+/// 判断是否为 gh 噪音行（created pull request/labeled as/logged in 等）。
 fn is_gh_noise(line: &str) -> bool {
     if line_has_preserved_keyword(line) {
         return false;
@@ -709,6 +702,7 @@ fn is_gh_noise(line: &str) -> bool {
         || l.starts_with("changes:")
 }
 
+/// 判断行是否含需保留的错误关键词（error/fatal/panic 等）。
 fn line_has_preserved_keyword(line: &str) -> bool {
     let l = line.to_ascii_lowercase();
     l.contains("error")
@@ -717,6 +711,7 @@ fn line_has_preserved_keyword(line: &str) -> bool {
         || l.contains("exception")
         || l.contains("uncaught")
 }
+/// 缩写 URL 主机名（github/gitlab/azure/bitbucket/gist/api）。
 fn abbreviate_gh_url(url: &str) -> String {
     url.replace("https://github.com/", "gh:")
         .replace("https://gitlab.com/", "gl:")
@@ -725,6 +720,7 @@ fn abbreviate_gh_url(url: &str) -> String {
         .replace("https://gist.github.com/", "gist:")
         .replace("https://api.github.com/repos/", "api:")
 }
+/// 将含 conflict/error/failed/rejected 的行标记为警报（前缀 !）。
 pub(super) fn map_gh_alert(line: &str) -> Option<String> {
     let l = line.to_ascii_lowercase();
     if ["conflict", "error:", "failed", "rejected"]

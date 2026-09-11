@@ -8,7 +8,6 @@ use crate::core::plugin_dispatcher::{CompressResult, Plugin};
 use crate::core::text_slicer::{Slice, SliceType};
 use bumpalo::Bump;
 use regex::Regex;
-use std::any::Any;
 use std::borrow::Cow;
 use std::sync::Arc;
 
@@ -154,17 +153,18 @@ fn should_preserve_identifier(id: &str) -> bool {
 }
 
 impl Default for SmartCodePlugin {
+    /// SmartCodePlugin 默认实现：等价于 new()。
     fn default() -> Self {
         Self::new()
     }
 }
 
 impl SmartCodePlugin {
+    /// 创建 SmartCodePlugin 实例（名称 smart_code，优先级 200），预编译标识符与空格正则。
     pub fn new() -> Self {
         Self {
             name: "smart_code",
             priority: 200,
-            config: SmartCodeConfig::default(),
             identifier_pattern: Arc::new(Regex::new(r"\b[a-zA-Z_]\w*\b").unwrap()),
             spaces_pattern: Arc::new(Regex::new(r" {2,}").unwrap()),
         }
@@ -172,13 +172,16 @@ impl SmartCodePlugin {
 }
 
 impl Plugin for SmartCodePlugin {
+    /// 返回插件名称 "smart_code"。
     fn name(&self) -> &'static str {
         self.name
     }
+    /// 返回插件优先级 200。
     fn priority(&self) -> u8 {
         self.priority
     }
 
+    /// 检测：代码块类 slice 类型或含 class/function/const/import 特征得 0.8。
     fn detect<'a>(&self, slice: &'a Slice<'a>) -> Option<f32> {
         match slice.slice_type {
             SliceType::CodeBlock
@@ -199,6 +202,7 @@ impl Plugin for SmartCodePlugin {
         None
     }
 
+    /// 压缩切片：连续空格压缩为 $S|N 标记，>8 字符标识符字典化（保留关键字与异常类），ROI 门控。
     fn compress<'a>(
         &self,
         slice: &'a Slice<'a>,
@@ -210,7 +214,10 @@ impl Plugin for SmartCodePlugin {
         let mut tokens = Vec::new();
 
         for line in text.lines() {
-            let mut processed = line.to_string();
+            // P2-78：字面 `$` 统一转义为 `$$`，防止源码中形如 `$S|5`/`$PK1` 的字面量
+            // 被解压端误当作本插件标记还原（round-trip 失真）。转义先行于标记生成，
+            // 本插件随后生成的 `$S|N`/`$PKn` 均为单 `$`，解压端可无歧义区分。
+            let mut processed = line.replace('$', "$$");
 
             // 1. 压缩空格
             processed = self
@@ -245,7 +252,11 @@ impl Plugin for SmartCodePlugin {
                 _ => "",
             })
             .collect();
-        let final_text = crate::core::utils::roi::prefer_non_expanding(text, compacted);
+        // P2-78：门控基线必须用「转义后原文」——兜底回落形态也要能被本插件 decompress
+        // 无歧义解码，否则含字面 `$S|N`/`$PKn` 的原文在兜底路径仍会被误还原。
+        let escaped_original = text.replace('$', "$$");
+        let final_text =
+            crate::core::utils::roi::prefer_non_expanding(&escaped_original, compacted);
 
         CompressResult {
             tokens: vec![Token::Text(Cow::Owned(final_text))],
@@ -254,41 +265,163 @@ impl Plugin for SmartCodePlugin {
         }
     }
 
+    /// 解压：将 $S|N 空格标记与 $PK 标识符 token 还原为原文。
+    ///
+    /// P2-78：以逐字节扫描器替代正则——`$$` 先于标记判定，作为字面 `$` 的转义序列
+    /// 还原（与 compress 端 `replace('$', "$$")` 对偶），杜绝原文字面 `$S|N`/`$PKn`
+    /// 被误还原；单 `$` 引导的 `$S|N`/`$PKn` 才按标记处理。
     fn decompress(&self, compressed: &str, dict: &Dictionary) -> String {
         let mut result = String::new();
-        let space_re = Regex::new(r"\$S\|(\d+)").unwrap();
-        let token_re = Regex::new(r"(\$PK\d+)").unwrap();
 
         for line in compressed.lines() {
-            let mut restored = line.to_string();
-
-            // 还原标识符
-            restored = token_re
-                .replace_all(&restored, |caps: &regex::Captures| {
-                    let token = caps.get(1).unwrap().as_str();
-                    dict.resolve_or_self(token)
-                })
-                .into_owned();
-
-            // 还原空格
-            restored = space_re
-                .replace_all(&restored, |caps: &regex::Captures| {
-                    let len: usize = caps.get(1).unwrap().as_str().parse().unwrap_or(0);
-                    " ".repeat(len)
-                })
-                .into_owned();
-
+            let restored = restore_line(line, dict);
             result.push_str(&restored);
             result.push('\n');
         }
         result
     }
+}
 
-    fn load_config(&mut self, config: &dyn Any) -> Result<(), String> {
-        if let Some(c) = config.downcast_ref::<SmartCodeConfig>() {
-            self.config = c.clone();
-            return Ok(());
+/// 单行还原扫描器：依次判定转义序列 `$$`、空格标记 `$S|N`、标识符 token `$PKn`，
+/// 其余内容（含单 `$` 非标记形态）原样透传。字节索引处均为 ASCII，切片边界安全。
+///
+/// P2-78：以逐字节扫描器替代正则——`$$` 先于标记判定，作为字面 `$` 的转义序列
+/// 还原（与 compress 端 `replace('$', "$$")` 对偶），杜绝原文字面 `$S|N`/`$PKn`
+/// 被误还原；单 `$` 引导的 `$S|N`/`$PKn` 才按标记处理。
+fn restore_line(line: &str, dict: &Dictionary) -> String {
+    let bytes = line.as_bytes();
+    let mut out = String::with_capacity(line.len());
+    let mut i = 0usize;
+
+    while i < line.len() {
+        if bytes[i] == b'$' {
+            // 1) 转义序列：$$ → 字面 $
+            if bytes.get(i + 1) == Some(&b'$') {
+                out.push('$');
+                i += 2;
+                continue;
+            }
+            // 2) 空格标记：$S|N → N 个空格
+            if bytes.get(i + 1) == Some(&b'S') && bytes.get(i + 2) == Some(&b'|') {
+                let mut j = i + 3;
+                while j < line.len() && bytes[j].is_ascii_digit() {
+                    j += 1;
+                }
+                if j > i + 3 {
+                    let n: usize = line[i + 3..j].parse().unwrap_or(0);
+                    out.push_str(&" ".repeat(n));
+                    i = j;
+                    continue;
+                }
+            }
+            // 3) 标识符 token：$PKn → 词典还原（查不到原样保留，与 resolve_or_self 一致）
+            if bytes.get(i + 1) == Some(&b'P') && bytes.get(i + 2) == Some(&b'K') {
+                let mut j = i + 3;
+                while j < line.len() && bytes[j].is_ascii_digit() {
+                    j += 1;
+                }
+                if j > i + 3 {
+                    let token = &line[i..j];
+                    out.push_str(&dict.resolve_or_self(token));
+                    i = j;
+                    continue;
+                }
+            }
         }
-        Err("Invalid config type".to_string())
+        // 其余按 UTF-8 字符推进（多字节字符整体拷贝）
+        let ch = line[i..].chars().next().unwrap_or('\0');
+        out.push(ch);
+        i += ch.len_utf8();
+    }
+    out
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::dedup_engine::{DedupConfig, DedupEngine};
+    use crate::core::dictionary_engine::DictionaryEngine;
+    use crate::core::text_slicer::{Slice, SliceType};
+    use bumpalo::Bump;
+    use std::borrow::Cow;
+
+    /// 构造测试切片。
+    fn slice_of<'a>(text: &'a str) -> Slice<'a> {
+        Slice {
+            id: 1,
+            text: Cow::Borrowed(text),
+            slice_type: SliceType::Unknown,
+            offset: 0,
+            line_start: 1,
+            line_end: text.lines().count().max(1),
+            file_metadata: None,
+            flags: Default::default(),
+        }
+    }
+
+    /// 压缩并返回 (compact 文本, 词典快照)。
+    fn compress_of(text: &str) -> (String, crate::core::dictionary_engine::Dictionary) {
+        let plugin = SmartCodePlugin::new();
+        let mut dict_engine = DictionaryEngine::new();
+        let mut dedup = DedupEngine::new(DedupConfig::default());
+        let arena = Bump::new();
+        let slice = slice_of(text);
+        let result = plugin.compress(&slice, &mut dict_engine, &mut dedup, &arena);
+        let compacted = result
+            .tokens
+            .iter()
+            .filter_map(|t| match t {
+                Token::Text(s) => Some(s.as_ref().to_string()),
+                _ => None,
+            })
+            .collect::<String>();
+        (compacted, dict_engine.snapshot())
+    }
+
+    /// P2-78 负路径回归：原文含标记形态字面量 `$S|5`/`$PK1` 时，compress→decompress
+    /// 往返必须逐字还原，不得把字面量误还原为 5 个空格/词典值。
+    #[test]
+    fn round_trip_preserves_literal_marker_shaped_text() {
+        let plugin = SmartCodePlugin::new();
+        let source = "const tpl = \"$S|5 and $PK1\";\nlet price$$ = cost$S|2 total;\n";
+        let (compacted, dict) = compress_of(source);
+        let restored = plugin.decompress(&compacted, &dict);
+
+        // 字面 $S|5 / $PK1 / $$ 均原样保留
+        assert!(
+            restored.contains("\"$S|5 and $PK1\""),
+            "literal marker-shaped text preserved: {restored}"
+        );
+        assert!(
+            restored.contains("price$$ = cost$S|2 total;"),
+            "literal $$ and $S|2 preserved: {restored}"
+        );
+        // 源码行结构还原一致（忽略压缩产生的行尾规范化差异）
+        let restored_body = restored.trim_end();
+        let source_body = source.trim_end();
+        assert_eq!(
+            restored_body.split('\n').count(),
+            source_body.split('\n').count(),
+            "line count preserved: {restored}"
+        );
+    }
+
+    /// P2-78 回归：普通代码往返仍保持语义（标记正常还原，转义不破坏既有行为）。
+    /// 取特殊字符样本（非 ASCII 标识符）验证文件驱动链路不被转义机制破坏。
+    #[test]
+    fn round_trip_on_special_chars_sample_keeps_identifiers() {
+        let plugin = SmartCodePlugin::new();
+        let raw = crate::plugins::test_utils::read_sample_log(
+            "smart_code_plugin",
+            "case_007_special_chars",
+        );
+        let (compacted, dict) = compress_of(&raw);
+        let restored = plugin.decompress(&compacted, &dict);
+        for needle in ["function", "const", "console.log", "函数", "变量", "漢字"] {
+            assert!(
+                restored.contains(needle),
+                "round-trip must keep `{needle}`: {restored}"
+            );
+        }
     }
 }

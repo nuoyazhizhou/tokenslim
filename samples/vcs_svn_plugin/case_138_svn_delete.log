@@ -1,2 +1,5 @@
-svn delete oldfile.txt
-D         oldfile.txt
+svn delete src/legacy
+D         src/legacy
+D         src/legacy/api.rs
+D         src/legacy/client.rs
+D         src/legacy/test_old.rs

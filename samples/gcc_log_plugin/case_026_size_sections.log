@@ -1,0 +1,5 @@
+text    data     bss     dec     hex filename
+   1344     296      16    1656     678 a.out
+   2110     112       8    2230     8b6 libfoo.a(foo.o)
+   1488     384      24    1896     768 libfoo.a(bar.o)
+   1000      64       0    1064     428 app_static.o

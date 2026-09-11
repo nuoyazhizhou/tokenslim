@@ -1,3 +1,8 @@
+//! TokenSlim HTTP/WebSocket 压缩服务器主程序：提供压缩、解压、流式与配置热重载等接口。
+
+use axum::extract::DefaultBodyLimit;
+use axum::http::header;
+use axum::http::Uri;
 use axum::{
     body::Body,
     body::Bytes,
@@ -8,11 +13,11 @@ use axum::{
     routing::{get, post},
     Json, Router,
 };
-use axum::extract::DefaultBodyLimit;
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation, Algorithm};
 use clap::Parser;
 use dashmap::DashMap;
+use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use notify::{Event, RecursiveMode, Watcher};
+use rust_embed::RustEmbed;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::convert::Infallible;
@@ -21,7 +26,6 @@ use std::path::PathBuf;
 use std::str::FromStr;
 use std::sync::{Arc, Mutex, RwLock};
 use std::time::{Instant, SystemTime};
-use tokio_stream::wrappers::ReceiverStream;
 use tokenslim::cli::get_plugins;
 use tokenslim::core::compression_pipeline::{
     CompressionOutput, CompressionPipeline, PipelineConfig,
@@ -30,15 +34,32 @@ use tokenslim::core::metrics::{MetricsCollector, MetricsConfig};
 use tokenslim::core::rehydration_pipeline::{RehydrationConfig, RehydrationPipeline};
 use tokenslim::core::tracking::{Tracker, TrackingEvent};
 use tokenslim::utils::i18n::{t, t1, t_en, t_zh};
+
+/// 以英文渲染消息键并替换首个 `{}` 占位符。
+///
+/// `t1` 只作用于当前 UI locale，而 HTTP 错误响应体需同时携带中英文两版
+/// （`ApiErrorBody` 的 `message_zh`/`message_en` 契约），故需要按语言定向渲染。
+fn t1_en(key: &'static str, arg: impl std::fmt::Display) -> String {
+    t_en(key).replacen("{}", &arg.to_string(), 1)
+}
+
+/// 以简体中文渲染消息键并替换首个 `{}` 占位符（配合 [`t1_en`] 满足双语契约）。
+fn t1_zh(key: &'static str, arg: impl std::fmt::Display) -> String {
+    t_zh(key).replacen("{}", &arg.to_string(), 1)
+}
+use tokio_stream::wrappers::ReceiverStream;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::services::ServeDir;
-use axum::http::Uri;
-use axum::http::header;
-use rust_embed::RustEmbed;
 
 // ─── 命令行参数（优先级：CLI > 环境变量 > 默认值）───
+// 说明：clap 的 `about` 是编译期字面量，无法走运行时 i18n 词表。此处采用
+// 纯 ASCII 英文描述，与 tokenslim 主程序的 i18n 体系不冲突——本二进制是
+// 服务端组件，`--help` 面向部署者/开发者，不是本地化 UI 面。
 #[derive(Parser, Debug)]
-#[command(name = "tokenslim-server", about = "TokenSlim HTTP/WebSocket 压缩服务器")]
+#[command(
+    name = "tokenslim-server",
+    about = "TokenSlim HTTP/WebSocket compression server"
+)]
 struct ServerCli {
     /// 监听地址（亦可通过 TOKENSLIM_HOST 配置）
     #[arg(short = 'H', long, env = "TOKENSLIM_HOST", default_value = "127.0.0.1")]
@@ -87,15 +108,31 @@ struct ServerCli {
     /// JWT 令牌有效期（秒），默认 3600（1 小时）
     #[arg(long, env = "TOKENSLIM_JWT_EXPIRY", default_value = "3600")]
     jwt_expiry: u64,
+
+    /// 可信代理模式：开启后限流按 x-forwarded-for / x-real-ip 头解析客户端 IP
+    /// （反向代理部署）；默认 false=直连模式，只认 TCP peer 地址——伪造 XFF
+    /// 头不能绕过每 IP 限流（P2-86 安全语义：信任头是显式部署决策，不得默认信任）。
+    #[arg(long, env = "TOKENSLIM_TRUST_PROXY_HEADERS", default_value_t = false)]
+    trust_proxy_headers: bool,
 }
 
 // ─── 限流器：固定窗口（1 分钟），DashMap 并发安全 ───
+/// 基于固定时间窗口（1 分钟）的并发安全限流器，使用 DashMap 记录每 IP 的请求计数与窗口起点。
+///
+/// P2-86（限流表防膨胀）：限流 key 来自请求头（直连部署下可被伪造 XFF 任意制造），
+/// DashMap 若永不淘汰，每个伪造 IP 永久占一条 entry → 内存无限增长（DoS 面）。
+/// 现在当表达到 [`RATE_LIMITER_MAX_ENTRIES`] 时先淘汰过期窗口条目，仍满载则淘汰
+/// 窗口起点最旧的条目——限流表内存有界。
 pub(crate) struct RateLimiter {
     /// key: 客户端 IP；value: (当前窗口请求计数, 窗口开始时刻)
     records: DashMap<IpAddr, (u64, Instant)>,
 }
 
+/// 限流表容量上限：达到后触发淘汰（过期清扫 → 最旧窗口起点）。
+const RATE_LIMITER_MAX_ENTRIES: usize = 10_000;
+
 impl RateLimiter {
+    /// 创建空限流计数器(DashMap<IpAddr,(计数,窗口起点)>)。
     fn new() -> Self {
         Self {
             records: DashMap::new(),
@@ -107,6 +144,22 @@ impl RateLimiter {
     fn check_and_increment(&self, ip: IpAddr, limit: u64) -> Option<u64> {
         let now = Instant::now();
         let window = std::time::Duration::from_secs(60);
+
+        // P2-86：满载先淘汰——过期窗口条目清扫，仍满则移除最旧窗口起点的 entry
+        if self.records.len() >= RATE_LIMITER_MAX_ENTRIES {
+            self.records
+                .retain(|_, (_, window_start)| now.duration_since(*window_start) < window);
+            if self.records.len() >= RATE_LIMITER_MAX_ENTRIES {
+                if let Some(oldest) = self
+                    .records
+                    .iter()
+                    .min_by_key(|r| r.value().1)
+                    .map(|r| *r.key())
+                {
+                    self.records.remove(&oldest);
+                }
+            }
+        }
 
         let mut entry = self.records.entry(ip).or_insert_with(|| (0, now));
         let (count, window_start) = entry.value_mut();
@@ -129,23 +182,29 @@ impl RateLimiter {
     }
 }
 
-/// 从请求头或 TCP 层解析客户端真实 IP（反向代理友好）
-fn get_client_ip(headers: &HeaderMap, peer_addr: SocketAddr) -> IpAddr {
-    // 优先 x-forwarded-for（取第一个有效 IP）
-    if let Some(val) = headers.get("x-forwarded-for") {
-        if let Ok(s) = val.to_str() {
-            if let Some(first) = s.split(',').next() {
-                if let Ok(ip) = first.trim().parse::<IpAddr>() {
-                    return ip;
+/// 从请求头或 TCP 层解析客户端真实 IP。
+///
+/// P2-86 安全语义：仅当 `trust_proxy_headers == true`（显式可信代理部署）时才
+/// 信任 x-forwarded-for / x-real-ip 头；默认直连模式只认 TCP peer 地址——
+/// 伪造代理头不能劫持限流身份。
+fn get_client_ip(headers: &HeaderMap, peer_addr: SocketAddr, trust_proxy_headers: bool) -> IpAddr {
+    if trust_proxy_headers {
+        // 优先 x-forwarded-for（取第一个有效 IP）
+        if let Some(val) = headers.get("x-forwarded-for") {
+            if let Ok(s) = val.to_str() {
+                if let Some(first) = s.split(',').next() {
+                    if let Ok(ip) = first.trim().parse::<IpAddr>() {
+                        return ip;
+                    }
                 }
             }
         }
-    }
-    // 其次 x-real-ip
-    if let Some(val) = headers.get("x-real-ip") {
-        if let Ok(s) = val.to_str() {
-            if let Ok(ip) = s.trim().parse::<IpAddr>() {
-                return ip;
+        // 其次 x-real-ip
+        if let Some(val) = headers.get("x-real-ip") {
+            if let Ok(s) = val.to_str() {
+                if let Ok(ip) = s.trim().parse::<IpAddr>() {
+                    return ip;
+                }
             }
         }
     }
@@ -218,6 +277,7 @@ struct StatsDailyRequest {
     days: i64,
 }
 
+/// StatsDailyRequest 的 days 字段默认值：返回 7(天)。
 fn default_days() -> i64 {
     7
 }
@@ -305,6 +365,8 @@ struct AppState {
     jwt_secret: Option<String>,
     /// JWT 令牌有效期（秒）
     jwt_expiry: u64,
+    /// 可信代理模式：true 时限流信任 x-forwarded-for / x-real-ip 头（P2-86）
+    trust_proxy_headers: bool,
 }
 
 #[derive(Debug, Serialize)]
@@ -325,6 +387,7 @@ struct ApiError {
 }
 
 impl ApiError {
+    /// 构造 ApiError：封装 HTTP 状态码、中英文错误消息与可选提示，retry_after 初始为空。
     fn new(
         status: StatusCode,
         code: &'static str,
@@ -345,7 +408,7 @@ impl ApiError {
             retry_after: None,
         }
     }
-
+    /// 构造 401 未授权错误(中英文消息 + 重试提示)，委托 ApiError::new。
     fn unauthorized() -> Self {
         Self::new(
             StatusCode::UNAUTHORIZED,
@@ -357,6 +420,7 @@ impl ApiError {
         )
     }
 
+    /// 构造 500 内部错误(中英文消息 + 提示)，委托 ApiError::new。
     fn internal() -> Self {
         Self::new(
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -368,6 +432,7 @@ impl ApiError {
         )
     }
 
+    /// 构造 503 服务不可用错误(中英文消息 + 提示)，委托 ApiError::new。
     fn service_unavailable() -> Self {
         Self::new(
             StatusCode::SERVICE_UNAVAILABLE,
@@ -384,10 +449,10 @@ impl ApiError {
         let mut err = Self::new(
             StatusCode::TOO_MANY_REQUESTS,
             "E_API_TOO_MANY_REQUESTS",
-            "请求过于频繁，请稍后再试",
-            "Too many requests, please retry later",
-            Some(format!("请在 {} 秒后重试", retry_after_secs)),
-            Some(format!("Please retry after {} seconds", retry_after_secs)),
+            t_zh("api_err_too_many_requests_msg"),
+            t_en("api_err_too_many_requests_msg"),
+            Some(t1_zh("api_err_too_many_requests_hint", retry_after_secs)),
+            Some(t1_en("api_err_too_many_requests_hint", retry_after_secs)),
         );
         err.retry_after = Some(retry_after_secs);
         err
@@ -395,6 +460,7 @@ impl ApiError {
 }
 
 impl IntoResponse for ApiError {
+    /// 将 ApiError 转为 HTTP 响应：状态码 + JSON body，并透传 retry_after 到 Retry-After 头。
     fn into_response(self) -> Response {
         let mut resp = (self.status, Json(self.body)).into_response();
         // 注入标准 Retry-After 响应头
@@ -417,7 +483,7 @@ async fn rate_limit_middleware(
 ) -> Response {
     // rate_limit == 0 表示不限流
     if state.rate_limit > 0 {
-        let client_ip = get_client_ip(req.headers(), peer_addr);
+        let client_ip = get_client_ip(req.headers(), peer_addr, state.trust_proxy_headers);
         if let Some(retry_after) = state
             .rate_limiter
             .check_and_increment(client_ip, state.rate_limit)
@@ -434,6 +500,8 @@ async fn rate_limit_middleware(
     next.run(req).await
 }
 
+/// 按鉴权模式校验请求：none 直接放行；jwt 模式用 Authorization 头中的 Bearer 令牌验签；
+/// static 模式比对 API Key；缺失密钥或令牌无效时返回 401。
 fn check_auth(headers: &HeaderMap, state: &AppState) -> Result<(), ApiError> {
     match state.auth_mode.as_str() {
         "none" => Ok(()),
@@ -491,7 +559,12 @@ struct JwtPayload {
 }
 
 /// 签发 JWT 令牌
-fn create_jwt_token(sub: &str, scope: &str, secret: &str, expiry_secs: u64) -> Result<String, jsonwebtoken::errors::Error> {
+fn create_jwt_token(
+    sub: &str,
+    scope: &str,
+    secret: &str,
+    expiry_secs: u64,
+) -> Result<String, jsonwebtoken::errors::Error> {
     let now = std::time::SystemTime::now()
         .duration_since(std::time::UNIX_EPOCH)
         .unwrap()
@@ -502,14 +575,22 @@ fn create_jwt_token(sub: &str, scope: &str, secret: &str, expiry_secs: u64) -> R
         iat: now,
         scope: scope.to_string(),
     };
-    encode(&Header::default(), &payload, &EncodingKey::from_secret(secret.as_bytes()))
+    encode(
+        &Header::default(),
+        &payload,
+        &EncodingKey::from_secret(secret.as_bytes()),
+    )
 }
 
 /// 验证 JWT 令牌
 fn verify_jwt_token(token: &str, secret: &str) -> Result<JwtPayload, jsonwebtoken::errors::Error> {
     let mut validation = Validation::new(Algorithm::HS256);
     validation.validate_exp = true;
-    let token_data = decode::<JwtPayload>(token, &DecodingKey::from_secret(secret.as_bytes()), &validation)?;
+    let token_data = decode::<JwtPayload>(
+        token,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &validation,
+    )?;
     Ok(token_data.claims)
 }
 
@@ -540,9 +621,10 @@ async fn auth_token_handler(
         return Err(ApiError::new(
             StatusCode::BAD_REQUEST,
             "E_JWT_NOT_CONFIGURED",
-            "JWT 未配置，请先设置 TOKENSLIM_JWT_SECRET",
-            "JWT not configured, please set TOKENSLIM_JWT_SECRET",
-            None, None,
+            t_zh("api_err_jwt_not_configured_msg"),
+            t_en("api_err_jwt_not_configured_msg"),
+            None,
+            None,
         ));
     }
 
@@ -571,26 +653,30 @@ async fn auth_refresh_handler(
         return Err(ApiError::new(
             StatusCode::BAD_REQUEST,
             "E_JWT_NOT_CONFIGURED",
-            "JWT 未配置，请先设置 TOKENSLIM_JWT_SECRET",
-            "JWT not configured, please set TOKENSLIM_JWT_SECRET",
-            None, None,
+            t_zh("api_err_jwt_not_configured_msg"),
+            t_en("api_err_jwt_not_configured_msg"),
+            None,
+            None,
         ));
     }
 
     // 验证当前 JWT 是否有效（允许过期前刷新）
+    // P1-82 修复：此前验签失败（含缺失 Authorization 头）静默落 None，
+    // 再以默认 sub "api-client" 照常签发新令牌——匿名一次 POST 即获合法 JWT，
+    // jwt 模式鉴权完全失效（复审报告第四十九章）。现在必须持有有效旧令牌才能刷新。
     let old_claims = if let Some(auth_header) = headers.get("authorization") {
         if let Ok(auth_str) = auth_header.to_str() {
             let token = auth_str.trim_start_matches("Bearer ").trim();
-            // 尝试验证，允许刚过期但 iat 有效的 token
-            verify_jwt_token(token, secret).ok()
+            // 尝试验证；签名无效/格式非法一律 401，绝不回退默认身份
+            verify_jwt_token(token, secret).map_err(|_| ApiError::unauthorized())?
         } else {
-            None
+            return Err(ApiError::unauthorized());
         }
     } else {
-        None
+        return Err(ApiError::unauthorized());
     };
 
-    let sub = old_claims.map(|c| c.sub).unwrap_or_else(|| "api-client".to_string());
+    let sub = old_claims.sub;
     let scope = "compress,decompress,stats";
     match create_jwt_token(&sub, scope, secret, state.jwt_expiry) {
         Ok(token) => Ok(Json(serde_json::json!({
@@ -605,6 +691,8 @@ async fn auth_refresh_handler(
     }
 }
 
+/// 程序入口(tokio)：解析 CLI/环境变量，构建压缩管道、限流器、鉴权状态与 Tracker，
+/// 注册全部 HTTP/WebSocket 路由并启动监听，支持配置文件热加载与 Web UI 静态资源服务。
 #[tokio::main]
 async fn main() {
     // 初始化日志
@@ -685,6 +773,7 @@ async fn main() {
         auth_mode: cli.auth_mode.clone(),
         jwt_secret: cli.jwt_secret.clone(),
         jwt_expiry: cli.jwt_expiry,
+        trust_proxy_headers: cli.trust_proxy_headers,
     });
 
     // 启动配置文件监听器（如果启用）
@@ -731,16 +820,22 @@ async fn main() {
         .with_state(shared_state);
 
     // 解析 Web UI 静态目录（如果用户显式指定了 TOKENSLIM_WEBUI_DIR 且存在，则从该目录提供，方便开发）
-    // 否则直接使用内嵌的静态资源
+    // 否则直接使用内嵌的静态资源；若用户显式指定目录但该目录不存在，则禁用 Web UI 返回 404，避免误用内嵌资源
     if let Ok(webui_dir) = std::env::var("TOKENSLIM_WEBUI_DIR") {
         let webui_path = PathBuf::from(&webui_dir);
         if webui_path.is_dir() {
             let serve = ServeDir::new(&webui_path).append_index_html_on_directories(true);
             app = app.fallback_service(serve);
-            log::info!("{}", t1("server_webui_enabled", webui_path.display().to_string()));
+            log::info!(
+                "{}",
+                t1("server_webui_enabled", webui_path.display().to_string())
+            );
         } else {
-            app = app.fallback(get(static_handler));
-            log::info!("{}", t1("server_webui_enabled", "embedded".to_string()));
+            app = app.fallback(get(|| async { StatusCode::NOT_FOUND }));
+            log::warn!(
+                "{}",
+                t1("server_webui_disabled", webui_path.display().to_string())
+            );
         }
     } else {
         app = app.fallback(get(static_handler));
@@ -776,6 +871,7 @@ async fn main() {
     .unwrap();
 }
 
+/// GET /health：返回服务状态(UP)、版本号与运行时长。
 async fn health_handler(State(state): State<Arc<AppState>>) -> Json<HealthResponse> {
     let uptime = state.start_time.elapsed().unwrap_or_default().as_secs();
     Json(HealthResponse {
@@ -786,6 +882,7 @@ async fn health_handler(State(state): State<Arc<AppState>>) -> Json<HealthRespon
 }
 
 // 列出当前 server 注册的所有插件名（供 Web UI 侧边栏展示）
+/// GET /plugins：列出当前注册的所有插件名称与数量(供 Web UI 侧边栏)。
 async fn plugins_handler() -> Json<serde_json::Value> {
     let plugins = get_plugins();
     let names: Vec<&str> = plugins.iter().map(|p| p.name()).collect();
@@ -793,6 +890,7 @@ async fn plugins_handler() -> Json<serde_json::Value> {
 }
 
 // Metrics 端点（Prometheus 风格）
+/// GET /metrics：以 Prometheus 文本格式导出请求数/压缩数/字节出入/压缩比/运行时长等指标。
 async fn metrics_handler(State(state): State<Arc<AppState>>) -> Result<String, ApiError> {
     let stats = state.stats.read().map_err(|_| ApiError::internal())?;
     let uptime = state.start_time.elapsed().unwrap_or_default().as_secs();
@@ -853,6 +951,7 @@ async fn metrics_handler(State(state): State<Arc<AppState>>) -> Result<String, A
     Ok(output)
 }
 
+/// GET /metrics/detail：返回模块耗时、插件统计与错误明细快照(含排序后的插件指标与错误列表)。
 async fn metrics_detail_handler(
     State(state): State<Arc<AppState>>,
 ) -> Result<Json<MetricsDetailResponse>, ApiError> {
@@ -945,6 +1044,7 @@ async fn metrics_detail_handler(
 }
 
 // 统计聚合端点
+/// GET /stats/aggregate：需鉴权，从 Tracker 汇总总命令数/输入输出 token/节省量与百分比(默认 90 天)。
 async fn stats_aggregate_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -976,6 +1076,7 @@ async fn stats_aggregate_handler(
 }
 
 // 按日统计端点
+/// GET /stats/daily：需鉴权，按日聚合命令数/输入输出 token/节省量与百分比，days 由查询参数指定。
 async fn stats_daily_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -1016,6 +1117,7 @@ async fn stats_daily_handler(
 }
 
 // 按过滤器统计端点
+/// GET /stats/by-filter：需鉴权，按过滤器维度聚合命令数/输入输出 token/节省量与百分比。
 async fn stats_by_filter_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -1052,6 +1154,7 @@ async fn stats_by_filter_handler(
 }
 
 // 重新加载配置端点
+/// POST /reload：需鉴权，重建压缩管道并替换互斥锁中的旧实例，实现配置热重载。
 async fn reload_config_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -1088,6 +1191,7 @@ async fn reload_config_handler(
 }
 
 // 配置文件监听器
+/// 配置文件监听器：用 notify 监视配置变更(修改/创建)，变更后重建管道并替换 AppState 中的实例。
 async fn watch_config_file(
     config_path: PathBuf,
     state: Arc<AppState>,
@@ -1141,6 +1245,7 @@ async fn watch_config_file(
     Ok(())
 }
 
+/// POST /compress：需鉴权，更新统计后经管道压缩文本；ai_export 时额外反水合为 AI 上下文文本返回。
 async fn compress_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -1203,7 +1308,10 @@ async fn compress_handler(
                             .push_str("========== TokenSlim AI Export Context ==========\n");
                         ai_formatted.push_str("[Directories]\n");
                         let mut dirs: Vec<_> = output.dictionary.directories.iter().collect();
-                        dirs.sort_by_key(|(k, _)| k[2..].parse::<usize>().unwrap_or(0));
+                        // P3-183（D-1）：键形如 `$Dn`，改 trim_start_matches 避免非 `$D` 键 panic
+                        dirs.sort_by_key(|(k, _)| {
+                            k.trim_start_matches("$D").parse::<usize>().unwrap_or(0)
+                        });
                         for (k, v) in dirs {
                             ai_formatted.push_str(&format!("{}: {}\n", k, v));
                         }
@@ -1232,6 +1340,8 @@ async fn compress_handler(
 }
 
 // SSE 流式压缩：先推送 start 状态，然后在后台线程完成压缩后推送 done/error
+/// POST /compress/stream：需鉴权，以 SSE 流式返回压缩进度(start→done/error)，
+/// 在后台阻塞线程执行压缩，可选 ai_export 反水合。
 async fn compress_stream_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -1306,24 +1416,35 @@ async fn compress_stream_handler(
                         }),
                         Err(e) => {
                             let err_data = serde_json::json!({ "stage": "error", "message": format!("{e:?}") }).to_string();
-                            let _ = tx.send(Ok(SseEvent::default().event("error").data(err_data))).await;
+                            let _ = tx
+                                .send(Ok(SseEvent::default().event("error").data(err_data)))
+                                .await;
                             return;
                         }
                     }
                 } else {
                     serde_json::json!({ "output": output })
                 };
-                let done_data = serde_json::json!({ "stage": "done", "payload": done_payload }).to_string();
-                let _ = tx.send(Ok(SseEvent::default().event("done").data(done_data))).await;
+                let done_data =
+                    serde_json::json!({ "stage": "done", "payload": done_payload }).to_string();
+                let _ = tx
+                    .send(Ok(SseEvent::default().event("done").data(done_data)))
+                    .await;
             }
             Ok(Err(msg)) => {
                 log::error!("{}", t1("server_compression_failed", msg.clone()));
                 let err_data = serde_json::json!({ "stage": "error", "message": msg }).to_string();
-                let _ = tx.send(Ok(SseEvent::default().event("error").data(err_data))).await;
+                let _ = tx
+                    .send(Ok(SseEvent::default().event("error").data(err_data)))
+                    .await;
             }
             Err(_) => {
-                let err_data = serde_json::json!({ "stage": "error", "message": "compression task panicked" }).to_string();
-                let _ = tx.send(Ok(SseEvent::default().event("error").data(err_data))).await;
+                let err_data =
+                    serde_json::json!({ "stage": "error", "message": "compression task panicked" })
+                        .to_string();
+                let _ = tx
+                    .send(Ok(SseEvent::default().event("error").data(err_data)))
+                    .await;
             }
         }
     });
@@ -1332,10 +1453,8 @@ async fn compress_stream_handler(
 }
 
 // WebSocket 实时日志 tail：客户端先发 {"path":"...","interval_ms":1000,"compress":true}
-async fn tail_ws_handler(
-    ws: WebSocketUpgrade,
-    State(state): State<Arc<AppState>>,
-) -> Response {
+/// GET /ws/tail：WebSocket 升级处理，将连接交给 tail_socket_handler 做实时日志 tail 与可选压缩。
+async fn tail_ws_handler(ws: WebSocketUpgrade, State(state): State<Arc<AppState>>) -> Response {
     ws.on_upgrade(move |socket| tail_socket_handler(socket, state))
 }
 
@@ -1348,29 +1467,42 @@ struct TailRequest {
     compress: bool,
 }
 
-fn default_interval_ms() -> u64 { 1000 }
-fn default_compress() -> bool { true }
+/// TailRequest 的 interval_ms 字段默认值：返回 1000(毫秒)。
+fn default_interval_ms() -> u64 {
+    1000
+}
+/// TailRequest 的 compress 字段默认值：返回 true(启用压缩)。
+fn default_compress() -> bool {
+    true
+}
 
+/// WebSocket 实时日志 tail：解析客户端配置(路径/间隔/压缩)，做路径越界安全校验，
+/// 轮询文件新增内容并(可选)经管道压缩后推回客户端。
 async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Arc<AppState>) {
     use axum::extract::ws::{Message, Utf8Bytes};
 
+    /// 构造 axum WebSocket 文本消息(将字符串转为 Utf8Bytes 的 Message::Text)。
     fn text_msg(s: impl Into<Utf8Bytes>) -> Message {
         Message::Text(s.into())
     }
 
     // 等待客户端第一条配置消息
     let req = match socket.recv().await {
-        Some(Ok(Message::Text(text))) => {
-            match serde_json::from_str::<TailRequest>(&text) {
-                Ok(r) => r,
-                Err(e) => {
-                    let _ = socket.send(text_msg(format!("{{\"error\":\"invalid request: {e}\"}}"))).await;
-                    return;
-                }
+        Some(Ok(Message::Text(text))) => match serde_json::from_str::<TailRequest>(&text) {
+            Ok(r) => r,
+            Err(e) => {
+                let _ = socket
+                    .send(text_msg(format!("{{\"error\":\"invalid request: {e}\"}}")))
+                    .await;
+                return;
             }
-        }
+        },
         _ => {
-            let _ = socket.send(text_msg("{\"error\":\"expected JSON text message\"}".to_string())).await;
+            let _ = socket
+                .send(text_msg(
+                    "{\"error\":\"expected JSON text message\"}".to_string(),
+                ))
+                .await;
             return;
         }
     };
@@ -1379,25 +1511,40 @@ async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Ar
     let base = match std::env::current_dir() {
         Ok(d) => d,
         Err(_) => {
-            let _ = socket.send(text_msg("{\"error\":\"cannot get cwd\"}".to_string())).await;
+            let _ = socket
+                .send(text_msg("{\"error\":\"cannot get cwd\"}".to_string()))
+                .await;
             return;
         }
     };
     let target = base.join(&req.path);
     let Ok(canonical_base) = base.canonicalize() else {
-        let _ = socket.send(text_msg("{\"error\":\"cannot canonicalize cwd\"}".to_string())).await;
+        let _ = socket
+            .send(text_msg(
+                "{\"error\":\"cannot canonicalize cwd\"}".to_string(),
+            ))
+            .await;
         return;
     };
     let Ok(canonical_target) = target.canonicalize() else {
-        let _ = socket.send(text_msg(format!("{{\"error\":\"path not found: {}\"}}", req.path))).await;
+        let _ = socket
+            .send(text_msg(format!(
+                "{{\"error\":\"path not found: {}\"}}",
+                req.path
+            )))
+            .await;
         return;
     };
     if !canonical_target.starts_with(&canonical_base) {
-        let _ = socket.send(text_msg("{\"error\":\"path outside cwd\"}".to_string())).await;
+        let _ = socket
+            .send(text_msg("{\"error\":\"path outside cwd\"}".to_string()))
+            .await;
         return;
     }
     if !canonical_target.is_file() {
-        let _ = socket.send(text_msg("{\"error\":\"not a regular file\"}".to_string())).await;
+        let _ = socket
+            .send(text_msg("{\"error\":\"not a regular file\"}".to_string()))
+            .await;
         return;
     }
 
@@ -1405,17 +1552,22 @@ async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Ar
     let file = match tokio::fs::File::open(&canonical_target).await {
         Ok(f) => f,
         Err(e) => {
-            let _ = socket.send(text_msg(format!("{{\"error\":\"open failed: {e}\"}}"))).await;
+            let _ = socket
+                .send(text_msg(format!("{{\"error\":\"open failed: {e}\"}}")))
+                .await;
             return;
         }
     };
     let mut reader = tokio::io::BufReader::new(file);
     if let Err(e) = tokio::io::AsyncSeekExt::seek(&mut reader, std::io::SeekFrom::End(0)).await {
-        let _ = socket.send(text_msg(format!("{{\"error\":\"seek failed: {e}\"}}"))).await;
+        let _ = socket
+            .send(text_msg(format!("{{\"error\":\"seek failed: {e}\"}}")))
+            .await;
         return;
     }
 
-    let mut interval = tokio::time::interval(tokio::time::Duration::from_millis(req.interval_ms.max(100)));
+    let mut interval =
+        tokio::time::interval(tokio::time::Duration::from_millis(req.interval_ms.max(100)));
     interval.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Skip);
 
     loop {
@@ -1436,7 +1588,9 @@ async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Ar
                     chunk.push_str(&line);
                 }
                 Err(e) => {
-                    let _ = socket.send(text_msg(format!("{{\"error\":\"read failed: {e}\"}}"))).await;
+                    let _ = socket
+                        .send(text_msg(format!("{{\"error\":\"read failed: {e}\"}}")))
+                        .await;
                     return;
                 }
             }
@@ -1460,12 +1614,15 @@ async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Ar
                 })
                 .await;
             match result {
-                Ok(Ok(json)) => format!("{{\"compressed\":true,\"output\":{json},\"truncated\":{limited}}}"),
+                Ok(Ok(json)) => {
+                    format!("{{\"compressed\":true,\"output\":{json},\"truncated\":{limited}}}")
+                }
                 Ok(Err(msg)) => format!("{{\"error\":\"{msg}\"}}"),
                 Err(_) => "{\"error\":\"compression task panicked\"}".to_string(),
             }
         } else {
-            serde_json::json!({ "compressed": false, "text": chunk, "truncated": limited }).to_string()
+            serde_json::json!({ "compressed": false, "text": chunk, "truncated": limited })
+                .to_string()
         };
 
         if socket.send(text_msg(payload)).await.is_err() {
@@ -1486,10 +1643,7 @@ async fn tail_socket_handler(mut socket: axum::extract::ws::WebSocket, state: Ar
 // ─────────────────────────────────────────────────────────────────────────────
 
 /// /ws/compress WebSocket 升级处理器
-async fn compress_ws_handler(
-    ws: WebSocketUpgrade,
-    State(state): State<Arc<AppState>>,
-) -> Response {
+async fn compress_ws_handler(ws: WebSocketUpgrade, State(state): State<Arc<AppState>>) -> Response {
     use std::sync::atomic::Ordering;
 
     // 并发连接数检查
@@ -1529,6 +1683,7 @@ async fn compress_socket_handler(
     use axum::extract::ws::{Message, Utf8Bytes};
     use std::sync::atomic::Ordering;
 
+    /// 构造 axum WebSocket 文本消息(将字符串转为 Utf8Bytes 的 Message::Text)。
     fn text_msg(s: impl Into<Utf8Bytes>) -> Message {
         Message::Text(s.into())
     }
@@ -1559,13 +1714,22 @@ async fn compress_socket_handler(
         let recv_result = if let Some(dl) = deadline {
             let remaining = dl.saturating_duration_since(tokio::time::Instant::now());
             if remaining.is_zero() {
-                let _ = socket.send(text_msg("{\"action\":\"timeout\",\"message\":\"connection timed out\"}".to_string())).await;
+                let _ = socket
+                    .send(text_msg(
+                        "{\"action\":\"timeout\",\"message\":\"connection timed out\"}".to_string(),
+                    ))
+                    .await;
                 break;
             }
             match tokio::time::timeout(remaining, socket.recv()).await {
                 Ok(result) => result,
                 Err(_) => {
-                    let _ = socket.send(text_msg("{\"action\":\"timeout\",\"message\":\"connection timed out\"}".to_string())).await;
+                    let _ = socket
+                        .send(text_msg(
+                            "{\"action\":\"timeout\",\"message\":\"connection timed out\"}"
+                                .to_string(),
+                        ))
+                        .await;
                     break;
                 }
             }
@@ -1702,7 +1866,8 @@ async fn compress_ws_chunk(state: &Arc<AppState>, chunk: &str) -> String {
                         "input_size": input_size,
                         "output_size": output_size,
                         "ratio": ratio
-                    }).to_string())
+                    })
+                    .to_string())
                 }
                 Err(e) => Err(format!("{e:?}")),
             }
@@ -1716,6 +1881,7 @@ async fn compress_ws_chunk(state: &Arc<AppState>, chunk: &str) -> String {
     }
 }
 
+/// POST /decompress：需鉴权，用反水合管道将提交的 tokens/dictionary 还原为原始文本返回。
 async fn decompress_handler(
     State(state): State<Arc<AppState>>,
     headers: HeaderMap,
@@ -1753,6 +1919,7 @@ async fn decompress_handler(
     }
 }
 
+/// 兜底静态资源处理器：从内嵌 WebUiAsset 读取文件并按 MIME 返回，缺失时 SPA 回退 index.html 或 404。
 async fn static_handler(uri: Uri) -> impl IntoResponse {
     let mut path = uri.path().trim_start_matches('/').to_string();
     if path.is_empty() {
@@ -1817,6 +1984,7 @@ mod tests {
             auth_mode: "none".to_string(),
             jwt_secret: None,
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         });
 
         let max_body_bytes = (max_body_mb as usize).saturating_mul(1024 * 1024);
@@ -1829,11 +1997,12 @@ mod tests {
     }
 
     // ─── 测试 1：请求体超出大小限制 → 413 Payload Too Large ───────────────
+    /// 验证请求体超限(max_body=0)时 /compress 返回 413 Payload Too Large。
     #[tokio::test]
     async fn test_body_size_limit_returns_413() {
         // 限制 1 byte，不限流
         let app = build_test_router(0, 0); // max_body_mb=0 → 0 bytes
-        // 构造超过 0 字节限制的请求体
+                                           // 构造超过 0 字节限制的请求体
         let body_str = r#"{"text":"hello"}"#;
         let req = Request::builder()
             .method(Method::POST)
@@ -1852,6 +2021,7 @@ mod tests {
     }
 
     // ─── 测试 2：正常请求体大小 → 不触发 413 ────────────────────────────
+    /// 验证正常大小请求体(50MB 限制)通过 /compress 返回 200。
     #[tokio::test]
     async fn test_normal_body_size_passes() {
         // 限制 50MB，不限流
@@ -1874,6 +2044,7 @@ mod tests {
     }
 
     // ─── 测试 3：RateLimiter 单元测试 → 超限后返回 Some(retry_after) ────
+    /// 验证 RateLimiter 在达到上限后返回 Some(retry_after)，且 retry_after 落在 [1,60]。
     #[test]
     fn test_rate_limiter_blocks_after_limit() {
         let limiter = RateLimiter::new();
@@ -1883,11 +2054,7 @@ mod tests {
         // 前 5 次应全部通过
         for i in 0..limit {
             let result = limiter.check_and_increment(ip, limit);
-            assert!(
-                result.is_none(),
-                "第 {} 次请求应通过，但被拦截",
-                i + 1
-            );
+            assert!(result.is_none(), "第 {} 次请求应通过，但被拦截", i + 1);
         }
 
         // 第 6 次应被限流
@@ -1903,6 +2070,7 @@ mod tests {
     }
 
     // ─── 测试 4：RateLimiter 不同 IP 相互独立 ────────────────────────────
+    /// 验证 RateLimiter 对不同 IP 独立计数：A 超限被拦截时 B 仍可通过。
     #[test]
     fn test_rate_limiter_different_ips_independent() {
         let limiter = RateLimiter::new();
@@ -1921,30 +2089,51 @@ mod tests {
         assert!(ok.is_none(), "ip_b 未超限，不应被拦截");
     }
 
-    // ─── 测试 5：get_client_ip 解析 x-forwarded-for ───────────────────────
+    // ─── 测试 5：get_client_ip 解析 x-forwarded-for（可信代理模式） ────────
+    /// 验证 trust_proxy_headers=true 时 get_client_ip 解析 x-forwarded-for 取首个有效 IP。
     #[test]
     fn test_get_client_ip_xforwarded() {
         let mut headers = HeaderMap::new();
-        headers.insert(
-            "x-forwarded-for",
-            "203.0.113.5, 10.0.0.1".parse().unwrap(),
-        );
+        headers.insert("x-forwarded-for", "203.0.113.5, 10.0.0.1".parse().unwrap());
         let peer: SocketAddr = "127.0.0.1:12345".parse().unwrap();
-        let ip = get_client_ip(&headers, peer);
+        let ip = get_client_ip(&headers, peer, true);
         assert_eq!(ip, "203.0.113.5".parse::<IpAddr>().unwrap());
     }
 
+    // ─── 测试 5b：直连模式忽略伪造代理头（P2-86） ─────────────────────────
+    /// 验证默认直连模式（trust_proxy_headers=false）下伪造 x-forwarded-for /
+    /// x-real-ip 被忽略，恒取 TCP peer 地址——伪造头不能劫持限流身份。
+    #[test]
+    fn test_get_client_ip_direct_mode_ignores_spoofed_headers() {
+        let mut headers = HeaderMap::new();
+        headers.insert("x-forwarded-for", "203.0.113.5, 10.0.0.1".parse().unwrap());
+        headers.insert("x-real-ip", "198.51.100.7".parse().unwrap());
+        let peer: SocketAddr = "127.0.0.1:12345".parse().unwrap();
+        let ip = get_client_ip(&headers, peer, false);
+        assert_eq!(
+            ip,
+            "127.0.0.1".parse::<IpAddr>().unwrap(),
+            "直连模式必须忽略伪造代理头，恒取 TCP peer 地址（P2-86）"
+        );
+    }
+
     // ─── 测试 6：get_client_ip 回退至 TCP peer addr ──────────────────────
+    /// 验证可信代理模式下无代理头时回退到 TCP peer 地址。
     #[test]
     fn test_get_client_ip_fallback_to_peer() {
         let headers = HeaderMap::new();
         let peer: SocketAddr = "192.168.1.100:54321".parse().unwrap();
-        let ip = get_client_ip(&headers, peer);
+        let ip = get_client_ip(&headers, peer, true);
         assert_eq!(ip, "192.168.1.100".parse::<IpAddr>().unwrap());
     }
 
     // ─── 构建包含鉴权路由的测试 Router ─────────────────────────────────────
-    fn build_auth_test_router(auth_mode: &str, api_key: Option<String>, jwt_secret: Option<String>) -> Router {
+    /// 构造带鉴权路由的测试用 Router：注册 /auth/token、/auth/refresh、/compress 并注入指定鉴权配置。
+    fn build_auth_test_router(
+        auth_mode: &str,
+        api_key: Option<String>,
+        jwt_secret: Option<String>,
+    ) -> Router {
         let config = tokenslim::core::compression_pipeline::PipelineConfig::default();
         let metrics = tokenslim::core::metrics::MetricsCollector::new(
             tokenslim::core::metrics::MetricsConfig {
@@ -1973,6 +2162,7 @@ mod tests {
             auth_mode: auth_mode.to_string(),
             jwt_secret,
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         });
 
         Router::new()
@@ -1987,6 +2177,7 @@ mod tests {
     // ═══════════════════════════════════════════════════════════════════════
 
     // ─── 测试 7：JWT 令牌签发与验证（正常流程）─────────────────────────────
+    /// 验证 JWT 签发与验证：正常流程下 claims 的 sub/scope 正确、exp 晚于 iat。
     #[test]
     fn test_jwt_create_and_verify() {
         let secret = "test-secret-key-12345";
@@ -1994,8 +2185,7 @@ mod tests {
             .expect("JWT 签发不应失败");
 
         // 验证令牌
-        let claims = verify_jwt_token(&token, secret)
-            .expect("JWT 验证不应失败");
+        let claims = verify_jwt_token(&token, secret).expect("JWT 验证不应失败");
         assert_eq!(claims.sub, "test-user");
         assert_eq!(claims.scope, "compress,decompress");
         // exp 应大于 iat
@@ -2003,11 +2193,11 @@ mod tests {
     }
 
     // ─── 测试 8：JWT 错误密钥验证失败 ──────────────────────────────────────
+    /// 验证 JWT 使用错误密钥验签时返回错误。
     #[test]
     fn test_jwt_wrong_secret_rejected() {
         let secret = "correct-secret";
-        let token = create_jwt_token("user", "compress", secret, 3600)
-            .expect("JWT 签发不应失败");
+        let token = create_jwt_token("user", "compress", secret, 3600).expect("JWT 签发不应失败");
 
         // 用错误密钥验证
         let result = verify_jwt_token(&token, "wrong-secret");
@@ -2015,6 +2205,7 @@ mod tests {
     }
 
     // ─── 测试 9：JWT 过期令牌验证失败 ──────────────────────────────────────
+    /// 验证已过期(超过 leeway)的 JWT 验签失败。
     #[test]
     fn test_jwt_expired_token_rejected() {
         let secret = "test-secret";
@@ -2033,20 +2224,24 @@ mod tests {
             &Header::default(),
             &payload,
             &EncodingKey::from_secret(secret.as_bytes()),
-        ).expect("JWT 签发不应失败");
+        )
+        .expect("JWT 签发不应失败");
 
         let result = verify_jwt_token(&token, secret);
         assert!(result.is_err(), "过期超过 leeway 的令牌应验证失败");
     }
 
     // ─── 测试 10：check_auth — none 模式始终放行 ───────────────────────────
+    /// 验证 check_auth 在 none 模式下始终放行。
     #[test]
     fn test_check_auth_none_mode_always_passes() {
         let state = AppState {
             pipeline_mutex: Mutex::new(CompressionPipeline::new(
                 tokenslim::core::compression_pipeline::PipelineConfig::default(),
                 tokenslim::cli::get_plugins(),
-                tokenslim::core::metrics::MetricsCollector::new(tokenslim::core::metrics::MetricsConfig::default()),
+                tokenslim::core::metrics::MetricsCollector::new(
+                    tokenslim::core::metrics::MetricsConfig::default(),
+                ),
             )),
             api_key: None,
             start_time: SystemTime::now(),
@@ -2061,19 +2256,23 @@ mod tests {
             auth_mode: "none".to_string(),
             jwt_secret: None,
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         };
         let headers = HeaderMap::new();
         assert!(check_auth(&headers, &state).is_ok(), "none 模式应始终放行");
     }
 
     // ─── 测试 11：check_auth — static 模式正确验证 API Key ─────────────────
+    /// 验证 check_auth 在 static 模式下正确/错误 API Key 与缺头三种情况。
     #[test]
     fn test_check_auth_static_mode() {
         let state = AppState {
             pipeline_mutex: Mutex::new(CompressionPipeline::new(
                 tokenslim::core::compression_pipeline::PipelineConfig::default(),
                 tokenslim::cli::get_plugins(),
-                tokenslim::core::metrics::MetricsCollector::new(tokenslim::core::metrics::MetricsConfig::default()),
+                tokenslim::core::metrics::MetricsCollector::new(
+                    tokenslim::core::metrics::MetricsConfig::default(),
+                ),
             )),
             api_key: Some("my-secret-key".to_string()),
             start_time: SystemTime::now(),
@@ -2088,24 +2287,35 @@ mod tests {
             auth_mode: "static".to_string(),
             jwt_secret: None,
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         };
 
         // 正确 API Key
         let mut headers_ok = HeaderMap::new();
         headers_ok.insert("authorization", "Bearer my-secret-key".parse().unwrap());
-        assert!(check_auth(&headers_ok, &state).is_ok(), "正确 API Key 应通过");
+        assert!(
+            check_auth(&headers_ok, &state).is_ok(),
+            "正确 API Key 应通过"
+        );
 
         // 错误 API Key
         let mut headers_bad = HeaderMap::new();
         headers_bad.insert("authorization", "Bearer wrong-key".parse().unwrap());
-        assert!(check_auth(&headers_bad, &state).is_err(), "错误 API Key 应拒绝");
+        assert!(
+            check_auth(&headers_bad, &state).is_err(),
+            "错误 API Key 应拒绝"
+        );
 
         // 无 Authorization 头
         let headers_none = HeaderMap::new();
-        assert!(check_auth(&headers_none, &state).is_err(), "缺少 Authorization 头应拒绝");
+        assert!(
+            check_auth(&headers_none, &state).is_err(),
+            "缺少 Authorization 头应拒绝"
+        );
     }
 
     // ─── 测试 12：check_auth — jwt 模式正确验证 JWT ───────────────────────
+    /// 验证 check_auth 在 jwt 模式下有效/无效 JWT 的放行与拒绝。
     #[test]
     fn test_check_auth_jwt_mode() {
         let secret = "jwt-test-secret";
@@ -2115,7 +2325,9 @@ mod tests {
             pipeline_mutex: Mutex::new(CompressionPipeline::new(
                 tokenslim::core::compression_pipeline::PipelineConfig::default(),
                 tokenslim::cli::get_plugins(),
-                tokenslim::core::metrics::MetricsCollector::new(tokenslim::core::metrics::MetricsConfig::default()),
+                tokenslim::core::metrics::MetricsCollector::new(
+                    tokenslim::core::metrics::MetricsConfig::default(),
+                ),
             )),
             api_key: None,
             start_time: SystemTime::now(),
@@ -2130,6 +2342,7 @@ mod tests {
             auth_mode: "jwt".to_string(),
             jwt_secret: Some(secret.to_string()),
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         };
 
         // 正确 JWT
@@ -2144,6 +2357,7 @@ mod tests {
     }
 
     // ─── 测试 13：/auth/token 端点 — 用 API Key 换取 JWT ──────────────────
+    /// 验证 /auth/token 端点用正确 API Key 换取 JWT 返回 200 并含 token 字段。
     #[tokio::test]
     async fn test_auth_token_endpoint() {
         let app = build_auth_test_router(
@@ -2163,7 +2377,9 @@ mod tests {
         let resp = app.oneshot(req).await.unwrap();
         assert_eq!(resp.status(), StatusCode::OK, "/auth/token 应返回 200");
 
-        let body = axum::body::to_bytes(resp.into_body(), 1024 * 1024).await.unwrap();
+        let body = axum::body::to_bytes(resp.into_body(), 1024 * 1024)
+            .await
+            .unwrap();
         let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert!(json["token"].is_string(), "响应应包含 token 字段");
         assert_eq!(json["token_type"], "Bearer");
@@ -2171,6 +2387,7 @@ mod tests {
     }
 
     // ─── 测试 14：/auth/token 端点 — 无 API Key 应返回 401 ────────────────
+    /// 验证 /auth/token 端点缺少 API Key 时返回 401。
     #[tokio::test]
     async fn test_auth_token_endpoint_unauthorized() {
         let app = build_auth_test_router(
@@ -2187,20 +2404,21 @@ mod tests {
             .unwrap();
 
         let resp = app.oneshot(req).await.unwrap();
-        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED, "无 API Key 应返回 401");
+        assert_eq!(
+            resp.status(),
+            StatusCode::UNAUTHORIZED,
+            "无 API Key 应返回 401"
+        );
     }
 
     // ─── 测试 15：/auth/refresh 端点 — 刷新 JWT ───────────────────────────
+    /// 验证 /auth/refresh 端点用旧 JWT 刷新并返回可验证的新 token。
     #[tokio::test]
     async fn test_auth_refresh_endpoint() {
         let secret = "jwt-refresh-secret";
         let old_token = create_jwt_token("api-client", "compress", secret, 3600).unwrap();
 
-        let app = build_auth_test_router(
-            "jwt",
-            None,
-            Some(secret.to_string()),
-        );
+        let app = build_auth_test_router("jwt", None, Some(secret.to_string()));
 
         // 用旧 JWT 刷新
         let req = Request::builder()
@@ -2213,7 +2431,9 @@ mod tests {
         let resp = app.oneshot(req).await.unwrap();
         assert_eq!(resp.status(), StatusCode::OK, "/auth/refresh 应返回 200");
 
-        let body = axum::body::to_bytes(resp.into_body(), 1024 * 1024).await.unwrap();
+        let body = axum::body::to_bytes(resp.into_body(), 1024 * 1024)
+            .await
+            .unwrap();
         let json: serde_json::Value = serde_json::from_slice(&body).unwrap();
         assert!(json["token"].is_string(), "刷新响应应包含新 token");
         // 新 token 应可验证
@@ -2222,14 +2442,76 @@ mod tests {
         assert_eq!(claims.sub, "api-client");
     }
 
+    // ─── 测试 15b：/auth/refresh 负路径 — 无 token 拒绝（P1-82 回归）──────
+    /// P1-82 修复回归：无 Authorization 头的 /auth/refresh 必须返回 401，
+    /// 绝不允许回退默认身份 "api-client" 签发新令牌。
+    #[tokio::test]
+    async fn test_auth_refresh_rejects_missing_token() {
+        let app = build_auth_test_router("jwt", None, Some("jwt-refresh-secret".to_string()));
+
+        let req = Request::builder()
+            .method(Method::POST)
+            .uri("/auth/refresh")
+            .body(Body::empty())
+            .unwrap();
+
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(
+            resp.status(),
+            StatusCode::UNAUTHORIZED,
+            "无 token 刷新应返回 401"
+        );
+    }
+
+    // ─── 测试 15c：/auth/refresh 负路径 — 坏 token 拒绝（P1-82 回归）──────
+    /// P1-82 修复回归：签名无效 / 格式非法的 token 刷新必须返回 401。
+    #[tokio::test]
+    async fn test_auth_refresh_rejects_invalid_token() {
+        let app = build_auth_test_router("jwt", None, Some("jwt-refresh-secret".to_string()));
+
+        for bad in ["garbage-not-a-jwt", "Bearer.invalid.sig"] {
+            let req = Request::builder()
+                .method(Method::POST)
+                .uri("/auth/refresh")
+                .header("authorization", bad)
+                .body(Body::empty())
+                .unwrap();
+            let resp = app.clone().oneshot(req).await.unwrap();
+            assert_eq!(
+                resp.status(),
+                StatusCode::UNAUTHORIZED,
+                "坏 token（{bad}）刷新应返回 401"
+            );
+        }
+    }
+
+    // ─── 测试 15d：/auth/refresh 负路径 — 错钥签名拒绝（P1-82 回归）──────
+    /// P1-82 修复回归：用其他 secret 签发的 token 刷新必须返回 401（防跨实例伪造）。
+    #[tokio::test]
+    async fn test_auth_refresh_rejects_wrong_secret() {
+        let forged = create_jwt_token("api-client", "compress", "attacker-secret", 3600).unwrap();
+        let app = build_auth_test_router("jwt", None, Some("jwt-refresh-secret".to_string()));
+
+        let req = Request::builder()
+            .method(Method::POST)
+            .uri("/auth/refresh")
+            .header("authorization", format!("Bearer {forged}"))
+            .body(Body::empty())
+            .unwrap();
+
+        let resp = app.oneshot(req).await.unwrap();
+        assert_eq!(
+            resp.status(),
+            StatusCode::UNAUTHORIZED,
+            "错钥 token 刷新应返回 401"
+        );
+    }
+
     // ─── 测试 16：JWT 模式保护端点 — 无 token 访问 /compress 返回 401 ────
+    /// 验证 jwt 模式下无 token 访问受保护 /compress 返回 401。
     #[tokio::test]
     async fn test_jwt_protected_endpoint_rejects_unauthorized() {
-        let app = build_auth_test_router(
-            "jwt",
-            None,
-            Some("secret".to_string()),
-        );
+        let app = build_auth_test_router("jwt", None, Some("secret".to_string()));
 
         let req = Request::builder()
             .method(Method::POST)
@@ -2239,7 +2521,11 @@ mod tests {
             .unwrap();
 
         let resp = app.oneshot(req).await.unwrap();
-        assert_eq!(resp.status(), StatusCode::UNAUTHORIZED, "JWT 模式下无 token 应返回 401");
+        assert_eq!(
+            resp.status(),
+            StatusCode::UNAUTHORIZED,
+            "JWT 模式下无 token 应返回 401"
+        );
     }
 
     // ═══════════════════════════════════════════════════════════════════════
@@ -2247,6 +2533,7 @@ mod tests {
     // ═══════════════════════════════════════════════════════════════════════
 
     // ─── 测试 17：WebSocket 连接计数器 — 递增/递减正确 ───────────────────
+    /// 验证 WebSocket 活跃连接计数器的递增与递减逻辑正确。
     #[test]
     fn test_ws_connection_counter_increment_decrement() {
         use std::sync::atomic::Ordering;
@@ -2260,10 +2547,15 @@ mod tests {
 
         // 模拟 1 个断开
         counter.fetch_sub(1, Ordering::Relaxed);
-        assert_eq!(counter.load(Ordering::Relaxed), 2, "断开 1 个后应有 2 个活跃连接");
+        assert_eq!(
+            counter.load(Ordering::Relaxed),
+            2,
+            "断开 1 个后应有 2 个活跃连接"
+        );
     }
 
     // ─── 测试 18：WebSocket 连接上限检查逻辑 ───────────────────────────────
+    /// 验证 WebSocket 连接上限检查：未达上限允许、达到上限拒绝。
     #[test]
     fn test_ws_max_connections_check() {
         use std::sync::atomic::Ordering;
@@ -2284,6 +2576,7 @@ mod tests {
     // ─── 测试 19：WebSocket 连接上限 — 计数器达到上限时 handler 拒绝新连接 ─
     // 注意：axum 的 WebSocketUpgrade 提取器在 handler 之前执行协议验证，
     // 无效 WS 升级请求会返回 426。这里测试连接计数逻辑和 503 分支代码路径。
+    /// 验证当活跃连接达到上限时连接计数逻辑触发拒绝分支(503 路径)。
     #[tokio::test]
     async fn test_ws_max_connections_rejects_at_limit() {
         use std::sync::atomic::Ordering;
@@ -2311,28 +2604,24 @@ mod tests {
             auth_mode: "none".to_string(),
             jwt_secret: None,
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         });
 
         // 验证连接上限检查逻辑（与 compress_ws_handler 中一致）
         let current = shared_state.ws_active_connections.load(Ordering::Relaxed);
         let max = shared_state.ws_max_connections;
-        assert!(
-            current >= max,
-            "当前连接数 {} 应 >= 上限 {}",
-            current, max
-        );
+        assert!(current >= max, "当前连接数 {} 应 >= 上限 {}", current, max);
 
         // 验证未达上限时允许连接
-        shared_state.ws_active_connections.store(3, Ordering::Relaxed);
+        shared_state
+            .ws_active_connections
+            .store(3, Ordering::Relaxed);
         let current = shared_state.ws_active_connections.load(Ordering::Relaxed);
-        assert!(
-            current < max,
-            "当前连接数 {} 应 < 上限 {}",
-            current, max
-        );
+        assert!(current < max, "当前连接数 {} 应 < 上限 {}", current, max);
     }
 
     // ─── 测试 20：compress_ws_chunk — 压缩数据块返回正确 JSON ────────────
+    /// 验证 compress_ws_chunk 压缩数据块返回包含 compressed/input_size/ratio 的有效 JSON。
     #[tokio::test]
     async fn test_compress_ws_chunk() {
         let config = tokenslim::core::compression_pipeline::PipelineConfig::default();
@@ -2357,21 +2646,26 @@ mod tests {
             auth_mode: "none".to_string(),
             jwt_secret: None,
             jwt_expiry: 3600,
+            trust_proxy_headers: false,
         });
 
         let chunk = "$ cargo build\n   Compiling tokenslim v0.4.0\n    Finished release profile\n";
         let result_json = compress_ws_chunk(&state, chunk).await;
 
         // 解析返回的 JSON
-        let result: serde_json::Value = serde_json::from_str(&result_json)
-            .expect("compress_ws_chunk 应返回有效 JSON");
+        let result: serde_json::Value =
+            serde_json::from_str(&result_json).expect("compress_ws_chunk 应返回有效 JSON");
 
         assert_eq!(result["compressed"], true, "应标记为已压缩");
-        assert!(result["input_size"].as_u64().unwrap() > 0, "input_size 应 > 0");
+        assert!(
+            result["input_size"].as_u64().unwrap() > 0,
+            "input_size 应 > 0"
+        );
         assert!(result["ratio"].as_f64().unwrap() > 0.0, "ratio 应 > 0");
     }
 
     // ─── 测试 21：WsControlCommand 反序列化 ────────────────────────────────
+    /// 验证 WsControlCommand 可正确反序列化 flush/reset 与 plugin 切换指令。
     #[test]
     fn test_ws_control_command_deserialize() {
         // flush 指令
@@ -2387,5 +2681,26 @@ mod tests {
         let cmd: WsControlCommand = serde_json::from_str(r#"{"plugin":"gcc_log_plugin"}"#).unwrap();
         assert!(cmd.action.is_none());
         assert_eq!(cmd.plugin.as_deref(), Some("gcc_log_plugin"));
+    }
+
+    // ─── 测试 22：限流表防膨胀（P2-86） ───────────────────────────────────
+    /// 验证限流表在大量伪造 IP 下内存有界：超过 RATE_LIMITER_MAX_ENTRIES 后
+    /// 过期条目被清扫、最旧窗口起点条目被淘汰，表长不得无限增长。
+    #[test]
+    fn test_rate_limiter_table_is_bounded() {
+        use std::net::Ipv4Addr;
+        let limiter = RateLimiter::new();
+
+        // 伪造 RATE_LIMITER_MAX_ENTRIES + 500 个不同 IP（直连部署下伪造 XFF 可任意制造）
+        for i in 0..(RATE_LIMITER_MAX_ENTRIES as u32 + 500) {
+            let ip = IpAddr::V4(Ipv4Addr::from(10u32 << 24 | i));
+            limiter.check_and_increment(ip, u64::MAX);
+        }
+
+        assert!(
+            limiter.records.len() <= RATE_LIMITER_MAX_ENTRIES,
+            "限流表必须有界：len={} 不得超过 {RATE_LIMITER_MAX_ENTRIES}（P2-86）",
+            limiter.records.len()
+        );
     }
 }
