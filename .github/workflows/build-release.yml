@@ -123,22 +123,30 @@ jobs:
     needs: validate-versions
     # NOTE on the build matrix:
     #
-    #   `darwin-x64` (macos-13 / Intel Mac) was disabled in 0.5.0 because
-    #   the macos-13 runner pool on GitHub Actions was severely starved
+    #   `darwin-x64` (Intel Mac) was disabled in 0.5.0 because the
+    #   macos-13 runner pool on GitHub Actions was severely starved
     #   (6-hour queue timeouts observed).  Independent release audit
     #   (2026-08-19) requires restoring it: the SDK's optionalDependencies
     #   contract pins `@tokenslim/cli-binary-darwin-x64` at the exact
     #   release version, so shipping `tokenslim` without the darwin-x64
-    #   binary package would break Intel-macOS installs.  Keep this entry
-    #   in the matrix; if the macos-13 pool degrades again, raise it as a
-    #   release-blocking issue rather than silently dropping the platform.
+    #   binary package would break Intel-macOS installs.
+    #
+    #   2026-09-11: the degradation scenario documented above materialised
+    #   again — v0.5.1 build-release had 6/7 platforms green while
+    #   `darwin-x64` stayed queued on macos-13 indefinitely.  Resolution
+    #   keeps the audit-required artifact contract without depending on
+    #   the starved pool: build `x86_64-apple-darwin` on the arm64
+    #   `macos-14` runner by cross-compilation (rustup target + Apple
+    #   universal SDK).  The `@tokenslim/cli-binary-darwin-x64` package
+    #   still ships, so Intel-macOS installs are not broken.  If a crate
+    #   ever needs native x86_64 macOS C toolchain flags, revisit here.
     strategy:
       fail-fast: false
       matrix:
         include:
           - { os: ubuntu-22.04,    label: linux-x64-gnu,    target: x86_64-unknown-linux-gnu  }
           - { os: ubuntu-22.04-arm, label: linux-arm64-gnu, target: aarch64-unknown-linux-gnu }
-          - { os: macos-13,        label: darwin-x64,       target: x86_64-apple-darwin        }
+          - { os: macos-14,        label: darwin-x64,       target: x86_64-apple-darwin        }
           - { os: macos-14,        label: darwin-arm64,     target: aarch64-apple-darwin       }
           - { os: windows-2022,    label: windows-x64,      target: x86_64-pc-windows-msvc     }
           - { os: windows-11-arm,  label: windows-arm64,    target: aarch64-pc-windows-msvc    }

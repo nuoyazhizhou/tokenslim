@@ -19,6 +19,10 @@
 //   - crates/plugin-interface/Cargo.toml   (interface crate)
 //   - crates/tokenslim-py/Cargo.toml       (Python binding crate)
 //   - crates/tokenslim-py/pyproject.toml   (Python SDK config)
+//   - sdk/python/pyproject.toml            (REST client SDK, PyPI
+//                                          `tokenslim-client`; added
+//                                          2026-09-11 so its pin can no
+//                                          longer silently drift)
 //   - packages/sdk-nodejs/package-lock.json  (regenerated via `npm install` to
 //                                            keep the @tokenslim/cli-binary-*
 //                                            pins in sync — otherwise the next
@@ -69,6 +73,7 @@ const TOML_FILES = [
   "crates/plugin-interface/Cargo.toml",
   "crates/tokenslim-py/Cargo.toml",
   "crates/tokenslim-py/pyproject.toml",
+  "sdk/python/pyproject.toml",
 ];
 
 function parseArgs(argv) {
@@ -162,7 +167,10 @@ function updateTomlVersion(text, newVersion) {
 
 async function bumpNpmPackage(relPath, newVersion) {
   const abs = path.join(REPO_ROOT, relPath);
-  const text = await fs.readFile(abs, "utf8");
+  const text = await readFileOrNull(abs);
+  if (text === null) {
+    return { relPath, oldVersion: null, newVersion, changed: false, absent: true };
+  }
 
   // Targeted text-rewrite instead of JSON.parse + JSON.stringify so the
   // original formatting (inline arrays, key order) survives byte-for-byte.
@@ -202,7 +210,10 @@ async function bumpNpmPackage(relPath, newVersion) {
 
 async function bumpTomlFile(relPath, newVersion) {
   const abs = path.join(REPO_ROOT, relPath);
-  const text = await fs.readFile(abs, "utf8");
+  const text = await readFileOrNull(abs);
+  if (text === null) {
+    return { relPath, oldVersion: null, newVersion, changed: false, absent: true };
+  }
   const oldMatch = text.match(/^\s*version\s*=\s*"([^"]+)"/m);
   const oldVersion = oldMatch ? oldMatch[1] : null;
   if (oldVersion === newVersion) {
@@ -268,14 +279,33 @@ function printTable(rows) {
   if (rows.length === 0) return;
   const width = Math.max(...rows.map((r) => r.relPath.length));
   for (const r of rows) {
+    if (r.absent) {
+      process.stdout.write(`  ${r.relPath.padEnd(width)}  absent (skipped)\n`);
+      continue;
+    }
     const arrow = r.changed ? `${r.oldVersion} → ${r.newVersion}` : "unchanged";
     process.stdout.write(`  ${r.relPath.padEnd(width)}  ${arrow}\n`);
   }
 }
 
+/// 读取文件内容；文件不存在时返回 null。
+///
+/// 并非每个 checkout 都包含全部版本承载文件：`crates/plugin-interface`、
+/// `sdk/python` 等只存在于发布仓。缺席是合法状态，不应被当作 ENOENT 崩溃，
+/// 也不应被计入版本漂移（2026-09-11 主仓运行 `--check` 时实测崩溃）。
+async function readFileOrNull(abs) {
+  try {
+    return await fs.readFile(abs, "utf8");
+  } catch (e) {
+    if (e.code === "ENOENT") return null;
+    throw e;
+  }
+}
+
 async function readNpmPackageVersion(relPath) {
   const abs = path.join(REPO_ROOT, relPath);
-  const text = await fs.readFile(abs, "utf8");
+  const text = await readFileOrNull(abs);
+  if (text === null) return null;
   // Mirror the regex in `bumpNpmPackage` so the two functions agree on
   // which field they consider "the version".
   const m = text.match(/"version"\s*:\s*"([^"]+)"/);
@@ -287,7 +317,8 @@ async function readNpmPackageVersion(relPath) {
 
 async function readTomlFileVersion(relPath) {
   const abs = path.join(REPO_ROOT, relPath);
-  const text = await fs.readFile(abs, "utf8");
+  const text = await readFileOrNull(abs);
+  if (text === null) return null;
   const m = text.match(/^\s*version\s*=\s*"([^"]+)"/m);
   if (!m) {
     throw new Error(`no \`version = "..."\` line found in ${relPath}`);
@@ -307,9 +338,14 @@ async function runCheck(expected) {
     rows.push({ relPath: f, current: await readTomlFileVersion(f) });
   }
 
-  const drifting = rows.filter((r) => r.current !== expected);
+  const present = rows.filter((r) => r.current !== null);
+  const drifting = present.filter((r) => r.current !== expected);
   const width = Math.max(...rows.map((r) => r.relPath.length));
   for (const r of rows) {
+    if (r.current === null) {
+      process.stdout.write(`  [n/a ] ${r.relPath.padEnd(width)}  absent (skipped)\n`);
+      continue;
+    }
     const ok = r.current === expected;
     const tag = ok ? "ok  " : "DRIFT";
     process.stdout.write(
@@ -317,13 +353,15 @@ async function runCheck(expected) {
     );
   }
   if (drifting.length === 0) {
+    const skipped = rows.length - present.length;
     process.stdout.write(
-      `\nok: all ${rows.length} files at version ${expected}\n`,
+      `\nok: all ${present.length} present files at version ${expected}` +
+        (skipped ? ` (${skipped} absent, skipped)\n` : "\n"),
     );
     return 0;
   }
   process.stderr.write(
-    `\nFAIL: ${drifting.length}/${rows.length} files do not match ${expected}:\n` +
+    `\nFAIL: ${drifting.length}/${present.length} files do not match ${expected}:\n` +
       drifting.map((r) => `  - ${r.relPath}: ${r.current}`).join("\n") +
       "\n\n" +
       `re-run without --check to rewrite them:\n` +

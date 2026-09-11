@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tokenslim-client"
-version = "0.4.0"
+version = "0.5.1"
 description = "TokenSlim REST client SDK for Python (sync + async)"
 readme = "README.md"
 requires-python = ">=3.9"
